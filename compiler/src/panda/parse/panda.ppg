@@ -1,0 +1,241 @@
+// Assumes polyglot.jar is in classpath
+include "polyglot/ext/jl7/parse/jl7.ppg"
+
+package panda.parse;
+
+import panda.types.PandaTypeSystem;
+import panda.ast.PandaNodeFactory;
+import panda.ast.*;
+import polyglot.parse.Name;
+import polyglot.parse.VarDeclarator;
+
+parser Grm extends polyglot.ext.jl7.parse.Grm {:
+  public final PandaTypeSystem ts;
+  public final PandaNodeFactory nf;
+
+  public Grm(Lexer l, TypeSystem t, NodeFactory n, ErrorQueue q) {
+      super(l, t, n, q);
+      ts = (PandaTypeSystem) t;
+      nf = (PandaNodeFactory) n;
+  }
+
+  public List<LocalDecl> variableDeclarators(TypeNode a, 
+                                             List<VarDeclarator> b, 
+                                             Flags flags,
+                                             ModeTypeNode modeTypeNode) throws Exception {
+    return this.variableDeclarators(a,
+                                    b,
+                                    flags,
+                                    null,
+                                    modeTypeNode);
+  }
+
+  public List<LocalDecl> variableDeclarators(TypeNode a, 
+                                             List<VarDeclarator> b, 
+                                             Flags flags, 
+                                             List<AnnotationElem> annotations,
+                                             ModeTypeNode modeTypeNode) throws Exception {
+    List<LocalDecl> l = new LinkedList<>();
+    for (VarDeclarator d : b) {
+        l.add(nf.LocalDecl(pos(d), 
+                           flags, 
+                           annotations, 
+                           array(a, d.dims), 
+                           d.name, 
+                           d.init,
+                           modeTypeNode));
+    }
+    return l;
+ }
+
+:};
+
+terminal Token MODE; 
+terminal Token MODES;
+terminal Token PARORD;
+
+non terminal ModesDecl modes_declaration_opt;
+non terminal ModesDecl modes_declaration;
+non terminal ModeOrder mode_ordering;
+non terminal List mode_orderings;
+
+non terminal List mode_type_parameters_decl_opt;
+non terminal List mode_type_parameters_decl;
+non terminal List mode_type_parameters;
+non terminal ModeParamTypeNode mode_type_parameter;
+
+non terminal ModeTypeNode mode_type_opt;
+non terminal ModeTypeNode mode_type;
+
+precedence left IDENTIFIER;
+precedence left AT;
+
+start with goal;
+
+override compilation_unit ::=
+                    // SourceFile
+  package_declaration_opt:p import_declarations_opt:i modes_declaration_opt:m type_declarations_opt:t 
+  {: 
+    RESULT = parser.nf.SourceFile(new Position(parser.lexer.path(), 
+                                               parser.lexer.file()), 
+                                  p, 
+                                  i, 
+                                  t,
+                                  m);
+  :}
+| error type_declarations_opt:c
+  {: RESULT = parser.nf.SourceFile(new Position(parser.lexer.path(), 
+                                                parser.lexer.file()), 
+                                   null, 
+                                   Collections.<Import> emptyList(), 
+                                   c, 
+                                   null);
+  :}
+;
+
+modes_declaration_opt ::=
+  modes_declaration:m
+  {: RESULT = m; :}
+|
+  {: RESULT = null; :}
+;
+
+modes_declaration ::=
+  MODES LBRACE:lb mode_orderings:ords RBRACE:rb
+  {:
+    RESULT = parser.nf.ModesDecl(parser.pos(lb, rb), ords);
+  :}
+;
+
+mode_orderings ::=
+  {: RESULT = new ArrayList(); :}
+| mode_orderings:ords mode_ordering:m
+  {: 
+    RESULT = ords;
+    ords.add(m);
+  :}
+;
+  
+mode_ordering ::=
+  IDENTIFIER:lower PARORD IDENTIFIER:upper SEMICOLON:semi
+  {: RESULT = 
+    parser.nf.ModeOrder(parser.pos(lower, semi), 
+                        lower.getIdentifier(), 
+                        upper.getIdentifier()); 
+  :}
+;
+
+override class_declaration ::=
+  modifiers_or_annotations_opt:a CLASS:n IDENTIFIER:b type_parameters_opt:c mode_type_parameters_decl_opt:m super_opt:d interfaces_opt:e class_body:f
+  {: 
+    RESULT = parser.nf.ClassDecl(parser.pos(n, e),  
+                                a.flags(), 
+                                a.annotations(), 
+                                parser.nf.Id(parser.pos(b), b.getIdentifier()), 
+                                d, 
+                                e, 
+                                f, 
+                                c,
+                                m); 
+  :}
+;    
+
+mode_type_parameters_decl_opt ::=
+  mode_type_parameters_decl:m
+  {: RESULT = m; :}
+| /* empty */
+  {: RESULT = null; :}
+;
+
+mode_type_parameters_decl ::=
+  AT:a MODE LT mode_type_parameters:params GT
+  {: RESULT = params; :}
+;
+
+mode_type_parameters ::=
+  mode_type_parameter:m
+  {: 
+    List<ModeParamTypeNode> params = new ArrayList<ModeParamTypeNode>();
+    params.add(m);
+    RESULT = params;
+  :}
+| mode_type_parameters:params COMMA mode_type_parameter:m
+  {: 
+    RESULT = params;
+    params.add(m);
+  :}
+;
+
+mode_type_parameter ::=
+  IDENTIFIER:id
+  {: 
+    RESULT = 
+      parser.nf.ModeParamTypeNode(parser.pos(id), 
+                                  parser.nf.Id(parser.pos(id), id.getIdentifier()));
+  :}
+;
+
+override field_declaration ::=
+  modifiers_or_annotations_opt:a type:b mode_type_opt:m variable_declarators:c SEMICOLON:e
+  {: 
+    List<ClassMember> l = new LinkedList<>();
+    for (VarDeclarator d : c) {
+      l.add(parser.nf.FieldDecl(parser.pos(b, e),
+                                a.flags(), 
+                                a.annotations(), 
+                                parser.array(b, d.dims), 
+                                d.name, 
+                                d.init,
+                                m));
+    }
+    RESULT = l; 
+  :}
+; 
+  
+override formal_parameter ::=
+  modifiers_or_annotations_opt:a type:b mode_type_opt:m variable_declarator_id:c
+  {: 
+    RESULT = parser.nf.Formal(parser.pos(b, c, c), 
+                              a.flags(), 
+                              a.annotations(), 
+                              parser.array(b, c.dims), 
+                              c.name,
+                              false,
+                              m); 
+  :}
+|
+  modifiers_or_annotations_opt:a type:b mode_type_opt:m ELLIPSIS IDENTIFIER:d
+  {:
+    RESULT = parser.nf.Formal(parser.pos(b, d, d), 
+                              a.flags(), 
+                              a.annotations(), 
+                              parser.nf.ArrayTypeNode(parser.pos(b), b), 
+                              parser.nf.Id(parser.pos(d), d.getIdentifier()), 
+                              true,
+                              m);
+  :}
+;
+
+override local_variable_declaration ::=
+  modifiers_or_annotations:a type:b mode_type_opt:m variable_declarators:c
+  {: RESULT = parser.variableDeclarators(b, c, a.flags(), a.annotations(), m); :}
+|
+  type:a mode_type_opt:m variable_declarators:b
+  {: RESULT = parser.variableDeclarators(a, b, Flags.NONE, m); :}
+; 
+
+mode_type_opt ::=
+  mode_type:m
+  {: RESULT = m; :}
+| 
+  /* empty */
+  {: RESULT = null; :}
+;
+
+mode_type ::=
+  AT:a MODE LPAREN IDENTIFIER:id RPAREN:b
+  {: 
+    RESULT = parser.nf.ModeTypeNode(parser.pos(a, b), 
+                                    parser.nf.Id(parser.pos(id), id.getIdentifier()));
+  :}
+;
