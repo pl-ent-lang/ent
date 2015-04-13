@@ -9,6 +9,8 @@ import polyglot.ext.jl7.ast.JL7ExtFactory;
  */
 public interface PandaExtFactory extends JL7ExtFactory {
 
+  Ext extAmbModeTypeInstantiation();
+
   Ext extModeOrder();
 
   Ext extModesDecl();
@@ -16,5 +18,8 @@ public interface PandaExtFactory extends JL7ExtFactory {
   Ext extModeParamTypeNode();
 
   Ext extModeTypeNode();
+
+  Ext extModeValueNode();
+
 
 }

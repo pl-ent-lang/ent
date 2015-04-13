@@ -28,37 +28,8 @@ parser Grm extends polyglot.ext.jl7.parse.Grm {:
       super(l, t, n, q);
       ts = (PandaTypeSystem) t;
       nf = (PandaNodeFactory) n;
-  }
-
-  public List<LocalDecl> variableDeclarators(TypeNode a, 
-                                             List<VarDeclarator> b, 
-                                             Flags flags,
-                                             ModeTypeNode modeTypeNode) throws Exception {
-    return this.variableDeclarators(a,
-                                    b,
-                                    flags,
-                                    null,
-                                    modeTypeNode);
-  }
-
-  public List<LocalDecl> variableDeclarators(TypeNode a, 
-                                             List<VarDeclarator> b, 
-                                             Flags flags, 
-                                             List<AnnotationElem> annotations,
-                                             ModeTypeNode modeTypeNode) throws Exception {
-    List<LocalDecl> l = new LinkedList<>();
-    for (VarDeclarator d : b) {
-        l.add(nf.LocalDecl(pos(d), 
-                           flags, 
-                           annotations, 
-                           array(a, d.dims), 
-                           d.name, 
-                           d.init,
-                           modeTypeNode));
-    }
-    return l;
- }
-
+  } 
+  
 
 :}
 scan with {: return nextSymbol(); :};
@@ -318,11 +289,13 @@ non terminal List mode_type_parameters_decl_opt;
 non terminal List mode_type_parameters_decl;
 non terminal List mode_type_parameters;
 non terminal ModeParamTypeNode mode_type_parameter;
-non terminal ModeTypeNode mode_type_opt;
+non terminal ModeTypeNode mode_type_annon;
+non terminal ModeTypeNode mode_type_decl;
+non terminal List<ModeValueNode> mode_type_argument_list;
+non terminal List<ModeValueNode> mode_type_arguments;
 non terminal ModeTypeNode mode_type;
+non terminal ModeValueNode mode_value;
 
-precedence left IDENTIFIER;
-precedence left AT;
 
 start with goal;
 
@@ -373,8 +346,40 @@ boundary_literal ::=
                       :};
 
 type ::=
-    primitive_type:a {:  RESULT = a;  :}
- |  reference_type:a {:  RESULT = a;  :};
+    primitive_type:a {:
+                     
+    ModeTypeNode m = parser.nf.ModeTypeNode(a.position()); 
+    m.base(a);
+    RESULT = m;
+  
+                     :}
+ |  primitive_type:a mode_type_decl:m {:  
+    m.base(a);
+    RESULT = m;
+   :}
+ |  primitive_type:a mode_type_decl:m mode_type_argument_list:args {:
+                                                                   
+    m.base(a);
+    RESULT = parser.nf.AmbModeTypeInstantiation(m.position(), m, args);
+  
+                                                                   :}
+ |  reference_type:a {:
+                     
+    ModeTypeNode m = parser.nf.ModeTypeNode(a.position());
+    m.base(a);
+    RESULT = m; 
+  
+                     :}
+ |  reference_type:a mode_type_decl:m {:  
+    m.base(a);
+    RESULT = m;
+   :}
+ |  reference_type:a mode_type_decl:m mode_type_argument_list:args {:
+                                                                   
+    m.base(a);
+    RESULT = parser.nf.AmbModeTypeInstantiation(m.position(), m, args);
+  
+                                                                   :};
 
 primitive_type ::=
     numeric_type:a {:  RESULT = a;  :}
@@ -661,21 +666,15 @@ class_member_declaration ::=
                         :};
 
 field_declaration ::=
-    modifiers_or_annotations_opt:a type:b mode_type_opt:m variable_declarators:c SEMICOLON:e {:
-                                                                                             
-    List<ClassMember> l = new LinkedList<>();
-    for (VarDeclarator d : c) {
-      l.add(parser.nf.FieldDecl(parser.pos(b, e),
-                                a.flags(), 
-                                a.annotations(), 
-                                parser.array(b, d.dims), 
-                                d.name, 
-                                d.init,
-                                m));
-    }
-    RESULT = l; 
-  
-                                                                                             :};
+    modifiers_or_annotations_opt:a type:b variable_declarators:c SEMICOLON:e {:
+                                                                             List<ClassMember> l = new LinkedList<>();
+       for (VarDeclarator d : c) {
+         l.add(parser.nf.FieldDecl(parser.pos(b, e),
+               a.flags(), a.annotations(), parser.array(b, d.dims),
+               d.name, d.init));
+        }
+        RESULT = l; 
+                                                                             :};
 
 variable_declarators ::=
     variable_declarator:a {:
@@ -742,28 +741,15 @@ formal_parameter_list ::=
                                                      :};
 
 formal_parameter ::=
-    modifiers_or_annotations_opt:a type:b mode_type_opt:m variable_declarator_id:c {:
-                                                                                   
-    RESULT = parser.nf.Formal(parser.pos(b, c, c), 
-                              a.flags(), 
-                              a.annotations(), 
-                              parser.array(b, c.dims), 
-                              c.name,
-                              false,
-                              m); 
-  
-                                                                                   :}
- |  modifiers_or_annotations_opt:a type:b mode_type_opt:m ELLIPSIS IDENTIFIER:d {:
-                                                                               
-    RESULT = parser.nf.Formal(parser.pos(b, d, d), 
-                              a.flags(), 
-                              a.annotations(), 
-                              parser.nf.ArrayTypeNode(parser.pos(b), b), 
-                              parser.nf.Id(parser.pos(d), d.getIdentifier()), 
-                              true,
-                              m);
-  
-                                                                                :};
+    modifiers_or_annotations_opt:a type:b variable_declarator_id:c {:
+                                                                   RESULT = parser.nf.Formal(parser.pos(b, c, c), a.flags(), a.annotations(),
+                     parser.array(b, c.dims), c.name); 
+                                                                   :}
+ |  modifiers_or_annotations_opt:a type:b ELLIPSIS IDENTIFIER:d {:
+                                                               
+           RESULT = parser.nf.Formal(parser.pos(b, d, d), a.flags(), a.annotations(), parser.nf.ArrayTypeNode(parser.pos(b), b), parser.nf.Id(parser.pos(d), d.getIdentifier()), true);
+        
+                                                                :};
 
 throws_opt ::=
     {:  RESULT = new LinkedList<>();  :}
@@ -1008,12 +994,12 @@ local_variable_declaration_statement ::=
     local_variable_declaration:a SEMICOLON {:  RESULT = a;  :};
 
 local_variable_declaration ::=
-    modifiers_or_annotations:a type:b mode_type_opt:m variable_declarators:c {:
-                                                                             RESULT = parser.variableDeclarators(b, c, a.flags(), a.annotations(), m); 
-                                                                             :}
- |  type:a mode_type_opt:m variable_declarators:b {:
-                                                  RESULT = parser.variableDeclarators(a, b, Flags.NONE, m); 
-                                                  :};
+    modifiers_or_annotations:a type:b variable_declarators:c {:
+                                                             RESULT = parser.variableDeclarators(b, c, a.flags(), a.annotations()); 
+                                                             :}
+ |  type:a variable_declarators:b {:
+                                  RESULT = parser.variableDeclarators(a, b, Flags.NONE); 
+                                  :};
 
 statement ::=
     statement_without_trailing_substatement:a {:  RESULT = a;  :}
@@ -2501,16 +2487,45 @@ mode_type_parameter ::=
   
                   :};
 
-mode_type_opt ::=
-    mode_type:m {:  RESULT = m;  :}
- |  {:  RESULT = null;  :};
+mode_type_decl ::=
+    AT:a MODE LPAREN mode_type:m RPAREN {: 
+    RESULT = m;
+   :};
 
 mode_type ::=
-    AT:a MODE LPAREN IDENTIFIER:id RPAREN:b {:
-                                            
-    RESULT = parser.nf.ModeTypeNode(parser.pos(a, b), 
-                                    parser.nf.Id(parser.pos(id), id.getIdentifier()));
+    IDENTIFIER:id {:
+                  
+    RESULT = parser.nf.ModeTypeNode(parser.pos(id),
+                                    parser.nf.Id(parser.pos(id), 
+                                                 id.getIdentifier()));
   
-                                            :};
+                  :};
+
+mode_value ::=
+    IDENTIFIER:id {:
+                 
+    RESULT = parser.nf.ModeValueNode(parser.pos(id), id.getIdentifier());
+  
+                  :};
+
+mode_type_argument_list ::=
+    LT mode_type_arguments:args GT {: 
+    RESULT = args;
+   :};
+
+mode_type_arguments ::=
+    mode_value:m {:
+                
+    List<ModeValueNode> args = new ArrayList<ModeValueNode>();
+    args.add(m);
+    RESULT = args;
+  
+                 :}
+ |  mode_type_arguments:args COMMA mode_value:m {:
+                                               
+    RESULT = args;
+    args.add(m);
+  
+                                                :};
 
 

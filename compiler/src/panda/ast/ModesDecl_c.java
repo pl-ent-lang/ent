@@ -83,11 +83,11 @@ public class ModesDecl_c extends Term_c implements ModesDecl {
     PandaTypeSystem pandaTypeSystem = (PandaTypeSystem) tb.typeSystem();
 
     ModeOrderingInstance modeOrderingInstance = 
-      pandaTypeSystem.ModeOrderingInstance();
+      pandaTypeSystem.createModeOrderingInstance();
 
     for (ModeOrder modeOrder : this.orders()) {
-      ModeType lower = pandaTypeSystem.ModeType(modeOrder.lower());
-      ModeType upper = pandaTypeSystem.ModeType(modeOrder.upper());
+      ModeType lower = pandaTypeSystem.createModeType(modeOrder.lower());
+      ModeType upper = pandaTypeSystem.createModeType(modeOrder.upper());
       modeOrderingInstance.insertModeTypeOrdering(lower, upper);
     }
 

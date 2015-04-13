@@ -33,4 +33,12 @@ panda.ExtensionInfo "-d out" {
       (Semantic, "defined multiple times as a lower bound");
     modesDeclTest/ModesDeclBad2.pan 
       (Semantic, "Modes do not form a partial ordering");
+    modeDeclTest/ModeLocalDecl.pan;
+    modeDeclTest/ModeLocalDeclBad.pan (Syntax), (Syntax);
+    modeDeclTest/ModeFieldDecl.pan;
+    modeDeclTest/ModeFieldDeclBad.pan (Syntax);
+    modeDeclTest/ModeFormal.pan;
+    modeDeclTest/ModeFormalBad.pan (Syntax), (Syntax);
+    modeParamTypeTest/ModeParamTypes.pan;
+    modeParamTypeTest/ModeParamTypesBad.pan (Syntax);
 }

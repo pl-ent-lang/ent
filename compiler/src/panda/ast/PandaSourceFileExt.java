@@ -28,7 +28,7 @@ public class PandaSourceFileExt extends PandaExt {
   @Override
   public Node visitChildren(NodeVisitor v) {
     ModesDecl modesDecl = visitChild(this.modesDecl(), v);
-    Node n = super.visitChildren(v);
+    Node n = superLang().visitChildren(this.node(), v);
     return this.reconstruct(n, modesDecl);
   }
 

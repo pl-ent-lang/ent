@@ -1,11 +1,12 @@
 package panda.types;
 
 import polyglot.ast.Id;
-import polyglot.types.TypeObject_c;
 import polyglot.types.TypeObject;
+import polyglot.types.Type;
+import polyglot.types.Type_c;
+import polyglot.types.Resolver;
 
-public class ModeType_c extends TypeObject_c implements ModeType {
-
+public class ModeType_c extends Type_c implements ModeType {
   private String mode;
 
   // TODO: Might be a more firm way to do this other set an int
@@ -68,6 +69,16 @@ public class ModeType_c extends TypeObject_c implements ModeType {
     return true;
   }
 
+  @Override
+  public String toString() {
+    return "ModeType(" + this.mode() + ")";
+  }
+
+  @Override
+  public String translate(Resolver c) {
+    return this.toString();
+  }
+
   @Override 
   public boolean equalsImpl(TypeObject o) {
     if (this == o) {
@@ -81,6 +92,26 @@ public class ModeType_c extends TypeObject_c implements ModeType {
     ModeType m = (ModeType) o;
 
     return this.mode().equals(m.mode());
+  } 
+
+  @Override 
+  public boolean typeEqualsImpl(Type o) {
+    if (this == o) {
+      return true;
+    }
+
+    if (!(o instanceof ModeType)) {
+      return false;
+    }
+
+    ModeType m = (ModeType) o;
+
+    PandaTypeSystem typeSystem = (PandaTypeSystem) this.typeSystem();
+    // Either the mode types are equal, or one is a bottom type (for now)
+
+    return (this.mode().equals(m.mode()) ||
+           this.equals(typeSystem.bottomModeType()) ||
+           m.equals(typeSystem.bottomModeType()));
   } 
 
   @Override

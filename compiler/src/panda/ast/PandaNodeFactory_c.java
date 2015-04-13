@@ -55,59 +55,14 @@ public class PandaNodeFactory_c extends JL7NodeFactory_c implements PandaNodeFac
       return n;
     }
 
-    public FieldDecl FieldDecl(Position pos, 
-                               Flags flags, 
-                               List<AnnotationElem> annotations, 
-                               TypeNode type, 
-                               Id name, 
-                               Expr init,
-                               ModeTypeNode modeTypeNode) {
-      FieldDecl n = super.FieldDecl(pos, 
-                                    flags, 
-                                    annotations, 
-                                    type, 
-                                    name, 
-                                    init);
-      PandaFieldDeclExt ext = (PandaFieldDeclExt) PandaExt.ext(n);
-      ext.modeTypeNode(modeTypeNode);
-      return n;
-    } 
-
-    public Formal Formal(Position pos, 
-                         Flags flags, 
-                         List<AnnotationElem> annotations, 
-                         TypeNode type, 
-                         Id name, 
-                         boolean var_args,
-                         ModeTypeNode modeTypeNode) {
-      Formal n = super.Formal(pos, 
-                              flags, 
-                              annotations, 
-                              type, 
-                              name,
-                              var_args);
-      PandaFormalExt ext = (PandaFormalExt) PandaExt.ext(n);
-      ext.modeTypeNode(modeTypeNode);
+    public AmbModeTypeInstantiation AmbModeTypeInstantiation(Position pos, 
+                                                             ModeTypeNode baseMode,
+                                                             List<ModeValueNode> modeTypeArguments) {
+      AmbModeTypeInstantiation n = 
+        new AmbModeTypeInstantiation_c(pos, baseMode, modeTypeArguments);
+      n = ext(n, extFactory().extAmbModeTypeInstantiation());
       return n;
     }
-
-    public LocalDecl LocalDecl(Position pos, 
-                               Flags flags, 
-                               List<AnnotationElem> annotations, 
-                               TypeNode type, 
-                               Id name, 
-                               Expr init,
-                               ModeTypeNode modeTypeNode) {
-      LocalDecl n = super.LocalDecl(pos, 
-                                    flags, 
-                                    annotations,
-                                    type, 
-                                    name, 
-                                    init);
-      PandaLocalDeclExt ext = (PandaLocalDeclExt) PandaExt.ext(n);
-      ext.modeTypeNode(modeTypeNode);
-      return n;
-    } 
 
     public ModeOrder ModeOrder(Position pos, String lower, String upper) {
       ModeOrder n = new ModeOrder_c(pos, lower, upper);
@@ -130,6 +85,18 @@ public class PandaNodeFactory_c extends JL7NodeFactory_c implements PandaNodeFac
     public ModeTypeNode ModeTypeNode(Position pos, Id id) {
       ModeTypeNode n = new ModeTypeNode_c(pos, id);
       n = ext(n, extFactory().extModeTypeNode());
+      return n;
+    }
+
+    public ModeTypeNode ModeTypeNode(Position pos) {
+      ModeTypeNode n = new ModeTypeNode_c(pos);
+      n = ext(n, extFactory().extModeTypeNode());
+      return n;
+    } 
+
+    public ModeValueNode ModeValueNode(Position pos, String name) {
+      ModeValueNode n = new ModeValueNode_c(pos, name);
+      n = ext(n, extFactory().extModeValueNode());
       return n;
     }
 

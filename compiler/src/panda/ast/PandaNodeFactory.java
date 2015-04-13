@@ -29,37 +29,17 @@ public interface PandaNodeFactory extends JL7NodeFactory {
                       List<ParamTypeNode> paramTypes,
                       List<ModeParamTypeNode> modeParamTypes); 
 
-  FieldDecl FieldDecl(Position pos, 
-                      Flags flags, 
-                      List<AnnotationElem> annotations, 
-                      TypeNode type, 
-                      Id name, 
-                      Expr init,
-                      ModeTypeNode modeTypeNode); 
-
-  Formal Formal(Position pos, 
-                Flags flags, 
-                List<AnnotationElem> annotations, 
-                TypeNode type, 
-                Id name, 
-                boolean var_args,
-                ModeTypeNode modeTypeNode);
-
-  LocalDecl LocalDecl(Position pos, 
-                      Flags flags, 
-                      List<AnnotationElem> annotations, 
-                      TypeNode type, 
-                      Id name, 
-                      Expr init,
-                      ModeTypeNode modeTypeNode); 
-
   SourceFile SourceFile(Position pos, 
                         PackageNode packageName, 
                         List<Import> imports, 
                         List<TopLevelDecl> decls,
                         ModesDecl modesDecl);
 
-  // Factor Methods for New Nodes
+  // Factory Methods for New Nodes
+  AmbModeTypeInstantiation AmbModeTypeInstantiation(Position pos, 
+                                                    ModeTypeNode baseMode, 
+                                                    List<ModeValueNode> modeTypeArguments);
+  
   ModeOrder ModeOrder(Position pos, String lower, String upper);
 
   ModesDecl ModesDecl(Position pos, List<ModeOrder> orders);
@@ -67,6 +47,10 @@ public interface PandaNodeFactory extends JL7NodeFactory {
   ModeParamTypeNode ModeParamTypeNode(Position pos, Id id);
   
   ModeTypeNode ModeTypeNode(Position pos, Id id);
+
+  ModeTypeNode ModeTypeNode(Position pos);
+
+  ModeValueNode ModeValueNode(Position pos, String name);
 
 
 

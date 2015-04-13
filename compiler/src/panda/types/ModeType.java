@@ -1,10 +1,9 @@
 package panda.types;
 
 import polyglot.ast.Id;
-import polyglot.types.TypeObject;
+import polyglot.types.Type;
 
-public interface ModeType extends TypeObject {
-
+public interface ModeType extends Type {
   // Property Methods
   public String mode();
   public void mode(String mode);
