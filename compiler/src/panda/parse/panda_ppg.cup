@@ -289,7 +289,6 @@ non terminal List mode_type_parameters_decl_opt;
 non terminal List mode_type_parameters_decl;
 non terminal List mode_type_parameters;
 non terminal ModeParamTypeNode mode_type_parameter;
-non terminal ModeTypeNode mode_type_annon;
 non terminal ModeTypeNode mode_type_decl;
 non terminal List<ModeValueNode> mode_type_argument_list;
 non terminal List<ModeValueNode> mode_type_arguments;

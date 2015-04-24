@@ -1,8 +1,12 @@
 package generic_test;
 
+import java.util.List;
+import java.util.ArrayList;
+
 modes {mid <: high; low <: mid;}
 
-public class Socket @mode<Y> {
+public class Socket extends ArrayList<String> @mode(high) {
+  /*
   private String @mode(Y) ipAddr;
   private int port;
   
@@ -10,9 +14,10 @@ public class Socket @mode<Y> {
     this.ipAddr = ipAddr;
     this.port = port;
   }
+  */
 
   public static void main(String[] args) {
-    Socket @mode(high)<high> s1 = new Socket("127.0.0.1", 5150);
+    List<String> @mode(high) l1;
   }
 
 }
