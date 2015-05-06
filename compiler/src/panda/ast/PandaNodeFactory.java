@@ -37,8 +37,8 @@ public interface PandaNodeFactory extends JL7NodeFactory {
 
   // Factory Methods for New Nodes
   AmbModeTypeInstantiation AmbModeTypeInstantiation(Position pos, 
-                                                    ModeTypeNode baseMode, 
-                                                    List<ModeValueNode> modeTypeArguments);
+                                                    TypeNode base, 
+                                                    List<ModeTypeNode> modeTypeArguments);
   
   ModeOrder ModeOrder(Position pos, String lower, String upper);
 
@@ -46,13 +46,6 @@ public interface PandaNodeFactory extends JL7NodeFactory {
 
   ModeParamTypeNode ModeParamTypeNode(Position pos, Id id);
   
-  ModeTypeNode ModeTypeNode(Position pos, Id id);
-
-  ModeTypeNode ModeTypeNode(Position pos);
-
-  ModeValueNode ModeValueNode(Position pos, String name);
-
-
-
+  ModeTypeNode ModeTypeNode(Position pos, String name);
 
 }

@@ -290,10 +290,9 @@ non terminal List mode_type_parameters_decl;
 non terminal List mode_type_parameters;
 non terminal ModeParamTypeNode mode_type_parameter;
 non terminal ModeTypeNode mode_type_decl;
-non terminal List<ModeValueNode> mode_type_argument_list;
-non terminal List<ModeValueNode> mode_type_arguments;
-non terminal ModeTypeNode mode_type;
-non terminal ModeValueNode mode_value;
+non terminal ModeTypeNode mode_type_node;
+non terminal List<ModeTypeNode> mode_type_nodes;
+non terminal List<ModeTypeNode> mode_type_inst;
 
 
 start with goal;
@@ -345,46 +344,29 @@ boundary_literal ::=
                       :};
 
 type ::=
-    primitive_type:a {:
-                     
-    ModeTypeNode m = parser.nf.ModeTypeNode(a.position()); 
-    m.base(a);
-    RESULT = m;
-  
-                     :}
- |  primitive_type:a mode_type_decl:m {:  
-    m.base(a);
-    RESULT = m;
-   :}
- |  primitive_type:a mode_type_decl:m mode_type_argument_list:args {:
-                                                                   
-    m.base(a);
-    RESULT = parser.nf.AmbModeTypeInstantiation(m.position(), m, args);
-  
-                                                                   :}
- |  reference_type:a {:
-                     
-    ModeTypeNode m = parser.nf.ModeTypeNode(a.position());
-    m.base(a);
-    RESULT = m; 
-  
-                     :}
- |  reference_type:a mode_type_decl:m {:  
-    m.base(a);
-    RESULT = m;
-   :}
- |  reference_type:a mode_type_decl:m mode_type_argument_list:args {:
-                                                                   
-    m.base(a);
-    RESULT = parser.nf.AmbModeTypeInstantiation(m.position(), m, args);
-  
-                                                                   :};
+    primitive_type:a {:  RESULT = a;  :}
+ |  reference_type:a {:  RESULT = a;  :};
 
 primitive_type ::=
     numeric_type:a {:  RESULT = a;  :}
  |  BOOLEAN:a {:
               RESULT = parser.nf.CanonicalTypeNode(parser.pos(a), parser.ts.Boolean()); 
-              :};
+              :}
+ |  numeric_type:a mode_type_decl:m GT {:
+                                       
+    PandaTypeNodeExt ext = (PandaTypeNodeExt) PandaExt.ext(a); 
+    ext.modeTypeNode(m); 
+    RESULT = a; 
+  
+                                       :}
+ |  BOOLEAN:a mode_type_decl:m GT {:
+                                  
+    TypeNode n = parser.nf.CanonicalTypeNode(parser.pos(a), parser.ts.Boolean()); 
+    PandaTypeNodeExt ext = (PandaTypeNodeExt) PandaExt.ext(n);
+    ext.modeTypeNode(m);
+    RESULT = n;
+  
+                                  :};
 
 numeric_type ::=
     integral_type:a {:  RESULT = a;  :}
@@ -425,7 +407,37 @@ class_or_interface_type ::=
     class_or_interface:a {:  RESULT = a;  :}
  |  class_or_interface:a LT type_argument_list_1:c {:
                                                    RESULT = parser.nf.AmbTypeInstantiation(parser.pos(a, c), a, c); 
-                                                   :};
+                                                   :}
+ |  class_or_interface:a mode_type_decl:m GT {:
+                                             
+    PandaTypeNodeExt ext = (PandaTypeNodeExt) PandaExt.ext(a);
+    ext.modeTypeNode(m);
+    RESULT = a; 
+  
+                                             :}
+ |  class_or_interface:a LT type_argument_list_1:c mode_type_decl:m GT {:
+                                                                       
+    TypeNode n = parser.nf.AmbTypeInstantiation(parser.pos(a, c), a, c); 
+    PandaTypeNodeExt ext = (PandaTypeNodeExt) PandaExt.ext(n);
+    ext.modeTypeNode(m);
+    RESULT = n;
+  
+                                                                       :}
+ |  class_or_interface:a mode_type_decl:m mode_type_inst:nodes {:
+                                                               
+    PandaTypeNodeExt ext = (PandaTypeNodeExt) PandaExt.ext(a);
+    ext.modeTypeNode(m);
+    RESULT = parser.nf.AmbModeTypeInstantiation(parser.pos(a), a, nodes);
+  
+                                                               :}
+ |  class_or_interface:a LT type_argument_list_1:c mode_type_decl:m mode_type_inst:nodes {:
+                                                                                         
+    TypeNode n = parser.nf.AmbTypeInstantiation(parser.pos(a, c), a, c); 
+    PandaTypeNodeExt ext = (PandaTypeNodeExt) PandaExt.ext(n);
+    ext.modeTypeNode(m);
+    RESULT = parser.nf.AmbModeTypeInstantiation(parser.pos(n), n, nodes);
+  
+                                                                                         :};
 
 class_type ::=
     class_or_interface_type:a {:  RESULT = a;  :};
@@ -2460,7 +2472,7 @@ mode_type_parameters_decl_opt ::=
  |  {:  RESULT = null;  :};
 
 mode_type_parameters_decl ::=
-    AT:a MODE LT mode_type_parameters:params GT {:  RESULT = params;  :};
+    MODE LT mode_type_parameters:params GT {:  RESULT = params;  :};
 
 mode_type_parameters ::=
     mode_type_parameter:m {:
@@ -2487,44 +2499,35 @@ mode_type_parameter ::=
                   :};
 
 mode_type_decl ::=
-    AT:a MODE LPAREN mode_type:m RPAREN {: 
-    RESULT = m;
+    MODE LT mode_type_node:n {: 
+    RESULT = n;
    :};
 
-mode_type ::=
-    IDENTIFIER:id {:
-                  
-    RESULT = parser.nf.ModeTypeNode(parser.pos(id),
-                                    parser.nf.Id(parser.pos(id), 
-                                                 id.getIdentifier()));
-  
-                  :};
+mode_type_inst ::=
+    COMMA mode_type_nodes:n GT {: 
+    RESULT = n;
+   :};
 
-mode_value ::=
+mode_type_nodes ::=
+    mode_type_node:n {:
+                     
+    List<ModeTypeNode> nodes = new ArrayList<ModeTypeNode>();
+    nodes.add(n);
+    RESULT = nodes;
+  
+                     :}
+ |  mode_type_nodes:nodes COMMA mode_type_node:n {:
+                                                
+    nodes.add(n);
+    RESULT = nodes;
+  
+                                                 :};
+
+mode_type_node ::=
     IDENTIFIER:id {:
                  
-    RESULT = parser.nf.ModeValueNode(parser.pos(id), id.getIdentifier());
+    RESULT = parser.nf.ModeTypeNode(parser.pos(id), id.getIdentifier());
   
                   :};
-
-mode_type_argument_list ::=
-    LT mode_type_arguments:args GT {: 
-    RESULT = args;
-   :};
-
-mode_type_arguments ::=
-    mode_value:m {:
-                
-    List<ModeValueNode> args = new ArrayList<ModeValueNode>();
-    args.add(m);
-    RESULT = args;
-  
-                 :}
- |  mode_type_arguments:args COMMA mode_value:m {:
-                                               
-    RESULT = args;
-    args.add(m);
-  
-                                                :};
 
 

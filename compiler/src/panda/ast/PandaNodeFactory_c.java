@@ -56,10 +56,10 @@ public class PandaNodeFactory_c extends JL7NodeFactory_c implements PandaNodeFac
     }
 
     public AmbModeTypeInstantiation AmbModeTypeInstantiation(Position pos, 
-                                                             ModeTypeNode baseMode,
-                                                             List<ModeValueNode> modeTypeArguments) {
+                                                             TypeNode base,
+                                                             List<ModeTypeNode> modeTypeArguments) {
       AmbModeTypeInstantiation n = 
-        new AmbModeTypeInstantiation_c(pos, baseMode, modeTypeArguments);
+        new AmbModeTypeInstantiation_c(pos, base, modeTypeArguments);
       n = ext(n, extFactory().extAmbModeTypeInstantiation());
       return n;
     }
@@ -82,21 +82,9 @@ public class PandaNodeFactory_c extends JL7NodeFactory_c implements PandaNodeFac
       return n;
     }
 
-    public ModeTypeNode ModeTypeNode(Position pos, Id id) {
-      ModeTypeNode n = new ModeTypeNode_c(pos, id);
+    public ModeTypeNode ModeTypeNode(Position pos, String name) {
+      ModeTypeNode n = new ModeTypeNode_c(pos, name);
       n = ext(n, extFactory().extModeTypeNode());
-      return n;
-    }
-
-    public ModeTypeNode ModeTypeNode(Position pos) {
-      ModeTypeNode n = new ModeTypeNode_c(pos);
-      n = ext(n, extFactory().extModeTypeNode());
-      return n;
-    } 
-
-    public ModeValueNode ModeValueNode(Position pos, String name) {
-      ModeValueNode n = new ModeValueNode_c(pos, name);
-      n = ext(n, extFactory().extModeValueNode());
       return n;
     }
 

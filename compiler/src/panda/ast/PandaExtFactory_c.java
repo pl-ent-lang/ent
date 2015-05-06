@@ -13,19 +13,14 @@ public final class PandaExtFactory_c extends PandaAbstractExtFactory_c {
     super(nextExtFactory);
   }
 
-  @Override
-  protected Ext extBooleanLitImpl() {
-    return new PandaBooleanLitExt();
-  } 
-
-  @Override
-  protected Ext extCharLitImpl() {
-    return new PandaCharLitExt();
-  } 
-
   @Override 
   protected Ext extClassDeclImpl() {
     return new PandaClassDeclExt();
+  }
+
+  @Override
+  protected Ext extLitImpl() {
+    return new PandaLitExt();
   }
 
   @Override
@@ -39,22 +34,12 @@ public final class PandaExtFactory_c extends PandaAbstractExtFactory_c {
   } 
 
   @Override
-  protected Ext extNullLitImpl() {
-    return new PandaNullLitExt();
-  } 
-
-  @Override
-  protected Ext extNumLitImpl() {
-    return new PandaNumLitExt();
-  }
-
-  @Override
   protected Ext extSourceFileImpl() {
     return new PandaSourceFileExt();
   }
 
   @Override
-  protected Ext extStringLitImpl() {
-    return new PandaStringLitExt();
+  protected Ext extTypeNodeImpl() {
+    return new PandaTypeNodeExt();
   } 
 }

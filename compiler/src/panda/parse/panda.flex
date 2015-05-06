@@ -119,7 +119,6 @@ import java.util.Set;
 
         // Panda Specific Keywords
         keywords.put("modes",         new Integer(sym.MODES));
-        keywords.put("mode",          new Integer(sym.MODE));
     }
 
     @Override
@@ -429,8 +428,9 @@ OctalEscape = \\ [0-7]
     ">>="  { return op(sym.RSHIFTEQ);   }
     ">>>=" { return op(sym.URSHIFTEQ);  }
     "@"    { return op(sym.AT);         }
-    "..."    { return op(sym.ELLIPSIS);         }
-	  "<:"   { return op(sym.PARORD);		}
+    "..."  { return op(sym.ELLIPSIS);   }
+	  "<:"   { return op(sym.PARORD );		}
+	  "@mode" { return op(sym.MODE );		  }
 
     /* 3.10.1 Integer Literals */
     {OctalNumeral} [lL]          { return long_lit(chop(), 8); }

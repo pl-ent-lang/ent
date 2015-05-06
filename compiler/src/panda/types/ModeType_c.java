@@ -71,7 +71,7 @@ public class ModeType_c extends Type_c implements ModeType {
 
   @Override
   public String toString() {
-    return "ModeType(" + this.mode() + ")";
+    return this.mode();
   }
 
   @Override

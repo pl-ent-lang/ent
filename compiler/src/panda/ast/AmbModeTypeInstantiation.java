@@ -12,10 +12,7 @@ public interface AmbModeTypeInstantiation extends ModeTypeNode {
   TypeNode base();
   void base(TypeNode base);
 
-  ModeTypeNode baseMode();
-  void baseMode(ModeTypeNode baseMode);
-
-  List<ModeValueNode> modeTypeArguments();
-  void modeTypeArguments(List<ModeValueNode> modeTypeArguments);
+  List<ModeTypeNode> modeTypeArguments();
+  void modeTypeArguments(List<ModeTypeNode> modeTypeArguments);
 
 }

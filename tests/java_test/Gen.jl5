@@ -1,12 +1,9 @@
 package java_test;
 
-public class Gen<T> {
-  private T t;
+import java.util.List;
 
-  public Gen() {
-  }
-
+public class Gen {
   public static void main(String[] args) {
-    Gen<String> g1 = new Gen<String>();
+    List<Integer>[] s1;
   }
 }
