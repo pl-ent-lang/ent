@@ -1,9 +1,0 @@
-package java_test;
-
-import java.util.List;
-
-public class Gen {
-  public static void main(String[] args) {
-    List<Integer>[] s1;
-  }
-}

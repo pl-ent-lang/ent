@@ -33,11 +33,11 @@ public class PandaNodeFactory_c extends JL7NodeFactory_c implements PandaNodeFac
                                List<TypeNode> interfaces, 
                                ClassBody body, 
                                List<ParamTypeNode> paramTypes,
-                               List<ModeParamTypeNode> modeParamTypes) {
+                               List<ModeParamTypeNode> modeParams) {
       ClassDecl n =
         super.ClassDecl(pos, flags, annotations, name, superType, interfaces, body, paramTypes);
       PandaClassDeclExt ext = (PandaClassDeclExt) PandaExt.ext(n);
-      ext.modeParamTypes(CollectionUtil.nonNullList(modeParamTypes));
+      ext.modeParams(CollectionUtil.nonNullList(modeParams));
       return n;
     }
 
@@ -56,10 +56,16 @@ public class PandaNodeFactory_c extends JL7NodeFactory_c implements PandaNodeFac
     }
 
     public AmbModeTypeInstantiation AmbModeTypeInstantiation(Position pos, 
+                                                             TypeNode base) {
+      List<ModeTypeNode> modeTypeArgs = Collections.emptyList();
+      return this.AmbModeTypeInstantiation(pos, base, modeTypeArgs);
+    }
+
+    public AmbModeTypeInstantiation AmbModeTypeInstantiation(Position pos, 
                                                              TypeNode base,
-                                                             List<ModeTypeNode> modeTypeArguments) {
+                                                             List<ModeTypeNode> modeTypeArgs) {
       AmbModeTypeInstantiation n = 
-        new AmbModeTypeInstantiation_c(pos, base, modeTypeArguments);
+        new AmbModeTypeInstantiation_c(pos, base, modeTypeArgs);
       n = ext(n, extFactory().extAmbModeTypeInstantiation());
       return n;
     }

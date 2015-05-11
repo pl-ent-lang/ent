@@ -10,12 +10,12 @@ public class ModeOrderingInstance_c extends TypeObject_c implements ModeOrdering
 
   private Map<ModeType, ModeType> modeOrdering = new HashMap<ModeType, ModeType>();
 
-  public ModeOrderingInstance_c(PandaTypeSystem typeSystem) {
-    super(typeSystem);
+  public ModeOrderingInstance_c(PandaTypeSystem ts) {
+    super(ts);
 
     // Add bottom and ? type to ordering
-    this.modeOrdering.put(typeSystem.bottomModeType(), null);
-    this.modeOrdering.put(typeSystem.dynamicModeType(), null);
+    this.modeOrdering.put(ts.WildcardModeType(), null);
+    this.modeOrdering.put(ts.DynamicModeType(), null);
   }
 
   // Property Methods
@@ -29,32 +29,32 @@ public class ModeOrderingInstance_c extends TypeObject_c implements ModeOrdering
   } 
 
   // Business Methods
-  public void insertModeTypeOrdering(ModeType lowerBound, ModeType upperBound) 
+  public void insertModeTypeOrdering(ModeType lb, ModeType ub) 
     throws SemanticException { 
-    PandaTypeSystem typeSystem = (PandaTypeSystem) this.typeSystem();
+    PandaTypeSystem ts = (PandaTypeSystem) this.typeSystem();
 
-    if (this.modeOrdering().containsKey(lowerBound)) {
-      if (!this.modeOrdering().get(lowerBound).equals(typeSystem.dynamicModeType())) {
+    if (this.modeOrdering().containsKey(lb)) {
+      if (!this.modeOrdering().get(lb).equals(ts.DynamicModeType())) {
         // Semantic Error, this means the mode was defined as a bottom
         // mode twice. Currently not allowing.
         throw new SemanticException(
-            lowerBound.mode() + " defined multiple times as a lower bound");
+            lb.mode() + " defined multiple times as a lower bound");
       }
     }
-    this.modeOrdering().put(lowerBound, upperBound);
+    this.modeOrdering().put(lb, ub);
 
-    if (!this.modeOrdering().containsKey(upperBound)) {
-      this.modeOrdering().put(upperBound, typeSystem.dynamicModeType());
+    if (!this.modeOrdering().containsKey(ub)) {
+      this.modeOrdering().put(ub, ts.DynamicModeType());
     }
 
-    ModeType bottomModeTypeUpperBound = this.modeOrdering().get(typeSystem.bottomModeType());
-    if (bottomModeTypeUpperBound == null || bottomModeTypeUpperBound.equals(upperBound)) {
-      this.modeOrdering.put(typeSystem.bottomModeType(), lowerBound);
+    ModeType wildcardUb = this.modeOrdering().get(ts.WildcardModeType());
+    if (wildcardUb == null || wildcardUb.equals(ub)) {
+      this.modeOrdering.put(ts.WildcardModeType(), lb);
     } 
   }
 
   public void buildModeTypeOrdering() throws SemanticException {
-    PandaTypeSystem typeSystem = (PandaTypeSystem) this.typeSystem();
+    PandaTypeSystem ts = (PandaTypeSystem) this.typeSystem();
     Map<ModeType, Boolean> visited = new HashMap<>();
     for (Map.Entry<ModeType, ModeType> e : this.modeOrdering().entrySet()) {
       visited.put(e.getKey(), false);
@@ -62,7 +62,7 @@ public class ModeOrderingInstance_c extends TypeObject_c implements ModeOrdering
 
     // Construct the rank of the modes while we traverse
     int rank = 0;
-    ModeType iter = typeSystem.bottomModeType();
+    ModeType iter = ts.WildcardModeType();
     while(iter != null) {
       if (visited.get(iter)) {
         throw new SemanticException("Modes do not form a partial ordering!");

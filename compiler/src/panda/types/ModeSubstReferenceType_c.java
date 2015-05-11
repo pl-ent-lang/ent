@@ -12,10 +12,10 @@ import polyglot.ext.jl5.types.JL5ReferenceType;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ModeSubstReferenceType_c extends PandaType_c implements ModeSubstReferenceType {
+public abstract class ModeSubstReferenceType_c extends ModeSubstType_c implements ModeSubstReferenceType {
 
-  public ModeSubstReferenceType_c(Type baseType, Type modeType) {
-    super(baseType, modeType);
+  public ModeSubstReferenceType_c(Type baseType, List<Type> modeTypeArgs) {
+    super(baseType, modeTypeArgs);
   } 
 
   // ReferenceType Methods
@@ -64,14 +64,14 @@ public abstract class ModeSubstReferenceType_c extends PandaType_c implements Mo
     // TODO : We will let types that have not be subst with a mode
     // "see through" and check for equality for now and flag a
     // warning.
-    if (!(ancestor instanceof PandaType)) {
+    if (!(ancestor instanceof ModeSubstType)) {
       System.out.println("WARNING: descendsFromImpl check on " + this + " " + ancestor);
       return this.ts.descendsFrom(this.baseType(), ancestor);
     }
 
     // TODO : For now, force mode types to be the same, ad in proper subtyping
     // later
-    PandaType p = (PandaType) ancestor;
+    ModeSubstType p = (ModeSubstType) ancestor;
     return this.ts.descendsFrom(this.baseType(), p.baseType()) &&
            this.ts.typeEquals(this.modeType(), p.modeType());
   }
@@ -80,7 +80,7 @@ public abstract class ModeSubstReferenceType_c extends PandaType_c implements Mo
   public boolean isImplicitCastValidImpl(Type toType) {
     // TODO : For now, force mode types to be the same, ad in proper subtyping
     // later
-    PandaType p = (PandaType) toType;
+    ModeSubstType p = (ModeSubstType) toType;
     return this.ts.isSubtype(this.baseType(), p.baseType()) &&
            this.ts.typeEquals(this.modeType(), p.modeType());
   }

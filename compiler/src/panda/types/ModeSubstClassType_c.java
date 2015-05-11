@@ -18,16 +18,40 @@ import polyglot.ext.jl5.types.JL5ClassType;
 import polyglot.ext.jl5.types.JL5ClassType_c;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.LinkedList;
+import java.util.Map;
 
 public abstract class ModeSubstClassType_c extends ModeSubstReferenceType_c implements ModeSubstClassType {
 
-  // TODO : See if you should move this to PandaClassType?
-  public ModeSubstClassType_c(ClassType baseType,
-                              Type modeType) {
-    super(baseType, modeType);
+  private ModeSubst modeSubst = null;
+
+  public ModeSubstClassType_c(ClassType baseType, List<Type> modeTypeArgs) {
+    super(baseType, modeTypeArgs);
   }
+
+  public ModeSubst modeSubst() {
+    if (this.modeSubst == null) {
+      Map<ModeTypeVariable, Type> mtMap = new HashMap<>();
+      for (int i = 0; i < this.modeTypeVars().size(); ++i) {
+        mtMap.put(this.modeTypeVars().get(i), this.modeTypeArgs().get(i));
+      }
+      this.modeSubst = new ModeSubst(this, this.modeTypeArgs(), mtMap);
+    }
+    return this.modeSubst;
+  }
+
+  // PandaClassType Methods
+  @Override
+  public List<ModeTypeVariable> modeTypeVars() {
+    return ((PandaClassType) this.baseType()).modeTypeVars();
+  }
+  
+  @Override
+  public void modeTypeVars(List<ModeTypeVariable> modeTypeVars) {
+    ((PandaClassType) this.baseType()).modeTypeVars(modeTypeVars);
+  } 
 
   // ClassType Methods
   @Override

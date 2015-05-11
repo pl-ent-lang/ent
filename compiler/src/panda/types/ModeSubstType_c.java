@@ -12,18 +12,20 @@ import polyglot.types.Type_c;
 import polyglot.types.TypeSystem;
 import polyglot.util.Position;
 
-public abstract class PandaType_c extends Type_c implements PandaType {
+import java.util.List;
+
+public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
 
   private Type baseType;
-  private Type modeType;
+  private List<Type> modeTypeArgs;
 
-  public PandaType_c(Type baseType, Type modeType) {
+  public ModeSubstType_c(Type baseType, List<Type> modeTypeArgs) {
     super(baseType.typeSystem(), Position.COMPILER_GENERATED);
     this.baseType = baseType;
-    this.modeType = modeType;
+    this.modeTypeArgs = modeTypeArgs;
   }
 
-  // PandaType Methods
+  // ModeSubstType Methods
   public Type baseType() {
     return (Type) this.baseType;
   }
@@ -32,15 +34,23 @@ public abstract class PandaType_c extends Type_c implements PandaType {
     this.baseType = baseType;
   }
 
+  public List<Type> modeTypeArgs() {
+    return this.modeTypeArgs;
+  }
+
+  public void modeTypeArgs(List<Type> modeType) {
+    this.modeTypeArgs = modeTypeArgs;
+  } 
+
   public Type modeType() {
-    return this.modeType;
+    return this.modeTypeArgs().get(0);
   }
 
   public void modeType(Type modeType) {
-    this.modeType = modeType;
+    this.modeTypeArgs().set(0, modeType);
   } 
 
-  public abstract PandaType deepCopy();
+  public abstract ModeSubstType deepCopy();
   
   // Type Methods
   @Override
@@ -204,12 +214,12 @@ public abstract class PandaType_c extends Type_c implements PandaType {
     // TODO : We will let types that have not be subst with a mode
     // "see through" and check for equality for now and flag a
     // warning.
-    if (!(t instanceof PandaType)) {
+    if (!(t instanceof ModeSubstType)) {
       System.out.println("WARNING: typeEqualsImpl check on " + this + " " + t);
       return this.ts.typeEquals(this.baseType(), t);
     }
 
-    PandaType p = (PandaType) t;
+    ModeSubstType p = (ModeSubstType) t;
     return this.ts.typeEquals(this.baseType(), p.baseType()) &&
            this.ts.typeEquals(this.modeType(), p.modeType());
   }

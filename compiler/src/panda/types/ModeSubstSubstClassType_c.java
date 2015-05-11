@@ -21,22 +21,30 @@ import polyglot.ext.jl5.types.TypeVariable;
 import polyglot.ext.jl5.types.JL5ParsedClassType;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
 
 public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements ModeSubstSubstClassType {
 
-  public ModeSubstSubstClassType_c(PandaSubstClassType baseType,
-                                   Type modeType) {
-    super(baseType, modeType);
+  public ModeSubstSubstClassType_c(PandaSubstClassType baseType, List<Type> modeTypeArgs) {
+    super(baseType, modeTypeArgs);
   }
 
+  protected transient List<? extends ReferenceType> interfaces = null;
+  protected transient List<? extends FieldInstance> fields = null;
+  protected transient List<? extends MethodInstance> methods = null;
+  protected transient List<? extends ConstructorInstance> constructors = null;
+  protected transient List<? extends ClassType> memberClasses = null;
+
+
   @Override
-  public PandaType deepCopy() {
+  public ModeSubstType deepCopy() {
     return 
       new ModeSubstSubstClassType_c((PandaSubstClassType) this.baseType(),
-                                     this.modeType());
+                                     this.modeTypeArgs());
+      
   }
 
   @Override
@@ -99,7 +107,7 @@ public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements M
     //return ((PandaSubstClassType) this.baseType()).base();
     JL5ParsedClassType base = ((PandaSubstClassType) this.baseType()).base();
     PandaTypeSystem ts = (PandaTypeSystem) this.ts;
-    return (PandaParsedClassType) ts.substModeType(base, this.modeType());
+    return (PandaParsedClassType) ts.createModeSubst(base, this.modeTypeArgs());
   }
 
   @Override
@@ -129,7 +137,15 @@ public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements M
 
   @Override
   public String name() {
-    return ((PandaSubstClassType) this.baseType()).name() + "@mode<" + this.modeType() + ">";
+    String name = ((PandaSubstClassType) this.baseType()).name() + "@mode<";
+    for (int i = 0; i < this.modeTypeArgs().size(); ++i) {
+      name += this.modeTypeArgs().get(i);
+      if (i+1 < this.modeTypeArgs().size()) {
+        name += ",";
+      }
+    }
+    name += ">";
+    return name;
   }
 
   @Override
@@ -154,23 +170,58 @@ public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements M
 
   @Override
   public List<? extends ReferenceType> interfaces() {
-    return ((PandaSubstClassType) this.baseType()).interfaces();
+    if (this.interfaces == null) {
+      this.interfaces = this.modeSubst().substTypeList(((PandaSubstClassType) this.baseType()).interfaces());
+    }
+    return this.interfaces;
   }
 
   @Override
   public List<? extends FieldInstance> fields() {
-    return ((PandaSubstClassType) this.baseType()).fields();
+    if (this.fields == null) {
+      this.fields = this.modeSubst().substFieldList(((PandaSubstClassType) this.baseType()).fields());
+    }
+    return this.fields;
+  }
+
+
+  @Override
+  public FieldInstance fieldNamed(String name) {
+    for (FieldInstance fi : this.fields()) {
+      if (fi.name().equals(name)) {
+        return fi;
+      }
+    }
+    return null;
   }
 
   @Override
   public List<? extends MethodInstance> methods() {
-    return ((PandaSubstClassType) this.baseType()).methods();
+    if (this.methods == null) {
+      this.methods = this.modeSubst().substMethodList(((PandaSubstClassType) this.baseType()).methods());
+    }
+    return this.methods;
   }
 
   @Override
+  public List<? extends MethodInstance> methodsNamed(String name) {
+    List<MethodInstance> methods = new LinkedList<>();
+    for (MethodInstance mi : this.methods()) {
+      if (mi.name().equals(name)) {
+        methods.add(mi);
+      }
+    }
+    return methods;
+  } 
+
+
+  @Override
   public List<? extends ConstructorInstance> constructors() {
-    return ((PandaSubstClassType) this.baseType()).constructors();
-  }
+    if (this.constructors == null) {
+      this.constructors = this.modeSubst().substConstructorList(((PandaSubstClassType) this.baseType()).constructors());
+    }
+    return this.constructors;
+  } 
 
   @Override
   public List<? extends ClassType> memberClasses() {

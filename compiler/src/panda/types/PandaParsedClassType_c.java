@@ -10,25 +10,25 @@ import java.util.List;
 
 public class PandaParsedClassType_c extends JL5ParsedClassType_c implements PandaParsedClassType {
 
-  private List<ModeTypeVariable> modeTypeVariables = Collections.emptyList();
+  private List<ModeTypeVariable> modeTypeVars = Collections.emptyList();
 
-  public PandaParsedClassType_c(PandaTypeSystem typeSystem,
+  public PandaParsedClassType_c(PandaTypeSystem ts,
                                 LazyClassInitializer init, 
                                 Source fromSource) {
-    super(typeSystem, init, fromSource);
+    super(ts, init, fromSource);
   }
 
-  // Property Methods
-  public List<ModeTypeVariable> modeTypeVariables() {
-    return this.modeTypeVariables;
+  // PandaClassType Methods
+  public List<ModeTypeVariable> modeTypeVars() {
+    return this.modeTypeVars;
   }
   
-  public void modeTypeVariables(List<ModeTypeVariable> modeTypeVariables) {
-    if (modeTypeVariables == null) {
-      this.modeTypeVariables = Collections.emptyList();
-      return;
+  public void modeTypeVars(List<ModeTypeVariable> modeTypeVars) {
+    if (modeTypeVars == null) {
+      this.modeTypeVars = Collections.emptyList();
+    } else {
+      this.modeTypeVars = modeTypeVars;
     }
-    this.modeTypeVariables = modeTypeVariables;
   }
 
 }

@@ -15,6 +15,8 @@ import polyglot.visit.AmbiguityRemover;
 import polyglot.visit.PrettyPrinter;
 import polyglot.visit.TypeBuilder;
 
+import java.util.Map;
+
 public class ModeTypeNode_c extends TypeNode_c implements ModeTypeNode {
 
   private String name;
@@ -44,10 +46,11 @@ public class ModeTypeNode_c extends TypeNode_c implements ModeTypeNode {
 
   @Override
   public Node disambiguate(AmbiguityRemover sc) throws SemanticException {
-    PandaTypeSystem typeSystem = (PandaTypeSystem) sc.typeSystem();
-    if (typeSystem.createdModeTypes().containsKey(this.name())) {
+    PandaTypeSystem ts = (PandaTypeSystem) sc.typeSystem();
+
+    if (ts.createdModeTypes().containsKey(this.name())) {
       // We have a mode type
-      return this.type(typeSystem.createModeType(this.name()));
+      return this.type(ts.createModeType(this.name()));
     }
 
     // Check for mode type variables

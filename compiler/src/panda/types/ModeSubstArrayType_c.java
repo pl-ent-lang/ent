@@ -13,14 +13,14 @@ import java.util.List;
 
 public class ModeSubstArrayType_c extends ModeSubstReferenceType_c implements ModeSubstArrayType {
 
-  public ModeSubstArrayType_c(JL5ArrayType baseType,
-                              Type modeType) {
-    super(baseType, modeType);
+  public ModeSubstArrayType_c(JL5ArrayType baseType, List<Type> modeTypeArgs) {
+    super(baseType, modeTypeArgs);
   }
 
   @Override
-  public PandaType deepCopy() {
-    return new ModeSubstArrayType_c((JL5ArrayType) this.baseType(), this.modeType());
+  public ModeSubstType deepCopy() {
+    return new ModeSubstArrayType_c((JL5ArrayType) this.baseType(), 
+                                    this.modeTypeArgs());
   }
 
   // ArrayType Methods

@@ -20,46 +20,45 @@ import java.util.ArrayList;
 
 public class PandaClassDeclExt extends PandaExt {
 
-  private List<ModeParamTypeNode> modeParamTypes;
+  private List<ModeParamTypeNode> modeParams;
 
-  public List<ModeParamTypeNode> modeParamTypes() {
-    return this.modeParamTypes;
+  public List<ModeParamTypeNode> modeParams() {
+    return this.modeParams;
   }
 
-  public void modeParamTypes(List<ModeParamTypeNode> modeParamTypes) {
-    this.modeParamTypes = modeParamTypes;
+  public void modeParams(List<ModeParamTypeNode> modeParams) {
+    this.modeParams = modeParams;
   }
 
-  public Node reconstruct(Node n, List<ModeParamTypeNode> modeParamTypes) {
-    PandaClassDeclExt pandaClassDecl = (PandaClassDeclExt) PandaExt.ext(n);
-    pandaClassDecl.modeParamTypes(modeParamTypes);
+  public Node reconstruct(Node n, List<ModeParamTypeNode> modeParams) {
+    PandaClassDeclExt ext = (PandaClassDeclExt) PandaExt.ext(n);
+    ext.modeParams(modeParams);
     return n;
   }
 
   @Override
   public Node visitChildren(NodeVisitor v) {
     Node n = superLang().visitChildren(this.node(), v);
-    List<ModeParamTypeNode> modeParamTypes = 
-      visitList(this.modeParamTypes(), v);
-    return reconstruct(n, modeParamTypes);
+    List<ModeParamTypeNode> modeParams = visitList(this.modeParams(), v);
+    return reconstruct(n, modeParams);
   }
 
   @Override
   public Node buildTypes(TypeBuilder tb) throws SemanticException {
     ClassDecl decl = (ClassDecl) superLang().buildTypes(this.node(), tb);
 
-    PandaTypeSystem typeSystem = (PandaTypeSystem) tb.typeSystem();
-    PandaParsedClassType classType = (PandaParsedClassType) decl.type();
+    PandaTypeSystem ts = (PandaTypeSystem) tb.typeSystem();
+    PandaParsedClassType ct = (PandaParsedClassType) decl.type();
 
-    if (this.modeParamTypes() != null && !this.modeParamTypes().isEmpty()) {
-      List<ModeTypeVariable> modeTypeVars = 
-        new ArrayList<ModeTypeVariable>(this.modeParamTypes().size());
-      for (TypeNode n : this.modeParamTypes()) {
-        ModeTypeVariable modeTypeVar = (ModeTypeVariable) n.type();
-        modeTypeVar.declaringClass(classType);
-        modeTypeVars.add(modeTypeVar);
+    if (this.modeParams() != null && !this.modeParams().isEmpty()) {
+      List<ModeTypeVariable> mtVars = 
+        new ArrayList<ModeTypeVariable>(this.modeParams().size());
+      for (TypeNode n : this.modeParams()) {
+        ModeTypeVariable mtVar = (ModeTypeVariable) n.type();
+        mtVar.declaringClass(ct);
+        mtVars.add(mtVar);
       }
-      classType.modeTypeVariables(modeTypeVars);
+      ct.modeTypeVars(mtVars);
     }
 
     return decl;
@@ -69,7 +68,7 @@ public class PandaClassDeclExt extends PandaExt {
   public Context enterChildScope(Node child, Context c) {
     PandaClassDeclExt decl = (PandaClassDeclExt) PandaExt.ext(this.node());
     PandaContext context = (PandaContext) c;
-    for (ModeParamTypeNode t : this.modeParamTypes()) {
+    for (ModeParamTypeNode t : this.modeParams()) {
       context.addModeTypeVariable((ModeTypeVariable) t.type());
     }
     return superLang().enterChildScope(this.node(), child, c);

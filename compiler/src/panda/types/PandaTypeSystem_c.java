@@ -18,22 +18,25 @@ import polyglot.ext.jl5.types.JL5PrimitiveType;
 import polyglot.ext.jl5.types.JL5ParsedClassType;
 import polyglot.ext.jl7.types.JL7TypeSystem_c;
 
+import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
 public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSystem { 
   private Map<String, ModeType> createdModeTypes = new HashMap<>();
 
-  private ModeType bottomModeType;
-  private ModeType dynamicModeType;
+  private ModeType WildcardModeType;
+  private ModeType DynamicModeType;
 
-  private final String BOTTOM_MODE_TYPE_ID = "PANDA_BOTTOM";
+  private final String WILDCARD_MODE_TYPE_ID = "*";
   private final String DYNAMIC_MODE_TYPE_ID = "?";
+
+  private ModeSubstEngine substEngine = new ModeSubstEngine();
   
   public PandaTypeSystem_c() {
     // Setup both the bottom and dynamic mode type instances
-    this.bottomModeType = this.createModeType(this.BOTTOM_MODE_TYPE_ID);
-    this.dynamicModeType = this.createModeType(this.DYNAMIC_MODE_TYPE_ID);
+    this.WildcardModeType = this.createModeType(this.WILDCARD_MODE_TYPE_ID);
+    this.DynamicModeType = this.createModeType(this.DYNAMIC_MODE_TYPE_ID);
   } 
 
   // Property Methods
@@ -41,12 +44,16 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
     return this.createdModeTypes;
   } 
 
-  public ModeType bottomModeType() {
-    return this.bottomModeType;
+  public ModeType WildcardModeType() {
+    return this.WildcardModeType;
   }
 
-  public ModeType dynamicModeType() {
-    return this.dynamicModeType;
+  public ModeType DynamicModeType() {
+    return this.DynamicModeType;
+  }
+
+  private ModeSubstEngine substEngine() {
+    return this.substEngine;
   }
 
   // Factory Methods / Previous TypeSystem Methods
@@ -76,7 +83,6 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
   }
 
   // Panda TypeSystem Methods
-
   public ModeType createModeType(String mode) {
     if (this.createdModeTypes().containsKey(mode)) {
       return this.createdModeTypes().get(mode);
@@ -95,63 +101,22 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
   }
 
   // TypeSystem Methods
-  public boolean isSubtypeModes(ModeType lowerBound, ModeType upperBound) {
-    return lowerBound.isSubtypeOfModeImpl(upperBound);
+  public boolean isSubtypeModes(ModeType lb, ModeType ub) {
+    return lb.isSubtypeOfModeImpl(ub);
   }
 
-  public boolean isSupertypeModes(ModeType lowerBound, ModeType upperBound) {
-    return lowerBound.isSupertypeOfModeImpl(upperBound);
+  public boolean isSupertypeModes(ModeType lb, ModeType ub) {
+    return lb.isSupertypeOfModeImpl(ub);
   }
 
-  public Type instModeTypeVariables(
-      ModeSubstParsedClassType classType, 
-      Map<ModeTypeVariable, Type> modeTypeMap) {
-    return this.createModeInst(modeTypeMap).instClassType(classType);
-  }
-
-  protected ModeInst createModeInst(Map<ModeTypeVariable, Type> modeTypeMap) {
-    // TODO: Add the caching here
-    ModeInst modeInst = this.modeInstImpl(modeTypeMap);
-    return modeInst;
-  }
-
-  protected ModeInst modeInstImpl(Map<ModeTypeVariable, Type> modeTypeMap) {
-    return new ModeInst_c(this, modeTypeMap);
-  }
-
-  public Type substModeType(Type baseType, Type modeType) {
-    // TODO : These are seperated because they are special cases and need some
-    // more complicated logic to be handled. 
-    if (baseType instanceof TypeVariable || baseType instanceof ModeTypeVariable) {
-      return baseType;
-    }
-
-
-    if (baseType instanceof JL5PrimitiveType) {
-      return new ModeSubstPrimitiveType_c((JL5PrimitiveType) baseType, modeType);
-
-    } else if (baseType instanceof JL5ArrayType) {
-      return new ModeSubstArrayType_c((JL5ArrayType) baseType, modeType);
-
-    } else if (baseType instanceof PandaParsedClassType) {
-      return new ModeSubstParsedClassType_c((PandaParsedClassType) baseType, modeType);
-
-    } else if (baseType instanceof PandaRawClass) {
-      return new ModeSubstRawClass_c((PandaRawClass) baseType, modeType);
-
-    } else if (baseType instanceof PandaSubstClassType) {
-      return new ModeSubstSubstClassType_c((PandaSubstClassType) baseType, modeType);
-
-    } else {
-      // Not yet impl
-      throw new InternalCompilerError("Implement " + baseType.getClass() + "!");
-    } 
+  public Type createModeSubst(Type bt, List<Type> modeTypes) {
+    return this.substEngine().createModeSubst(bt, modeTypes);
   }
 
   public ClassType wrapperClassOfModeSubstPrimitive(ModeSubstPrimitiveType t) {
     // We need to inject a boxed primitive type with a mode
     ClassType ct = this.wrapperClassOfPrimitive(t);
-    return (ClassType) this.substModeType(ct, t.modeType());
+    return (ClassType) this.createModeSubst(ct, t.modeTypeArgs());
   }
 
 }

@@ -35,7 +35,8 @@ non terminal List mode_type_parameters_decl;
 non terminal List mode_type_parameters;
 non terminal ModeParamTypeNode mode_type_parameter;
 
-non terminal ModeTypeNode mode_type_decl;
+non terminal List<ModeTypeNode> mode_type_args;
+
 non terminal ModeTypeNode mode_type_node;
 non terminal List<ModeTypeNode> mode_type_nodes;
 non terminal List<ModeTypeNode> mode_type_inst;
@@ -149,70 +150,58 @@ mode_type_parameter ::=
   :}
 ;
 
-extend class_or_interface_type ::=
-  class_or_interface:a mode_type_decl:m GT
+override class_or_interface_type ::=
+  class_or_interface:a
   {: 
-    PandaTypeNodeExt ext = (PandaTypeNodeExt) PandaExt.ext(a);
-    ext.modeTypeNode(m);
-    RESULT = a; 
+    RESULT = parser.nf.AmbModeTypeInstantiation(parser.pos(a), a);
   :}
-|	class_or_interface:a LT type_argument_list_1:c mode_type_decl:m GT
-  // Instantiating type arguments
+|	class_or_interface:a LT type_argument_list_1:c
   {: 
     TypeNode n = parser.nf.AmbTypeInstantiation(parser.pos(a, c), a, c); 
-    PandaTypeNodeExt ext = (PandaTypeNodeExt) PandaExt.ext(n);
-    ext.modeTypeNode(m);
-    RESULT = n;
+    RESULT = parser.nf.AmbModeTypeInstantiation(parser.pos(n), n);
   :}
-| class_or_interface:a mode_type_decl:m mode_type_inst:nodes
+| class_or_interface:a mode_type_args:args
   {: 
-    PandaTypeNodeExt ext = (PandaTypeNodeExt) PandaExt.ext(a);
-    ext.modeTypeNode(m);
-    RESULT = parser.nf.AmbModeTypeInstantiation(parser.pos(a), a, nodes);
+    RESULT = parser.nf.AmbModeTypeInstantiation(parser.pos(a), a, args);
   :}
-|	class_or_interface:a LT type_argument_list_1:c mode_type_decl:m mode_type_inst:nodes
-  // Instantiating type arguments
+|	class_or_interface:a LT type_argument_list_1:c mode_type_args:args
   {: 
     TypeNode n = parser.nf.AmbTypeInstantiation(parser.pos(a, c), a, c); 
-    PandaTypeNodeExt ext = (PandaTypeNodeExt) PandaExt.ext(n);
-    ext.modeTypeNode(m);
-    RESULT = parser.nf.AmbModeTypeInstantiation(parser.pos(n), n, nodes);
+    RESULT = parser.nf.AmbModeTypeInstantiation(parser.pos(n), n, args);
   :}
 ;
 
-extend primitive_type ::=
-  numeric_type:a mode_type_decl:m GT
-  {: 
-    PandaTypeNodeExt ext = (PandaTypeNodeExt) PandaExt.ext(a); 
-    ext.modeTypeNode(m); 
-    RESULT = a; 
+override primitive_type ::=
+  numeric_type:a
+  {:
+    RESULT = parser.nf.AmbModeTypeInstantiation(parser.pos(a), a);
   :}
-  | BOOLEAN:a mode_type_decl:m GT
+| BOOLEAN:a
+  {:
+    TypeNode n = parser.nf.CanonicalTypeNode(parser.pos(a), parser.ts.Boolean());
+    RESULT = parser.nf.AmbModeTypeInstantiation(parser.pos(n), n);
+  :}
+| numeric_type:a mode_type_args:args
+  {: 
+    RESULT = parser.nf.AmbModeTypeInstantiation(parser.pos(a), a, args);
+  :}
+| BOOLEAN:a mode_type_args:args
   {: 
     TypeNode n = parser.nf.CanonicalTypeNode(parser.pos(a), parser.ts.Boolean()); 
-    PandaTypeNodeExt ext = (PandaTypeNodeExt) PandaExt.ext(n);
-    ext.modeTypeNode(m);
-    RESULT = n;
+    RESULT = parser.nf.AmbModeTypeInstantiation(parser.pos(n), n, args);
   :}
 ;
 
-mode_type_decl ::=
-  MODE LT mode_type_node:n 
+mode_type_args ::=
+  MODE LT mode_type_nodes:nodes GT
   {:
-    RESULT = n;
-  :}
-; 
-
-mode_type_inst ::=
-  COMMA mode_type_nodes:n GT
-  {:
-    RESULT = n;
+    RESULT = nodes;
   :}
 ; 
 
 mode_type_nodes ::=
   mode_type_node:n
-  {: 
+  {:
     List<ModeTypeNode> nodes = new ArrayList<ModeTypeNode>();
     nodes.add(n);
     RESULT = nodes;
@@ -228,6 +217,10 @@ mode_type_node ::=
   IDENTIFIER:id
   {:
     RESULT = parser.nf.ModeTypeNode(parser.pos(id), id.getIdentifier());
+  :}
+| MULT:m
+  {:
+    RESULT = parser.nf.ModeTypeNode(parser.pos(m), "*");
   :}
 ;
 

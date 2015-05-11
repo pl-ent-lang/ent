@@ -8,6 +8,9 @@ import polyglot.types.SemanticException;
 import polyglot.visit.TypeChecker;
 import polyglot.types.Type;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PandaLitExt extends PandaExt {
 
   @Override
@@ -17,7 +20,12 @@ public class PandaLitExt extends PandaExt {
 
     Lit n = (Lit) superLang().typeCheck(this.node(), tc);
     PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
-    Type substType = ts.substModeType(n.type(), ts.bottomModeType());
+
+    List<Type> mtArgs = new ArrayList<Type>();
+    mtArgs.add(ts.WildcardModeType());
+    Type substType = ts.createModeSubst(n.type(), mtArgs);
+
+
     return n.type(substType);
   }
 

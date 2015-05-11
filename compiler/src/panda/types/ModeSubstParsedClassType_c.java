@@ -31,25 +31,31 @@ import java.util.Set;
 
 public class ModeSubstParsedClassType_c extends ModeSubstClassType_c implements ModeSubstParsedClassType {
 
-  public ModeSubstParsedClassType_c(PandaParsedClassType baseType,
-                                    Type modeType) {
-    super(baseType, modeType);
+  public ModeSubstParsedClassType_c(PandaParsedClassType baseType, List<Type> modeTypeArgs) {
+    super(baseType, modeTypeArgs);
   }
 
+  // Subst caches
+  protected transient List<? extends ReferenceType> interfaces = null;
+  protected transient List<? extends FieldInstance> fields = null;
+  protected transient List<? extends MethodInstance> methods = null;
+  protected transient List<? extends ConstructorInstance> constructors = null;
+  protected transient List<? extends ClassType> memberClasses = null;
+
   @Override
-  public PandaType deepCopy() {
+  public ModeSubstType deepCopy() {
     return 
       new ModeSubstParsedClassType_c((PandaParsedClassType) this.baseType(),
-                                     this.modeType());
+                                     this.modeTypeArgs());
   }
 
   // PandaParsedClassType Methods
-  public List<ModeTypeVariable> modeTypeVariables() {
-    return ((PandaParsedClassType) this.baseType()).modeTypeVariables();
+  public List<ModeTypeVariable> modeTypeVars() {
+    return ((PandaParsedClassType) this.baseType()).modeTypeVars();
   }
 
-  public void modeTypeVariables(List<ModeTypeVariable> modeTypeVariables) {
-    ((PandaParsedClassType) this.baseType()).modeTypeVariables(modeTypeVariables);
+  public void modeTypeVars(List<ModeTypeVariable> modeTypeVars) {
+    ((PandaParsedClassType) this.baseType()).modeTypeVars(modeTypeVars);
   }
 
   // JL5ParsedClassType Methods
@@ -217,7 +223,15 @@ public class ModeSubstParsedClassType_c extends ModeSubstClassType_c implements 
 
   @Override
   public String name() {
-    return ((PandaParsedClassType) this.baseType()).name() + "@mode<" + this.modeType() + ">";
+    String name = ((PandaParsedClassType) this.baseType()).name() + "@mode<";
+    for (int i = 0; i < this.modeTypeArgs().size(); ++i) {
+      name += this.modeTypeArgs().get(i);
+      if (i+1 < this.modeTypeArgs().size()) {
+        name += ",";
+      }
+    }
+    name += ">";
+    return name;
   }
 
   @Override
@@ -342,7 +356,10 @@ public class ModeSubstParsedClassType_c extends ModeSubstClassType_c implements 
 
   @Override
   public List<? extends ConstructorInstance> constructors() {
-    return ((PandaParsedClassType) this.baseType()).constructors();
+    if (this.constructors == null) {
+      this.constructors = this.modeSubst().substConstructorList(((PandaParsedClassType) this.baseType()).constructors());
+    }
+    return this.constructors;
   }
 
   @Override
@@ -352,14 +369,10 @@ public class ModeSubstParsedClassType_c extends ModeSubstClassType_c implements 
 
   @Override
   public List<? extends MethodInstance> methods() {
-    // NOTE: Trying a basic mode subst by changing the field container type,
-    // since it really should not be "this"
-    List<? extends MethodInstance> methods = 
-      ((PandaParsedClassType) this.baseType()).methods();
-    for (MethodInstance mi : methods) {
-      mi.setContainer(this);
+    if (this.methods == null) {
+      this.methods = this.modeSubst().substMethodList(((PandaParsedClassType) this.baseType()).methods());
     }
-    return methods;
+    return this.methods;
   }
 
   @Override
@@ -375,14 +388,10 @@ public class ModeSubstParsedClassType_c extends ModeSubstClassType_c implements 
 
   @Override
   public List<? extends FieldInstance> fields() {
-    // NOTE: Trying a basic mode subst by changing the field container type,
-    // since it really should not be "this"
-    List<? extends FieldInstance> fields = 
-      ((PandaParsedClassType) this.baseType()).fields();
-    for (FieldInstance fi : fields) {
-      fi.setContainer(this);
+    if (this.fields == null) {
+      this.fields = this.modeSubst().substFieldList(((PandaParsedClassType) this.baseType()).fields());
     }
-    return fields;
+    return this.fields;
   }
 
   @Override
@@ -397,7 +406,10 @@ public class ModeSubstParsedClassType_c extends ModeSubstClassType_c implements 
 
   @Override
   public List<? extends ReferenceType> interfaces() {
-    return ((PandaParsedClassType) this.baseType()).interfaces();
+    if (this.interfaces == null) {
+      this.interfaces = this.modeSubst().substTypeList(((PandaParsedClassType) this.baseType()).interfaces());
+    }
+    return this.interfaces;
   }
 
   @Override

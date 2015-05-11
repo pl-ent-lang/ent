@@ -5,14 +5,15 @@ import polyglot.types.*;
 import polyglot.util.Position;
 import polyglot.ext.jl7.types.JL7TypeSystem;
 
+import java.util.List;
 import java.util.Map;
 
 public interface PandaTypeSystem extends JL7TypeSystem {
   // Property Methods
   Map<String, ModeType> createdModeTypes();
 
-  ModeType bottomModeType();
-  ModeType dynamicModeType();
+  ModeType WildcardModeType();
+  ModeType DynamicModeType();
 
   // Factory Methods 
   ModeType createModeType(String mode);
@@ -24,13 +25,9 @@ public interface PandaTypeSystem extends JL7TypeSystem {
   // TypeSystem Methods
   ClassType wrapperClassOfModeSubstPrimitive(ModeSubstPrimitiveType t);
 
-  boolean isSubtypeModes(ModeType lowerBound, ModeType upperBound);
+  boolean isSubtypeModes(ModeType lb, ModeType ub);
 
-  boolean isSupertypeModes(ModeType lowerBound, ModeType upperBound);
+  boolean isSupertypeModes(ModeType lb, ModeType ub);
 
-  Type instModeTypeVariables(ModeSubstParsedClassType classType, 
-                             Map<ModeTypeVariable, Type> modeTypeMap);
-
-  Type substModeType(Type baseType, Type modeType);
-
+  Type createModeSubst(Type bt, List<Type> modeTypes);
 }

@@ -39,6 +39,8 @@ public class ModeType_c extends Type_c implements ModeType {
     String compiledIdentifier = "MODE_";
     if (this.mode().equals("?")) {
       compiledIdentifier += "DYN";
+    } else if (this.mode().equals("*")) {
+      compiledIdentifier += "WILDCARD"; 
     } else {
       compiledIdentifier += this.mode().toUpperCase();
     }
@@ -106,12 +108,12 @@ public class ModeType_c extends Type_c implements ModeType {
 
     ModeType m = (ModeType) o;
 
-    PandaTypeSystem typeSystem = (PandaTypeSystem) this.typeSystem();
-    // Either the mode types are equal, or one is a bottom type (for now)
+    PandaTypeSystem ts = (PandaTypeSystem) this.typeSystem();
+    // Either the mode types are equal, or one is a wildcard (for now)
 
-    return (this.mode().equals(m.mode()) ||
-           this.equals(typeSystem.bottomModeType()) ||
-           m.equals(typeSystem.bottomModeType()));
+    return (this == m ||
+            this == ts.WildcardModeType() ||
+            m == ts.WildcardModeType());
   } 
 
   @Override
