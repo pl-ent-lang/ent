@@ -60,10 +60,13 @@ public class ModeSubst {
 
   public Type substModeSubstType(ModeSubstType type) {
     ModeSubstType subst = type.deepCopy();
+
     Type bt = this.substType(subst.baseType());
     Type mt = this.substType(subst.modeType());
+
     subst.baseType(bt);
     subst.modeType(mt);
+
     return subst;
   }
 

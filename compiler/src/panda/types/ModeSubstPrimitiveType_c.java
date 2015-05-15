@@ -8,6 +8,7 @@ import polyglot.types.TypeSystem;
 
 import polyglot.ext.jl5.types.JL5PrimitiveType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ModeSubstPrimitiveType_c extends ModeSubstType_c implements ModeSubstPrimitiveType {
@@ -21,7 +22,7 @@ public class ModeSubstPrimitiveType_c extends ModeSubstType_c implements ModeSub
   public ModeSubstType deepCopy() {
     return 
       new ModeSubstPrimitiveType_c((JL5PrimitiveType) this.baseType(),
-                                   this.modeTypeArgs());
+                                   new ArrayList<Type>(this.modeTypeArgs()));
   }
 
   // PrimitiveType Methods

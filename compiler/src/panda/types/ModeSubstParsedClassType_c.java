@@ -28,6 +28,7 @@ import polyglot.ext.param.types.PClass;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.ArrayList;
 
 public class ModeSubstParsedClassType_c extends ModeSubstClassType_c implements ModeSubstParsedClassType {
 
@@ -46,7 +47,7 @@ public class ModeSubstParsedClassType_c extends ModeSubstClassType_c implements 
   public ModeSubstType deepCopy() {
     return 
       new ModeSubstParsedClassType_c((PandaParsedClassType) this.baseType(),
-                                     this.modeTypeArgs());
+                                     new ArrayList<Type>(this.modeTypeArgs()));
   }
 
   // PandaParsedClassType Methods

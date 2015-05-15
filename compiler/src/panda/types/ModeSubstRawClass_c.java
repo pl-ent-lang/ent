@@ -19,6 +19,7 @@ import polyglot.ext.jl5.types.JL5ParsedClassType;
 import polyglot.ext.jl5.types.JL5SubstClassType;
 import polyglot.ext.jl5.types.EnumInstance;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -31,7 +32,7 @@ public class ModeSubstRawClass_c extends ModeSubstClassType_c implements ModeSub
   @Override
   public ModeSubstType deepCopy() {
     return new ModeSubstRawClass_c((PandaRawClass) this.baseType(),
-                                   this.modeTypeArgs());
+                                   new ArrayList<Type>(this.modeTypeArgs()));
   }
 
   // RawClass Methods

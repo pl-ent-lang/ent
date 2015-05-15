@@ -21,6 +21,7 @@ import polyglot.ext.jl5.types.TypeVariable;
 import polyglot.ext.jl5.types.JL5ParsedClassType;
 
 import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -43,7 +44,7 @@ public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements M
   public ModeSubstType deepCopy() {
     return 
       new ModeSubstSubstClassType_c((PandaSubstClassType) this.baseType(),
-                                     this.modeTypeArgs());
+                                     new ArrayList<Type>(this.modeTypeArgs()));
       
   }
 
@@ -104,7 +105,6 @@ public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements M
 
   @Override
   public JL5ParsedClassType base() {
-    //return ((PandaSubstClassType) this.baseType()).base();
     JL5ParsedClassType base = ((PandaSubstClassType) this.baseType()).base();
     PandaTypeSystem ts = (PandaTypeSystem) this.ts;
     return (PandaParsedClassType) ts.createModeSubst(base, this.modeTypeArgs());
@@ -178,6 +178,7 @@ public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements M
 
   @Override
   public List<? extends FieldInstance> fields() {
+    System.out.println("Requested a field subst");
     if (this.fields == null) {
       this.fields = this.modeSubst().substFieldList(((PandaSubstClassType) this.baseType()).fields());
     }
