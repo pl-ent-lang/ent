@@ -94,6 +94,9 @@ public class Socket<X> @mode<MX,MY> {
 
 public class Socket {
 
+  public @mode<W> Socket(String@mode<W> s1) {
+  }
+
   public @mode<W,X> List<String@mode<W> >@mode<X> m1(List<String@mode<W> >@mode<X> p1) {
     return p1;
   }
@@ -102,8 +105,8 @@ public class Socket {
   }
 
   public void foo() {
-    Socket@mode<high> s1 = new Socket@mode<high>();
-    List<String@mode<low> >@mode<low> v1 = s1.m1(new ArrayList<String@mode<low> >@mode<high>());
+    Socket@mode<high> s1 = new Socket@mode<high>(new String@mode<low>());
+    List<String@mode<low> >@mode<high> v1 = s1.m1(new ArrayList<String@mode<low> >@mode<high>());
     /*
     Map<List<String@mode<high> >, String@mode<low> >@mode<low> map = 
       new HashMap<List<String@mode<high> >, String@mode<low> >@mode<low>();

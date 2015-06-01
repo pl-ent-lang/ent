@@ -29,6 +29,16 @@ public interface PandaNodeFactory extends JL7NodeFactory {
                       List<ParamTypeNode> paramTypes,
                       List<ModeParamTypeNode> modeParamTypes); 
 
+  ConstructorDecl ConstructorDecl(Position pos, 
+                                  Flags flags, 
+                                  List<AnnotationElem> annotations, 
+                                  Id name, 
+                                  List<Formal> formals, 
+                                  List<TypeNode> throwTypes, 
+                                  Block body, 
+                                  List<ParamTypeNode> typeParams,
+                                  List<ModeParamTypeNode> modeParamTypes);
+
   MethodDecl MethodDecl(Position pos, 
                         Flags flags, 
                         List<AnnotationElem> annotations, 

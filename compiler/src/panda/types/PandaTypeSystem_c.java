@@ -15,7 +15,9 @@ import polyglot.ext.jl5.types.RawClass;
 import polyglot.ext.jl5.types.TypeVariable;
 import polyglot.ext.jl5.types.JL5ArrayType;
 import polyglot.ext.jl5.types.JL5SubstClassType;
+import polyglot.ext.jl5.types.JL5ConstructorInstance;
 import polyglot.ext.jl5.types.JL5MethodInstance;
+import polyglot.ext.jl5.types.JL5ProcedureInstance;
 import polyglot.ext.jl5.types.JL5PrimitiveType;
 import polyglot.ext.jl5.types.JL5Subst;
 import polyglot.ext.jl5.types.JL5SubstType;
@@ -65,6 +67,25 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
   }
 
   // Factory Methods / Previous TypeSystem Methods
+  @Override
+  public JL5ConstructorInstance constructorInstance(Position pos,
+          ClassType container, Flags flags, List<? extends Type> argTypes,
+          List<? extends Type> excTypes, List<TypeVariable> typeParams) {
+      assert_(container);
+      assert_(argTypes);
+      assert_(excTypes);
+      assert_(typeParams);
+      return new PandaConstructorInstance_c(this,
+                                            pos,
+                                            container,
+                                            flags,
+                                            argTypes,
+                                            excTypes,
+                                            typeParams,
+                                            null);
+    }
+
+
   @Override
   public ParsedClassType createClassType(LazyClassInitializer init, 
                                          Source fromSource) {
@@ -150,7 +171,7 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
     return true;
   }
 
-  private ModeSubst inferModeTypeArgs(PandaMethodInstance pi,
+  private ModeSubst inferModeTypeArgs(PandaProcedureInstance pi,
                                       List <? extends Type> argTypes,
                                       Type expectedReturnType) {
 
@@ -168,28 +189,27 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
     // Check return type as well
     if (expectedReturnType != null && 
         !this.inferModeTypeArg(pi.modeTypeVars(),
-                               pi.returnType(),
+                               ((PandaMethodInstance) pi).returnType(),
                                (ModeSubstType) expectedReturnType,
                                mtMap)) {
       return null;
     }
 
-
     ModeSubstClassType sct = (ModeSubstClassType) pi.container();
     ModeSubst subst = sct.modeSubst().deepCopy();
     subst.modeTypeMap().putAll(mtMap);
-
-    System.out.println("Built Full Map: " + subst.modeTypeMap());
 
     return subst; 
   }
 
   @Override
-  public JL5MethodInstance methodCallValid(JL5MethodInstance mi, 
-                                           String name,
-                                           List<? extends Type> argTypes,
-                                           List<? extends ReferenceType> actualTypeArgs,
-                                           Type expectedReturnType) {
+  public JL5ProcedureInstance callValid(JL5ProcedureInstance mi,
+                                        List<? extends Type> argTypes,
+                                        List<? extends ReferenceType> actualTypeArgs) {
+    if (!(mi.container() instanceof ModeSubstType)) {
+      // TODO : Just kick up to parent for now
+      return super.callValid(mi, argTypes, actualTypeArgs);
+    } 
 
     // Check from JL5TypeSystem::methodCallValid
     // Repeat it here to avoid some of the calls that could crash
@@ -201,18 +221,49 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
       }
     }
 
-    ModeSubst subst = this.inferModeTypeArgs((PandaMethodInstance) mi, argTypes, expectedReturnType);
+    ModeSubst subst = this.inferModeTypeArgs((PandaProcedureInstance) mi, argTypes, null);
     if (subst == null) {
       // No matter what we should be able to create a valid subst,
       // null indicates error
       return null;
     }
 
-    System.out.println("Before Subst : " + mi);
+    PandaProcedureInstance smi = (PandaProcedureInstance) subst.substProcedure(mi);
+
+    // Let's perform a subst over modes, a hack for now, just prototyping
+    // Can do a subst over the mi container type with a new type map
+    return super.callValid(smi, argTypes, actualTypeArgs);
+  }
+
+  @Override
+  public JL5MethodInstance methodCallValid(JL5MethodInstance mi, 
+                                           String name,
+                                           List<? extends Type> argTypes,
+                                           List<? extends ReferenceType> actualTypeArgs,
+                                           Type expectedReturnType) {
+    if (!(mi.container() instanceof ModeSubstType)) {
+      // TODO : Just kick up to parent for now
+      return super.methodCallValid(mi, name, argTypes, actualTypeArgs, expectedReturnType);
+    }
+
+    // Check from JL5TypeSystem::methodCallValid
+    // Repeat it here to avoid some of the calls that could crash
+    // our check
+    if (argTypes.size() != mi.formalTypes().size()) {
+      if (!(mi.isVariableArity() && argTypes.size() >= mi.formalTypes()
+              .size() - 1)) {
+        return null;
+      }
+    } 
+
+    ModeSubst subst = this.inferModeTypeArgs((PandaProcedureInstance) mi, argTypes, expectedReturnType);
+    if (subst == null) {
+      // No matter what we should be able to create a valid subst,
+      // null indicates error
+      return null;
+    }
 
     PandaMethodInstance smi = (PandaMethodInstance) subst.substMethod(mi);
-
-    System.out.println("After Subst : " + smi);
 
     // Let's perform a subst over modes, a hack for now, just prototyping
     // Can do a subst over the mi container type with a new type map

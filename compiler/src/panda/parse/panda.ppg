@@ -115,6 +115,26 @@ override class_declaration ::=
   :}
 ;    
 
+// 19.8.5) Constructor Declarations
+override constructor_declaration ::=
+  modifiers_or_annotations_opt:a simple_name:d LPAREN formal_parameter_list_opt:e RPAREN  throws_opt:f constructor_body:g
+  {: 
+    RESULT = parser.nf.ConstructorDecl(d.pos, a.flags(), a.annotations(), d.name, e, f, g, new LinkedList<ParamTypeNode>(), new ArrayList<ModeParamTypeNode>()); 
+  :}
+| modifiers_or_annotations_opt:a mode_type_parameters_decl:m simple_name:d LPAREN formal_parameter_list_opt:e RPAREN  throws_opt:f constructor_body:g
+  {: 
+    RESULT = parser.nf.ConstructorDecl(d.pos, a.flags(), a.annotations(), d.name, e, f, g, new LinkedList<ParamTypeNode>(), m); 
+  :}
+| modifiers_or_annotations_opt:a LT type_parameter_list_1:c simple_name:d LPAREN formal_parameter_list_opt:e RPAREN throws_opt:f constructor_body:g
+  {: 
+    RESULT = parser.nf.ConstructorDecl(d.pos, a.flags(), a.annotations(), d.name, e, f, g, c, new ArrayList<ModeParamTypeNode>()); 
+  :} 
+| modifiers_or_annotations_opt:a LT type_parameter_list_1:c mode_type_parameters_decl:m simple_name:d LPAREN formal_parameter_list_opt:e RPAREN throws_opt:f constructor_body:g
+  {: 
+    RESULT = parser.nf.ConstructorDecl(d.pos, a.flags(), a.annotations(), d.name, e, f, g, c, m); 
+  :} 
+; 
+
 override method_header ::=
   modifiers_or_annotations_opt:a type:b IDENTIFIER:d LPAREN formal_parameter_list_opt:e RPAREN dims_opt:g throws_opt:h
   {: 

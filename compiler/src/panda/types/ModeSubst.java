@@ -8,6 +8,7 @@ import polyglot.types.ReferenceType;
 import polyglot.types.ConstructorInstance;
 import polyglot.types.FieldInstance;
 import polyglot.types.MethodInstance;
+import polyglot.types.ProcedureInstance;
 import polyglot.types.MemberInstance; 
 
 import polyglot.ext.param.types.SubstType;
@@ -152,6 +153,14 @@ public class ModeSubst {
     return subst;
   }
 
+  public <T extends ProcedureInstance> T substProcedure(T pi) {
+    if (pi instanceof MethodInstance) {
+      return (T) this.substMethod((MethodInstance) pi);
+    } else {
+      return (T) this.substConstructor((ConstructorInstance) pi);
+    }
+  }
+
   public <T extends Type> List<T> substTypeList(List<T> list) {
     List<T> substList = new ArrayList<>();
     for (T t : list) {
@@ -184,6 +193,4 @@ public class ModeSubst {
     return substList;
   }
 
-
-  
 } 

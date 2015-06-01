@@ -35,6 +35,7 @@ public class PandaNodeFactory_c extends JL7NodeFactory_c implements PandaNodeFac
       return n;
     } 
     
+    @Override
     public ClassDecl ClassDecl(Position pos, 
                                Flags flags, 
                                List<AnnotationElem> annotations, 
@@ -50,6 +51,24 @@ public class PandaNodeFactory_c extends JL7NodeFactory_c implements PandaNodeFac
       ext.modeParams(CollectionUtil.nonNullList(modeParams));
       return n;
     } 
+
+    public ConstructorDecl ConstructorDecl(Position pos, 
+                                           Flags flags, 
+                                           List<AnnotationElem> annotations, 
+                                           Id name, 
+                                           List<Formal> formals, 
+                                           List<TypeNode> throwTypes, 
+                                           Block body, 
+                                           List<ParamTypeNode> typeParams,
+                                           List<ModeParamTypeNode> modeParams) {
+      ConstructorDecl n = 
+        super.ConstructorDecl(pos, flags, annotations, name, formals, throwTypes, body, typeParams);
+      PandaConstructorDeclExt ext = (PandaConstructorDeclExt) PandaExt.ext(n);
+      ext.modeParams(CollectionUtil.nonNullList(modeParams));
+      return n;
+    }
+
+
 
     @Override
     public MethodDecl MethodDecl(Position pos, 

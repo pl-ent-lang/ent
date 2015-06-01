@@ -22,5 +22,5 @@ import java.util.List;
 import java.util.Set;
 
 
-public class PandaMethodDeclExt extends PandaProcedureDeclExt { 
+public class PandaConstructorDeclExt extends PandaProcedureDeclExt { 
 }
