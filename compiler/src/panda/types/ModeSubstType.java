@@ -18,4 +18,6 @@ public interface ModeSubstType extends Type {
   void modeType(Type modeType); 
 
   ModeSubstType deepCopy();
+
+  String argsAsString();
 }

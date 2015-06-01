@@ -44,11 +44,13 @@ public class ModeSubstRawClass_c extends ModeSubstClassType_c implements ModeSub
 
   @Override
   public JL5ParsedClassType base() {
+    System.out.println("Based!");
     return ((PandaRawClass) this.baseType()).base();
   }
 
   @Override
   public JL5SubstClassType erased() {
+    System.out.println("Erased!");
     return ((PandaRawClass) this.baseType()).erased();
   }
                            
@@ -71,12 +73,12 @@ public class ModeSubstRawClass_c extends ModeSubstClassType_c implements ModeSub
 
   @Override
   public ClassType outer() {
-    return ((PandaParsedClassType) this.baseType()).outer();
+    return ((PandaRawClass) this.baseType()).outer();
   }
 
   @Override
   public String name() {
-    return ((PandaParsedClassType) this.baseType()).name() + "@mode<" + this.modeType() + ">";
+    return ((PandaRawClass) this.baseType()).name() + "@mode<" + this.modeType() + ">";
   }
 
   @Override
@@ -86,82 +88,82 @@ public class ModeSubstRawClass_c extends ModeSubstClassType_c implements ModeSub
 
   @Override
   public Package package_() {
-    return ((PandaParsedClassType) this.baseType()).package_();
+    return ((PandaRawClass) this.baseType()).package_();
   }
 
   @Override
   public Flags flags() {
-    return ((PandaParsedClassType) this.baseType()).flags();
+    return ((PandaRawClass) this.baseType()).flags();
   }
 
   @Override
   public List<? extends ConstructorInstance> constructors() {
-    return ((PandaParsedClassType) this.baseType()).constructors();
+    return ((PandaRawClass) this.baseType()).constructors();
   }
 
   @Override
   public List<? extends ClassType> memberClasses() {
-    return ((PandaParsedClassType) this.baseType()).memberClasses();
+    return ((PandaRawClass) this.baseType()).memberClasses();
   }
 
   @Override
   public List<? extends MethodInstance> methods() {
-    return ((PandaParsedClassType) this.baseType()).methods();
+    return ((PandaRawClass) this.baseType()).methods();
   }
 
   @Override
   public List<? extends FieldInstance> fields() {
-    return ((PandaParsedClassType) this.baseType()).fields();
+    return ((PandaRawClass) this.baseType()).fields();
   }
 
   @Override
   public List<? extends ReferenceType> interfaces() {
-    return ((PandaParsedClassType) this.baseType()).interfaces();
+    return ((PandaRawClass) this.baseType()).interfaces();
   }
 
   @Override
   public Type superType() {
-    return ((PandaParsedClassType) this.baseType()).superType();
+    return ((PandaRawClass) this.baseType()).superType();
   }
 
   @Override
   public Set<? extends Type> superclasses() {
-    return ((PandaParsedClassType) this.baseType()).superclasses();
+    return ((PandaRawClass) this.baseType()).superclasses();
   }
 
   @Override
   public String translateAsReceiver(Resolver c) {
-    return ((PandaParsedClassType) this.baseType()).translateAsReceiver(c);
+    return ((PandaRawClass) this.baseType()).translateAsReceiver(c);
   }
 
   @Override
   public boolean inStaticContext() {
-    return ((PandaParsedClassType) this.baseType()).inStaticContext();
+    return ((PandaRawClass) this.baseType()).inStaticContext();
   }
 
   @Override
   public void setFlags(Flags flags) {
-    ((PandaParsedClassType) this.baseType()).setFlags(flags);
+    ((PandaRawClass) this.baseType()).setFlags(flags);
   }
 
   @Override
   public void setContainer(ReferenceType container) {
-    ((PandaParsedClassType) this.baseType()).setContainer(container);
+    ((PandaRawClass) this.baseType()).setContainer(container);
   }
 
   @Override
   public AnnotationTypeElemInstance annotationElemNamed(String name) {
-    return ((PandaParsedClassType) this.baseType()).annotationElemNamed(name);
+    return ((PandaRawClass) this.baseType()).annotationElemNamed(name);
   }
 
   @Override
   public List<AnnotationTypeElemInstance> annotationElems() {
-    return ((PandaParsedClassType) this.baseType()).annotationElems();
+    return ((PandaRawClass) this.baseType()).annotationElems();
   }
 
   @Override
   public Annotations annotations() {
-    return ((PandaParsedClassType) this.baseType()).annotations();
+    return ((PandaRawClass) this.baseType()).annotations();
   }
 
 }

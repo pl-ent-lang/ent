@@ -64,10 +64,12 @@ public abstract class ModeSubstReferenceType_c extends ModeSubstType_c implement
     // TODO : We will let types that have not be subst with a mode
     // "see through" and check for equality for now and flag a
     // warning.
+
     if (!(ancestor instanceof ModeSubstType)) {
-      System.out.println("WARNING: descendsFromImpl check on " + this + " " + ancestor);
+      System.out.println("WARNING: descendsFromImpl --- " + this + " -- " + ancestor);
+      System.out.println("         classes          --- " + this.getClass() + " -- " + ancestor.getClass());
       return this.ts.descendsFrom(this.baseType(), ancestor);
-    }
+    } 
 
     // TODO : For now, force mode types to be the same, ad in proper subtyping
     // later

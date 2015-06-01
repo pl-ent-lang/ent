@@ -24,6 +24,16 @@ public class PandaNodeFactory_c extends JL7NodeFactory_c implements PandaNodeFac
     public PandaExtFactory extFactory() {
         return (PandaExtFactory) super.extFactory();
     } 
+
+    @Override
+    public Call Call(Position pos,  
+                     Receiver target, 
+                     List<TypeNode> typeArgs, 
+                     Id name, 
+                     List<Expr> args) {
+      Call n = super.Call(pos, target, typeArgs, name, args);
+      return n;
+    } 
     
     public ClassDecl ClassDecl(Position pos, 
                                Flags flags, 
@@ -39,7 +49,25 @@ public class PandaNodeFactory_c extends JL7NodeFactory_c implements PandaNodeFac
       PandaClassDeclExt ext = (PandaClassDeclExt) PandaExt.ext(n);
       ext.modeParams(CollectionUtil.nonNullList(modeParams));
       return n;
-    }
+    } 
+
+    @Override
+    public MethodDecl MethodDecl(Position pos, 
+                                 Flags flags, 
+                                 List<AnnotationElem> annotations, 
+                                 TypeNode returnType, 
+                                 Id name, 
+                                 List<Formal> formals, 
+                                 List<TypeNode> throwTypes, 
+                                 Block body, 
+                                 List<ParamTypeNode> typeParams,
+                                 List<ModeParamTypeNode> modeParams) {
+      MethodDecl n = 
+        super.MethodDecl(pos, flags, annotations, returnType, name, formals, throwTypes, body, typeParams);
+      PandaMethodDeclExt ext = (PandaMethodDeclExt) PandaExt.ext(n);
+      ext.modeParams(CollectionUtil.nonNullList(modeParams));
+      return n;
+    } 
 
     public SourceFile SourceFile(Position pos, 
                                  PackageNode packageName, 

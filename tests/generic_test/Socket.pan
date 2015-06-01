@@ -3,6 +3,9 @@ package generic_test;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.HashMap;
+import java.util.Map;
+
 modes {mid <: high; low <: mid;}
 
 /*
@@ -33,6 +36,7 @@ public class Socket @mode<MX,MY> {
 }
 */
 
+/*
 public class Socket<X> @mode<MX,MY> {
   private X f1;
   private String @mode<MY> f2;
@@ -65,6 +69,46 @@ public class Socket<X> @mode<MX,MY> {
 
     s2 = socket.getF2();
     socket.setF2(s2);
+
+    // Some harder cases 
+
+    // Let's test a subst over a subst
+    Socket<String @mode<high> > @mode<low,low> sok1 =
+      new Socket<String @mode<high> > @mode<low,low>();
+
+    // Should compile
+    sok1.setF1(new String @mode<high>());
+
+    Socket<Socket<String @mode<high> > @mode<high,high> > @mode<high, high> sok2 =
+      new Socket<Socket<String @mode<high> > @mode<high,high> > @mode<high,high>();
+
+    // Should compile
+    //sok2.setF1(sok1);
+
+    String @mode<high> s = sok2.getF1().getF2();
+    
   }
 
 }
+*/
+
+public class Socket {
+
+  public @mode<W,X> List<String@mode<W> >@mode<X> m1(List<String@mode<W> >@mode<X> p1) {
+    return p1;
+  }
+
+  public @mode<W> void m2(Map<List<String@mode<W> >, String@mode<W> >@mode<W> p1) {
+  }
+
+  public void foo() {
+    Socket@mode<high> s1 = new Socket@mode<high>();
+    List<String@mode<low> >@mode<low> v1 = s1.m1(new ArrayList<String@mode<low> >@mode<high>());
+    /*
+    Map<List<String@mode<high> >, String@mode<low> >@mode<low> map = 
+      new HashMap<List<String@mode<high> >, String@mode<low> >@mode<low>();
+    s1.m2(map);
+    */
+  }
+}
+

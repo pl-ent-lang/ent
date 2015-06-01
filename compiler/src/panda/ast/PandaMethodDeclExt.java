@@ -3,9 +3,9 @@ package panda.ast;
 import panda.types.PandaContext;
 import panda.types.ModeTypeVariable;
 import panda.types.PandaTypeSystem;
-import panda.types.PandaParsedClassType;
+import panda.types.PandaMethodInstance;
 
-import polyglot.ast.ClassDecl;
+import polyglot.ast.MethodDecl;
 import polyglot.ast.Node;
 import polyglot.ast.TypeNode;
 import polyglot.types.Context;
@@ -17,11 +17,12 @@ import polyglot.visit.TypeBuilder;
 import polyglot.visit.TypeChecker;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
 
-public class PandaClassDeclExt extends PandaExt {
+
+public class PandaMethodDeclExt extends PandaExt {
 
   private List<ModeParamTypeNode> modeParams;
 
@@ -34,7 +35,7 @@ public class PandaClassDeclExt extends PandaExt {
   }
 
   public Node reconstruct(Node n, List<ModeParamTypeNode> modeParams) {
-    PandaClassDeclExt ext = (PandaClassDeclExt) PandaExt.ext(n);
+    PandaMethodDeclExt ext = (PandaMethodDeclExt) PandaExt.ext(n);
     ext.modeParams(modeParams);
     return n;
   }
@@ -48,10 +49,10 @@ public class PandaClassDeclExt extends PandaExt {
 
   @Override
   public Node buildTypes(TypeBuilder tb) throws SemanticException {
-    ClassDecl decl = (ClassDecl) superLang().buildTypes(this.node(), tb);
+    MethodDecl md = (MethodDecl) superLang().buildTypes(this.node(), tb);
 
     PandaTypeSystem ts = (PandaTypeSystem) tb.typeSystem();
-    PandaParsedClassType ct = (PandaParsedClassType) decl.type();
+    PandaMethodInstance mi = (PandaMethodInstance) md.methodInstance();
 
     if (this.modeParams() != null && !this.modeParams().isEmpty()) {
       List<ModeTypeVariable> mtVars = 
@@ -67,23 +68,23 @@ public class PandaClassDeclExt extends PandaExt {
         mtVarCheck.add(n.name());
 
         ModeTypeVariable mtVar = (ModeTypeVariable) n.type();
-        mtVar.declaringClass(ct);
+        //mtVar.declaringClass(ct);
         mtVars.add(mtVar);
       }
-      ct.modeTypeVars(mtVars);
+      mi.modeTypeVars(mtVars);
     }
 
-    return decl;
-  } 
-  
-  @Override
-  public Context enterChildScope(Node child, Context c) {
-    PandaClassDeclExt decl = (PandaClassDeclExt) PandaExt.ext(this.node());
-    PandaContext context = (PandaContext) c;
-    for (ModeParamTypeNode t : this.modeParams()) {
-      context.addModeTypeVariable((ModeTypeVariable) t.type());
-    }
-    return superLang().enterChildScope(this.node(), child, c);
+    return md;
   }
+
+  @Override
+  public Context enterScope(Context c) {
+    MethodDecl md = (MethodDecl) this.node();
+    c = superLang().enterScope(md, c);
+    for (ModeParamTypeNode t : this.modeParams()) {
+      ((PandaContext) c).addModeTypeVariable((ModeTypeVariable) t.type());
+    }
+    return c;
+  } 
 
 }

@@ -85,24 +85,6 @@ public class AmbModeTypeInstantiation_c extends ModeTypeNode_c implements AmbMod
     return true;
   }
 
-  private void checkBaseTypeModeTypeVariables(ModeSubstParsedClassType ct) 
-      throws SemanticException {
-    if (ct.modeTypeVars().isEmpty()) {
-      throw new SemanticException("Cannot instantiate " + ct + 
-          " because it has no mode type parameter", this.position());
-    } 
-  }
-
-  private void checkModeTypeParameters(ModeSubstParsedClassType ct) 
-      throws SemanticException {
-    // Check for proper arity first
-    if (this.modeTypeArgs().size() != ct.modeTypeVars().size()) {
-      throw new SemanticException("Cannot instantiate " + ct + 
-          " because mode type arguments do not satisfy mode type parameter arity.", 
-          this.position());
-    }
-  }
-
   @Override
   public Node disambiguate(AmbiguityRemover sc) throws SemanticException {
     if (!this.shouldDisambiguate()) {
@@ -124,57 +106,6 @@ public class AmbModeTypeInstantiation_c extends ModeTypeNode_c implements AmbMod
     Type st = ts.createModeSubst(this.base().type(), mtArgs);
     return sc.nodeFactory().CanonicalTypeNode(this.position(), st);
   }
-
-  /*
-  public Node disambiguateType(AmbiguityRemover sc) throws SemanticException {
-    PandaTypeSystem ts = (PandaTypeSystem) sc.typeSystem();
-    Type mt = (this.isImplicitMode()) ? 
-      ts.WildcardModeType() : this.modeTypeNode().type();
-
-    // Create a mode subst type and set the type of the node
-    Type st = ts.substModeType(this.base().type(), mt);
-    return sc.nodeFactory().CanonicalTypeNode(this.position(), st);
-  }
-
-  public Node disambiguateModeSubstSubstClass(AmbiguityRemover sc) throws SemanticException {
-    Type bt = this.base().type();
-
-    // NOTE: We are subst through to a ModeSubstParsedClassType, then using that
-    // is it enough?
-    ModeSubstParsedClassType ct = (ModeSubstParsedClassType) ((ModeSubstSubstClassType) bt).base();
-
-    this.checkBaseTypeModeTypeVariables(ct);
-    this.checkModeTypeParameters(ct);
-
-    // Now, begin to make the subst
-    Map<ModeTypeVariable, Type> mtMap = new HashMap<>();
-    for (int i = 0; i < ct.modeTypeVars().size(); ++i) {
-      mtMap.put(ct.modeTypeVars().get(i), this.modeTypeArgs().get(i).type());
-    }
-
-    PandaTypeSystem ts = (PandaTypeSystem) sc.typeSystem();
-    Type it = ts.instModeTypeVariables(ct, mtMap);
-    return sc.nodeFactory().CanonicalTypeNode(this.position(), it);
-  } 
-
-  public Node disambiguateModeSubstParsedClass(AmbiguityRemover sc) throws SemanticException {
-    Type bt = this.base().type();
-    ModeSubstParsedClassType ct = (ModeSubstParsedClassType) bt;
-
-    this.checkBaseTypeModeTypeVariables(ct);
-    this.checkModeTypeParameters(ct);
-
-    // Now, begin to make the subst
-    Map<ModeTypeVariable, Type> mtMap = new HashMap<>();
-    for (int i = 0; i < ct.modeTypeVars().size(); ++i) {
-      mtMap.put(ct.modeTypeVars().get(i), this.modeTypeArgs().get(i).type());
-    }
-
-    PandaTypeSystem ts = (PandaTypeSystem) sc.typeSystem();
-    Type it = ts.instModeTypeVariables(ct, mtMap);
-    return sc.nodeFactory().CanonicalTypeNode(this.position(), it);
-  }
-  */
 
   @Override
   public void prettyPrint(CodeWriter w, PrettyPrinter tr) {

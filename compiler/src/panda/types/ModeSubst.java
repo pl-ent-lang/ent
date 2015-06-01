@@ -10,6 +10,8 @@ import polyglot.types.FieldInstance;
 import polyglot.types.MethodInstance;
 import polyglot.types.MemberInstance; 
 
+import polyglot.ext.param.types.SubstType;
+
 import polyglot.ext.jl5.types.RawClass;
 import polyglot.ext.jl5.types.TypeVariable;
 import polyglot.ext.jl5.types.JL5ArrayType;
@@ -23,14 +25,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ModeSubst {
+  public PandaTypeSystem ts;
   public Type baseType;
   public List<Type> modeTypeArgs;
   public Map<ModeTypeVariable, Type> modeTypeMap;
 
-  public ModeSubst(Type bt, List<Type> mtArgs, Map<ModeTypeVariable, Type> mtMap) {
+  public ModeSubst(Type bt, 
+                   List<Type> mtArgs, 
+                   Map<ModeTypeVariable, Type> mtMap) {
     this.baseType = bt;
     this.modeTypeArgs = mtArgs;
     this.modeTypeMap = mtMap;
+  }
+
+  public PandaTypeSystem ts() {
+    return (PandaTypeSystem) this.baseType().typeSystem();
   }
 
   // Property Methods
@@ -46,6 +55,12 @@ public class ModeSubst {
     return this.modeTypeMap;
   }
 
+  public ModeSubst deepCopy() {
+    return new ModeSubst(this.baseType(), 
+                         new ArrayList<Type>(this.modeTypeArgs()),
+                         new HashMap<ModeTypeVariable, Type>(this.modeTypeMap()));
+  }
+
   public Type substType(Type t) {
     if (t instanceof ModeSubstType) {
       return this.substModeSubstType((ModeSubstType)t);
@@ -53,6 +68,10 @@ public class ModeSubst {
 
     if (t instanceof ModeTypeVariable) {
       return this.substModeTypeVariable((ModeTypeVariable)t);
+    }
+
+    if (t instanceof SubstType) {
+      return this.substSubstType((SubstType<TypeVariable,ReferenceType>) t);
     }
 
     return t;
@@ -70,8 +89,27 @@ public class ModeSubst {
     return subst;
   }
 
+  public Type substSubstType(SubstType<TypeVariable, ReferenceType> st) {
+    // We have to do a mode subst over each of the subst in the substtype (ugly)
+    Type base = st.base();
+    Map<TypeVariable,ReferenceType> tsubst = st.subst().substitutions();
+    Map<TypeVariable,ReferenceType> ntsubst = new HashMap<>();
+
+    for (Map.Entry<TypeVariable,ReferenceType> e : tsubst.entrySet()) {
+      ntsubst.put(e.getKey(), (ReferenceType) this.substType(e.getValue()));
+    }
+
+    return this.ts().subst(base, ntsubst);
+  }
+
   public Type substModeTypeVariable(ModeTypeVariable mtVar) {
-    return this.modeTypeMap().get(mtVar);
+    // If not in the map, don't subst, just leave
+    Type t = this.modeTypeMap().get(mtVar);
+    if (t != null) {
+      return t;
+    } else {
+      return mtVar;
+    }
   }
 
   /*

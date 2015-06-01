@@ -8,6 +8,7 @@ import polyglot.types.PrimitiveType;
 import polyglot.types.ReferenceType;
 import polyglot.types.Resolver;
 import polyglot.types.Type;
+import polyglot.types.TypeObject;
 import polyglot.types.Type_c;
 import polyglot.types.TypeSystem;
 import polyglot.util.Position;
@@ -208,6 +209,14 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
     return this.baseType.arrayOf(dims);
   }
 
+  @Override 
+  public boolean equalsImpl(TypeObject o) {
+    if (!(o instanceof ModeSubstType)) {
+      return false;
+    }
+    ModeSubstType p = (ModeSubstType) o;
+    return (this.baseType().equals(p.baseType()) && this.modeType().equals(p.modeType()));
+  } 
 
   @Override
   public boolean typeEqualsImpl(Type t) {
@@ -215,10 +224,10 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
     // "see through" and check for equality for now and flag a
     // warning.
     if (!(t instanceof ModeSubstType)) {
-      System.out.println("WARNING: typeEqualsImpl check on " + this + " " + t);
+      System.out.println("WARNING: typeEqualsImpl --- " + this + " -- " + t);
+      System.out.println("         classes        --- " + this.getClass() + " -- " + t.getClass());
       return this.ts.typeEquals(this.baseType(), t);
     }
-
     ModeSubstType p = (ModeSubstType) t;
     return this.ts.typeEquals(this.baseType(), p.baseType()) &&
            this.ts.typeEquals(this.modeType(), p.modeType());
@@ -276,6 +285,16 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
   }
   */
 
+  @Override
+  public String argsAsString() {
+    String args = "@mode<";
+    for (Type t : this.modeTypeArgs()) {
+      args += t.toString() + ",";
+    }
+    args = args.substring(0, args.length()-1);
+    args += ">";
+    return args;
+  }
 
 
 
