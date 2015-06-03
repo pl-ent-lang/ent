@@ -129,8 +129,8 @@ public class PandaNodeFactory_c extends JL7NodeFactory_c implements PandaNodeFac
       return n;
     }
 
-    public ModeParamTypeNode ModeParamTypeNode(Position pos, Id id) {
-      ModeParamTypeNode n = new ModeParamTypeNode_c(pos, id);
+    public ModeParamTypeNode ModeParamTypeNode(Position pos, Id id, List<ModeTypeNode> bounds) {
+      ModeParamTypeNode n = new ModeParamTypeNode_c(pos, id, bounds);
       n = ext(n, extFactory().extModeParamTypeNode());
       return n;
     }

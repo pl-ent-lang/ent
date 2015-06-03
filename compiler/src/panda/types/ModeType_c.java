@@ -27,10 +27,6 @@ public class ModeType_c extends Type_c implements ModeType {
     this.mode = mode;
   }
 
-  public int rank() {
-    return this.rank;
-  }
-
   public void rank(int rank) {
     this.rank = rank;
   }
@@ -45,25 +41,6 @@ public class ModeType_c extends Type_c implements ModeType {
       compiledIdentifier += this.mode().toUpperCase();
     }
     return compiledIdentifier;
-  }
-
-  // Business Methods
-  public final boolean isSubtypeOfMode(ModeType mode) {
-    PandaTypeSystem pandaTypeSystem = (PandaTypeSystem) this.typeSystem();
-    return pandaTypeSystem.isSubtypeModes(this, mode);
-  }
-
-  public final boolean isSupertypeOfMode(ModeType mode) {
-    PandaTypeSystem pandaTypeSystem = (PandaTypeSystem) this.typeSystem();
-    return pandaTypeSystem.isSupertypeModes(this, mode);
-  }
-
-  public boolean isSubtypeOfModeImpl(ModeType mode) {
-    return (this.rank() <= mode.rank());
-  }
-
-  public boolean isSupertypeOfModeImpl(ModeType mode) {
-    return (this.rank() >= mode.rank());
   }
 
   @Override
@@ -120,5 +97,27 @@ public class ModeType_c extends Type_c implements ModeType {
   public int hashCode() {
     return this.mode().hashCode();
   }
+
+  // Mode Methods
+  public int rank() {
+    return this.rank;
+  }
+
+  public final boolean isSubtypeOfMode(Mode mode) {
+    return ((PandaTypeSystem) this.typeSystem()).isSubtypeModes(this, mode);
+  }
+
+  public final boolean isSupertypeOfMode(Mode mode) {
+    return ((PandaTypeSystem) this.typeSystem()).isSupertypeModes(this, mode);
+  }
+
+  public boolean isSubtypeOfModeImpl(Mode mode) {
+    return (this.rank() <= mode.rank());
+  }
+
+  public boolean isSupertypeOfModeImpl(Mode mode) {
+    return (this.rank() >= mode.rank());
+  }
+
 
 }

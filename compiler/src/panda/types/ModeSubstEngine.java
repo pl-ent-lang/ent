@@ -1,6 +1,7 @@
 package panda.types;
 
 import polyglot.util.InternalCompilerError;
+import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.types.ReferenceType;
 import polyglot.types.ConstructorInstance;
@@ -93,8 +94,51 @@ public class ModeSubstEngine {
     } 
   } 
 
+  public ModeType getModeType(Type t) {
+    if (t instanceof ModeType) {
+      return (ModeType) t;
+    } else {
+      return ((ModeTypeVariable) t).upperBound();
+    }
+  }
+
+  public boolean modeSubstSatisfiesConstraints(PandaClassType t, List<Type> mtArgs) {
+    Map<ModeTypeVariable, Type> mtMap = new HashMap<>();
+    List<ModeTypeVariable> mtVars = t.modeTypeVars();
+    for (int i = 0; i < mtVars.size(); ++i) {
+      //mtMap.put(mtVars.get(i), mtArgs.get(i));
+      ModeType sm = this.getModeType(mtArgs.get(i));
+
+      // All constraints must be satisfied (all upper bounds)
+      for (Type mt : mtVars.get(i).bounds()) {
+
+        ModeType vm = this.getModeType(mt);
+        if (mt instanceof ModeType) {
+          vm = (ModeType) mt;
+        } else {
+          vm = this.getModeType(mtMap.get((ModeTypeVariable) mt));
+        }
+
+        if (!sm.isSubtypeOfMode(vm)) {
+          System.out.println("Attempting to subst with " + sm + " failing on contraint " + mt);
+          return false;
+        }
+      }
+
+      mtMap.put(mtVars.get(i), mtArgs.get(i));
+
+    }
+    return true;
+  }
   
   public Type createModeSubstClass(Type t, List<Type> mtArgs) {
+    // Check that a subst satisfies the contraints on the mode type variables,
+    // otherwise flag an error
+    if (!this.modeSubstSatisfiesConstraints((PandaClassType) t, mtArgs)) {
+      return null;
+      //throw new SemanticException("Substitution unable to satisfy bounds for " + t);
+    }
+
     // Build the subst object for all class types
     if (t instanceof PandaParsedClassType) {
       return new ModeSubstParsedClassType_c((PandaParsedClassType) t, mtArgs);

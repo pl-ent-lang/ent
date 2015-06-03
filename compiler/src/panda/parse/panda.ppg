@@ -9,6 +9,8 @@ import panda.ast.*;
 import polyglot.parse.Name;
 import polyglot.parse.VarDeclarator;
 
+import java.util.Arrays;
+
 parser Grm extends polyglot.ext.jl7.parse.Grm {:
   public final PandaTypeSystem ts;
   public final PandaNodeFactory nf;
@@ -34,6 +36,7 @@ non terminal List mode_type_parameters_decl_opt;
 non terminal List mode_type_parameters_decl;
 non terminal List mode_type_parameters;
 non terminal ModeParamTypeNode mode_type_parameter;
+non terminal List<ModeTypeNode> mode_type_parameter_bounds;
 
 non terminal List<ModeTypeNode> mode_type_args;
 
@@ -199,11 +202,27 @@ mode_type_parameters ::=
 mode_type_parameter ::=
   IDENTIFIER:id
   {: 
-    RESULT = 
-      parser.nf.ModeParamTypeNode(parser.pos(id), 
-                                  parser.nf.Id(parser.pos(id), id.getIdentifier()));
+    RESULT = parser.nf.ModeParamTypeNode(parser.pos(id), parser.nf.Id(parser.pos(id), id.getIdentifier()), null);
+  :}
+| IDENTIFIER:id EXTENDS mode_type_parameter_bounds:b
+  {:
+    RESULT = parser.nf.ModeParamTypeNode(parser.pos(id), parser.nf.Id(parser.pos(id), id.getIdentifier()), b);
   :}
 ;
+
+mode_type_parameter_bounds ::=
+  mode_type_node:n
+  {:
+    List<ModeTypeNode> l = new ArrayList<ModeTypeNode>();
+    l.add(n);
+    RESULT = l;
+  :}
+| mode_type_parameter_bounds:b AND mode_type_node:n
+  {:
+    b.add(n);
+    RESULT = b;
+  :}
+; 
 
 override class_or_interface_type ::=
   class_or_interface:a

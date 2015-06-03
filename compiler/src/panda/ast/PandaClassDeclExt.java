@@ -59,6 +59,7 @@ public class PandaClassDeclExt extends PandaExt {
       Set<String> mtVarCheck = new HashSet<>();
 
       for (TypeNode n : this.modeParams()) {
+        System.out.println("Adding " + n.name());
         // Check and catch duplicate error as early as possible
         if (mtVarCheck.contains(n.name())) {
           throw new SemanticException("Duplicate mode type variable declaration.",

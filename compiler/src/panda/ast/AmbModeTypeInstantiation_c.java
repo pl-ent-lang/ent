@@ -104,6 +104,9 @@ public class AmbModeTypeInstantiation_c extends ModeTypeNode_c implements AmbMod
     }
 
     Type st = ts.createModeSubst(this.base().type(), mtArgs);
+    if (st == null) {
+      throw new SemanticException("Unable to create mode substition due to constraints.");
+    }
     return sc.nodeFactory().CanonicalTypeNode(this.position(), st);
   }
 

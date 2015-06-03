@@ -25,9 +25,9 @@ public interface PandaTypeSystem extends JL7TypeSystem {
   // TypeSystem Methods
   ClassType wrapperClassOfModeSubstPrimitive(ModeSubstPrimitiveType t);
 
-  boolean isSubtypeModes(ModeType lb, ModeType ub);
+  boolean isSubtypeModes(Mode lb, Mode ub);
 
-  boolean isSupertypeModes(ModeType lb, ModeType ub);
+  boolean isSupertypeModes(Mode lb, Mode ub);
 
   Type createModeSubst(Type bt, List<Type> modeTypes);
 }

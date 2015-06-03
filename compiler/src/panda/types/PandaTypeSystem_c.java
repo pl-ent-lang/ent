@@ -336,11 +336,11 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
   }
 
   // TypeSystem Methods
-  public boolean isSubtypeModes(ModeType lb, ModeType ub) {
+  public boolean isSubtypeModes(Mode lb, Mode ub) {
     return lb.isSubtypeOfModeImpl(ub);
   }
 
-  public boolean isSupertypeModes(ModeType lb, ModeType ub) {
+  public boolean isSupertypeModes(Mode lb, Mode ub) {
     return lb.isSupertypeOfModeImpl(ub);
   }
 
