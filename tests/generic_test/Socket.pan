@@ -8,6 +8,7 @@ import java.util.Map;
 
 modes {mid <: high; low <: mid;}
 
+/*
 public class Socket@mode<X, Y extends X> {
 
   private String f1;
@@ -39,12 +40,11 @@ public class Socket@mode<X, Y extends X> {
     Socket@mode<?,low> s1 = new Socket@mode<?,low>();
     s1.foo(new String@mode<high>());
   }
-  */
 
 
 }
+  */
 
-/*
 public class Socket @mode<MX,MY> {
   private String @mode<MY> f2;
 
@@ -70,7 +70,6 @@ public class Socket @mode<MX,MY> {
     //socket2.setF2(s2);
   }
 }
-*/
 
 /*
 public class Socket<X> @mode<MX,MY> {

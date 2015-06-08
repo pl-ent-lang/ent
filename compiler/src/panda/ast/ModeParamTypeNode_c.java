@@ -24,33 +24,33 @@ import java.util.List;
 
 public class ModeParamTypeNode_c extends TypeNode_c implements ModeParamTypeNode {
 
-  private Id id;
-  private List<ModeTypeNode> bounds = Collections.emptyList();
+  protected Id id;
+  protected List<ModeTypeNode> bounds;
 
   public ModeParamTypeNode_c(Position pos, Id id, List<ModeTypeNode> bounds) {
     super(pos);
     this.id = id;
-    this.bounds(bounds);
+    if (bounds != null) this.bounds = bounds;
   }
 
+  // Property Methods
   public Id id() {
     return this.id;
-  }
-
-  public void id(Id id) {
-    this.id = id;
   }
 
   public List<ModeTypeNode> bounds() {
     return this.bounds;
   }
 
-  public void bounds(List<ModeTypeNode> bounds) {
+  protected <N extends ModeParamTypeNode_c> N bounds(N n, List<ModeTypeNode> bounds) {
+    if (this.bounds() == bounds) return n;
+    n = this.copyIfNeeded(n);
     if (bounds != null) {
-      this.bounds = bounds;
+      n.bounds = bounds;
     } else {
-      this.bounds = Collections.emptyList();
+      n.bounds = Collections.emptyList();
     }
+    return n;
   }
 
   @Override
@@ -58,15 +58,16 @@ public class ModeParamTypeNode_c extends TypeNode_c implements ModeParamTypeNode
     return this.id().id();
   }
 
-  public Node reconstruct(List<ModeTypeNode> bounds) {
-    this.bounds(bounds);
-    return this;
+  protected <N extends ModeParamTypeNode_c> N reconstruct(N n, List<ModeTypeNode> bounds) {
+    n = this.bounds(n, bounds);
+    return n;
   }
 
+  // Node Methods
   @Override
   public Node visitChildren(NodeVisitor v) {
     List<ModeTypeNode> bounds = visitList(this.bounds(), v);
-    return reconstruct(bounds);
+    return this.reconstruct(this, bounds);
   } 
 
   @Override

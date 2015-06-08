@@ -74,38 +74,17 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
     return this.attributeInstance();
   } 
 
-  // Node Methods
-  @Override
-  public Node visitChildren(NodeVisitor v) {
-    Block body = visitChild(this.body(), v);
-    return this.reconstruct(this, body);
-  }
-
+  // Node Methods 
   public <N extends AttributeDecl_c> N reconstruct(N n, Block body) {
     n = this.body(n, body);
     return n;
   } 
 
-  // Term Method
   @Override
-  public Term firstChild() {
-    return this.body();
+  public Node visitChildren(NodeVisitor v) {
+    Block body = visitChild(this.body(), v);
+    return this.reconstruct(this, body);
   }
-
-  @Override
-  public <T> List<T> acceptCFG(CFGBuilder<?> v, List<T> succs) {
-    if (this.body() != null) {
-      v.visitCFG(this.body(), this, EXIT);
-    } 
-
-    return succs;
-  }
-
-  // ClassMember Methods
-  @Override
-  public MemberInstance memberInstance() {
-    return this.ai;
-  } 
 
   @Override
   public Context enterScope(Context c) {
@@ -138,4 +117,26 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
     return this;
   }
 
+
+  // Term Method
+  @Override
+  public Term firstChild() {
+    return this.body();
+  }
+
+  @Override
+  public <T> List<T> acceptCFG(CFGBuilder<?> v, List<T> succs) {
+    if (this.body() != null) {
+      v.visitCFG(this.body(), this, EXIT);
+    } 
+
+    return succs;
+  }
+
+  // ClassMember Methods
+  @Override
+  public MemberInstance memberInstance() {
+    return this.ai;
+  } 
+  
 }
