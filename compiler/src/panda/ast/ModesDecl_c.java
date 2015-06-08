@@ -22,10 +22,8 @@ import java.util.Map;
 public class ModesDecl_c extends Term_c implements ModesDecl {
 
   private final String MODES_DECL_CLASS_NAME = "PandaMode";
-
-  private List<ModeOrder> orders;
-
-  private ModeOrderingInstance modeOrderingInstance;
+  protected List<ModeOrder> orders;
+  protected ModeOrderingInstance oi;
 
   public ModesDecl_c(Position pos, List<ModeOrder> orders) {
     super(pos);
@@ -36,39 +34,36 @@ public class ModesDecl_c extends Term_c implements ModesDecl {
     return this.MODES_DECL_CLASS_NAME;
   }
 
+  // Property Methods
   public List<ModeOrder> orders() {
     return this.orders;
   }
 
-  public void orders(List<ModeOrder> orders) {
-    this.orders = orders;
+  public <N extends ModesDecl_c> N orders(N n, List<ModeOrder> orders) {
+    if (this.orders() == orders) return n;
+    n = this.copyIfNeeded(n);
+    n.orders = orders;
+    return n;
   }
 
   public ModeOrderingInstance modeOrderingInstance() {
-    return this.modeOrderingInstance;
+    return this.oi;
   }
 
-  public void modeOrderingInstance(ModeOrderingInstance modeOrderingInstance) {
-    this.modeOrderingInstance = modeOrderingInstance;
+  public ModesDecl modeOrderingInstance(ModeOrderingInstance oi) {
+    return this.modeOrderingInstance(this, oi);
   }
 
-  // TODO : firstChild & acceptCFG not needed to visit the Id's
-  // makes me think this shouldn't be a term.
-  @Override
-  public Term firstChild() {
-    return null;
+  public <N extends ModesDecl_c> N modeOrderingInstance(N n, ModeOrderingInstance oi) {
+    if (this.modeOrderingInstance() == oi) return n;
+    n = this.copyIfNeeded(n);
+    n.oi = oi;
+    return n;
   }
 
-  @Override
-  public <T> List<T> acceptCFG(CFGBuilder<?> v, List<T> succs) {
-    // TODO : I'll need to figure out exactly how the CFG visit
-    // works
-    return succs;
-  }
-
-  public Node reconstruct(Node n, List<ModeOrder> orders) {
-    ModesDecl modesDecl = (ModesDecl) n;
-    modesDecl.orders(orders);
+  // Node Methods
+  protected <N extends ModesDecl_c> N reconstruct(N n, List<ModeOrder> orders) {
+    n = this.orders(n, orders);
     return n;
   }
 
@@ -82,18 +77,16 @@ public class ModesDecl_c extends Term_c implements ModesDecl {
   public Node buildTypes(TypeBuilder tb) throws SemanticException {
     PandaTypeSystem pandaTypeSystem = (PandaTypeSystem) tb.typeSystem();
 
-    ModeOrderingInstance modeOrderingInstance = 
-      pandaTypeSystem.createModeOrderingInstance();
+    ModeOrderingInstance oi = pandaTypeSystem.createModeOrderingInstance();
 
     for (ModeOrder modeOrder : this.orders()) {
-      ModeType lower = pandaTypeSystem.createModeType(modeOrder.lower());
-      ModeType upper = pandaTypeSystem.createModeType(modeOrder.upper());
-      modeOrderingInstance.insertModeTypeOrdering(lower, upper);
+      ModeType l = pandaTypeSystem.createModeType(modeOrder.lower());
+      ModeType u = pandaTypeSystem.createModeType(modeOrder.upper());
+      oi.insertModeTypeOrdering(l, u);
     }
 
-    modeOrderingInstance.buildModeTypeOrdering();
-    this.modeOrderingInstance(modeOrderingInstance);
-    return this;
+    oi.buildModeTypeOrdering();
+    return this.modeOrderingInstance(oi);
   }
 
   @Override
@@ -121,5 +114,21 @@ public class ModesDecl_c extends Term_c implements ModesDecl {
     w.end();
 
   }
+
+  // Term Methods
+  @Override
+  public Term firstChild() {
+    return this.listChild(this.orders(), null);
+  }
+
+  @Override
+  public <T> List<T> acceptCFG(CFGBuilder<?> v, List<T> succs) {
+    if (this.orders() != null) {
+      v.visitCFGList(this.orders(), this, ENTRY);
+    }
+    return succs;
+  }
+
+
 
 }

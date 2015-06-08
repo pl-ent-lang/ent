@@ -3,6 +3,8 @@ package panda.ast;
 import panda.types.Mode;
 import panda.types.PandaTypeSystem;
 import panda.types.ModeTypeVariable;
+import panda.util.PandaUtil;
+
 
 import polyglot.ast.Id;
 import polyglot.ast.Node;
@@ -30,7 +32,7 @@ public class ModeParamTypeNode_c extends TypeNode_c implements ModeParamTypeNode
   public ModeParamTypeNode_c(Position pos, Id id, List<ModeTypeNode> bounds) {
     super(pos);
     this.id = id;
-    if (bounds != null) this.bounds = bounds;
+    this.bounds = PandaUtil.nonEmptyList(bounds);
   }
 
   // Property Methods
@@ -45,11 +47,7 @@ public class ModeParamTypeNode_c extends TypeNode_c implements ModeParamTypeNode
   protected <N extends ModeParamTypeNode_c> N bounds(N n, List<ModeTypeNode> bounds) {
     if (this.bounds() == bounds) return n;
     n = this.copyIfNeeded(n);
-    if (bounds != null) {
-      n.bounds = bounds;
-    } else {
-      n.bounds = Collections.emptyList();
-    }
+    n.bounds = PandaUtil.nonEmptyList(bounds);
     return n;
   }
 
