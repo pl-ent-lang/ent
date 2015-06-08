@@ -5,7 +5,7 @@ import java.util.Collections;
 
 public class PandaUtil {
 
-  public static <T> List<T> nonEmptyList(List<T> l) {
+  public static <T> List<T> nonNullList(List<T> l) {
     if (l != null) {
       return l;
     } else {

@@ -32,7 +32,7 @@ public class ModeParamTypeNode_c extends TypeNode_c implements ModeParamTypeNode
   public ModeParamTypeNode_c(Position pos, Id id, List<ModeTypeNode> bounds) {
     super(pos);
     this.id = id;
-    this.bounds = PandaUtil.nonEmptyList(bounds);
+    this.bounds = PandaUtil.nonNullList(bounds);
   }
 
   // Property Methods
@@ -47,7 +47,7 @@ public class ModeParamTypeNode_c extends TypeNode_c implements ModeParamTypeNode
   protected <N extends ModeParamTypeNode_c> N bounds(N n, List<ModeTypeNode> bounds) {
     if (this.bounds() == bounds) return n;
     n = this.copyIfNeeded(n);
-    n.bounds = PandaUtil.nonEmptyList(bounds);
+    n.bounds = PandaUtil.nonNullList(bounds);
     return n;
   }
 
