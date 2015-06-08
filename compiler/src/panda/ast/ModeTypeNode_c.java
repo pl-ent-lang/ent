@@ -31,10 +31,6 @@ public class ModeTypeNode_c extends TypeNode_c implements ModeTypeNode {
     return this.name;
   }
 
-  public void name(String name) {
-    this.name = name;
-  }
-
   @Override
   public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
   }
@@ -54,11 +50,10 @@ public class ModeTypeNode_c extends TypeNode_c implements ModeTypeNode {
     }
 
     // Check for mode type variables
-    PandaContext context = (PandaContext) sc.context();
-    ModeTypeVariable modeTypeVar = 
-      context.findModeTypeVariableInThisScope(this.name());
-    if (modeTypeVar != null) {
-      return this.type((Type)modeTypeVar);
+    PandaContext c = (PandaContext) sc.context();
+    ModeTypeVariable mtVar = c.findModeTypeVariableInThisScope(this.name());
+    if (mtVar != null) {
+      return this.type(mtVar);
     }
 
     // Invalid type
