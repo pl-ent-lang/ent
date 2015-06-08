@@ -15,8 +15,8 @@ import java.util.Collections;
 public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
 
   protected String name;
-  protected List<Type> bounds;
-  protected ModeType upperBound;
+  protected List<Mode> bounds;
+  protected Mode upperBound;
   protected ClassType declaringClass;
 
   public ModeTypeVariable_c(PandaTypeSystem ts,
@@ -24,7 +24,7 @@ public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
                             String name) {
     super(ts, pos);
     this.name = name;
-    this.upperBound = null;
+    this.bounds = Collections.emptyList();
   }
 
   // Property Methods
@@ -36,19 +36,23 @@ public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
     this.name = name;
   }
 
-  public List<Type> bounds() {
+  public List<Mode> bounds() {
     return this.bounds;
   }
 
-  public void bounds(List<Type> bounds) {
-    this.bounds = bounds;
+  public void bounds(List<Mode> bounds) {
+    if (bounds == null) {
+      this.bounds = Collections.emptyList();
+    } else {
+      this.bounds = bounds;
+    }
   }
 
-  public ModeType upperBound() {
+  public Mode upperBound() {
     return this.upperBound;
   }
 
-  public void upperBound(ModeType upperBound) {
+  public void upperBound(Mode upperBound) {
     this.upperBound = upperBound;
   }
 
@@ -72,26 +76,17 @@ public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
     // We must be able to unify and select an upper bound
     // This part is really easy, just select the LUB,
     // the challenge is making sure subst satisfies constraints
-    ModeType lub = null;
-    for (Type t : this.bounds()) {
-      ModeType tub = null;
-      if (t instanceof ModeType) {
-        tub = (ModeType) t;
-      } else if (t instanceof ModeTypeVariable) {
-        tub = ((ModeTypeVariable) t).upperBound();
-      }
-
+    Mode lub = null;
+    for (Mode m : this.bounds()) {
       if (lub == null) {
-        lub = tub;
+        lub = m;
         continue;
       }
 
-      if (ts.isSubtypeModes(tub, lub)) {
-        lub = tub;
+      if (ts.isSubtypeModes(m, lub)) {
+        lub = m;
       }
     }
-
-    System.out.println("Set : " + this.name() + " to " + lub);
   
     this.upperBound(lub);
     return true;

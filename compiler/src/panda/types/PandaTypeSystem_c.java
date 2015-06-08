@@ -100,7 +100,7 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
   private boolean inferModeTypeArg(List<ModeTypeVariable> mtVars,
                                    Type baset, 
                                    ModeSubstType actt,
-                                   Map<ModeTypeVariable, Type> mtMap) {
+                                   Map<ModeTypeVariable, Mode> mtMap) {
     if (!(baset instanceof ModeSubstType)) {
       return true;
     }
@@ -112,7 +112,7 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
 
       // This is a mode type var that is part of our inference, so infer it
       ModeTypeVariable mtVar = (ModeTypeVariable) st.modeType();
-      Type inft = actt.modeType();
+      Mode inft = actt.modeType();
       if (mtMap.containsKey(mtVar)) {
         if (!mtMap.get(mtVar).typeEqualsImpl(inft)) {
           return false;
@@ -176,7 +176,7 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
                                       Type expectedReturnType) {
 
     // Infer the mode type variable first, error if not possible
-    Map<ModeTypeVariable,Type> mtMap = new HashMap<>();
+    Map<ModeTypeVariable,Mode> mtMap = new HashMap<>();
     for (int i = 0; i < pi.formalTypes().size(); ++i) {
       if (!this.inferModeTypeArg(pi.modeTypeVars(),
                                  pi.formalTypes().get(i),
@@ -195,9 +195,35 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
       return null;
     }
 
+
     ModeSubstClassType sct = (ModeSubstClassType) pi.container();
     ModeSubst subst = sct.modeSubst().deepCopy();
     subst.modeTypeMap().putAll(mtMap);
+
+    // TODO : Not sure if this is right
+    if (mtMap.isEmpty()) {
+      return subst;
+    }
+
+    // We have our inferred map, now check that constraints over the procedures
+    // mode type variables are satisfied
+
+    mtMap = subst.modeTypeMap();
+    for (ModeTypeVariable mtv : pi.modeTypeVars()) {
+      Mode sm = mtMap.get(mtv);
+
+      // Check that all bounds are satisfied
+      for (Mode m : mtv.bounds()) {
+        if (m instanceof ModeTypeVariable) {
+          m = mtMap.get(m);
+        }
+
+        if (!sm.isSubtypeOfMode(m)) {
+          System.out.println("Attempting to subst with " + sm + " failing on contraint " + m);
+          return null;
+        }
+      }
+    }
 
     return subst; 
   }
@@ -305,19 +331,25 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
       ModeSubstParsedClassType st = (ModeSubstParsedClassType) base;
       PandaRawClass_c rc = 
         new PandaRawClass_c((PandaParsedClassType) st.baseType(), pos);
-      return (RawClass) this.createModeSubst(rc, new ArrayList<Type>(st.modeTypeArgs()));
+      return (RawClass) this.createModeSubst(rc, new ArrayList<Mode>(st.modeTypeArgs()));
     } else {
       return new PandaRawClass_c(base, pos);
     }
   }
 
-  @Override
-  protected 
-  Subst<TypeVariable, ReferenceType> substImpl(Map<TypeVariable, ? extends ReferenceType> substMap) {
+  @Override 
+  protected Subst<TypeVariable, ReferenceType> substImpl(Map<TypeVariable, ? extends ReferenceType> substMap) {
     return new PandaSubst_c(this, substMap);
   }
 
   // Panda TypeSystem Methods
+
+  public AttributeInstance createAttributeInstance(Position pos, 
+      ReferenceType container, 
+      Flags flags) {
+    return new AttributeInstance_c(this, pos, container, flags);
+  }
+
   public ModeType createModeType(String mode) {
     if (this.createdModeTypes().containsKey(mode)) {
       return this.createdModeTypes().get(mode);
@@ -335,6 +367,10 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
     return new ModeTypeVariable_c(this, pos, name);
   }
 
+  public ModeValueType createModeValueType(Mode mode) {
+    return new ModeValueType_c(this, mode);
+  }
+
   // TypeSystem Methods
   public boolean isSubtypeModes(Mode lb, Mode ub) {
     return lb.isSubtypeOfModeImpl(ub);
@@ -344,7 +380,7 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
     return lb.isSupertypeOfModeImpl(ub);
   }
 
-  public Type createModeSubst(Type bt, List<Type> modeTypes) {
+  public Type createModeSubst(Type bt, List<Mode> modeTypes) {
     return this.substEngine().createModeSubst(bt, modeTypes);
   }
 

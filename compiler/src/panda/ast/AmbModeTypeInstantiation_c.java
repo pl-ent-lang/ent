@@ -1,5 +1,7 @@
 package panda.ast;
 
+import panda.types.PandaClassType;
+import panda.types.Mode;
 import panda.types.ModeType;
 import panda.types.ModeTypeVariable;
 import panda.types.ModeSubstParsedClassType;
@@ -85,6 +87,26 @@ public class AmbModeTypeInstantiation_c extends ModeTypeNode_c implements AmbMod
     return true;
   }
 
+  public boolean validModeTypeArgs(List<Mode> mtArgs) {
+    Type bt = this.base().type();
+
+    if (!(bt instanceof PandaClassType)) {
+      // Non class types can only be instantiated with one mode type arg
+      return mtArgs.size() == 1;
+    }
+
+    return ((PandaClassType) bt).modeTypeVars().size() == mtArgs.size();
+  }
+
+  public boolean validDynamicModeType() {
+    Type bt = this.base().type();
+    if (!(bt instanceof PandaClassType)) {
+      return false;
+    }
+    PandaClassType ct = (PandaClassType) bt;
+    return ct.attributeInstance() != null;
+  }
+
   @Override
   public Node disambiguate(AmbiguityRemover sc) throws SemanticException {
     if (!this.shouldDisambiguate()) {
@@ -93,14 +115,23 @@ public class AmbModeTypeInstantiation_c extends ModeTypeNode_c implements AmbMod
 
     PandaTypeSystem ts = (PandaTypeSystem) sc.typeSystem();
 
-    List<Type> mtArgs = new ArrayList<Type>();
+    List<Mode> mtArgs = new ArrayList<Mode>();
     if (this.isImplicitMode()) {
       // Throw in a wildcard type and forward to the subst engine
       mtArgs.add(ts.WildcardModeType());
     }
 
     for (ModeTypeNode n : this.modeTypeArgs()) {
-      mtArgs.add(n.type());
+      mtArgs.add((Mode) n.type());
+    }
+
+    if (!this.validModeTypeArgs(mtArgs)) {
+      throw new SemanticException(this.base().type() + " cannot be instantiated with mode type arguments.");
+    }
+
+    // Dynamic mode type can only be used on classes that have an attributor
+    if (mtArgs.get(0) == ts.DynamicModeType() && !this.validDynamicModeType()) {
+      throw new SemanticException(this.base().type() + " cannot be instantiated with a dynamic mode type. Implement an attributor.");
     }
 
     Type st = ts.createModeSubst(this.base().type(), mtArgs);

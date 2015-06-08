@@ -11,6 +11,8 @@ public interface PandaExtFactory extends JL7ExtFactory {
 
   Ext extAmbModeTypeInstantiation();
 
+  Ext extAttributeDecl();
+
   Ext extModeOrder();
 
   Ext extModesDecl();
@@ -19,7 +21,7 @@ public interface PandaExtFactory extends JL7ExtFactory {
 
   Ext extModeTypeNode();
 
-  Ext extModeValueNode();
+  Ext extModeValue();
 
 
 }

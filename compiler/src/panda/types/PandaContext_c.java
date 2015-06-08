@@ -12,6 +12,9 @@ import java.util.HashMap;
 public class PandaContext_c extends JL5Context_c implements PandaContext {
 
   private Map<String, ModeTypeVariable> modeTypeVars;
+  private AttributeInstance currentAttribute = null;
+
+  public static final Kind ATTRIBUTE = new Kind("attribute");
 
   public PandaContext_c(Lang lang, TypeSystem ts) {
     super(lang, ts);
@@ -39,6 +42,15 @@ public class PandaContext_c extends JL5Context_c implements PandaContext {
     this.modeTypeVars = modeTypeVars;
   }
 
+
+  public AttributeInstance currentAttribute() {
+    return this.currentAttribute;
+  }
+
+  public void currentAttribute(AttributeInstance currentAttribute) {
+    this.currentAttribute = currentAttribute;
+  }
+
   public void addModeTypeVariable(ModeTypeVariable modeTypeVar) {
     this.modeTypeVars().put(modeTypeVar.name(), modeTypeVar);
   }
@@ -51,6 +63,10 @@ public class PandaContext_c extends JL5Context_c implements PandaContext {
       return ((PandaContext)this.outer).findModeTypeVariableInThisScope(name);
     }
     return null;
+  }
+
+  public boolean isAttribute() {
+    return this.kind == CODE && (this.code instanceof AttributeInstance);
   }
 
 }

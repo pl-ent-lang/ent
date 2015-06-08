@@ -12,4 +12,6 @@ public interface PandaClassType extends JL5ClassType {
   List<ModeTypeVariable> modeTypeVars();
   void modeTypeVars(List<ModeTypeVariable> modeTypeVars);
 
+  AttributeInstance attributeInstance();
+  void attributeInstance(AttributeInstance ai);
 }

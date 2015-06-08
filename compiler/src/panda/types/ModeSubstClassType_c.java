@@ -27,17 +27,17 @@ public abstract class ModeSubstClassType_c extends ModeSubstReferenceType_c impl
 
   private ModeSubst modeSubst = null;
 
-  public ModeSubstClassType_c(ClassType baseType, List<Type> modeTypeArgs) {
+  public ModeSubstClassType_c(ClassType baseType, List<Mode> modeTypeArgs) {
     super(baseType, modeTypeArgs);
   }
 
   public ModeSubst modeSubst() {
     if (this.modeSubst == null) {
-      Map<ModeTypeVariable, Type> mtMap = new HashMap<>();
+      Map<ModeTypeVariable, Mode> mtMap = new HashMap<>();
       for (int i = 0; i < this.modeTypeVars().size(); ++i) {
         mtMap.put(this.modeTypeVars().get(i), this.modeTypeArgs().get(i));
       }
-      this.modeSubst = new ModeSubst(this, this.modeTypeArgs(), mtMap);
+      this.modeSubst = new ModeSubst(this, mtMap);
     }
     return this.modeSubst;
   }
@@ -51,6 +51,15 @@ public abstract class ModeSubstClassType_c extends ModeSubstReferenceType_c impl
   @Override
   public void modeTypeVars(List<ModeTypeVariable> modeTypeVars) {
     ((PandaClassType) this.baseType()).modeTypeVars(modeTypeVars);
+  } 
+
+
+  public AttributeInstance attributeInstance() {
+    return ((PandaClassType) this.baseType()).attributeInstance();
+  }
+
+  public void attributeInstance(AttributeInstance attributeInstance) {
+    ((PandaClassType) this.baseType()).attributeInstance(attributeInstance);
   } 
 
   // ClassType Methods

@@ -82,7 +82,7 @@ public class ModeSubstEngine {
   }
   */
 
-  public Type createModeSubst(Type t, List<Type> mtArgs) throws InternalCompilerError {
+  public Type createModeSubst(Type t, List<Mode> mtArgs) throws InternalCompilerError {
     if (t instanceof TypeVariable) {
       return t;
     }
@@ -94,44 +94,30 @@ public class ModeSubstEngine {
     } 
   } 
 
-  public ModeType getModeType(Type t) {
-    if (t instanceof ModeType) {
-      return (ModeType) t;
-    } else {
-      return ((ModeTypeVariable) t).upperBound();
-    }
-  }
-
-  public boolean modeSubstSatisfiesConstraints(PandaClassType t, List<Type> mtArgs) {
-    Map<ModeTypeVariable, Type> mtMap = new HashMap<>();
+  public boolean modeSubstSatisfiesConstraints(PandaClassType t, List<Mode> mtArgs) {
+    Map<ModeTypeVariable, Mode> mtMap = new HashMap<>();
     List<ModeTypeVariable> mtVars = t.modeTypeVars();
     for (int i = 0; i < mtVars.size(); ++i) {
-      //mtMap.put(mtVars.get(i), mtArgs.get(i));
-      ModeType sm = this.getModeType(mtArgs.get(i));
+      Mode sm = mtArgs.get(i);
 
       // All constraints must be satisfied (all upper bounds)
-      for (Type mt : mtVars.get(i).bounds()) {
-
-        ModeType vm = this.getModeType(mt);
-        if (mt instanceof ModeType) {
-          vm = (ModeType) mt;
-        } else {
-          vm = this.getModeType(mtMap.get((ModeTypeVariable) mt));
+      for (Mode vm : mtVars.get(i).bounds()) {
+        if (vm instanceof ModeTypeVariable) {
+          vm = mtMap.get(vm);
         }
 
         if (!sm.isSubtypeOfMode(vm)) {
-          System.out.println("Attempting to subst with " + sm + " failing on contraint " + mt);
+          System.out.println("Attempting to subst with " + sm + " failing on contraint " + vm);
           return false;
         }
       }
 
-      mtMap.put(mtVars.get(i), mtArgs.get(i));
-
+      mtMap.put(mtVars.get(i), sm);
     }
     return true;
   }
   
-  public Type createModeSubstClass(Type t, List<Type> mtArgs) {
+  public Type createModeSubstClass(Type t, List<Mode> mtArgs) {
     // Check that a subst satisfies the contraints on the mode type variables,
     // otherwise flag an error
     if (!this.modeSubstSatisfiesConstraints((PandaClassType) t, mtArgs)) {
@@ -155,7 +141,7 @@ public class ModeSubstEngine {
     } 
   }
 
-  public Type createModeSubstType(Type t, List<Type> mtArgs) {
+  public Type createModeSubstType(Type t, List<Mode> mtArgs) {
     if (t instanceof JL5PrimitiveType) {
       return new ModeSubstPrimitiveType_c((JL5PrimitiveType) t, mtArgs);
 

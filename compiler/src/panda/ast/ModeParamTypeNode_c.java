@@ -1,5 +1,6 @@
 package panda.ast;
 
+import panda.types.Mode;
 import panda.types.PandaTypeSystem;
 import panda.types.ModeTypeVariable;
 
@@ -52,6 +53,11 @@ public class ModeParamTypeNode_c extends TypeNode_c implements ModeParamTypeNode
     }
   }
 
+  @Override
+  public String name() {
+    return this.id().id();
+  }
+
   public Node reconstruct(List<ModeTypeNode> bounds) {
     this.bounds(bounds);
     return this;
@@ -64,19 +70,19 @@ public class ModeParamTypeNode_c extends TypeNode_c implements ModeParamTypeNode
   } 
 
   @Override
-  public Node buildTypes(TypeBuilder typeBuilder) throws SemanticException {
-    PandaTypeSystem pandaTypeSystem = (PandaTypeSystem) typeBuilder.typeSystem();
-    ModeTypeVariable modeTypeVar = 
-      pandaTypeSystem.createModeTypeVariable(this.position(), this.id().id());
+  public Node buildTypes(TypeBuilder tb) throws SemanticException {
+    PandaTypeSystem ts = (PandaTypeSystem) tb.typeSystem();
+    ModeTypeVariable mtVar = 
+      ts.createModeTypeVariable(this.position(), this.id().id());
     TypeNode n = this;
-    return n.type(modeTypeVar);
+    return n.type(mtVar);
   }
 
   @Override
   public Node disambiguate(AmbiguityRemover sc) throws SemanticException {
-    List<Type> boundTypes = new ArrayList<Type>();
+    List<Mode> boundTypes = new ArrayList<Mode>();
     for (ModeTypeNode tn : this.bounds()) {
-      boundTypes.add(tn.type());
+      boundTypes.add((Mode) tn.type());
     }
     ModeTypeVariable t = (ModeTypeVariable) this.type();
     t.bounds(boundTypes);

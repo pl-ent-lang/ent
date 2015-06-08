@@ -12,12 +12,13 @@ import polyglot.ext.jl5.types.JL5ProcedureInstance;
 import polyglot.ext.jl5.types.TypeVariable;
 
 import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.LinkedList;
 
 public class ModeSubstTypeVariable_c extends ModeSubstReferenceType_c implements ModeSubstTypeVariable {
 
-  public ModeSubstTypeVariable_c(Type baseType, List<Type> modeTypeArgs) {
+  public ModeSubstTypeVariable_c(Type baseType, List<Mode> modeTypeArgs) {
     super(baseType, modeTypeArgs);
   } 
 
@@ -25,7 +26,7 @@ public class ModeSubstTypeVariable_c extends ModeSubstReferenceType_c implements
   public ModeSubstType deepCopy() {
     return 
       new ModeSubstTypeVariable_c(this.baseType(),
-                                  this.modeTypeArgs());
+                                  new ArrayList<Mode>(this.modeTypeArgs()));
   }
 
   // TypeVariable Methods

@@ -29,26 +29,14 @@ public class PandaCallExt extends PandaExt {
     PandaContext ctx = (PandaContext) tc.context();
     PandaClassType ct = (PandaClassType) ctx.currentClassScope();
 
-    System.out.println("CT: " + ct.getClass());
-
     ModeSubstType mt = (ModeSubstType) t;
 
     // Call is valid if the first mode type variable upper bound is greater
     // than the recievers mode type.
     ModeTypeVariable mtThis = ct.modeTypeVars().get(0);
-    System.out.println("mtThis ModeType: " + mtThis.upperBound());      
-    System.out.println("recv ModeType: " + mt.modeType());
-
-    // Need to move this instanceof into mode types directly
-    ModeType recvMode = null;
-    if (mt.modeType() instanceof ModeType) {
-      recvMode = (ModeType) mt.modeType();
-    } else {
-      recvMode = ((ModeTypeVariable) mt.modeType()).upperBound();
-    }
 
     PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
-    if (!ts.isSubtypeModes(recvMode, mtThis.upperBound())) {
+    if (!ts.isSubtypeModes(mt.modeType(), mtThis)) {
       throw new SemanticException("Cannot send message to " + t + " from mode " + mtThis.upperBound());
     }
 

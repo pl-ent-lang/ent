@@ -18,9 +18,9 @@ import java.util.List;
 public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
 
   private Type baseType;
-  private List<Type> modeTypeArgs;
+  private List<Mode> modeTypeArgs;
 
-  public ModeSubstType_c(Type baseType, List<Type> modeTypeArgs) {
+  public ModeSubstType_c(Type baseType, List<Mode> modeTypeArgs) {
     super(baseType.typeSystem(), Position.COMPILER_GENERATED);
     this.baseType = baseType;
     this.modeTypeArgs = modeTypeArgs;
@@ -35,19 +35,19 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
     this.baseType = baseType;
   }
 
-  public List<Type> modeTypeArgs() {
+  public List<Mode> modeTypeArgs() {
     return this.modeTypeArgs;
   }
 
-  public void modeTypeArgs(List<Type> modeType) {
+  public void modeTypeArgs(List<Mode> modeType) {
     this.modeTypeArgs = modeTypeArgs;
   } 
 
-  public Type modeType() {
+  public Mode modeType() {
     return this.modeTypeArgs().get(0);
   }
 
-  public void modeType(Type modeType) {
+  public void modeType(Mode modeType) {
     this.modeTypeArgs().set(0, modeType);
   } 
 

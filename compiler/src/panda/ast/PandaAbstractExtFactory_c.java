@@ -39,6 +39,28 @@ public abstract class PandaAbstractExtFactory_c extends JL7AbstractExtFactory_c
       return postExtTypeNode(e);
     }
 
+    public final Ext extAttributeDecl() {
+      Ext e = extAttributeDeclImpl();
+      if (nextExtFactory() != null) {
+        Ext e2;
+        if (nextExtFactory() instanceof PandaExtFactory) {
+          e2 = ((PandaExtFactory) nextExtFactory()).extAttributeDecl();
+        } else {
+          e2 = nextExtFactory().extTerm();
+        }
+        e = composeExts(e, e2);
+      }
+      return postExtAttributeDecl(e);
+    }
+
+    protected Ext extAttributeDeclImpl() { 
+      return extTermImpl();
+    }
+
+    protected Ext postExtAttributeDecl(Ext e) { 
+      return postExtTerm(e);
+    } 
+
     public final Ext extModeOrder() {
       Ext e = extModeOrderImpl();
       if (nextExtFactory() != null) {
@@ -127,26 +149,26 @@ public abstract class PandaAbstractExtFactory_c extends JL7AbstractExtFactory_c
       return postExtTypeNode(e);
     }
 
-    public final Ext extModeValueNode() {
-      Ext e = extModeValueNodeImpl();
+    public final Ext extModeValue() {
+      Ext e = extModeValueImpl();
       if (nextExtFactory() != null) {
         Ext e2;
         if (nextExtFactory() instanceof PandaExtFactory) {
-          e2 = ((PandaExtFactory) nextExtFactory()).extModeValueNode();
+          e2 = ((PandaExtFactory) nextExtFactory()).extModeValue();
         } else {
-          e2 = nextExtFactory().extTypeNode();
+          e2 = nextExtFactory().extExpr();
         }
         e = composeExts(e, e2);
       }
-      return postExtModeValueNode(e);
+      return postExtModeValue(e);
     }
 
-    protected Ext extModeValueNodeImpl() { 
-      return extTypeNodeImpl();
+    protected Ext extModeValueImpl() { 
+      return extExprImpl();
     }
 
-    protected Ext postExtModeValueNode(Ext e) { 
-      return postExtTypeNode(e);
+    protected Ext postExtModeValue(Ext e) { 
+      return postExtExpr(e);
     }
 
 

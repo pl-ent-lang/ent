@@ -279,6 +279,8 @@ non terminal List<LocalDecl> resources;
 non terminal LocalDecl resource;
 non terminal List<TypeNode> catch_type;
 non terminal Block finally_opt;
+terminal Token ATTRIBUTE;
+terminal Token BLAMMABLE;
 terminal Token MODE;
 terminal Token MODES;
 terminal Token PARORD;
@@ -286,6 +288,8 @@ non terminal ModesDecl modes_declaration_opt;
 non terminal ModesDecl modes_declaration;
 non terminal ModeOrder mode_ordering;
 non terminal List mode_orderings;
+non terminal AttributeDecl attribute_declaration;
+non terminal ModeValue mode_value;
 non terminal List mode_type_parameters_decl_opt;
 non terminal List mode_type_parameters_decl;
 non terminal List mode_type_parameters;
@@ -294,7 +298,6 @@ non terminal List<ModeTypeNode> mode_type_parameter_bounds;
 non terminal List<ModeTypeNode> mode_type_args;
 non terminal ModeTypeNode mode_type_node;
 non terminal List<ModeTypeNode> mode_type_nodes;
-non terminal List<ModeTypeNode> mode_type_inst;
 
 
 start with goal;
@@ -333,7 +336,10 @@ literal ::=
  |  STRING_LITERAL:a {:
                      RESULT = parser.nf.StringLit(parser.pos(a), a.getValue()); 
                      :}
- |  NULL_LITERAL:a {:  RESULT = parser.nf.NullLit(parser.pos(a));  :};
+ |  NULL_LITERAL:a {:  RESULT = parser.nf.NullLit(parser.pos(a));  :}
+ |  mode_value:m {: 
+    RESULT = m;
+   :};
 
 boundary_literal ::=
     INTEGER_LITERAL_BD:a {:
@@ -667,7 +673,14 @@ class_member_declaration ::=
                         List<ClassMember> l = new LinkedList<>();
        l.add(a);
        RESULT = l; 
-                        :};
+                        :}
+ |  attribute_declaration:a {:
+                           
+    List<ClassMember> l = new LinkedList<>();
+    l.add(a);
+    RESULT = l;
+  
+                            :};
 
 field_declaration ::=
     modifiers_or_annotations_opt:a type:b variable_declarators:c SEMICOLON:e {:
@@ -2502,6 +2515,20 @@ mode_ordering ::=
   
                                                             :};
 
+attribute_declaration ::=
+    ATTRIBUTE:a method_body:b {:
+                             
+    RESULT = parser.nf.AttributeDecl(parser.pos(a,b), b);
+  
+                              :};
+
+mode_value ::=
+    MODE:m LT mode_type_node:n GT:g {:
+                                   
+    RESULT = parser.nf.ModeValue(parser.pos(m,g), n);
+  
+                                    :};
+
 mode_type_parameters_decl_opt ::=
     mode_type_parameters_decl:m {:  RESULT = m;  :}
  |  {:  RESULT = null;  :};
@@ -2579,6 +2606,11 @@ mode_type_node ::=
                   :}
  |  MULT:m {: 
     RESULT = parser.nf.ModeTypeNode(parser.pos(m), "*");
-   :};
+   :}
+ |  QUESTION:q {:
+              
+    RESULT = parser.nf.ModeTypeNode(parser.pos(q), "?");
+  
+               :};
 
 

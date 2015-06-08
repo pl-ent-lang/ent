@@ -29,7 +29,7 @@ import java.util.Map.Entry;
 
 public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements ModeSubstSubstClassType {
 
-  public ModeSubstSubstClassType_c(PandaSubstClassType baseType, List<Type> modeTypeArgs) {
+  public ModeSubstSubstClassType_c(PandaSubstClassType baseType, List<Mode> modeTypeArgs) {
     super(baseType, modeTypeArgs);
   }
 
@@ -39,12 +39,11 @@ public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements M
   protected transient List<? extends ConstructorInstance> constructors = null;
   protected transient List<? extends ClassType> memberClasses = null;
 
-
   @Override
   public ModeSubstType deepCopy() {
     return 
       new ModeSubstSubstClassType_c((PandaSubstClassType) this.baseType(),
-                                     new ArrayList<Type>(this.modeTypeArgs()));
+                                     new ArrayList<Mode>(this.modeTypeArgs()));
       
   }
 

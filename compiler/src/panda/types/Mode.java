@@ -1,6 +1,8 @@
 package panda.types;
 
-public interface Mode {
+import polyglot.types.Type;
+
+public interface Mode extends Type {
   public int rank();
 
   public boolean isSubtypeOfMode(Mode mode);

@@ -58,8 +58,7 @@ public class PandaClassDeclExt extends PandaExt {
         new ArrayList<ModeTypeVariable>(this.modeParams().size());
       Set<String> mtVarCheck = new HashSet<>();
 
-      for (TypeNode n : this.modeParams()) {
-        System.out.println("Adding " + n.name());
+      for (ModeParamTypeNode n : this.modeParams()) {
         // Check and catch duplicate error as early as possible
         if (mtVarCheck.contains(n.name())) {
           throw new SemanticException("Duplicate mode type variable declaration.",
@@ -72,7 +71,7 @@ public class PandaClassDeclExt extends PandaExt {
         mtVars.add(mtVar);
       }
       ct.modeTypeVars(mtVars);
-    }
+    } 
 
     return decl;
   } 

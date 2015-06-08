@@ -66,9 +66,7 @@ public class PandaNodeFactory_c extends JL7NodeFactory_c implements PandaNodeFac
       PandaConstructorDeclExt ext = (PandaConstructorDeclExt) PandaExt.ext(n);
       ext.modeParams(CollectionUtil.nonNullList(modeParams));
       return n;
-    }
-
-
+    } 
 
     @Override
     public MethodDecl MethodDecl(Position pos, 
@@ -117,6 +115,13 @@ public class PandaNodeFactory_c extends JL7NodeFactory_c implements PandaNodeFac
       return n;
     }
 
+    public AttributeDecl AttributeDecl(Position pos, Block body) {
+      AttributeDecl n = new AttributeDecl_c(pos, body);
+      n = ext(n, extFactory().extAttributeDecl());
+      return n;
+    }
+
+
     public ModeOrder ModeOrder(Position pos, String lower, String upper) {
       ModeOrder n = new ModeOrder_c(pos, lower, upper);
       n = ext(n, extFactory().extModeOrder());
@@ -138,6 +143,12 @@ public class PandaNodeFactory_c extends JL7NodeFactory_c implements PandaNodeFac
     public ModeTypeNode ModeTypeNode(Position pos, String name) {
       ModeTypeNode n = new ModeTypeNode_c(pos, name);
       n = ext(n, extFactory().extModeTypeNode());
+      return n;
+    }
+
+    public ModeValue ModeValue(Position pos, ModeTypeNode modeTypeNode) {
+      ModeValue n = new ModeValue_c(pos, modeTypeNode);
+      n = ext(n, extFactory().extModeValue());
       return n;
     }
 

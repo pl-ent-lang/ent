@@ -14,7 +14,7 @@ import java.util.List;
 
 public abstract class ModeSubstReferenceType_c extends ModeSubstType_c implements ModeSubstReferenceType {
 
-  public ModeSubstReferenceType_c(Type baseType, List<Type> modeTypeArgs) {
+  public ModeSubstReferenceType_c(Type baseType, List<Mode> modeTypeArgs) {
     super(baseType, modeTypeArgs);
   } 
 

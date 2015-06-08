@@ -32,7 +32,7 @@ import java.util.ArrayList;
 
 public class ModeSubstParsedClassType_c extends ModeSubstClassType_c implements ModeSubstParsedClassType {
 
-  public ModeSubstParsedClassType_c(PandaParsedClassType baseType, List<Type> modeTypeArgs) {
+  public ModeSubstParsedClassType_c(PandaParsedClassType baseType, List<Mode> modeTypeArgs) {
     super(baseType, modeTypeArgs);
   }
 
@@ -47,7 +47,7 @@ public class ModeSubstParsedClassType_c extends ModeSubstClassType_c implements 
   public ModeSubstType deepCopy() {
     return 
       new ModeSubstParsedClassType_c((PandaParsedClassType) this.baseType(),
-                                     new ArrayList<Type>(this.modeTypeArgs()));
+                                     new ArrayList<Mode>(this.modeTypeArgs()));
   }
 
   // PandaParsedClassType Methods
@@ -58,6 +58,14 @@ public class ModeSubstParsedClassType_c extends ModeSubstClassType_c implements 
   public void modeTypeVars(List<ModeTypeVariable> modeTypeVars) {
     ((PandaParsedClassType) this.baseType()).modeTypeVars(modeTypeVars);
   }
+
+  public AttributeInstance attributeInstance() {
+    return ((PandaParsedClassType) this.baseType()).attributeInstance();
+  }
+
+  public void attributeInstance(AttributeInstance attributeInstance) {
+    ((PandaParsedClassType) this.baseType()).attributeInstance(attributeInstance);
+  } 
 
   // JL5ParsedClassType Methods
   @Override

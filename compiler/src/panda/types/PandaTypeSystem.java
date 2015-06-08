@@ -16,11 +16,15 @@ public interface PandaTypeSystem extends JL7TypeSystem {
   ModeType DynamicModeType();
 
   // Factory Methods 
+  AttributeInstance createAttributeInstance(Position pos, ReferenceType container, Flags flags);
+
   ModeType createModeType(String mode);
 
   ModeOrderingInstance createModeOrderingInstance();
 
   ModeTypeVariable createModeTypeVariable(Position pos, String name);
+
+  ModeValueType createModeValueType(Mode mode);
 
   // TypeSystem Methods
   ClassType wrapperClassOfModeSubstPrimitive(ModeSubstPrimitiveType t);
@@ -29,5 +33,5 @@ public interface PandaTypeSystem extends JL7TypeSystem {
 
   boolean isSupertypeModes(Mode lb, Mode ub);
 
-  Type createModeSubst(Type bt, List<Type> modeTypes);
+  Type createModeSubst(Type bt, List<Mode> modeTypes);
 }

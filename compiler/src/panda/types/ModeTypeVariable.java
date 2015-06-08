@@ -13,11 +13,11 @@ public interface ModeTypeVariable extends Type, Mode {
   String name();
   void name(String name);
 
-  List<Type> bounds();
-  void bounds(List<Type> bounds);
+  List<Mode> bounds();
+  void bounds(List<Mode> bounds);
 
-  ModeType upperBound();
-  void upperBound(ModeType upperBound);
+  Mode upperBound();
+  void upperBound(Mode upperBound);
 
   ClassType declaringClass();
   void declaringClass(ClassType declaringClass);

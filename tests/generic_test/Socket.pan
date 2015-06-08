@@ -8,22 +8,39 @@ import java.util.Map;
 
 modes {mid <: high; low <: mid;}
 
-public class Socket @mode<X extends high, Y extends X & mid> {
+public class Socket@mode<X, Y extends X> {
 
-  public void foo() {
-    String@mode<low> s1 = new String@mode<low>();
-    String@mode<high> s2 = new String@mode<high>();
+  private String f1;
+
+  attribute {
+    if (true) {
+      return @mode<high>;
+    } else {
+      return @mode<low>;
+    }
+  }
+
+  /*
+  public @mode<Z extends X> void foo(String@mode<Z> s3) {
+    String@mode<Y> s1 = new String@mode<Y>();
+    String@mode<Z> s2 = new String@mode<Z>();
 
     // Valid, s1 <: this
     s1.charAt(0);
 
     // Invalid, this <: s2
     s2.charAt(0);
+
+    // Invalid, this <: s2
+    s3.charAt(0);
   }
 
   public static void main(String[] args) {
-    Socket@mode<mid,low> s1 = new Socket@mode<mid,low>();
+    Socket@mode<?,low> s1 = new Socket@mode<?,low>();
+    s1.foo(new String@mode<high>());
   }
+  */
+
 
 }
 

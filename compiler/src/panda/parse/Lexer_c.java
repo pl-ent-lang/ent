@@ -566,6 +566,8 @@ public class Lexer_c implements Lexer {
 
         // Panda Specific Keywords
         keywords.put("modes",         new Integer(sym.MODES));
+        keywords.put("attribute",     new Integer(sym.ATTRIBUTE));
+        keywords.put("blammable",     new Integer(sym.BLAMMABLE));
     }
 
     @Override
