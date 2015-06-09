@@ -16,8 +16,8 @@ import java.util.List;
 
 public class ModeOrder_c extends Term_c implements ModeOrder {
 
-  private String lower;
-  private String upper;
+  protected String lower;
+  protected String upper;
 
   public ModeOrder_c(Position pos, String lower, String upper) {
     super(pos);
@@ -25,22 +25,39 @@ public class ModeOrder_c extends Term_c implements ModeOrder {
     this.upper = upper;
   }
 
+  // Property Methods
   public String lower() {
     return this.lower;
   }
 
-  public void lower(String lower) {
-    this.lower = lower;
+  public ModeOrder lower(String lower) {
+    return this.lower(this, lower);
+  }
+
+  public <N extends ModeOrder_c> N lower(N n, String lower) {
+    if (this.lower == lower) return n;
+    n = this.copyIfNeeded(n);
+    n.lower = lower;
+    return n;
   }
 
   public String upper() {
     return this.upper;
   }
 
-  public void upper(String upper) {
-    this.upper = upper;
+  public ModeOrder upper(String upper) {
+    return this.upper(this, upper);
   }
 
+  public <N extends ModeOrder_c> N upper(N n, String upper) {
+    if (this.upper == upper) return n;
+    n = this.copyIfNeeded(n);
+    n.upper = upper;
+    return n;
+  }
+
+  // Term Methods
+  
   // TODO : firstChild & acceptCFG not needed to visit the Id's
   // makes me think this shouldn't be a term.
   @Override
