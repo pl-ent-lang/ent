@@ -75,7 +75,7 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
   } 
 
   // Node Methods 
-  public <N extends AttributeDecl_c> N reconstruct(N n, Block body) {
+  protected <N extends AttributeDecl_c> N reconstruct(N n, Block body) {
     n = this.body(n, body);
     return n;
   } 

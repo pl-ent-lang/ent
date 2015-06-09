@@ -7,6 +7,7 @@ import panda.types.ModeTypeVariable;
 import panda.types.ModeSubstParsedClassType;
 import panda.types.ModeSubstSubstClassType;
 import panda.types.PandaTypeSystem;
+import panda.util.PandaUtil;
 
 import polyglot.ast.Ambiguous;
 import polyglot.ast.Node;
@@ -28,51 +29,64 @@ import java.util.HashMap;
 
 public class AmbModeTypeInstantiation_c extends ModeTypeNode_c implements AmbModeTypeInstantiation {
 
-  private TypeNode base;
-  private List<ModeTypeNode> modeTypeArgs = Collections.emptyList();
+  protected TypeNode base;
+  protected List<ModeTypeNode> modeTypeArgs;
 
   public AmbModeTypeInstantiation_c(Position pos,
                                     TypeNode base,
                                     List<ModeTypeNode> modeTypeArgs) {
     super(pos, null);
     this.base = base;
-    this.modeTypeArgs = modeTypeArgs;
+    this.modeTypeArgs = PandaUtil.nonNullList(modeTypeArgs);
   }
 
+  // Property Methods
   public TypeNode base() {
     return this.base;
   }
 
-  public void base(TypeNode base) {
-    this.base = base;
+  public AmbModeTypeInstantiation base(TypeNode base) {
+    return this.base(this, base);
+  }
+
+  public <N extends AmbModeTypeInstantiation_c> N base(N n, TypeNode base) {
+    if (this.base == base) return n;
+    n = this.copyIfNeeded(n);
+    n.base = base;
+    return n;
   }
 
   public List<ModeTypeNode> modeTypeArgs() {
     return this.modeTypeArgs;
   }
 
-  public void modeTypeArgs(List<ModeTypeNode> modeTypeArgs) {
-    this.modeTypeArgs = modeTypeArgs;
+  public AmbModeTypeInstantiation modeTypeArgs(List<ModeTypeNode> modeTypeArgs) {
+    return this.modeTypeArgs(this, modeTypeArgs);
+  }
+
+  public <N extends AmbModeTypeInstantiation_c> N modeTypeArgs(N n, List<ModeTypeNode> modeTypeArgs) {
+    if (this.modeTypeArgs == modeTypeArgs) return n;
+    n = this.copyIfNeeded(n);
+    n.modeTypeArgs = modeTypeArgs;
+    return n;
   }
 
   public boolean isImplicitMode() {
     return this.modeTypeArgs().isEmpty();
   }
 
-  protected Node reconstruct(TypeNode base, 
-                             List<ModeTypeNode> modeTypeArgs) {
-    this.base(base);
-    this.modeTypeArgs(modeTypeArgs);
-    return this;
+  // Node Methods
+  protected <N extends AmbModeTypeInstantiation_c> N reconstruct(N n, TypeNode base, List<ModeTypeNode> modeTypeArgs) {
+    n = this.base(n, base);
+    n = this.modeTypeArgs(n, modeTypeArgs);
+    return n;
   }
 
-  // AST Methods
   @Override
   public Node visitChildren(NodeVisitor v) {
-    super.visitChildren(v);
     TypeNode base = (TypeNode) visitChild(this.base(), v);
     List<ModeTypeNode> modeTypeArgs = visitList(this.modeTypeArgs(), v);
-    return reconstruct(base, modeTypeArgs);
+    return this.reconstruct(this, base, modeTypeArgs);
   }
 
   private boolean shouldDisambiguate() {
