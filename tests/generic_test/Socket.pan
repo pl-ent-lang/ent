@@ -45,6 +45,7 @@ public class Socket@mode<X, Y extends X> {
 }
   */
 
+/*
 public class Socket @mode<MX,MY> {
   private String @mode<MY> f2;
 
@@ -70,6 +71,7 @@ public class Socket @mode<MX,MY> {
     //socket2.setF2(s2);
   }
 }
+*/
 
 /*
 public class Socket<X> @mode<MX,MY> {
@@ -127,7 +129,6 @@ public class Socket<X> @mode<MX,MY> {
 }
 */
 
-/*
 public class Socket {
 
   public @mode<W> Socket(String@mode<W> s1) {
@@ -147,7 +148,7 @@ public class Socket {
     Map<List<String@mode<high> >, String@mode<low> >@mode<low> map = 
       new HashMap<List<String@mode<high> >, String@mode<low> >@mode<low>();
     s1.m2(map);
+    */
   }
 }
-*/
 

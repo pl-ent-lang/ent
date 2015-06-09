@@ -4,6 +4,7 @@ import panda.types.PandaContext;
 import panda.types.ModeTypeVariable;
 import panda.types.PandaTypeSystem;
 import panda.types.PandaParsedClassType;
+import panda.util.PandaUtil;
 
 import polyglot.ast.ClassDecl;
 import polyglot.ast.Node;
@@ -17,6 +18,7 @@ import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeBuilder;
 import polyglot.visit.TypeChecker;
 
+import java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -24,7 +26,7 @@ import java.util.HashSet;
 
 public class PandaClassDeclExt extends PandaExt {
 
-  protected List<ModeParamTypeNode> modeParams;
+  protected List<ModeParamTypeNode> modeParams = Collections.emptyList();
 
   // Property Methods
   public List<ModeParamTypeNode> modeParams() {
@@ -42,7 +44,7 @@ public class PandaClassDeclExt extends PandaExt {
       n = Copy.Util.copy(n);
       ext = (PandaClassDeclExt) PandaExt.ext(n);
     }
-    ext.modeParams = modeParams; 
+    ext.modeParams = PandaUtil.nonNullList(modeParams); 
     return n;
   }
 

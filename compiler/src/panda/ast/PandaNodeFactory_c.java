@@ -66,7 +66,7 @@ public class PandaNodeFactory_c extends JL7NodeFactory_c implements PandaNodeFac
       ConstructorDecl n = 
         super.ConstructorDecl(pos, flags, annotations, name, formals, throwTypes, body, typeParams);
       PandaConstructorDeclExt ext = (PandaConstructorDeclExt) PandaExt.ext(n);
-      ext.modeParams(CollectionUtil.nonNullList(modeParams));
+      ext.modeParams = PandaUtil.nonNullList(modeParams);
       return n;
     } 
 
@@ -84,7 +84,7 @@ public class PandaNodeFactory_c extends JL7NodeFactory_c implements PandaNodeFac
       MethodDecl n = 
         super.MethodDecl(pos, flags, annotations, returnType, name, formals, throwTypes, body, typeParams);
       PandaMethodDeclExt ext = (PandaMethodDeclExt) PandaExt.ext(n);
-      ext.modeParams(CollectionUtil.nonNullList(modeParams));
+      ext.modeParams = PandaUtil.nonNullList(modeParams);
       return n;
     } 
 

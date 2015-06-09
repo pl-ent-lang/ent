@@ -4,6 +4,7 @@ import panda.types.PandaContext;
 import panda.types.ModeTypeVariable;
 import panda.types.PandaTypeSystem;
 import panda.types.PandaProcedureInstance;
+import panda.util.PandaUtil;
 
 import polyglot.ast.ProcedureDecl;
 import polyglot.ast.Node;
@@ -11,6 +12,7 @@ import polyglot.ast.TypeNode;
 import polyglot.types.Context;
 import polyglot.types.Type;
 import polyglot.types.SemanticException;
+import polyglot.util.Copy;
 import polyglot.visit.AmbiguityRemover;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeBuilder;
@@ -25,23 +27,30 @@ import java.util.Set;
 
 public class PandaProcedureDeclExt extends PandaExt {
 
-  private List<ModeParamTypeNode> modeParams = Collections.emptyList();
+  protected List<ModeParamTypeNode> modeParams = Collections.emptyList();
 
   public List<ModeParamTypeNode> modeParams() {
     return this.modeParams;
   }
 
-  public void modeParams(List<ModeParamTypeNode> modeParams) {
-    if (modeParams != null) {
-      this.modeParams = modeParams;
-    } else {
-      this.modeParams = Collections.emptyList();
-    }
+  public Node modeParams(List<ModeParamTypeNode> modeParams) {
+    return this.modeParams(this.node(), modeParams);
   }
 
-  public Node reconstruct(Node n, List<ModeParamTypeNode> modeParams) {
+  public <N extends Node> N modeParams(N n, List<ModeParamTypeNode> modeParams) {
     PandaProcedureDeclExt ext = (PandaProcedureDeclExt) PandaExt.ext(n);
-    ext.modeParams(modeParams);
+    if (this.modeParams == modeParams) return n;
+    if (this.node() == n) {
+      n = Copy.Util.copy(n);
+      ext = (PandaProcedureDeclExt) PandaExt.ext(n);
+    }
+    ext.modeParams = PandaUtil.nonNullList(modeParams); 
+    return n;
+  }
+
+  // Node Methods
+  public Node reconstruct(Node n, List<ModeParamTypeNode> modeParams) {
+    n = this.modeParams(n, modeParams);
     return n;
   }
 
@@ -51,6 +60,16 @@ public class PandaProcedureDeclExt extends PandaExt {
     List<ModeParamTypeNode> modeParams = visitList(this.modeParams(), v);
     return reconstruct(n, modeParams);
   }
+
+  @Override
+  public Context enterScope(Context c) {
+    ProcedureDecl pd = (ProcedureDecl) this.node();
+    c = superLang().enterScope(pd, c);
+    for (ModeParamTypeNode t : this.modeParams()) {
+      ((PandaContext) c).addModeTypeVariable((ModeTypeVariable) t.type());
+    }
+    return c;
+  } 
 
   @Override
   public Node buildTypes(TypeBuilder tb) throws SemanticException {
@@ -81,15 +100,5 @@ public class PandaProcedureDeclExt extends PandaExt {
 
     return pd;
   }
-
-  @Override
-  public Context enterScope(Context c) {
-    ProcedureDecl pd = (ProcedureDecl) this.node();
-    c = superLang().enterScope(pd, c);
-    for (ModeParamTypeNode t : this.modeParams()) {
-      ((PandaContext) c).addModeTypeVariable((ModeTypeVariable) t.type());
-    }
-    return c;
-  } 
 
 }
