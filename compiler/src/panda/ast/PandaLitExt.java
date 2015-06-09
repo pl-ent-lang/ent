@@ -16,7 +16,6 @@ public class PandaLitExt extends PandaExt {
 
   @Override
   public Node typeCheck(TypeChecker tc) throws SemanticException {
-
     // TODO : This is one big place holder for infering mode types
 
     Lit n = (Lit) superLang().typeCheck(this.node(), tc);
@@ -24,10 +23,10 @@ public class PandaLitExt extends PandaExt {
 
     List<Mode> mtArgs = new ArrayList<Mode>();
     mtArgs.add(ts.WildcardModeType());
-    Type substType = ts.createModeSubst(n.type(), mtArgs);
+    Type st = ts.createModeSubst(n.type(), mtArgs);
 
 
-    return n.type(substType);
+    return n.type(st);
   }
 
 }

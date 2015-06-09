@@ -39,11 +39,6 @@ public final class PandaExtFactory_c extends PandaAbstractExtFactory_c {
   }
 
   @Override
-  protected Ext extNewImpl() {
-    return new PandaNewExt();
-  }
-
-  @Override
   protected Ext extNodeImpl() {
     return new PandaExt();
   } 
