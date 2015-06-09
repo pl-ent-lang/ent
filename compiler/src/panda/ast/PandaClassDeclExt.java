@@ -11,6 +11,7 @@ import polyglot.ast.TypeNode;
 import polyglot.types.Context;
 import polyglot.types.Type;
 import polyglot.types.SemanticException;
+import polyglot.util.Copy;
 import polyglot.visit.AmbiguityRemover;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeBuilder;
@@ -23,19 +24,31 @@ import java.util.HashSet;
 
 public class PandaClassDeclExt extends PandaExt {
 
-  private List<ModeParamTypeNode> modeParams;
+  protected List<ModeParamTypeNode> modeParams;
 
+  // Property Methods
   public List<ModeParamTypeNode> modeParams() {
     return this.modeParams;
   }
 
-  public void modeParams(List<ModeParamTypeNode> modeParams) {
-    this.modeParams = modeParams;
+  public Node modeParams(List<ModeParamTypeNode> modeParams) {
+    return this.modeParams(this.node(), modeParams);
   }
 
-  public Node reconstruct(Node n, List<ModeParamTypeNode> modeParams) {
+  public <N extends Node> N modeParams(N n, List<ModeParamTypeNode> modeParams) {
     PandaClassDeclExt ext = (PandaClassDeclExt) PandaExt.ext(n);
-    ext.modeParams(modeParams);
+    if (this.modeParams == modeParams) return n;
+    if (this.node() == n) {
+      n = Copy.Util.copy(n);
+      ext = (PandaClassDeclExt) PandaExt.ext(n);
+    }
+    ext.modeParams = modeParams; 
+    return n;
+  }
+
+  // Node Methods
+  public Node reconstruct(Node n, List<ModeParamTypeNode> modeParams) {
+    n = this.modeParams(n, modeParams);
     return n;
   }
 
@@ -44,6 +57,16 @@ public class PandaClassDeclExt extends PandaExt {
     Node n = superLang().visitChildren(this.node(), v);
     List<ModeParamTypeNode> modeParams = visitList(this.modeParams(), v);
     return reconstruct(n, modeParams);
+  }
+
+  @Override
+  public Context enterChildScope(Node child, Context c) {
+    PandaClassDeclExt decl = (PandaClassDeclExt) PandaExt.ext(this.node());
+    PandaContext ctx = (PandaContext) c;
+    for (ModeParamTypeNode t : this.modeParams()) {
+      ctx.addModeTypeVariable((ModeTypeVariable) t.type());
+    }
+    return superLang().enterChildScope(this.node(), child, c);
   }
 
   @Override
@@ -76,14 +99,4 @@ public class PandaClassDeclExt extends PandaExt {
     return decl;
   } 
   
-  @Override
-  public Context enterChildScope(Node child, Context c) {
-    PandaClassDeclExt decl = (PandaClassDeclExt) PandaExt.ext(this.node());
-    PandaContext context = (PandaContext) c;
-    for (ModeParamTypeNode t : this.modeParams()) {
-      context.addModeTypeVariable((ModeTypeVariable) t.type());
-    }
-    return superLang().enterChildScope(this.node(), child, c);
-  }
-
 }

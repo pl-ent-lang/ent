@@ -31,10 +31,7 @@ public class ModeTypeNode_c extends TypeNode_c implements ModeTypeNode {
     return this.name;
   }
 
-  @Override
-  public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
-  }
-
+  // Node Methods
   @Override
   public Node buildTypes(TypeBuilder tb) throws SemanticException {
     return this.type(tb.typeSystem().unknownType(this.position()));
@@ -59,4 +56,9 @@ public class ModeTypeNode_c extends TypeNode_c implements ModeTypeNode {
     // Invalid type
     throw new SemanticException("Unable to disambiguate ModeTypeNode!");
   }
+
+  @Override
+  public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
+  }
+
 }
