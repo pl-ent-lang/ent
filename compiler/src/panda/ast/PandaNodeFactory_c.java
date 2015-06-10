@@ -1,7 +1,6 @@
 package panda.ast;
 
 import panda.util.PandaUtil;
-
 import polyglot.ext.jl7.ast.JL7NodeFactory_c;
 
 import polyglot.ast.*;
@@ -93,12 +92,10 @@ public class PandaNodeFactory_c extends JL7NodeFactory_c implements PandaNodeFac
                                  List<Import> imports, 
                                  List<TopLevelDecl> decls,
                                  ModesDecl modesDecl) {
-      SourceFile n = super.SourceFile(pos,
-                                      packageName,
-                                      CollectionUtil.nonNullList(imports),
-                                      CollectionUtil.nonNullList(decls));
+      SourceFile n = 
+        super.SourceFile(pos, packageName, CollectionUtil.nonNullList(imports), CollectionUtil.nonNullList(decls));
       PandaSourceFileExt ext = (PandaSourceFileExt) PandaExt.ext(n);
-      ext.modesDecl(modesDecl);
+      ext.modesDecl = modesDecl;
       return n;
     }
 

@@ -152,3 +152,10 @@ public class Socket {
   }
 }
 
+/*
+public class Socket {
+  public void foo() {
+  }
+}
+*/
+

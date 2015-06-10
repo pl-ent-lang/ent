@@ -12,7 +12,9 @@ import polyglot.ast.TypeNode;
 import polyglot.types.Context;
 import polyglot.types.Type;
 import polyglot.types.SemanticException;
+import polyglot.util.CollectionUtil;
 import polyglot.util.Copy;
+import polyglot.util.ListUtil;
 import polyglot.visit.AmbiguityRemover;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeBuilder;
@@ -39,17 +41,17 @@ public class PandaProcedureDeclExt extends PandaExt {
 
   public <N extends Node> N modeParams(N n, List<ModeParamTypeNode> modeParams) {
     PandaProcedureDeclExt ext = (PandaProcedureDeclExt) PandaExt.ext(n);
-    if (this.modeParams == modeParams) return n;
+    if (CollectionUtil.equals(ext.modeParams, modeParams)) return n;
     if (this.node() == n) {
       n = Copy.Util.copy(n);
       ext = (PandaProcedureDeclExt) PandaExt.ext(n);
     }
-    ext.modeParams = PandaUtil.nonNullList(modeParams); 
+    ext.modeParams = ListUtil.copy(modeParams, true); 
     return n;
   }
 
   // Node Methods
-  public Node reconstruct(Node n, List<ModeParamTypeNode> modeParams) {
+  protected Node reconstruct(Node n, List<ModeParamTypeNode> modeParams) {
     n = this.modeParams(n, modeParams);
     return n;
   }
@@ -58,7 +60,7 @@ public class PandaProcedureDeclExt extends PandaExt {
   public Node visitChildren(NodeVisitor v) {
     Node n = superLang().visitChildren(this.node(), v);
     List<ModeParamTypeNode> modeParams = visitList(this.modeParams(), v);
-    return reconstruct(n, modeParams);
+    return this.reconstruct(n, modeParams);
   }
 
   @Override

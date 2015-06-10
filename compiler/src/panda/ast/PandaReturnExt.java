@@ -14,6 +14,7 @@ import polyglot.visit.TypeChecker;
 
 public class PandaReturnExt extends PandaExt {
 
+  // Node Methods
   @Override
   public Node typeCheck(TypeChecker tc) throws SemanticException {
     PandaContext c = (PandaContext) tc.context();
