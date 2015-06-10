@@ -8,7 +8,6 @@ import java.util.Map;
 
 modes {mid <: high; low <: mid;}
 
-/*
 public class Socket@mode<X, Y extends X> {
 
   private String f1;
@@ -40,10 +39,9 @@ public class Socket@mode<X, Y extends X> {
     Socket@mode<?,low> s1 = new Socket@mode<?,low>();
     s1.foo(new String@mode<high>());
   }
-
+  */
 
 }
-  */
 
 /*
 public class Socket @mode<MX,MY> {
@@ -129,6 +127,7 @@ public class Socket<X> @mode<MX,MY> {
 }
 */
 
+/*
 public class Socket {
 
   public @mode<W> Socket(String@mode<W> s1) {
@@ -144,13 +143,12 @@ public class Socket {
   public void foo() {
     Socket@mode<high> s1 = new Socket@mode<high>(new String@mode<low>());
     List<String@mode<low> >@mode<high> v1 = s1.m1(new ArrayList<String@mode<low> >@mode<high>());
-    /*
     Map<List<String@mode<high> >, String@mode<low> >@mode<low> map = 
       new HashMap<List<String@mode<high> >, String@mode<low> >@mode<low>();
     s1.m2(map);
-    */
   }
 }
+*/
 
 /*
 public class Socket {
