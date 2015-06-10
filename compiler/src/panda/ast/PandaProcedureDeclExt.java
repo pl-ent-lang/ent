@@ -4,7 +4,6 @@ import panda.types.PandaContext;
 import panda.types.ModeTypeVariable;
 import panda.types.PandaTypeSystem;
 import panda.types.PandaProcedureInstance;
-import panda.util.PandaUtil;
 
 import polyglot.ast.ProcedureDecl;
 import polyglot.ast.Node;

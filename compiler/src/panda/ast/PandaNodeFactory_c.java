@@ -1,6 +1,5 @@
 package panda.ast;
 
-import panda.util.PandaUtil;
 import polyglot.ext.jl7.ast.JL7NodeFactory_c;
 
 import polyglot.ast.*;
@@ -49,7 +48,7 @@ public class PandaNodeFactory_c extends JL7NodeFactory_c implements PandaNodeFac
       ClassDecl n =
         super.ClassDecl(pos, flags, annotations, name, superType, interfaces, body, paramTypes);
       PandaClassDeclExt ext = (PandaClassDeclExt) PandaExt.ext(n);
-      ext.modeParams = PandaUtil.nonNullList(modeParams);
+      ext.modeParams = CollectionUtil.nonNullList(modeParams);
       return n;
     } 
 
@@ -65,7 +64,7 @@ public class PandaNodeFactory_c extends JL7NodeFactory_c implements PandaNodeFac
       ConstructorDecl n = 
         super.ConstructorDecl(pos, flags, annotations, name, formals, throwTypes, body, typeParams);
       PandaConstructorDeclExt ext = (PandaConstructorDeclExt) PandaExt.ext(n);
-      ext.modeParams = PandaUtil.nonNullList(modeParams);
+      ext.modeParams = CollectionUtil.nonNullList(modeParams);
       return n;
     } 
 
@@ -83,7 +82,7 @@ public class PandaNodeFactory_c extends JL7NodeFactory_c implements PandaNodeFac
       MethodDecl n = 
         super.MethodDecl(pos, flags, annotations, returnType, name, formals, throwTypes, body, typeParams);
       PandaMethodDeclExt ext = (PandaMethodDeclExt) PandaExt.ext(n);
-      ext.modeParams = PandaUtil.nonNullList(modeParams);
+      ext.modeParams = CollectionUtil.nonNullList(modeParams);
       return n;
     } 
 

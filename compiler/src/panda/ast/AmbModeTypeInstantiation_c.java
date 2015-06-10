@@ -7,7 +7,6 @@ import panda.types.ModeTypeVariable;
 import panda.types.ModeSubstParsedClassType;
 import panda.types.ModeSubstSubstClassType;
 import panda.types.PandaTypeSystem;
-import panda.util.PandaUtil;
 
 import polyglot.ast.Ambiguous;
 import polyglot.ast.Node;
@@ -16,6 +15,9 @@ import polyglot.ast.TypeNode_c;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.util.CodeWriter;
+import polyglot.util.CollectionUtil;
+import polyglot.util.Copy;
+import polyglot.util.ListUtil;
 import polyglot.util.Position;
 import polyglot.visit.AmbiguityRemover;
 import polyglot.visit.NodeVisitor;
@@ -37,7 +39,7 @@ public class AmbModeTypeInstantiation_c extends ModeTypeNode_c implements AmbMod
                                     List<ModeTypeNode> modeTypeArgs) {
     super(pos, null);
     this.base = base;
-    this.modeTypeArgs = PandaUtil.nonNullList(modeTypeArgs);
+    this.modeTypeArgs = CollectionUtil.nonNullList(modeTypeArgs);
   }
 
   // Property Methods
@@ -65,9 +67,9 @@ public class AmbModeTypeInstantiation_c extends ModeTypeNode_c implements AmbMod
   }
 
   public <N extends AmbModeTypeInstantiation_c> N modeTypeArgs(N n, List<ModeTypeNode> modeTypeArgs) {
-    if (this.modeTypeArgs == modeTypeArgs) return n;
+    if (CollectionUtil.equals(this.modeTypeArgs,modeTypeArgs)) return n;
     n = this.copyIfNeeded(n);
-    n.modeTypeArgs = modeTypeArgs;
+    n.modeTypeArgs = ListUtil.copy(modeTypeArgs, true);
     return n;
   }
 
