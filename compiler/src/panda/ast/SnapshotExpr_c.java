@@ -1,12 +1,23 @@
 package panda.ast;
 
+import panda.types.PandaTypeSystem;
+import panda.types.ModeSubstType;
+import panda.types.ModeValueType;
+import panda.types.ModeTypeVariable;
+import panda.types.Mode;
+
 import polyglot.ast.Expr;
 import polyglot.ast.Expr_c;
 import polyglot.ast.Node;
 import polyglot.ast.Term;
+import polyglot.types.SemanticException;
+import polyglot.types.Type;
 import polyglot.util.Position;
-import polyglot.visit.NodeVisitor;
 import polyglot.visit.CFGBuilder;
+import polyglot.visit.AmbiguityRemover;
+import polyglot.visit.NodeVisitor;
+import polyglot.visit.TypeBuilder;
+import polyglot.visit.TypeChecker;
 
 import java.util.List;
 
@@ -71,6 +82,62 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
     Expr lower = visitChild(this.lower(), v);
     Expr upper = visitChild(this.upper(), v);
     return reconstruct(this, target, lower, upper);
+  }
+
+  @Override
+  public Node buildTypes(TypeBuilder tb) throws SemanticException {
+    PandaTypeSystem ts = (PandaTypeSystem) tb.typeSystem();
+    return this.type(ts.unknownType(this.position()));
+  }
+
+  private Mode resolveMode(Type t) {
+    // We could have a mode value, or a mode subst type
+    if (t instanceof ModeValueType) {
+      return ((ModeValueType) t).mode(); 
+    } else if (t instanceof ModeSubstType) {
+      return ((ModeSubstType) t).modeType();
+    } else {
+      System.out.println("ERROR : Bounds of snapshot have not been resolved, " + t);
+      System.exit(1);
+      return null;
+    }
+  }
+
+  @Override
+  public Node typeCheck(TypeChecker tc) throws SemanticException {
+
+    Type tt = this.target().type();
+
+    System.out.println("Target: " + this.target().getClass());
+    System.out.println("Type " + this.target().type());
+
+    if (!(tt instanceof ModeSubstType)) {
+      System.out.println("ERROR : Target type of snapshot is not a mode subst type");
+      System.exit(1);
+    }
+
+    Type lt = this.lower().type();
+    Type ut = this.upper().type();
+
+    Mode lm = this.resolveMode(lt);
+    Mode um = this.resolveMode(ut);
+
+    PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
+    if (!ts.isSubtypeModes(lm,um)) {
+      throw new SemanticException("Lower bound must be a submode of upper bound.");
+    }
+    if (lm == ts.DynamicModeType() || um == ts.DynamicModeType()) {
+      throw new SemanticException("Bounds must be concrete mode types.");
+    }
+
+    ModeTypeVariable elm = ts.createModeTypeVariable(this.position(), "_");
+    elm.upperBound(um);
+
+    // We introduce a type variable bounded by the bounds supplied in snapshot
+    ModeSubstType ct = ((ModeSubstType) tt).deepCopy();
+    ct.modeType(elm);
+
+    return this.type(ct);
   }
 
   // Term Methods

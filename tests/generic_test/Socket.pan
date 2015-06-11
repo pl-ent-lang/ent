@@ -8,6 +8,23 @@ import java.util.Map;
 
 modes {mid <: high; low <: mid;}
 
+public class Socket {
+  attribute {
+    if (true) {
+      return @mode<high>;
+    } else {
+      return @mode<low>;
+    }
+  } 
+
+  public static void main() {
+    Socket@mode<?> s1 = new Socket@mode<?>();
+    Socket@mode<*> s2 = snapshot s1 ?mode[@mode<*>,@mode<high>];
+  }
+
+}
+
+/*
 public class Socket@mode<X <= mid, Y <= X> {
 
   attribute {
@@ -19,8 +36,6 @@ public class Socket@mode<X <= mid, Y <= X> {
   }
 
   public void foo(String@mode<Y> s3) {
-    String@mode<high> sn1 = snapshot s3 ?mode[@mode<*>,@mode<*>];
-
 
     String@mode<Y> s1 = new String@mode<Y>();
     String@mode<Y> s2 = new String@mode<Y>();
@@ -43,6 +58,7 @@ public class Socket@mode<X <= mid, Y <= X> {
   }
 
 }
+*/
 
 /*
 public class Socket @mode<MX,MY> {

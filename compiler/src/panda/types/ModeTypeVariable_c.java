@@ -14,10 +14,13 @@ import java.util.Collections;
 
 public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
 
+  private static int gen = 0;
+
   protected String name;
   protected List<Mode> bounds;
   protected Mode upperBound;
   protected ClassType declaringClass;
+  protected int id;
 
   public ModeTypeVariable_c(PandaTypeSystem ts,
                             Position pos,
@@ -25,6 +28,7 @@ public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
     super(ts, pos);
     this.name = name;
     this.bounds = Collections.emptyList();
+    this.id = this.genId();
   }
 
   // Property Methods
@@ -62,6 +66,10 @@ public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
 
   public void declaringClass(ClassType declaringClass) {
     this.declaringClass = declaringClass;
+  }
+
+  public int id() {
+    return this.id;
   }
 
   public boolean inferUpperBound() {
@@ -108,6 +116,10 @@ public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
   }
 
   // Mode Methods
+  private int genId() {
+    return ModeTypeVariable_c.gen++;
+  }
+
   public int rank() {
     return this.upperBound().rank();
   }
