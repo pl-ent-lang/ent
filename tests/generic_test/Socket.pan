@@ -19,7 +19,7 @@ public class Socket {
 
   public static void main() {
     Socket@mode<?> s1 = new Socket@mode<?>();
-    Socket@mode<*> s2 = snapshot s1 ?mode[@mode<*>,@mode<high>];
+    Socket@mode<*> s2 = snapshot s1 ?mode[@mode<low>,@mode<high>];
   }
 
 }
@@ -36,6 +36,9 @@ public class Socket@mode<X <= mid, Y <= X> {
   }
 
   public void foo(String@mode<Y> s3) {
+    String@mode<high> s0 = new String@mode<high>();
+
+    s0.charAt(0);
 
     String@mode<Y> s1 = new String@mode<Y>();
     String@mode<Y> s2 = new String@mode<Y>();
@@ -55,8 +58,7 @@ public class Socket@mode<X <= mid, Y <= X> {
   public static void main(String[] args) {
     Socket@mode<mid,mid> s1 = new Socket@mode<mid,mid>();
     s1.foo(new String@mode<mid>());
-  }
-
+  } 
 }
 */
 

@@ -60,19 +60,24 @@ public class ModeOrderingInstance_c extends TypeObject_c implements ModeOrdering
       visited.put(e.getKey(), false);
     }
 
-    // Construct the rank of the modes while we traverse
-    int rank = 0;
+    // Set supertypes of all the modes
     ModeType iter = ts.WildcardModeType();
+    ModeType last = null;
+    int rank = 0;
     while(iter != null) {
       if (visited.get(iter)) {
         throw new SemanticException("Modes do not form a partial ordering!");
       }
 
       visited.put(iter, true);
-      iter.rank(rank);
+      if (last != null) {
+        last.superType(iter);
+      }
+      last = iter;
+      iter.rank(rank++);
       iter = this.modeOrdering().get(iter);
-      ++rank;
     }
+    last.superType(null);
 
     for (Map.Entry<ModeType, Boolean> e : visited.entrySet()) {
       if (!e.getValue()) {

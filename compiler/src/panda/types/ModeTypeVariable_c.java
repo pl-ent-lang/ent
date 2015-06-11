@@ -19,6 +19,7 @@ public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
   protected String name;
   protected List<Mode> bounds;
   protected Mode upperBound;
+  protected Mode lowerBound;
   protected ClassType declaringClass;
   protected int id;
 
@@ -50,6 +51,18 @@ public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
     } else {
       this.bounds = bounds;
     }
+  }
+
+  public boolean hasLowerBound() {
+    return this.lowerBound() == null;
+  }
+
+  public Mode lowerBound() {
+    return this.lowerBound;
+  }
+
+  public void lowerBound(Mode lowerBound) {
+    this.lowerBound = lowerBound;
   }
 
   public Mode upperBound() {
@@ -120,10 +133,6 @@ public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
     return ModeTypeVariable_c.gen++;
   }
 
-  public int rank() {
-    return this.upperBound().rank();
-  }
-  
   public final boolean isSubtypeOfMode(Mode mode) {
     return ((PandaTypeSystem) this.typeSystem()).isSubtypeModes(this, mode);
   }
@@ -133,11 +142,15 @@ public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
   }
 
   public boolean isSubtypeOfModeImpl(Mode mode) {
-    return ((PandaTypeSystem) this.typeSystem()).isSubtypeModes(this.upperBound(), mode);
+    PandaTypeSystem ts = (PandaTypeSystem) this.typeSystem();
+    if (ts.typeEquals(this,mode)) {
+      return true;
+    }
+    return ts.isSubtypeModes(this.upperBound(), mode);
   }
 
   public boolean isSupertypeOfModeImpl(Mode mode) {
-    return ((PandaTypeSystem) this.typeSystem()).isSupertypeModes(this.upperBound(), mode);
+    return false;
   }
 
 

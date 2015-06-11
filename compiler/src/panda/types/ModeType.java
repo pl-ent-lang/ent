@@ -5,11 +5,17 @@ import polyglot.types.Type;
 
 public interface ModeType extends Type, Mode {
   // Property Methods
-  public String mode();
-  public void mode(String mode);
+  int rank();
+  void rank(int rank);
 
-  public int rank();
-  public void rank(int rank);
+  String mode();
+  void mode(String mode);
 
-  public String compiledIdentifier(); 
+  Mode superType();
+  void superType(Mode superType);
+
+  Mode subType();
+  void subType(Mode subType);
+
+  String compiledIdentifier(); 
 }

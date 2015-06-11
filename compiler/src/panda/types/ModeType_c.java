@@ -9,16 +9,25 @@ import polyglot.types.Resolver;
 public class ModeType_c extends Type_c implements ModeType {
   private String mode;
 
-  // TODO: Might be a more firm way to do this other set an int
   private int rank;
+  private Mode superType;
+  private Mode subType;
 
   public ModeType_c(PandaTypeSystem ts, String mode) {
     super(ts);
-    this.mode = mode;
     this.rank = -1;
+    this.mode = mode;
   }
 
   // Property Methods
+  public int rank() {
+    return this.rank;
+  }
+
+  public void rank(int rank) {
+    this.rank = rank;
+  }
+
   public String mode() {
     return this.mode;
   }
@@ -27,8 +36,20 @@ public class ModeType_c extends Type_c implements ModeType {
     this.mode = mode;
   }
 
-  public void rank(int rank) {
-    this.rank = rank;
+  public Mode superType() {
+    return this.superType;
+  }
+
+  public void superType(Mode superType) {
+    this.superType = superType;
+  }
+
+  public Mode subType() {
+    return this.subType;
+  }
+
+  public void subType(Mode subType) {
+    this.subType = subType;
   }
 
   public String compiledIdentifier() {
@@ -99,10 +120,6 @@ public class ModeType_c extends Type_c implements ModeType {
   }
 
   // Mode Methods
-  public int rank() {
-    return this.rank;
-  }
-
   public final boolean isSubtypeOfMode(Mode mode) {
     return ((PandaTypeSystem) this.typeSystem()).isSubtypeModes(this, mode);
   }
@@ -112,11 +129,18 @@ public class ModeType_c extends Type_c implements ModeType {
   }
 
   public boolean isSubtypeOfModeImpl(Mode mode) {
-    return (this.rank() <= mode.rank());
+    PandaTypeSystem ts = (PandaTypeSystem) this.typeSystem();
+    if (ts.typeEquals(this,mode)) {
+      return true;
+    }
+    if (this.superType() == null) {
+      return false;
+    }
+    return ts.isSubtypeModes(this.superType(), mode);
   }
 
   public boolean isSupertypeOfModeImpl(Mode mode) {
-    return (this.rank() >= mode.rank());
+    return false;
   }
 
 

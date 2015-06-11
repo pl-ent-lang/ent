@@ -16,6 +16,9 @@ public interface ModeTypeVariable extends Type, Mode {
   List<Mode> bounds();
   void bounds(List<Mode> bounds);
 
+  Mode lowerBound();
+  void lowerBound(Mode lowerBound);
+
   Mode upperBound();
   void upperBound(Mode upperBound);
 
