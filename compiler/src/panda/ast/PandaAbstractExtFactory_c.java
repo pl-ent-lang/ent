@@ -171,5 +171,28 @@ public abstract class PandaAbstractExtFactory_c extends JL7AbstractExtFactory_c
       return postExtExpr(e);
     }
 
+    public final Ext extSnapshotExpr() {
+      Ext e = extSnapshotExprImpl();
+      if (nextExtFactory() != null) {
+        Ext e2;
+        if (nextExtFactory() instanceof PandaExtFactory) {
+          e2 = ((PandaExtFactory) nextExtFactory()).extSnapshotExpr();
+        } else {
+          e2 = nextExtFactory().extExpr();
+        }
+        e = composeExts(e, e2);
+      }
+      return postExtSnapshotExpr(e);
+    }
+
+    protected Ext extSnapshotExprImpl() { 
+      return extExprImpl();
+    }
+
+    protected Ext postExtSnapshotExpr(Ext e) { 
+      return postExtExpr(e);
+    }
+
+
 
 }

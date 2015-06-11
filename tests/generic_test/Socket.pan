@@ -19,6 +19,9 @@ public class Socket@mode<X <= mid, Y <= X> {
   }
 
   public void foo(String@mode<Y> s3) {
+    String@mode<high> sn1 = snapshot s3 ?mode[@mode<*>,@mode<*>];
+
+
     String@mode<Y> s1 = new String@mode<Y>();
     String@mode<Y> s2 = new String@mode<Y>();
 

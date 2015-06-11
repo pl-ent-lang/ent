@@ -23,5 +23,7 @@ public interface PandaExtFactory extends JL7ExtFactory {
 
   Ext extModeValue();
 
+  Ext extSnapshotExpr();
+
 
 }

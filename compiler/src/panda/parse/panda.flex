@@ -121,6 +121,7 @@ import java.util.Set;
         keywords.put("modes",         new Integer(sym.MODES));
         keywords.put("attribute",     new Integer(sym.ATTRIBUTE));
         keywords.put("blammable",     new Integer(sym.BLAMMABLE));
+        keywords.put("snapshot",      new Integer(sym.SNAPSHOT));
     }
 
     @Override
@@ -433,6 +434,7 @@ OctalEscape = \\ [0-7]
     "..."  { return op(sym.ELLIPSIS);   }
 	  "<:"   { return op(sym.PARORD);		  }
 	  "@mode" { return op(sym.MODE);		  }
+	  "?mode" { return op(sym.MODEBOUND); }
 
     /* 3.10.1 Integer Literals */
     {OctalNumeral} [lL]          { return long_lit(chop(), 8); }

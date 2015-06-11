@@ -97,6 +97,9 @@ public class ModeValue_c extends Lit_c implements ModeValue {
     return this.type(ts.createModeValueType((Mode)this.modeTypeNode().type()));
   }
 
+  // TODO : Relaxing the restriction for ease implementation of Snapshot. Need to
+  // revisit this.
+  /*
   @Override
   public Node typeCheck(TypeChecker tc) throws SemanticException {
     PandaContext c = (PandaContext) tc.context();
@@ -105,5 +108,6 @@ public class ModeValue_c extends Lit_c implements ModeValue {
     }
     return this;
   }
+  */
 
 }

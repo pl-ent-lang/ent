@@ -284,6 +284,8 @@ terminal Token BLAMMABLE;
 terminal Token MODE;
 terminal Token MODES;
 terminal Token PARORD;
+terminal Token SNAPSHOT;
+terminal Token MODEBOUND;
 non terminal ModesDecl modes_declaration_opt;
 non terminal ModesDecl modes_declaration;
 non terminal ModeOrder mode_ordering;
@@ -298,6 +300,7 @@ non terminal List<ModeTypeNode> mode_type_parameter_bounds;
 non terminal List<ModeTypeNode> mode_type_args;
 non terminal ModeTypeNode mode_type_node;
 non terminal List<ModeTypeNode> mode_type_nodes;
+non terminal Expr snapshot_expr;
 
 
 start with goal;
@@ -1326,7 +1329,10 @@ assert_statement ::=
 
 primary ::=
     primary_no_new_array:a {:  RESULT = a;  :}
- |  array_creation_expression:a {:  RESULT = a;  :};
+ |  array_creation_expression:a {:  RESULT = a;  :}
+ |  snapshot_expr:s {: 
+    RESULT = s;
+   :};
 
 primary_no_new_array ::=
     literal:a {:  RESULT = a;  :}
@@ -2612,5 +2618,12 @@ mode_type_node ::=
     RESULT = parser.nf.ModeTypeNode(parser.pos(q), "?");
   
                :};
+
+snapshot_expr ::=
+    SNAPSHOT:s expression:e MODEBOUND LBRACK expression:lb COMMA expression:ub RBRACK:r {:
+                                                                                       
+    RESULT = parser.nf.SnapshotExpr(parser.pos(s,r), e, lb, ub);
+  
+                                                                                        :};
 
 

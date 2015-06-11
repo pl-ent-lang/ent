@@ -75,4 +75,6 @@ public interface PandaNodeFactory extends JL7NodeFactory {
 
   ModeValue ModeValue(Position pos, ModeTypeNode modeTypeNode);
 
+  SnapshotExpr SnapshotExpr(Position pos, Expr target, Expr lower, Expr upper);
+
 }

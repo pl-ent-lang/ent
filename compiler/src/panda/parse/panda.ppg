@@ -28,6 +28,8 @@ terminal Token BLAMMABLE;
 terminal Token MODE; 
 terminal Token MODES;
 terminal Token PARORD;
+terminal Token SNAPSHOT;
+terminal Token MODEBOUND;
 
 non terminal ModesDecl modes_declaration_opt;
 non terminal ModesDecl modes_declaration;
@@ -48,6 +50,8 @@ non terminal List<ModeTypeNode> mode_type_args;
 
 non terminal ModeTypeNode mode_type_node;
 non terminal List<ModeTypeNode> mode_type_nodes;
+
+non terminal Expr snapshot_expr;
 
 //precedence left IDENTIFIER;
 //precedence left MODE;
@@ -338,3 +342,16 @@ mode_type_node ::=
   :}
 ;
 
+extend primary ::=
+  snapshot_expr:s
+  {:
+    RESULT = s;
+  :}
+;
+
+snapshot_expr ::=
+  SNAPSHOT:s expression:e MODEBOUND LBRACK expression:lb COMMA expression:ub RBRACK:r
+  {:
+    RESULT = parser.nf.SnapshotExpr(parser.pos(s,r), e, lb, ub);
+  :}
+;
