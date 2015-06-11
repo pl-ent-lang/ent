@@ -6,12 +6,16 @@ import polyglot.types.ReferenceType;
 import polyglot.types.TypeObject_c;
 import polyglot.util.Position;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AttributeInstance_c extends TypeObject_c implements AttributeInstance {
 
-  protected Flags flags;
+  protected Flags flags = Flags.PUBLIC;
   protected ReferenceType container;
-  private ModeType lowerBound;
-  private ModeType upperBound;
+  protected List<Mode> modes = new ArrayList<>();
+  protected Mode lowerBound;
+  protected Mode upperBound;
 
   public AttributeInstance_c(PandaTypeSystem ts, 
                              Position pos,
@@ -19,9 +23,27 @@ public class AttributeInstance_c extends TypeObject_c implements AttributeInstan
                              Flags flags) {
     super(ts, pos);
     this.container = container;
+  }
 
-    // AttributeInstance needs to set some default flags
-    this.flags = Flags.PUBLIC;
+  // Property Methods
+  protected List<Mode> modes() {
+    return this.modes;
+  }
+
+  protected Mode lowerBound() {
+    return this.lowerBound;
+  }
+
+  protected void lowerBound(Mode lowerBound) {
+    this.lowerBound = lowerBound;
+  }
+
+  protected Mode upperBound() {
+    return this.upperBound;
+  }
+
+  protected void upperBound(Mode upperBound) {
+    this.upperBound = upperBound;
   }
 
   // TypeObject Methods
@@ -46,5 +68,21 @@ public class AttributeInstance_c extends TypeObject_c implements AttributeInstan
     this.container = container;
   }
 
+  // AttributeInstance Methods
+  public void addMode(Mode mode) {
+    this.modes().add(mode);
+  }
 
+  @Override
+  public String toString() {
+    String s = "attribute<";
+    for (int i = 0; i < this.modes().size(); ++i) {
+      s += this.modes().get(i);
+      if (i + 1 < this.modes().size()) {
+        s += ",";
+      }
+    }
+    s +=  ">[" + this.lowerBound() + "," + this.upperBound() + "]";
+    return s;
+  }
 }

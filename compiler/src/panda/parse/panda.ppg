@@ -240,7 +240,7 @@ mode_type_parameter ::=
   {: 
     RESULT = parser.nf.ModeParamTypeNode(parser.pos(id), parser.nf.Id(parser.pos(id), id.getIdentifier()), null);
   :}
-| IDENTIFIER:id EXTENDS mode_type_parameter_bounds:b
+| IDENTIFIER:id LTEQ mode_type_parameter_bounds:b
   {:
     RESULT = parser.nf.ModeParamTypeNode(parser.pos(id), parser.nf.Id(parser.pos(id), id.getIdentifier()), b);
   :}

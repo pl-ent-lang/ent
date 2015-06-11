@@ -16,7 +16,9 @@ import polyglot.types.SemanticException;
 import polyglot.visit.CFGBuilder;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeBuilder;
+import polyglot.visit.AmbiguityRemover;
 import polyglot.visit.TypeChecker;
+import polyglot.util.CodeWriter;
 import polyglot.util.Position;
 
 import panda.types.PandaContext;
@@ -112,11 +114,10 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
     return this.attributeInstance(this, ai);
   }
 
-  @Override 
-  public Node typeCheck(TypeChecker tc) throws SemanticException {
+  @Override
+  public Node disambiguate(AmbiguityRemover sc) throws SemanticException {
     return this;
   }
-
 
   // Term Method
   @Override
@@ -138,5 +139,17 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
   public MemberInstance memberInstance() {
     return this.ai;
   } 
+
+  @Override
+  public void dump(CodeWriter w) {
+    super.dump(w);
+
+    if (this.attributeInstance() != null) {
+      w.allowBreak(4, " ");
+      w.begin(0);
+      w.write("(instance " + this.attributeInstance() + ")");
+      w.end();
+    }
+  }
   
 }

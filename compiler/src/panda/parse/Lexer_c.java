@@ -1298,7 +1298,7 @@ public class Lexer_c implements Lexer {
           }
         case 148: break;
         case 54: 
-          { return op(sym.PARORD );
+          { return op(sym.PARORD);
           }
         case 149: break;
         case 55: 
@@ -1472,7 +1472,7 @@ public class Lexer_c implements Lexer {
           }
         case 189: break;
         case 95: 
-          { return op(sym.MODE );
+          { return op(sym.MODE);
           }
         case 190: break;
         default: 

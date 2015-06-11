@@ -8,14 +8,17 @@ import panda.types.ModeType;
 import panda.types.ModeSubstType;
 import panda.types.PandaContext; 
 
-import polyglot.ast.Call;
+import polyglot.ast.Field;
 import polyglot.ast.Node;
+import polyglot.types.Context;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.visit.TypeChecker;
 
-public class PandaCallExt extends PandaExt {
+public class PandaFieldExt extends PandaExt {
 
+  // TODO : I do not like how this is pretty much cut and paste from PandaCallExt.
+  // I could add in a parent type to avoid the duplicate, maybe fix later.
   @Override
   public Node typeCheck(TypeChecker tc) throws SemanticException {
     if (tc.context().inStaticContext()) {
@@ -23,7 +26,7 @@ public class PandaCallExt extends PandaExt {
       return superLang().typeCheck(this.node(), tc);
     }
 
-    Call c = (Call) this.node();
+    Field c = (Field) this.node();
 
     Type t = c.target().type();
     if (!(t instanceof ModeSubstType)) {

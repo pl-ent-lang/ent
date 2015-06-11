@@ -8,22 +8,19 @@ import java.util.Map;
 
 modes {mid <: high; low <: mid;}
 
-public class Socket@mode<X, Y extends X> {
-
-  private String f1;
+public class Socket@mode<X <= mid, Y <= X> {
 
   attribute {
     if (true) {
-      return @mode<high>;
+      return @mode<X>;
     } else {
       return @mode<low>;
     }
   }
 
-  /*
-  public @mode<Z extends X> void foo(String@mode<Z> s3) {
+  public void foo(String@mode<Y> s3) {
     String@mode<Y> s1 = new String@mode<Y>();
-    String@mode<Z> s2 = new String@mode<Z>();
+    String@mode<Y> s2 = new String@mode<Y>();
 
     // Valid, s1 <: this
     s1.charAt(0);
@@ -31,15 +28,16 @@ public class Socket@mode<X, Y extends X> {
     // Invalid, this <: s2
     s2.charAt(0);
 
-    // Invalid, this <: s2
-    s3.charAt(0);
+    Data@mode<Y> d1 = new Data@mode<Y>();
+
+    // Field is encoded as a message call, should not work
+    String s4 = d1.f1;
   }
 
   public static void main(String[] args) {
-    Socket@mode<?,low> s1 = new Socket@mode<?,low>();
-    s1.foo(new String@mode<high>());
+    Socket@mode<mid,mid> s1 = new Socket@mode<mid,mid>();
+    s1.foo(new String@mode<mid>());
   }
-  */
 
 }
 
@@ -55,7 +53,7 @@ public class Socket @mode<MX,MY> {
     this.f2 = f2;
   } 
 
-  public void foo() {
+  public static void main(String[] args) {
     String @mode<high> s2 = "a";
 
     Socket@mode<low,low> socket = new Socket@mode<low,low>();

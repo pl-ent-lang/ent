@@ -13,7 +13,7 @@ public class ModeOrderingInstance_c extends TypeObject_c implements ModeOrdering
   public ModeOrderingInstance_c(PandaTypeSystem ts) {
     super(ts);
 
-    // Add bottom and ? type to ordering
+    // Add * and ? type to ordering
     this.modeOrdering.put(ts.WildcardModeType(), null);
     this.modeOrdering.put(ts.DynamicModeType(), null);
   }

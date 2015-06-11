@@ -431,8 +431,8 @@ OctalEscape = \\ [0-7]
     ">>>=" { return op(sym.URSHIFTEQ);  }
     "@"    { return op(sym.AT);         }
     "..."  { return op(sym.ELLIPSIS);   }
-	  "<:"   { return op(sym.PARORD );		}
-	  "@mode" { return op(sym.MODE );		  }
+	  "<:"   { return op(sym.PARORD);		  }
+	  "@mode" { return op(sym.MODE);		  }
 
     /* 3.10.1 Integer Literals */
     {OctalNumeral} [lL]          { return long_lit(chop(), 8); }
