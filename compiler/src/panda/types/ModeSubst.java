@@ -28,9 +28,9 @@ import java.util.Map;
 public class ModeSubst {
   private PandaTypeSystem ts;
   private Type baseType;
-  private Map<ModeTypeVariable, Mode> modeTypeMap;
+  private Map<ModeTypeVariable, Type> modeTypeMap;
 
-  public ModeSubst(Type bt, Map<ModeTypeVariable, Mode> mtMap) {
+  public ModeSubst(Type bt, Map<ModeTypeVariable, Type> mtMap) {
     this.baseType = bt;
     this.modeTypeMap = mtMap;
   }
@@ -44,13 +44,13 @@ public class ModeSubst {
     return this.baseType;
   }
 
-  public Map<ModeTypeVariable, Mode> modeTypeMap() {
+  public Map<ModeTypeVariable, Type> modeTypeMap() {
     return this.modeTypeMap;
   }
 
   public ModeSubst deepCopy() {
     return new ModeSubst(this.baseType(), 
-                         new HashMap<ModeTypeVariable, Mode>(this.modeTypeMap()));
+                         new HashMap<ModeTypeVariable, Type>(this.modeTypeMap()));
   }
 
   public Type substType(Type t) {
@@ -73,7 +73,7 @@ public class ModeSubst {
     ModeSubstType subst = type.deepCopy();
 
     Type bt = this.substType(subst.baseType());
-    Mode mt = (Mode) this.substType(subst.modeType());
+    Type mt = (Type) this.substType(subst.modeType());
 
     subst.baseType(bt);
     subst.modeType(mt);
@@ -96,7 +96,7 @@ public class ModeSubst {
 
   public Type substModeTypeVariable(ModeTypeVariable mtVar) {
     // If not in the map, don't subst, just leave
-    Mode t = this.modeTypeMap().get(mtVar);
+    Type t = this.modeTypeMap().get(mtVar);
     if (t != null) {
       return t;
     } else {

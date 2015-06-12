@@ -10,8 +10,8 @@ public class ModeType_c extends Type_c implements ModeType {
   private String mode;
 
   private int rank;
-  private Mode superType;
-  private Mode subType;
+  private Type superType;
+  private Type subType;
 
   public ModeType_c(PandaTypeSystem ts, String mode) {
     super(ts);
@@ -36,19 +36,19 @@ public class ModeType_c extends Type_c implements ModeType {
     this.mode = mode;
   }
 
-  public Mode superType() {
+  public Type superType() {
     return this.superType;
   }
 
-  public void superType(Mode superType) {
+  public void superType(Type superType) {
     this.superType = superType;
   }
 
-  public Mode subType() {
+  public Type subType() {
     return this.subType;
   }
 
-  public void subType(Mode subType) {
+  public void subType(Type subType) {
     this.subType = subType;
   }
 
@@ -90,48 +90,28 @@ public class ModeType_c extends Type_c implements ModeType {
       return true;
     }
 
-    if (!(o instanceof Mode)) {
-      return false;
-    }
-
-    Mode m = (Mode) o;
-
     PandaTypeSystem ts = (PandaTypeSystem) this.typeSystem();
-    // Either the mode types are equal, or one is a wildcard (for now)
 
-    return (this == m ||
+    return (this == o ||
             this == ts.WildcardModeType() ||
-            m == ts.WildcardModeType());
+            o == ts.WildcardModeType());
   } 
 
   @Override
-  public int hashCode() {
-    return this.mode().hashCode();
-  }
-
-  // Mode Methods
-  public final boolean isSubtypeOfMode(Mode mode) {
-    return ((PandaTypeSystem) this.typeSystem()).isSubtypeModes(this, mode);
-  }
-
-  public final boolean isSupertypeOfMode(Mode mode) {
-    return ((PandaTypeSystem) this.typeSystem()).isSupertypeModes(this, mode);
-  }
-
-  public boolean isSubtypeOfModeImpl(Mode mode) {
+  public boolean descendsFromImpl(Type o) {
     PandaTypeSystem ts = (PandaTypeSystem) this.typeSystem();
-    if (ts.typeEquals(this,mode)) {
+    if (ts.typeEquals(this,o)) {
       return true;
     }
     if (this.superType() == null) {
       return false;
     }
-    return ts.isSubtypeModes(this.superType(), mode);
+    return ts.isSubtype(this.superType(), o);
   }
 
-  public boolean isSupertypeOfModeImpl(Mode mode) {
-    return false;
+  @Override
+  public int hashCode() {
+    return this.mode().hashCode();
   }
-
 
 }

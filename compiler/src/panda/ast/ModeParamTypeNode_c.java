@@ -1,6 +1,5 @@
 package panda.ast;
 
-import panda.types.Mode;
 import panda.types.PandaTypeSystem;
 import panda.types.ModeTypeVariable;
 
@@ -80,9 +79,9 @@ public class ModeParamTypeNode_c extends TypeNode_c implements ModeParamTypeNode
 
   @Override
   public Node disambiguate(AmbiguityRemover sc) throws SemanticException {
-    List<Mode> boundTypes = new ArrayList<Mode>();
+    List<Type> boundTypes = new ArrayList<Type>();
     for (ModeTypeNode tn : this.bounds()) {
-      boundTypes.add((Mode) tn.type());
+      boundTypes.add(tn.type());
     }
     ModeTypeVariable t = (ModeTypeVariable) this.type();
     t.bounds(boundTypes);

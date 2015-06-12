@@ -3,7 +3,6 @@ package panda.ast;
 import panda.types.AttributeInstance;
 import panda.types.PandaContext;
 import panda.types.ModeValueType;
-import panda.types.Mode;
 
 import polyglot.ast.Node;
 import polyglot.ast.Return;
@@ -26,7 +25,7 @@ public class PandaReturnExt extends PandaExt {
         throw new SemanticException("Must return mode value in an attributor");
       }
 
-      Mode m = (Mode) ((ModeValueType) n.expr().type()).mode();
+      Type m = ((ModeValueType) n.expr().type()).mode();
       ((AttributeInstance) ci).addMode(m);
 
       return n;

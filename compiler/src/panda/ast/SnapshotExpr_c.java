@@ -4,7 +4,6 @@ import panda.types.PandaTypeSystem;
 import panda.types.ModeSubstType;
 import panda.types.ModeValueType;
 import panda.types.ModeTypeVariable;
-import panda.types.Mode;
 
 import polyglot.ast.Expr;
 import polyglot.ast.Expr_c;
@@ -90,7 +89,7 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
     return this.type(ts.unknownType(this.position()));
   }
 
-  private Mode resolveMode(Type t) {
+  private Type resolveMode(Type t) {
     // We could have a mode value, or a mode subst type
     if (t instanceof ModeValueType) {
       return ((ModeValueType) t).mode(); 
@@ -122,10 +121,10 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
     Type lt = this.lower().type();
     Type ut = this.upper().type();
 
-    Mode lm = this.resolveMode(lt);
-    Mode um = this.resolveMode(ut);
+    Type lm = this.resolveMode(lt);
+    Type um = this.resolveMode(ut);
 
-    if (!ts.isSubtypeModes(lm,um)) {
+    if (!ts.isSubtype(lm,um)) {
       throw new SemanticException("Lower bound must be a submode of upper bound.");
     }
     if (lm == ts.DynamicModeType() || um == ts.DynamicModeType()) {

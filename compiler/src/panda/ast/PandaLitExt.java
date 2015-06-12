@@ -1,6 +1,5 @@
 package panda.ast;
 
-import panda.types.Mode;
 import panda.types.PandaTypeSystem;
 
 import polyglot.ast.Lit;
@@ -21,7 +20,7 @@ public class PandaLitExt extends PandaExt {
     Lit n = (Lit) superLang().typeCheck(this.node(), tc);
     PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
 
-    List<Mode> mtArgs = new ArrayList<Mode>();
+    List<Type> mtArgs = new ArrayList<Type>();
     mtArgs.add(ts.WildcardModeType());
     Type st = ts.createModeSubst(n.type(), mtArgs);
 

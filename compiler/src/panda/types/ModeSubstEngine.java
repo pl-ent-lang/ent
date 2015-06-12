@@ -88,7 +88,7 @@ public class ModeSubstEngine {
   }
   */
 
-  public Type createModeSubst(Type t, List<Mode> mtArgs) throws InternalCompilerError {
+  public Type createModeSubst(Type t, List<Type> mtArgs) throws InternalCompilerError {
     if (t instanceof TypeVariable) {
       return t;
     }
@@ -100,19 +100,19 @@ public class ModeSubstEngine {
     } 
   } 
 
-  public boolean modeSubstSatisfiesConstraints(PandaClassType t, List<Mode> mtArgs) {
-    Map<ModeTypeVariable, Mode> mtMap = new HashMap<>();
+  public boolean modeSubstSatisfiesConstraints(PandaClassType t, List<Type> mtArgs) {
+    Map<ModeTypeVariable, Type> mtMap = new HashMap<>();
     List<ModeTypeVariable> mtVars = t.modeTypeVars();
     for (int i = 0; i < mtVars.size(); ++i) {
-      Mode sm = mtArgs.get(i);
+      Type sm = mtArgs.get(i);
 
       // All constraints must be satisfied (all upper bounds)
-      for (Mode vm : mtVars.get(i).bounds()) {
+      for (Type vm : mtVars.get(i).bounds()) {
         if (vm instanceof ModeTypeVariable) {
           vm = mtMap.get(vm);
         }
 
-        if (!sm.isSubtypeOfMode(vm) && sm != this.typeSystem().DynamicModeType()) {
+        if (!this.typeSystem().isSubtype(sm, vm) && sm != this.typeSystem().DynamicModeType()) {
           System.out.println("Attempting to subst with " + sm + " failing on contraint " + vm);
           return false;
         }
@@ -123,7 +123,7 @@ public class ModeSubstEngine {
     return true;
   }
   
-  public Type createModeSubstClass(Type t, List<Mode> mtArgs) {
+  public Type createModeSubstClass(Type t, List<Type> mtArgs) {
     // Check that a subst satisfies the contraints on the mode type variables,
     // otherwise flag an error
     if (!this.modeSubstSatisfiesConstraints((PandaClassType) t, mtArgs)) {
@@ -147,7 +147,7 @@ public class ModeSubstEngine {
     } 
   }
 
-  public Type createModeSubstType(Type t, List<Mode> mtArgs) {
+  public Type createModeSubstType(Type t, List<Type> mtArgs) {
     if (t instanceof JL5PrimitiveType) {
       return new ModeSubstPrimitiveType_c((JL5PrimitiveType) t, mtArgs);
 

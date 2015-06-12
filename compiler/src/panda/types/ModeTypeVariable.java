@@ -7,24 +7,26 @@ import polyglot.ext.param.types.Param;
 
 import java.util.List;
 
-public interface ModeTypeVariable extends Type, Mode {
+public interface ModeTypeVariable extends Type {
 
   // Property Methods
   String name();
   void name(String name);
 
-  List<Mode> bounds();
-  void bounds(List<Mode> bounds);
+  List<Type> bounds();
+  void bounds(List<Type> bounds);
 
-  Mode lowerBound();
-  void lowerBound(Mode lowerBound);
+  Type lowerBound();
+  void lowerBound(Type lowerBound);
   boolean hasLowerBound();
 
-  Mode upperBound();
-  void upperBound(Mode upperBound);
+  Type upperBound();
+  void upperBound(Type upperBound);
 
   ClassType declaringClass();
   void declaringClass(ClassType declaringClass);
+
+  int uniqueId();
 
   public boolean inferUpperBound();
 }

@@ -18,7 +18,7 @@ import java.util.LinkedList;
 
 public class ModeSubstTypeVariable_c extends ModeSubstReferenceType_c implements ModeSubstTypeVariable {
 
-  public ModeSubstTypeVariable_c(Type baseType, List<Mode> modeTypeArgs) {
+  public ModeSubstTypeVariable_c(Type baseType, List<Type> modeTypeArgs) {
     super(baseType, modeTypeArgs);
   } 
 
@@ -26,7 +26,7 @@ public class ModeSubstTypeVariable_c extends ModeSubstReferenceType_c implements
   public ModeSubstType deepCopy() {
     return 
       new ModeSubstTypeVariable_c(this.baseType(),
-                                  new ArrayList<Mode>(this.modeTypeArgs()));
+                                  new ArrayList<Type>(this.modeTypeArgs()));
   }
 
   // TypeVariable Methods

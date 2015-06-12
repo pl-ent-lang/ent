@@ -2,7 +2,6 @@ package panda.ast;
 
 import panda.types.AttributeInstance;
 import panda.types.PandaTypeSystem;
-import panda.types.Mode;
 
 import polyglot.ast.Lang;
 import polyglot.ast.Lit;
@@ -94,7 +93,7 @@ public class ModeValue_c extends Lit_c implements ModeValue {
     }
 
     PandaTypeSystem ts = (PandaTypeSystem) sc.typeSystem();
-    return this.type(ts.createModeValueType((Mode)this.modeTypeNode().type()));
+    return this.type(ts.createModeValueType(this.modeTypeNode().type()));
   }
 
   // TODO : Relaxing the restriction for ease implementation of Snapshot. Need to

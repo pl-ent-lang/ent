@@ -46,7 +46,7 @@ public class PandaCallExt extends PandaExt {
       throw new SemanticException("Dynamic mode type cannot receive messages. Resolve using snapshot.");
     }
 
-    if (!ts.isSubtypeModes(mt.modeType(), mtThis)) {
+    if (!ts.isSubtype(mt.modeType(), mtThis)) {
       throw new SemanticException("Cannot send message to " + t + " from mode " + mtThis.upperBound() + ".");
     }
 

@@ -24,14 +24,10 @@ public interface PandaTypeSystem extends JL7TypeSystem {
 
   ModeTypeVariable createModeTypeVariable(Position pos, String name);
 
-  ModeValueType createModeValueType(Mode mode);
+  ModeValueType createModeValueType(Type mode);
 
   // TypeSystem Methods
   ClassType wrapperClassOfModeSubstPrimitive(ModeSubstPrimitiveType t);
 
-  boolean isSubtypeModes(Mode lb, Mode ub);
-
-  boolean isSupertypeModes(Mode lb, Mode ub);
-
-  Type createModeSubst(Type bt, List<Mode> modeTypes);
+  Type createModeSubst(Type bt, List<Type> modeTypes);
 }

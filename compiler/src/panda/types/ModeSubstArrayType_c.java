@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ModeSubstArrayType_c extends ModeSubstReferenceType_c implements ModeSubstArrayType {
 
-  public ModeSubstArrayType_c(JL5ArrayType baseType, List<Mode> modeTypeArgs) {
+  public ModeSubstArrayType_c(JL5ArrayType baseType, List<Type> modeTypeArgs) {
     super(baseType, modeTypeArgs);
   }
 

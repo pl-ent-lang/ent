@@ -27,13 +27,13 @@ public abstract class ModeSubstClassType_c extends ModeSubstReferenceType_c impl
 
   private ModeSubst modeSubst = null;
 
-  public ModeSubstClassType_c(ClassType baseType, List<Mode> modeTypeArgs) {
+  public ModeSubstClassType_c(ClassType baseType, List<Type> modeTypeArgs) {
     super(baseType, modeTypeArgs);
   }
 
   public ModeSubst modeSubst() {
     if (this.modeSubst == null) {
-      Map<ModeTypeVariable, Mode> mtMap = new HashMap<>();
+      Map<ModeTypeVariable, Type> mtMap = new HashMap<>();
       for (int i = 0; i < this.modeTypeVars().size(); ++i) {
         mtMap.put(this.modeTypeVars().get(i), this.modeTypeArgs().get(i));
       }

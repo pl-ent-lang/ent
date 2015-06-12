@@ -1,5 +1,6 @@
 package panda.types;
 
+import polyglot.types.Type;
 import polyglot.types.MemberInstance;
 import polyglot.types.Flags;
 import polyglot.types.ReferenceType;
@@ -13,9 +14,9 @@ public class AttributeInstance_c extends TypeObject_c implements AttributeInstan
 
   protected Flags flags = Flags.PUBLIC;
   protected ReferenceType container;
-  protected List<Mode> modes = new ArrayList<>();
-  protected Mode lowerBound;
-  protected Mode upperBound;
+  protected List<Type> modes = new ArrayList<>();
+  protected Type lowerBound;
+  protected Type upperBound;
 
   public AttributeInstance_c(PandaTypeSystem ts, 
                              Position pos,
@@ -26,23 +27,23 @@ public class AttributeInstance_c extends TypeObject_c implements AttributeInstan
   }
 
   // Property Methods
-  protected List<Mode> modes() {
+  protected List<Type> modes() {
     return this.modes;
   }
 
-  protected Mode lowerBound() {
+  protected Type lowerBound() {
     return this.lowerBound;
   }
 
-  protected void lowerBound(Mode lowerBound) {
+  protected void lowerBound(Type lowerBound) {
     this.lowerBound = lowerBound;
   }
 
-  protected Mode upperBound() {
+  protected Type upperBound() {
     return this.upperBound;
   }
 
-  protected void upperBound(Mode upperBound) {
+  protected void upperBound(Type upperBound) {
     this.upperBound = upperBound;
   }
 
@@ -69,7 +70,7 @@ public class AttributeInstance_c extends TypeObject_c implements AttributeInstan
   }
 
   // AttributeInstance Methods
-  public void addMode(Mode mode) {
+  public void addMode(Type mode) {
     this.modes().add(mode);
   }
 

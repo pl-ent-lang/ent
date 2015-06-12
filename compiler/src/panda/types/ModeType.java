@@ -3,7 +3,7 @@ package panda.types;
 import polyglot.ast.Id;
 import polyglot.types.Type;
 
-public interface ModeType extends Type, Mode {
+public interface ModeType extends Type {
   // Property Methods
   int rank();
   void rank(int rank);
@@ -11,11 +11,11 @@ public interface ModeType extends Type, Mode {
   String mode();
   void mode(String mode);
 
-  Mode superType();
-  void superType(Mode superType);
+  Type superType();
+  void superType(Type superType);
 
-  Mode subType();
-  void subType(Mode subType);
+  Type subType();
+  void subType(Type subType);
 
   String compiledIdentifier(); 
 }

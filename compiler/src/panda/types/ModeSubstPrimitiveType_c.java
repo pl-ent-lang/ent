@@ -14,7 +14,7 @@ import java.util.List;
 public class ModeSubstPrimitiveType_c extends ModeSubstType_c implements ModeSubstPrimitiveType {
 
   public ModeSubstPrimitiveType_c(JL5PrimitiveType baseType,
-                                  List<Mode> modeTypeArgs) {
+                                  List<Type> modeTypeArgs) {
     super(baseType, modeTypeArgs);
   }
 
@@ -22,7 +22,7 @@ public class ModeSubstPrimitiveType_c extends ModeSubstType_c implements ModeSub
   public ModeSubstType deepCopy() {
     return 
       new ModeSubstPrimitiveType_c((JL5PrimitiveType) this.baseType(),
-                                   new ArrayList<Mode>(this.modeTypeArgs()));
+                                   new ArrayList<Type>(this.modeTypeArgs()));
   }
 
   // PrimitiveType Methods

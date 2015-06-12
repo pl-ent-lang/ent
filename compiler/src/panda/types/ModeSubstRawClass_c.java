@@ -25,14 +25,14 @@ import java.util.Set;
 
 public class ModeSubstRawClass_c extends ModeSubstClassType_c implements ModeSubstRawClass{
 
-  public ModeSubstRawClass_c(PandaRawClass baseType, List<Mode> modeTypeArgs) {
+  public ModeSubstRawClass_c(PandaRawClass baseType, List<Type> modeTypeArgs) {
     super(baseType, modeTypeArgs);
   }
 
   @Override
   public ModeSubstType deepCopy() {
     return new ModeSubstRawClass_c((PandaRawClass) this.baseType(),
-                                   new ArrayList<Mode>(this.modeTypeArgs()));
+                                   new ArrayList<Type>(this.modeTypeArgs()));
   }
 
   // RawClass Methods

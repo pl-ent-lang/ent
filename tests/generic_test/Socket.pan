@@ -47,7 +47,7 @@ public class Socket @mode<X> {
 }
 */
 
-public class Socket@mode<X <= mid, Y <= high> {
+public class Socket@mode<X <= mid, Y <= X> {
 
   attribute {
     if (true) {

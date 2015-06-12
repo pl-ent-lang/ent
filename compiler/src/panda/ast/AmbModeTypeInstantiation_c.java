@@ -1,7 +1,6 @@
 package panda.ast;
 
 import panda.types.PandaClassType;
-import panda.types.Mode;
 import panda.types.ModeType;
 import panda.types.ModeTypeVariable;
 import panda.types.ModeSubstParsedClassType;
@@ -103,7 +102,7 @@ public class AmbModeTypeInstantiation_c extends ModeTypeNode_c implements AmbMod
     return true;
   }
 
-  public boolean validModeTypeArgs(List<Mode> mtArgs) {
+  public boolean validModeTypeArgs(List<Type> mtArgs) {
     Type bt = this.base().type();
 
     if (!(bt instanceof PandaClassType)) {
@@ -131,14 +130,14 @@ public class AmbModeTypeInstantiation_c extends ModeTypeNode_c implements AmbMod
 
     PandaTypeSystem ts = (PandaTypeSystem) sc.typeSystem();
 
-    List<Mode> mtArgs = new ArrayList<Mode>();
+    List<Type> mtArgs = new ArrayList<Type>();
     if (this.isImplicitMode()) {
       // Throw in a wildcard type and forward to the subst engine
       mtArgs.add(ts.WildcardModeType());
     }
 
     for (ModeTypeNode n : this.modeTypeArgs()) {
-      mtArgs.add((Mode) n.type());
+      mtArgs.add(n.type());
     }
 
     if (!this.validModeTypeArgs(mtArgs)) {

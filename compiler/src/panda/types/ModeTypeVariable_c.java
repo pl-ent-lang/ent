@@ -17,11 +17,11 @@ public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
   private static int gen = 0;
 
   protected String name;
-  protected List<Mode> bounds;
-  protected Mode upperBound;
-  protected Mode lowerBound;
+  protected List<Type> bounds;
+  protected Type upperBound;
+  protected Type lowerBound;
   protected ClassType declaringClass;
-  protected int id;
+  protected int uniqueId;
 
   public ModeTypeVariable_c(PandaTypeSystem ts,
                             Position pos,
@@ -29,7 +29,7 @@ public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
     super(ts, pos);
     this.name = name;
     this.bounds = Collections.emptyList();
-    this.id = this.genId();
+    this.uniqueId = this.genId();
   }
 
   // Property Methods
@@ -41,11 +41,11 @@ public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
     this.name = name;
   }
 
-  public List<Mode> bounds() {
+  public List<Type> bounds() {
     return this.bounds;
   }
 
-  public void bounds(List<Mode> bounds) {
+  public void bounds(List<Type> bounds) {
     if (bounds == null) {
       this.bounds = Collections.emptyList();
     } else {
@@ -57,7 +57,7 @@ public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
     return this.lowerBound != null;
   }
 
-  public Mode lowerBound() {
+  public Type lowerBound() {
     if (this.lowerBound == null) {
       // Our only bound is high
       return this.upperBound();
@@ -65,15 +65,15 @@ public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
     return this.lowerBound;
   }
 
-  public void lowerBound(Mode lowerBound) {
+  public void lowerBound(Type lowerBound) {
     this.lowerBound = lowerBound;
   }
 
-  public Mode upperBound() {
+  public Type upperBound() {
     return this.upperBound;
   }
 
-  public void upperBound(Mode upperBound) {
+  public void upperBound(Type upperBound) {
     this.upperBound = upperBound;
   }
 
@@ -85,8 +85,8 @@ public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
     this.declaringClass = declaringClass;
   }
 
-  public int id() {
-    return this.id;
+  public int uniqueId() {
+    return this.uniqueId;
   }
 
   public boolean inferUpperBound() {
@@ -101,14 +101,14 @@ public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
     // We must be able to unify and select an upper bound
     // This part is really easy, just select the LUB,
     // the challenge is making sure subst satisfies constraints
-    Mode lub = null;
-    for (Mode m : this.bounds()) {
+    Type lub = null;
+    for (Type m : this.bounds()) {
       if (lub == null) {
         lub = m;
         continue;
       }
 
-      if (ts.isSubtypeModes(m, lub)) {
+      if (ts.isSubtype(m, lub)) {
         lub = m;
       }
     }
@@ -138,32 +138,26 @@ public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
     return this.name();
   }
 
-  // Mode Methods
   private int genId() {
     return ModeTypeVariable_c.gen++;
   }
 
-  public final boolean isSubtypeOfMode(Mode mode) {
-    return ((PandaTypeSystem) this.typeSystem()).isSubtypeModes(this, mode);
+  @Override
+  public boolean typeEqualsImpl(Type o) {
+    if (!(o instanceof ModeTypeVariable)) {
+      return false;
+    }
+    ModeTypeVariable tv = (ModeTypeVariable) o;
+    return this.uniqueId() == tv.uniqueId();
   }
 
-  public final boolean isSupertypeOfMode(Mode mode) {
-    return ((PandaTypeSystem) this.typeSystem()).isSupertypeModes(this, mode);
-  }
-
-  public boolean isSubtypeOfModeImpl(Mode mode) {
+  @Override
+  public boolean descendsFromImpl(Type o) {
     PandaTypeSystem ts = (PandaTypeSystem) this.typeSystem();
-    if (ts.typeEquals(this,mode)) {
+    if (ts.typeEquals(this,o)) {
       return true;
     }
-    return ts.isSubtypeModes(this.upperBound(), mode);
+    return ts.isSubtype(this.upperBound(), o);
   }
-
-  public boolean isSupertypeOfModeImpl(Mode mode) {
-    return false;
-  }
-
-
-
 
 }

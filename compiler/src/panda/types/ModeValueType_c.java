@@ -6,15 +6,14 @@ import polyglot.types.Resolver;
 
 public class ModeValueType_c extends Type_c implements ModeValueType {
 
-  private Mode mode;
+  private Type mode;
 
-  public ModeValueType_c(PandaTypeSystem ts,
-                         Mode mode) {
+  public ModeValueType_c(PandaTypeSystem ts, Type mode) {
     super(ts);
     this.mode = mode;
   }
 
-  public Mode mode() {
+  public Type mode() {
     return this.mode;
   }
 
