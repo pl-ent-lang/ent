@@ -23,8 +23,14 @@ import java.util.Map;
 
 public class ModeSubstEngine { 
   private Map<Type,Map<Type, Type>> substCache = new HashMap<>();
+  private PandaTypeSystem typeSystem;
 
-  public ModeSubstEngine() {
+  public ModeSubstEngine(PandaTypeSystem typeSystem) {
+    this.typeSystem = typeSystem;
+  }
+
+  private PandaTypeSystem typeSystem() {
+    return this.typeSystem;
   }
 
   private Map<Type,Map<Type, Type>> substCache() {
@@ -106,7 +112,7 @@ public class ModeSubstEngine {
           vm = mtMap.get(vm);
         }
 
-        if (!sm.isSubtypeOfMode(vm)) {
+        if (!sm.isSubtypeOfMode(vm) && sm != this.typeSystem().DynamicModeType()) {
           System.out.println("Attempting to subst with " + sm + " failing on contraint " + vm);
           return false;
         }

@@ -54,10 +54,14 @@ public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
   }
 
   public boolean hasLowerBound() {
-    return this.lowerBound() == null;
+    return this.lowerBound != null;
   }
 
   public Mode lowerBound() {
+    if (this.lowerBound == null) {
+      // Our only bound is high
+      return this.upperBound();
+    }
     return this.lowerBound;
   }
 
@@ -120,7 +124,13 @@ public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
 
   @Override
   public String toString() {
-    return this.name();
+    String s = "";
+    if (this.hasLowerBound()) {
+      s += this.lowerBound() + " <: ";
+    }
+    s += this.name() + " <: ";
+    s += this.upperBound();
+    return s;
   }
 
   @Override

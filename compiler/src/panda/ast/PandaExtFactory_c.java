@@ -39,6 +39,11 @@ public final class PandaExtFactory_c extends PandaAbstractExtFactory_c {
   }
 
   @Override
+  protected Ext extLocalDeclImpl() {
+    return new PandaLocalDeclExt();
+  }
+
+  @Override
   protected Ext extMethodDeclImpl() {
     return new PandaMethodDeclExt();
   }

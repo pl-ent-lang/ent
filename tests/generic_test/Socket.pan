@@ -8,7 +8,8 @@ import java.util.Map;
 
 modes {mid <: high; low <: mid;}
 
-public class Socket {
+/*
+public class Socket @mode<X> {
   attribute {
     if (true) {
       return @mode<high>;
@@ -17,15 +18,36 @@ public class Socket {
     }
   } 
 
+  public void snapSendTest() {
+    //Socket@mode<?>    s1 = new Socket@mode<?>();
+
+    Socket@mode<low> t1 = new Socket@mode<low>();
+
+    t1.snapSendTest();
+  }
+
+  /*
   public static void main() {
-    Socket@mode<?> s1 = new Socket@mode<?>();
-    Socket@mode<*> s2 = snapshot s1 ?mode[@mode<low>,@mode<high>];
+    Socket@mode<?>    s1 = new Socket@mode<?>();
+    Socket@mode<high> s2 = new Socket@mode<high>();
+    Socket@mode<low>  s3 = new Socket@mode<low>();
+
+    Socket@mode<*> t1 = snapshot s1 ?mode[@mode<low>,@mode<high>];
+    Socket@mode<*> t2 = snapshot s1 ?mode[@mode<mid>,@mode<high>];
+    Socket@mode<*> t3 = snapshot s1 ?mode[@mode<mid>,s2];
+    Socket@mode<*> t4 = snapshot s1 ?mode[@mode<*>,@mode<*>];
+
+    // Cause some errors
+    Socket@mode<*> e1 = snapshot s1 ?mode[@mode<low>,@mode<?>];
+    Socket@mode<*> e2 = snapshot s1 ?mode[s1,@mode<high>];
+    Socket@mode<*> e3 = snapshot s1 ?mode[s2,@mode<low>];
+    Socket@mode<*> e4 = snapshot s1 ?mode[s2,s3];
   }
 
 }
+*/
 
-/*
-public class Socket@mode<X <= mid, Y <= X> {
+public class Socket@mode<X <= mid, Y <= high> {
 
   attribute {
     if (true) {
@@ -60,7 +82,6 @@ public class Socket@mode<X <= mid, Y <= X> {
     s1.foo(new String@mode<mid>());
   } 
 }
-*/
 
 /*
 public class Socket @mode<MX,MY> {

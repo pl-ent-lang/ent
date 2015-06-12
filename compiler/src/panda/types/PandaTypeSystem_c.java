@@ -41,7 +41,7 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
   private final String WILDCARD_MODE_TYPE_ID = "*";
   private final String DYNAMIC_MODE_TYPE_ID = "?";
 
-  private ModeSubstEngine substEngine = new ModeSubstEngine();
+  private ModeSubstEngine substEngine = new ModeSubstEngine(this);
   
   public PandaTypeSystem_c() {
     // Setup both the bottom and dynamic mode type instances
@@ -373,7 +373,11 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
 
   // TypeSystem Methods
   public boolean isSubtypeModes(Mode lb, Mode ub) {
-    return lb.isSubtypeOfModeImpl(ub);
+    if (ub instanceof ModeTypeVariable) {
+      return this.isSubtypeModes(lb, ((ModeTypeVariable) ub).lowerBound());
+    } else {
+      return lb.isSubtypeOfModeImpl(ub);
+    }
   }
 
   public boolean isSupertypeModes(Mode lb, Mode ub) {

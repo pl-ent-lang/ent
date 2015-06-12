@@ -81,17 +81,7 @@ public class ModeType_c extends Type_c implements ModeType {
 
   @Override 
   public boolean equalsImpl(TypeObject o) {
-    if (this == o) {
-      return true;
-    }
-
-    if (!(o instanceof ModeType)) {
-      return false;
-    }
-
-    ModeType m = (ModeType) o;
-
-    return this.mode().equals(m.mode());
+    return (this == o);
   } 
 
   @Override 
@@ -100,11 +90,11 @@ public class ModeType_c extends Type_c implements ModeType {
       return true;
     }
 
-    if (!(o instanceof ModeType)) {
+    if (!(o instanceof Mode)) {
       return false;
     }
 
-    ModeType m = (ModeType) o;
+    Mode m = (Mode) o;
 
     PandaTypeSystem ts = (PandaTypeSystem) this.typeSystem();
     // Either the mode types are equal, or one is a wildcard (for now)

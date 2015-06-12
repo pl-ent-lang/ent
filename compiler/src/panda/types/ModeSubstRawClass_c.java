@@ -44,7 +44,6 @@ public class ModeSubstRawClass_c extends ModeSubstClassType_c implements ModeSub
 
   @Override
   public JL5ParsedClassType base() {
-    System.out.println("Based!");
     return ((PandaRawClass) this.baseType()).base();
   }
 

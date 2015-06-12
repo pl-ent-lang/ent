@@ -108,11 +108,14 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
 
     Type tt = this.target().type();
 
-    System.out.println("Target: " + this.target().getClass());
-    System.out.println("Type " + this.target().type());
-
     if (!(tt instanceof ModeSubstType)) {
       System.out.println("ERROR : Target type of snapshot is not a mode subst type");
+      System.exit(1);
+    }
+
+    PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
+    if (((ModeSubstType) tt).modeType() != ts.DynamicModeType()) {
+      System.out.println("ERROR : Target type of dynamic mode type (not yet impl)");
       System.exit(1);
     }
 
@@ -122,7 +125,6 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
     Mode lm = this.resolveMode(lt);
     Mode um = this.resolveMode(ut);
 
-    PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
     if (!ts.isSubtypeModes(lm,um)) {
       throw new SemanticException("Lower bound must be a submode of upper bound.");
     }
@@ -132,6 +134,7 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
 
     ModeTypeVariable elm = ts.createModeTypeVariable(this.position(), "_");
     elm.upperBound(um);
+    elm.lowerBound(lm);
 
     // We introduce a type variable bounded by the bounds supplied in snapshot
     ModeSubstType ct = ((ModeSubstType) tt).deepCopy();
@@ -148,7 +151,7 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
 
   @Override
   public <T> List<T> acceptCFG(CFGBuilder<?> v, List<T> succs) {
-    return null;
+    return succs;
   }
 
 }
