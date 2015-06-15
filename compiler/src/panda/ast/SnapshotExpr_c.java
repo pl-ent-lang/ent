@@ -2,6 +2,7 @@ package panda.ast;
 
 import panda.types.PandaTypeSystem;
 import panda.types.ModeSubstType;
+import panda.types.ModeType;
 import panda.types.ModeValueType;
 import panda.types.ModeTypeVariable;
 
@@ -12,11 +13,14 @@ import polyglot.ast.Term;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.util.Position;
+import polyglot.util.CodeWriter;
 import polyglot.visit.CFGBuilder;
 import polyglot.visit.AmbiguityRemover;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeBuilder;
 import polyglot.visit.TypeChecker;
+import polyglot.visit.PrettyPrinter;
+import polyglot.visit.Translator;
 
 import java.util.List;
 
@@ -140,6 +144,19 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
     ct.modeType(elm);
 
     return this.type(ct);
+  }
+
+  @Override
+  public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
+    Type lt = this.lower().type();
+    Type ut = this.upper().type();
+
+    ModeType lm = (ModeType) this.resolveMode(lt);
+    ModeType um = (ModeType) this.resolveMode(ut);
+
+    w.write("PANDA_Snapshot.snapshot(");
+    print(this.target(), w, tr); 
+    w.write(", PandaMode." + lm.runtimeCode() + ", PandaMode." + um.runtimeCode() +")");
   }
 
   // Term Methods

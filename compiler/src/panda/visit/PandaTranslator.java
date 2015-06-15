@@ -84,4 +84,13 @@ public class PandaTranslator extends JL5Translator {
 
   }
 
+  @Override
+  protected void writeHeader(SourceFile sfn, CodeWriter w) {
+    super.writeHeader(sfn, w);
+
+    // Dirty, but inject our runtime
+    w.write("import panda.runtime.*;");
+    w.newline(0);
+  }
+
 }

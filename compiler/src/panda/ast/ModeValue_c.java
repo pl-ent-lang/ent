@@ -2,6 +2,7 @@ package panda.ast;
 
 import panda.types.AttributeInstance;
 import panda.types.PandaTypeSystem;
+import panda.types.ModeType;
 
 import polyglot.ast.Lang;
 import polyglot.ast.Lit;
@@ -16,7 +17,9 @@ import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeBuilder;
 import polyglot.visit.TypeChecker;
 import polyglot.visit.AmbiguityRemover;
+import polyglot.visit.PrettyPrinter;
 import polyglot.util.Position;
+import polyglot.util.CodeWriter;
 
 import panda.types.PandaContext;
 
@@ -108,5 +111,11 @@ public class ModeValue_c extends Lit_c implements ModeValue {
     return this;
   }
   */
+
+
+  @Override
+  public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
+    w.write("PandaMode." + ((ModeType) this.modeTypeNode().type()).runtimeCode());
+  }
 
 }

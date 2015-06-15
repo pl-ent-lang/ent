@@ -7,16 +7,16 @@ import polyglot.types.Type_c;
 import polyglot.types.Resolver;
 
 public class ModeType_c extends Type_c implements ModeType {
-  private String mode;
+  protected String name;
 
   private int rank;
-  private Type superType;
-  private Type subType;
+  protected Type superType;
+  protected Type subType;
 
-  public ModeType_c(PandaTypeSystem ts, String mode) {
+  public ModeType_c(PandaTypeSystem ts, String name) {
     super(ts);
     this.rank = -1;
-    this.mode = mode;
+    this.name = name;
   }
 
   // Property Methods
@@ -28,12 +28,12 @@ public class ModeType_c extends Type_c implements ModeType {
     this.rank = rank;
   }
 
-  public String mode() {
-    return this.mode;
+  public String name() {
+    return this.name;
   }
 
-  public void mode(String mode) {
-    this.mode = mode;
+  public void name(String name) {
+    this.name = name;
   }
 
   public Type superType() {
@@ -52,16 +52,16 @@ public class ModeType_c extends Type_c implements ModeType {
     this.subType = subType;
   }
 
-  public String compiledIdentifier() {
-    String compiledIdentifier = "MODE_";
-    if (this.mode().equals("?")) {
-      compiledIdentifier += "DYN";
-    } else if (this.mode().equals("*")) {
-      compiledIdentifier += "WILDCARD"; 
+  public String runtimeCode() {
+    String runtimeCode = "MODE_";
+    if (this.name().equals("?")) {
+      runtimeCode += "DYN";
+    } else if (this.name().equals("*")) {
+      runtimeCode += "WILDCARD"; 
     } else {
-      compiledIdentifier += this.mode().toUpperCase();
+      runtimeCode += this.name().toUpperCase();
     }
-    return compiledIdentifier;
+    return runtimeCode;
   }
 
   @Override
@@ -71,7 +71,7 @@ public class ModeType_c extends Type_c implements ModeType {
 
   @Override
   public String toString() {
-    return this.mode();
+    return this.name();
   }
 
   @Override
@@ -107,11 +107,6 @@ public class ModeType_c extends Type_c implements ModeType {
       return false;
     }
     return ts.isSubtype(this.superType(), o);
-  }
-
-  @Override
-  public int hashCode() {
-    return this.mode().hashCode();
   }
 
 }

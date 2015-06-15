@@ -8,14 +8,11 @@ public interface ModeType extends Type {
   int rank();
   void rank(int rank);
 
-  String mode();
-  void mode(String mode);
-
   Type superType();
   void superType(Type superType);
 
   Type subType();
   void subType(Type subType);
 
-  String compiledIdentifier(); 
+  String runtimeCode(); 
 }

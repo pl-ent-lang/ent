@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
+public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
 
   private static int gen = 0;
 
@@ -26,8 +26,7 @@ public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
   public ModeTypeVariable_c(PandaTypeSystem ts,
                             Position pos,
                             String name) {
-    super(ts, pos);
-    this.name = name;
+    super(ts, name);
     this.bounds = Collections.emptyList();
     this.uniqueId = this.genId();
   }
@@ -118,11 +117,6 @@ public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
   }
 
   @Override
-  public boolean isCanonical() {
-    return true;
-  }
-
-  @Override
   public String toString() {
     String s = "";
     if (this.hasLowerBound()) {
@@ -158,6 +152,11 @@ public class ModeTypeVariable_c extends Type_c implements ModeTypeVariable {
       return true;
     }
     return ts.isSubtype(this.upperBound(), o);
+  }
+
+  @Override
+  public String runtimeCode() {
+    return ((ModeType) this.upperBound()).runtimeCode();
   }
 
 }

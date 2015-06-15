@@ -6,18 +6,27 @@ import panda.types.PandaTypeSystem;
 import panda.types.PandaParsedClassType;
 
 import polyglot.ast.ClassDecl;
+import polyglot.ast.ClassDeclOps;
+import polyglot.ast.CanonicalTypeNode;
 import polyglot.ast.Node;
 import polyglot.ast.TypeNode;
+import polyglot.ast.NodeFactory;
 import polyglot.types.Context;
 import polyglot.types.Type;
 import polyglot.types.SemanticException;
+import polyglot.types.ConstructorInstance;
+import polyglot.types.TypeSystem;
 import polyglot.util.CollectionUtil;
 import polyglot.util.Copy;
 import polyglot.util.ListUtil;
+import polyglot.util.CodeWriter;
+import polyglot.util.Position;
 import polyglot.visit.AmbiguityRemover;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeBuilder;
 import polyglot.visit.TypeChecker;
+import polyglot.visit.PrettyPrinter;
+import polyglot.visit.Translator;
 
 import java.util.Collections;
 import java.util.ArrayList;
@@ -100,5 +109,28 @@ public class PandaClassDeclExt extends PandaExt {
 
     return decl;
   } 
-  
+
+  @Override
+  public void translate(CodeWriter w, Translator tr) {
+    // A little dirty, but let's inject an implement of the Attributable
+    // interface into the class, and let the compiler do the rest of the
+    // work
+    ClassDecl n = (ClassDecl) this.node(); 
+    NodeFactory nf = tr.nodeFactory();
+    Context c = tr.context();
+
+    try {
+      Type t = (Type) c.find("panda.runtime.PANDA_Attributable");
+      CanonicalTypeNode tn = nf.CanonicalTypeNode(Position.compilerGenerated(), t);
+      List<TypeNode> l = new ArrayList<TypeNode>(n.interfaces());
+      l.add(tn);
+      n = n.interfaces(l);
+    } catch (Exception e) {
+      System.out.println("ERROR, could not find panda.runtime.PANDA_Attributable");
+      System.exit(1);
+    }
+    
+    superLang().translate(n, w, tr);
+  }
+
 }

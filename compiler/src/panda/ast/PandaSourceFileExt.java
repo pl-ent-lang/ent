@@ -10,6 +10,7 @@ import polyglot.util.CodeWriter;
 import polyglot.util.CollectionUtil;
 import polyglot.util.Copy;
 import polyglot.util.ListUtil;
+import polyglot.util.Position;
 
 
 public class PandaSourceFileExt extends PandaExt {
@@ -46,6 +47,13 @@ public class PandaSourceFileExt extends PandaExt {
     ModesDecl modesDecl = visitChild(this.modesDecl(), v);
     Node n = superLang().visitChildren(this.node(), v);
     return this.reconstruct(n, modesDecl);
+  }
+
+  @Override
+  public Node buildTypes(TypeBuilder tb) throws SemanticException {
+    // Inject our runtime into the import table
+    tb.importTable().addTypeOnDemandImport("panda.runtime", Position.compilerGenerated());
+    return superLang().buildTypes(this.node(), tb);
   }
 
 }

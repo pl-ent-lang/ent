@@ -104,7 +104,7 @@ public class ModesDecl_c extends Term_c implements ModesDecl {
                                                .entrySet()) {
       ModeType modeType = e.getKey();
       w.newline(0);
-      w.write("public static final int " + modeType.compiledIdentifier() + " = " + modeType.rank() + ";");
+      w.write("public static final int " + modeType.runtimeCode() + " = " + modeType.rank() + ";");
     }
     w.end();
     w.newline(0);

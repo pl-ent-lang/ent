@@ -18,6 +18,7 @@ import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeBuilder;
 import polyglot.visit.AmbiguityRemover;
 import polyglot.visit.TypeChecker;
+import polyglot.visit.PrettyPrinter;
 import polyglot.util.CodeWriter;
 import polyglot.util.Position;
 
@@ -119,6 +120,28 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
     return this;
   }
 
+  @Override
+  public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
+    w.begin(0);
+    w.write("public int PANDA_attribute() ");
+    w.end();
+
+    print(this.body(), w, tr);
+  }
+
+  @Override
+  public void dump(CodeWriter w) {
+    super.dump(w);
+
+    if (this.attributeInstance() != null) {
+      w.allowBreak(4, " ");
+      w.begin(0);
+      w.write("(instance " + this.attributeInstance() + ")");
+      w.end();
+    }
+  }
+
+
   // Term Method
   @Override
   public Term firstChild() {
@@ -139,17 +162,5 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
   public MemberInstance memberInstance() {
     return this.ai;
   } 
-
-  @Override
-  public void dump(CodeWriter w) {
-    super.dump(w);
-
-    if (this.attributeInstance() != null) {
-      w.allowBreak(4, " ");
-      w.begin(0);
-      w.write("(instance " + this.attributeInstance() + ")");
-      w.end();
-    }
-  }
-  
+    
 }

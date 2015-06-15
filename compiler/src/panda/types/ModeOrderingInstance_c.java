@@ -38,7 +38,7 @@ public class ModeOrderingInstance_c extends TypeObject_c implements ModeOrdering
         // Semantic Error, this means the mode was defined as a bottom
         // mode twice. Currently not allowing.
         throw new SemanticException(
-            lb.mode() + " defined multiple times as a lower bound");
+            lb + " defined multiple times as a lower bound");
       }
     }
     this.modeOrdering().put(lb, ub);

@@ -7,7 +7,7 @@ import polyglot.ext.param.types.Param;
 
 import java.util.List;
 
-public interface ModeTypeVariable extends Type {
+public interface ModeTypeVariable extends ModeType {
 
   // Property Methods
   String name();
