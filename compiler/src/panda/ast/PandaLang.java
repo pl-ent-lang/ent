@@ -1,9 +1,15 @@
 package panda.ast;
 
-import polyglot.ast.*;
+import panda.ast.*;
+import panda.visit.*;
 
-import polyglot.ext.jl7.ast.J7Lang;
+import polyglot.ast.*;
+import polyglot.ext.jl7.ast.*;
 
 public interface PandaLang extends J7Lang {
-    // TODO: Declare any dispatch methods for new AST operations
+
+  TypePreserver typePreserveEnter(Node n, TypePreserver tp);
+
+  Node typePreserve(Node n, TypePreserver tp);
+
 }

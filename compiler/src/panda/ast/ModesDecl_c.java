@@ -1,37 +1,45 @@
 package panda.ast;
 
+import panda.ast.PandaNodeFactory;
 import panda.types.ModeOrderingInstance;
 import panda.types.ModeType;
 import panda.types.PandaTypeSystem;
+import panda.translate.PandaRewriter;
 
-import polyglot.ast.Node;
-import polyglot.ast.Id;
-import polyglot.ast.Term;
-import polyglot.ast.Term_c;
+import polyglot.ast.*;
+
 import polyglot.types.SemanticException;
 import polyglot.util.Position;
+import polyglot.translate.ExtensionRewriter;
 import polyglot.visit.CFGBuilder;
+import polyglot.visit.AmbiguityRemover;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeBuilder;
+import polyglot.visit.TypeChecker;
 import polyglot.visit.PrettyPrinter;
+import polyglot.types.Context;
+import polyglot.types.Flags;
+import polyglot.types.ParsedClassType;
 import polyglot.util.CodeWriter;
+import polyglot.util.Position;
+import polyglot.util.SerialVersionUID;
 
+import polyglot.ext.jl5.qq.QQ;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class ModesDecl_c extends Term_c implements ModesDecl {
+public class ModesDecl_c extends ClassDecl_c implements ModesDecl {
+  private static final long serialVersionUID = SerialVersionUID.generate();
 
-  private final String MODES_DECL_CLASS_NAME = "PandaMode";
   protected List<ModeOrder> orders;
   protected ModeOrderingInstance oi;
 
   public ModesDecl_c(Position pos, List<ModeOrder> orders) {
-    super(pos);
+    super(pos, null, null, null, null, null);
     this.orders = orders;
-  }
-
-  public final String ModesDeclClassName() {
-    return this.MODES_DECL_CLASS_NAME;
   }
 
   // Property Methods
@@ -74,21 +82,95 @@ public class ModesDecl_c extends Term_c implements ModesDecl {
   }
 
   @Override
-  public Node buildTypes(TypeBuilder tb) throws SemanticException {
-    PandaTypeSystem pandaTypeSystem = (PandaTypeSystem) tb.typeSystem();
+  public Context enterChildScope(Node child, Context c) {
+    return c;
+  }
 
-    ModeOrderingInstance oi = pandaTypeSystem.createModeOrderingInstance();
+  @Override
+  public NodeVisitor buildTypesEnter(TypeBuilder tb) throws SemanticException {
+    return tb;
+  }
+
+  @Override
+  public Node buildTypes(TypeBuilder tb) throws SemanticException {
+    PandaTypeSystem ts = (PandaTypeSystem) tb.typeSystem();
+
+    ModeOrderingInstance oi = ts.createModeOrderingInstance();
 
     for (ModeOrder modeOrder : this.orders()) {
-      ModeType l = pandaTypeSystem.createModeType(modeOrder.lower());
-      ModeType u = pandaTypeSystem.createModeType(modeOrder.upper());
+      ModeType l = ts.createModeType(modeOrder.lower());
+      ModeType u = ts.createModeType(modeOrder.upper());
       oi.insertModeTypeOrdering(l, u);
     }
 
     oi.buildModeTypeOrdering();
-    return this.modeOrderingInstance(oi);
+    ModesDecl n = this.modeOrderingInstance(oi);
+
+    // Give it a dummy class type so the rst of the passes work, side effect
+    // of inheriting from ClassDecl_c for the rewrite
+    ParsedClassType ct = ts.createClassType();
+    ct.setMembersAdded(true);
+    ct.setSupertypesResolved(true);
+    return n.type(ct);
   }
 
+  @Override
+  public boolean isDisambiguated() {
+    return true;
+  } 
+
+  @Override
+  public Node disambiguate(AmbiguityRemover sc) throws SemanticException {
+    return this;
+  }
+
+  @Override
+  public Node typeCheck(TypeChecker tc) throws SemanticException {
+    return this;
+  }
+
+  @Override
+  public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
+    PandaRewriter prw = (PandaRewriter) rw;
+    if (!prw.translatePanda()) {
+      return super.extRewrite(rw);
+    }
+
+    polyglot.qq.QQ qq = prw.qq();
+    PandaTypeSystem ts = (PandaTypeSystem) prw.typeSystem();
+    NodeFactory nf = prw.nodeFactory();
+
+    List<ClassMember> members = new ArrayList<>();
+    for (Map.Entry<String, ModeType> e : ts.createdModeTypes().entrySet()) {
+      ModeType mt = e.getValue();
+
+      Expr expr = null;
+      if (mt == ts.DynamicModeType() || mt == ts.WildcardModeType()) {
+        expr = 
+          nf.Field(
+            Position.COMPILER_GENERATED,
+            nf.AmbReceiver(
+              Position.COMPILER_GENERATED,
+              nf.Id(Position.COMPILER_GENERATED, "PANDA_Modes")
+              ),
+            nf.Id(Position.COMPILER_GENERATED, mt.compileExpr())
+            );
+      } else {
+        expr = nf.IntLit(Position.COMPILER_GENERATED, IntLit.INT, Integer.parseInt(mt.compileExpr()));
+      }
+
+      ClassMember fd = 
+        qq.parseMember("public static final int %s = %E;", mt.compileId(), expr);
+
+      members.add(fd);
+    }
+
+    ClassDecl cd = qq.parseDecl("class PandaMode { %LM }", members);
+
+    return cd;
+  }
+
+  /*
   @Override
   public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
     w.begin(0);
@@ -104,7 +186,7 @@ public class ModesDecl_c extends Term_c implements ModesDecl {
                                                .entrySet()) {
       ModeType modeType = e.getKey();
       w.newline(0);
-      w.write("public static final int " + modeType.runtimeCode() + " = " + modeType.rank() + ";");
+      w.write("public static final int " + modeType.compileCode() + ";");
     }
     w.end();
     w.newline(0);
@@ -114,6 +196,7 @@ public class ModesDecl_c extends Term_c implements ModesDecl {
     w.end();
 
   }
+  */
 
   // Term Methods
   @Override

@@ -15,7 +15,16 @@ public class PANDA_ModeTable {
   }
 
   public static void put(Object o, int mode) {
-    PandaTypeTable.put(o, new Integer(mode));
+    PANDA_ModeTable.modeTab.put(o, new Integer(mode));
+  }
+
+  public static String modeDBG(Object o) {
+    int m = PANDA_ModeTable.get(o);
+    if (m == -1) {
+      return o.toString() + ": not in mode table";
+    } else {
+      return o.toString() + ": mode " + Integer.toString(m); 
+    }
   }
 
 

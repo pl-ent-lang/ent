@@ -59,6 +59,10 @@ public class ModeSubstParsedClassType_c extends ModeSubstClassType_c implements 
     ((PandaParsedClassType) this.baseType()).modeTypeVars(modeTypeVars);
   }
 
+  public boolean hasAttribute() {
+    return ((PandaParsedClassType) this.baseType()).hasAttribute();
+  }
+
   public AttributeInstance attributeInstance() {
     return ((PandaParsedClassType) this.baseType()).attributeInstance();
   }
@@ -66,6 +70,11 @@ public class ModeSubstParsedClassType_c extends ModeSubstClassType_c implements 
   public void attributeInstance(AttributeInstance attributeInstance) {
     ((PandaParsedClassType) this.baseType()).attributeInstance(attributeInstance);
   } 
+
+
+  public boolean hasCopy() {
+    return ((PandaParsedClassType) this.baseType()).hasCopy();
+  }
 
   // JL5ParsedClassType Methods
   @Override

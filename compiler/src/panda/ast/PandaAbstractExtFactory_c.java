@@ -61,6 +61,72 @@ public abstract class PandaAbstractExtFactory_c extends JL7AbstractExtFactory_c
       return postExtTerm(e);
     } 
 
+    public final Ext extMcaseFieldDecl() {
+      Ext e = extMcaseFieldDeclImpl();
+      if (nextExtFactory() != null) {
+        Ext e2;
+        if (nextExtFactory() instanceof PandaExtFactory) {
+          e2 = ((PandaExtFactory) nextExtFactory()).extMcaseFieldDecl();
+        } else {
+          e2 = nextExtFactory().extTerm();
+        }
+        e = composeExts(e, e2);
+      }
+      return postExtMcaseFieldDecl(e);
+    }
+
+    protected Ext extMcaseFieldDeclImpl() { 
+      return extTermImpl();
+    }
+
+    protected Ext postExtMcaseFieldDecl(Ext e) { 
+      return postExtTerm(e);
+    } 
+
+    public final Ext extMcaseLit() {
+      Ext e = extMcaseLitImpl();
+      if (nextExtFactory() != null) {
+        Ext e2;
+        if (nextExtFactory() instanceof PandaExtFactory) {
+          e2 = ((PandaExtFactory) nextExtFactory()).extMcaseLit();
+        } else {
+          e2 = nextExtFactory().extLit();
+        }
+        e = composeExts(e, e2);
+      }
+      return postExtMcaseLit(e);
+    }
+
+    protected Ext extMcaseLitImpl() { 
+      return extLitImpl();
+    }
+
+    protected Ext postExtMcaseLit(Ext e) { 
+      return postExtLit(e);
+    } 
+
+    public final Ext extMcaseTypeNode() {
+      Ext e = extMcaseTypeNodeImpl();
+      if (nextExtFactory() != null) {
+        Ext e2;
+        if (nextExtFactory() instanceof PandaExtFactory) {
+          e2 = ((PandaExtFactory) nextExtFactory()).extMcaseTypeNode();
+        } else {
+          e2 = nextExtFactory().extTypeNode();
+        }
+        e = composeExts(e, e2);
+      }
+      return postExtMcaseTypeNode(e);
+    }
+
+    protected Ext extMcaseTypeNodeImpl() { 
+      return extTypeNodeImpl();
+    }
+
+    protected Ext postExtMcaseTypeNode(Ext e) { 
+      return postExtTypeNode(e);
+    } 
+
     public final Ext extModeOrder() {
       Ext e = extModeOrderImpl();
       if (nextExtFactory() != null) {

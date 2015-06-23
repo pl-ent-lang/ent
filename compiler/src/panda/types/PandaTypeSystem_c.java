@@ -37,22 +37,25 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
 
   private ModeType WildcardModeType;
   private ModeType DynamicModeType;
-
-  private final String WILDCARD_MODE_TYPE_ID = "*";
-  private final String DYNAMIC_MODE_TYPE_ID = "?";
+  private ModeType BottomModeType;
 
   private ModeSubstEngine substEngine = new ModeSubstEngine(this);
   
   public PandaTypeSystem_c() {
     // Setup both the bottom and dynamic mode type instances
-    this.WildcardModeType = this.createModeType(this.WILDCARD_MODE_TYPE_ID);
-    this.DynamicModeType = this.createModeType(this.DYNAMIC_MODE_TYPE_ID);
+    this.BottomModeType = this.createModeType("_");
+    this.WildcardModeType = this.createModeType("*");
+    this.DynamicModeType = this.createModeType("?");
   } 
 
   // Property Methods
   public Map<String, ModeType> createdModeTypes() {
     return this.createdModeTypes;
   } 
+
+  public ModeType BottomModeType() {
+    return this.BottomModeType;
+  }
 
   public ModeType WildcardModeType() {
     return this.WildcardModeType;
@@ -361,6 +364,11 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
       Flags flags) {
     return new AttributeInstance_c(this, pos, container, flags);
   }
+
+  public McaseType createMcaseType(Type base) {
+    McaseType mcaseType = new McaseType_c(this, base);
+    return mcaseType;
+  } 
 
   public ModeType createModeType(String mode) {
     if (this.createdModeTypes().containsKey(mode)) {

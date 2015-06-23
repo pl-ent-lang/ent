@@ -119,6 +119,23 @@ public class PandaNodeFactory_c extends JL7NodeFactory_c implements PandaNodeFac
       return n;
     }
 
+    public McaseFieldDecl McaseFieldDecl(Position pos, Id field, Expr init) {
+      McaseFieldDecl n = new McaseFieldDecl_c(pos, field, init);
+      n = ext(n, extFactory().extMcaseFieldDecl());
+      return n;
+    } 
+
+    public McaseLit McaseLit(Position pos, TypeNode mcaseTypeNode, List<McaseFieldDecl> fields) {
+      McaseLit n = new McaseLit_c(pos, mcaseTypeNode, fields);
+      n = ext(n, extFactory().extMcaseLit());
+      return n;
+    }
+
+    public McaseTypeNode McaseTypeNode(Position pos, TypeNode base) {
+      McaseTypeNode n = new McaseTypeNode_c(pos, base);
+      n = ext(n, extFactory().extMcaseTypeNode());
+      return n;
+    }
 
     public ModeOrder ModeOrder(Position pos, String lower, String upper) {
       ModeOrder n = new ModeOrder_c(pos, lower, upper);

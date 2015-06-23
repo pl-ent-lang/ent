@@ -30,6 +30,7 @@ terminal Token MODES;
 terminal Token PARORD;
 terminal Token SNAPSHOT;
 terminal Token MODEBOUND;
+terminal Token MCASE;
 
 non terminal ModesDecl modes_declaration_opt;
 non terminal ModesDecl modes_declaration;
@@ -52,6 +53,11 @@ non terminal ModeTypeNode mode_type_node;
 non terminal List<ModeTypeNode> mode_type_nodes;
 
 non terminal Expr snapshot_expr;
+
+non terminal TypeNode mcase_type;
+non terminal Lit mcase_lit;
+non terminal List mcase_fields;
+non terminal McaseFieldDecl mcase_field;
 
 //precedence left IDENTIFIER;
 //precedence left MODE;
@@ -145,9 +151,13 @@ attribute_declaration ::=
 ;
 
 extend literal ::=
-  mode_value:m
+  mode_value:n
   {:
-    RESULT = m;
+    RESULT = n;
+  :}
+| mcase_lit:n
+  {:
+    RESULT = n;
   :}
 ;
 
@@ -355,3 +365,47 @@ snapshot_expr ::=
     RESULT = parser.nf.SnapshotExpr(parser.pos(s,r), e, lb, ub);
   :}
 ;
+
+extend type ::=
+  mcase_type:t
+  {:
+    RESULT = t;
+  :}
+;
+
+mcase_type ::=
+  MCASE:a LT type:t GT:b
+  {:
+    RESULT = parser.nf.McaseTypeNode(parser.pos(a,b), t);
+  :}
+;
+
+mcase_lit ::=
+  mcase_type:t LBRACE mcase_fields:f RBRACE:b
+  {:
+    RESULT = parser.nf.McaseLit(parser.pos(t,b),t,f);
+  :}
+;
+
+mcase_fields ::=
+  // empty
+  {: 
+    RESULT = new ArrayList<McaseFieldDecl>();
+  :}
+| mcase_fields:l mcase_field:m SEMICOLON
+  {:
+    l.add(m);
+    RESULT = l;
+  :}
+;
+
+mcase_field ::=
+  IDENTIFIER:m COLON expression:e 
+  {:
+    RESULT = parser.nf.McaseFieldDecl(parser.pos(m,e), 
+                                      parser.nf.Id(parser.pos(m), m.getIdentifier()), 
+                                      e);
+  :}
+;
+  
+

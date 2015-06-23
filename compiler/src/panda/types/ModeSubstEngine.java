@@ -154,6 +154,9 @@ public class ModeSubstEngine {
     } else if (t instanceof JL5ArrayType) {
       return new ModeSubstArrayType_c((JL5ArrayType) t, mtArgs);
 
+    } else if (t instanceof McaseType) {
+      return new ModeSubstMcaseType_c((McaseType) t, mtArgs);
+    
     } else {
       // Not yet impl
       throw new InternalCompilerError("Implement " + t.getClass() + "!"); 

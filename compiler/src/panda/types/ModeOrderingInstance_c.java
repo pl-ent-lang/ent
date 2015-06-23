@@ -1,5 +1,7 @@
 package panda.types;
 
+import panda.runtime.PANDA_Modes;
+
 import polyglot.types.TypeObject_c;
 import polyglot.types.SemanticException;
 
@@ -13,8 +15,8 @@ public class ModeOrderingInstance_c extends TypeObject_c implements ModeOrdering
   public ModeOrderingInstance_c(PandaTypeSystem ts) {
     super(ts);
 
-    // Add * and ? type to ordering
-    this.modeOrdering.put(ts.WildcardModeType(), null);
+    // Add _ and ? type to ordering
+    this.modeOrdering.put(ts.BottomModeType(), null);
     this.modeOrdering.put(ts.DynamicModeType(), null);
   }
 
@@ -47,9 +49,9 @@ public class ModeOrderingInstance_c extends TypeObject_c implements ModeOrdering
       this.modeOrdering().put(ub, ts.DynamicModeType());
     }
 
-    ModeType wildcardUb = this.modeOrdering().get(ts.WildcardModeType());
-    if (wildcardUb == null || wildcardUb.equals(ub)) {
-      this.modeOrdering.put(ts.WildcardModeType(), lb);
+    ModeType bottomUb = this.modeOrdering().get(ts.BottomModeType());
+    if (bottomUb == null || bottomUb.equals(ub)) {
+      this.modeOrdering.put(ts.BottomModeType(), lb);
     } 
   }
 
@@ -61,9 +63,9 @@ public class ModeOrderingInstance_c extends TypeObject_c implements ModeOrdering
     }
 
     // Set supertypes of all the modes
-    ModeType iter = ts.WildcardModeType();
+    ModeType iter = ts.BottomModeType();
     ModeType last = null;
-    int rank = 0;
+
     while(iter != null) {
       if (visited.get(iter)) {
         throw new SemanticException("Modes do not form a partial ordering!");
@@ -74,7 +76,6 @@ public class ModeOrderingInstance_c extends TypeObject_c implements ModeOrdering
         last.superType(iter);
       }
       last = iter;
-      iter.rank(rank++);
       iter = this.modeOrdering().get(iter);
     }
     last.superType(null);

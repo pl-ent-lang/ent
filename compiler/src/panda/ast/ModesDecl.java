@@ -8,7 +8,7 @@ import polyglot.ast.ClassDecl;
 
 import java.util.List;
 
-public interface ModesDecl extends Term {
+public interface ModesDecl extends ClassDecl {
 
   public List<ModeOrder> orders();
 

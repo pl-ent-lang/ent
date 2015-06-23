@@ -11,7 +11,7 @@ public class Main
       polyglot.main.Main polyglotMain = new polyglot.main.Main();
 
       try {
-          polyglotMain.start(args, new panda.ExtensionInfo());
+          polyglotMain.start(args, new panda.PandaExtensionInfo());
       }
       catch (polyglot.main.Main.TerminationException e) {
           System.err.println(e.getMessage());

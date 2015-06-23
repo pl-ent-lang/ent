@@ -1,5 +1,6 @@
 package panda.ast;
 
+import panda.translate.PandaRewriter;
 import panda.types.ModeType;
 import panda.types.ModeTypeVariable;
 import panda.types.PandaContext;
@@ -9,6 +10,7 @@ import polyglot.ast.Node;
 import polyglot.ast.TypeNode_c;
 import polyglot.util.CodeWriter;
 import polyglot.util.Position;
+import polyglot.translate.ExtensionRewriter;
 import polyglot.types.SemanticException;
 import polyglot.types.Type;
 import polyglot.visit.AmbiguityRemover;
@@ -55,6 +57,12 @@ public class ModeTypeNode_c extends TypeNode_c implements ModeTypeNode {
 
     // Invalid type
     throw new SemanticException("Unable to disambiguate ModeTypeNode!");
+  }
+
+  @Override
+  public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
+    // TODO : Come back for copy
+    return this;
   }
 
   @Override

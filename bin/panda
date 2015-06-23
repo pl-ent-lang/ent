@@ -47,6 +47,11 @@ while true; do
             verbose=1
             shift
             ;;
+        -cp)
+            shift
+            extra_cp="$extra_cp:$1"
+            shift
+            ;;
         -classpath)
             shift
             extra_cp="$extra_cp:$1"
@@ -73,18 +78,14 @@ while true; do
     esac
 done
 
-if [ -n "$ext" ]; then
-  args="-ext '$ext' $args"
-fi
+# Use this while developing
+classpath="$dir/runtime/classes"
 
+# Use this in production
+#classpath="$dir/lib/$ext-rt.jar"
 
-classpath="$dir/compiler/classes:$dir/runtime/classes:$dir/lib/polyglot.jar:$dir/lib/java_cup.jar"
-if [ -n "$ext" ]; then
-  classpath="$classpath:$dir/lib/$ext.jar"
-fi
-classpath="$classpath:$extra_cp"
+classpath="$classpath$extra_cp"
 classpath=`fixclasspath "$classpath"`
-
 
 if [ "$usage" = 1 ]; then
   usage

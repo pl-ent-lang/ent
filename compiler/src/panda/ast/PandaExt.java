@@ -1,10 +1,11 @@
 package panda.ast;
 
-import polyglot.ast.*;
-import polyglot.util.InternalCompilerError;
-import polyglot.util.SerialVersionUID;
+import panda.visit.*;
 
-public class PandaExt extends Ext_c {
+import polyglot.ast.*;
+import polyglot.util.*;
+
+public class PandaExt extends Ext_c implements PandaOps {
     private static final long serialVersionUID = SerialVersionUID.generate();
 
     public static PandaExt ext(Node n) {
@@ -24,5 +25,14 @@ public class PandaExt extends Ext_c {
         return PandaLang_c.instance;
     }
 
-    // TODO:  Override operation methods for overridden AST operations.
+    @Override
+    public TypePreserver typePreserveEnter(TypePreserver tp) {
+      return tp;
+    }
+
+    @Override
+    public Node typePreserve(TypePreserver tp) {
+      return this.node();
+    }
+
 }

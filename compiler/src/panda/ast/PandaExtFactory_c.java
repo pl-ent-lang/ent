@@ -14,6 +14,11 @@ public final class PandaExtFactory_c extends PandaAbstractExtFactory_c {
   }
 
   @Override 
+  protected Ext extBlockImpl() {
+    return new PandaBlockExt();
+  } 
+
+  @Override 
   protected Ext extCallImpl() {
     return new PandaCallExt();
   } 

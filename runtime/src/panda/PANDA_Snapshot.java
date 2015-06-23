@@ -8,17 +8,15 @@ public class PANDA_Snapshot {
     int mode = o.PANDA_attribute();
 
     if (mode < lb && lb != PANDA_Modes.WILDCARD_MODE) {
-      System.out.println("Failed to resolve");
-      System.exit(1);
+      throw new PANDA_RuntimeException("Dynamic mode failed to resolve!", mode, lb, ub);
     }
 
     if (mode > ub && ub != PANDA_Modes.WILDCARD_MODE) {
-      System.out.println("Failed to resolve");
-      System.exit(1);
+      throw new PANDA_RuntimeException("Dynamic mode failed to resolve!", mode, lb, ub);
     }
 
-    //Object clone = o.clone();
-    PandaTypeTable.put(o, new Integer(mode));
+    T copy = (T) o.PANDA_copy();
+    PANDA_ModeTable.put(o, new Integer(mode));
     return o;
   }
 

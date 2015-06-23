@@ -1,17 +1,20 @@
 package panda.ast;
 
+import panda.translate.PandaRewriter;
 import panda.types.AttributeInstance;
 import panda.types.PandaTypeSystem;
 import panda.types.ModeType;
+import panda.types.ModeValueType;
 
 import polyglot.ast.Lang;
 import polyglot.ast.Lit;
 import polyglot.ast.Lit_c;
 import polyglot.ast.Node;
+import polyglot.ast.NodeFactory;
 import polyglot.ast.Term;
-
+import polyglot.ast.Field;
+import polyglot.translate.ExtensionRewriter;
 import polyglot.types.SemanticException;
-
 import polyglot.visit.CFGBuilder;
 import polyglot.visit.NodeVisitor;
 import polyglot.visit.TypeBuilder;
@@ -74,8 +77,7 @@ public class ModeValue_c extends Lit_c implements ModeValue {
       v.visitCFG(this.modeTypeNode(), this, EXIT);
     }
     return succs;
-  }
-
+  } 
 
   // Lit Methods
   @Override
@@ -112,10 +114,34 @@ public class ModeValue_c extends Lit_c implements ModeValue {
   }
   */
 
+  @Override
+  public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
+    PandaRewriter pwr = (PandaRewriter) rw;
+    NodeFactory nf = pwr.nodeFactory();
+
+    if (pwr.translatePanda()) {
+      ModeValueType t = (ModeValueType) this.type();
+      ModeType mt = (ModeType) t.mode();
+
+      Field n = 
+        nf.Field(
+          Position.COMPILER_GENERATED,
+          nf.AmbReceiver(
+            Position.COMPILER_GENERATED,
+            nf.Id(Position.COMPILER_GENERATED, "PandaMode")
+            ),
+          nf.Id(Position.COMPILER_GENERATED, mt.runtimeCode())
+          );
+
+      return n;
+    }
+
+    return super.extRewrite(rw);
+  }
 
   @Override
   public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
-    w.write("PandaMode." + ((ModeType) this.modeTypeNode().type()).runtimeCode());
+    w.write(((ModeType) this.modeTypeNode().type()).runtimeCode());
   }
 
 }

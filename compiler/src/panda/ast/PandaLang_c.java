@@ -1,5 +1,8 @@
 package panda.ast;
 
+import panda.ast.*;
+import panda.visit.*;
+
 import polyglot.ast.*;
 import polyglot.util.InternalCompilerError;
 
@@ -31,6 +34,16 @@ public class PandaLang_c extends J7Lang_c implements PandaLang {
         return pandaExt(n);
     }
 
-    // TODO:  Implement dispatch methods for new AST operations.
-    // TODO:  Override *Ops methods for AST nodes with new extension nodes.
+    protected PandaOps PandaOps(Node n) {
+      return pandaExt(n);
+    }
+
+    public final TypePreserver typePreserveEnter(Node n, TypePreserver tp) {
+      return this.PandaOps(n).typePreserveEnter(tp);
+    }
+
+    public final Node typePreserve(Node n, TypePreserver tp) {
+      return this.PandaOps(n).typePreserve(tp);
+    }
+
 }

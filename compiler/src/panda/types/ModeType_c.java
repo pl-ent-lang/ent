@@ -1,5 +1,7 @@
 package panda.types;
 
+import panda.runtime.PANDA_Modes;
+
 import polyglot.ast.Id;
 import polyglot.types.TypeObject;
 import polyglot.types.Type;
@@ -9,23 +11,16 @@ import polyglot.types.Resolver;
 public class ModeType_c extends Type_c implements ModeType {
   protected String name;
 
-  private int rank;
+  private int uniqueId;
+  private static int uniqueIdGen = PANDA_Modes.FREE_MODE;
+
   protected Type superType;
   protected Type subType;
 
   public ModeType_c(PandaTypeSystem ts, String name) {
     super(ts);
-    this.rank = -1;
+    this.uniqueId = ModeType_c.uniqueIdGen++;
     this.name = name;
-  }
-
-  // Property Methods
-  public int rank() {
-    return this.rank;
-  }
-
-  public void rank(int rank) {
-    this.rank = rank;
   }
 
   public String name() {
@@ -52,16 +47,44 @@ public class ModeType_c extends Type_c implements ModeType {
     this.subType = subType;
   }
 
-  public String runtimeCode() {
-    String runtimeCode = "MODE_";
+  public String compileId() {
     if (this.name().equals("?")) {
-      runtimeCode += "DYN";
+      return "DYNAMIC_MODE";
     } else if (this.name().equals("*")) {
-      runtimeCode += "WILDCARD"; 
+      return "WILDCARD_MODE";
     } else {
-      runtimeCode += this.name().toUpperCase();
+      return this.name().toUpperCase() + "_MODE";
     }
-    return runtimeCode;
+  }
+
+  public String compileExpr() {
+    if (this.name().equals("?")) {
+      return "DYNAMIC_MODE";
+    } else if (this.name().equals("*")) {
+      return "WILDCARD_MODE";
+    } else {
+      return Integer.toString(this.uniqueId);
+    }
+  }
+
+  public String compileCode() {
+    if (this.name().equals("?")) {
+      return "DYNAMIC_MODE = PANDA_Modes.DYNAMIC_MODE";
+    } else if (this.name().equals("*")) {
+      return "WILDCARD_MODE = PANDA_Modes.WILDCARD_MODE";
+    } else {
+      return this.name().toUpperCase() + "_MODE = " + this.uniqueId;
+    }
+  } 
+
+  public String runtimeCode() {
+    if (this.name().equals("?")) {
+      return "DYNAMIC_MODE";
+    } else if (this.name().equals("*")) {
+      return "WILDCARD_MODE"; 
+    } else {
+      return this.name().toUpperCase() + "_MODE";
+    }
   }
 
   @Override

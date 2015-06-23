@@ -14,19 +14,23 @@ import polyglot.util.*;
 import java.io.*;
 import java.util.Set;
 
-import polyglot.ext.jl7.JL7ExtensionInfo;
 import polyglot.ext.jl5.ast.JL5ExtFactory_c;
+import polyglot.ext.jl5.translate.JL5OutputExtensionInfo;
+
+import polyglot.ext.jl7.JL7ExtensionInfo;
 import polyglot.ext.jl7.ast.JL7ExtFactory_c;
 
 /**
  * Extension information for panda extension.
  */
-public class ExtensionInfo extends JL7ExtensionInfo {
+public class PandaExtensionInfo extends JL7ExtensionInfo {
     static {
         // force Topics to load
         @SuppressWarnings("unused")
         Topics t = new Topics();
     }
+
+    protected polyglot.frontend.ExtensionInfo outputExtensionInfo;
 
     @Override
     public String defaultFileExtension() {
@@ -74,5 +78,17 @@ public class ExtensionInfo extends JL7ExtensionInfo {
         return new PandaScheduler(this);
     }
 
+    @Override
+    public Options createOptions() {
+      return new PandaOptions(this);
+    }
+
+    @Override
+    public polyglot.frontend.ExtensionInfo outputExtensionInfo() {
+      if (this.outputExtensionInfo == null) {
+        this.outputExtensionInfo = new JL5OutputExtensionInfo(this);
+      }
+      return outputExtensionInfo;
+    }
 
 }

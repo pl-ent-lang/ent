@@ -1,26 +1,14 @@
 package panda.ast;
 
-import panda.types.PandaTypeSystem;
-import panda.types.ModeSubstType;
-import panda.types.ModeType;
-import panda.types.ModeValueType;
-import panda.types.ModeTypeVariable;
+import panda.types.*;
+import panda.translate.*;
 
-import polyglot.ast.Expr;
-import polyglot.ast.Expr_c;
-import polyglot.ast.Node;
-import polyglot.ast.Term;
-import polyglot.types.SemanticException;
-import polyglot.types.Type;
-import polyglot.util.Position;
-import polyglot.util.CodeWriter;
-import polyglot.visit.CFGBuilder;
-import polyglot.visit.AmbiguityRemover;
-import polyglot.visit.NodeVisitor;
-import polyglot.visit.TypeBuilder;
-import polyglot.visit.TypeChecker;
-import polyglot.visit.PrettyPrinter;
-import polyglot.visit.Translator;
+import polyglot.ast.*;
+import polyglot.types.*;
+import polyglot.translate.*;
+import polyglot.util.*;
+import polyglot.visit.*;
+import polyglot.qq.*;
 
 import java.util.List;
 
@@ -147,6 +135,28 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
   }
 
   @Override
+  public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
+    PandaRewriter prw = (PandaRewriter) rw;
+    NodeFactory nf = prw.nodeFactory();
+    QQ qq = prw.qq();
+
+    if (!prw.translatePanda()) {
+      return super.extRewrite(rw);
+    }
+
+    Expr expr = 
+      qq.parseExpr(
+        "PANDA_Snapshot.snapshot(%E, %E, %E)", 
+        this.target(), 
+        this.lower(), 
+        this.upper()
+        );
+
+    return expr;
+  }
+
+  /*
+  @Override
   public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
     Type lt = this.lower().type();
     Type ut = this.upper().type();
@@ -156,8 +166,9 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
 
     w.write("PANDA_Snapshot.snapshot(");
     print(this.target(), w, tr); 
-    w.write(", PandaMode." + lm.runtimeCode() + ", PandaMode." + um.runtimeCode() +")");
+    w.write(", " + lm.runtimeCode() + ", " + um.runtimeCode() +")");
   }
+  */
 
   // Term Methods
   @Override

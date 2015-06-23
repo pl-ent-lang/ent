@@ -1,12 +1,6 @@
 package panda.ast;
 
-import polyglot.ast.Block;
-
-import polyglot.ast.CodeDecl;
+import polyglot.ast.*;
 
 public interface AttributeDecl extends CodeDecl {
-
-  Block body();
-  AttributeDecl body(Block body);
-
 }

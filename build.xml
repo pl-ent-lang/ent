@@ -152,7 +152,7 @@
        targets
        ****************************************  -->
 
-    <target name="compile-all" depends="compiler,runtime" description="Build the compiler and libraries"/>
+    <target name="compile-all" depends="runtime,compiler" description="Build the compiler and libraries"/>
 
     <target name="compiler" depends="init,configure">
         <antcall target="standard-ext">

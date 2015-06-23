@@ -13,10 +13,13 @@ public interface PandaTypeSystem extends JL7TypeSystem {
   Map<String, ModeType> createdModeTypes();
 
   ModeType WildcardModeType();
+  ModeType BottomModeType();
   ModeType DynamicModeType();
 
   // Factory Methods 
   AttributeInstance createAttributeInstance(Position pos, ReferenceType container, Flags flags);
+
+  McaseType createMcaseType(Type base);
 
   ModeType createModeType(String mode);
 

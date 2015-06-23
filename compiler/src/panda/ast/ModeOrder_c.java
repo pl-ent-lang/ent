@@ -4,9 +4,11 @@ import panda.types.ModeType;
 import panda.types.PandaTypeSystem;
 
 import polyglot.ast.Node;
+import polyglot.ast.NodeFactory;
 import polyglot.ast.Id;
 import polyglot.ast.Term;
 import polyglot.ast.Term_c;
+import polyglot.translate.ExtensionRewriter;
 import polyglot.types.SemanticException;
 import polyglot.util.Position;
 import polyglot.visit.CFGBuilder;
@@ -54,6 +56,12 @@ public class ModeOrder_c extends Term_c implements ModeOrder {
     n = this.copyIfNeeded(n);
     n.upper = upper;
     return n;
+  }
+
+  // Node Methods
+  @Override
+  public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
+    return null;
   }
 
   // Term Methods

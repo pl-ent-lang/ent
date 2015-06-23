@@ -64,6 +64,12 @@ public interface PandaNodeFactory extends JL7NodeFactory {
                                                     List<ModeTypeNode> modeTypeArgs);
 
   AttributeDecl AttributeDecl(Position pos, Block body);
+
+  McaseFieldDecl McaseFieldDecl(Position pos, Id field, Expr init);
+
+  McaseLit McaseLit(Position pos, TypeNode mcaseTypeNode, List<McaseFieldDecl> fields);
+
+  McaseTypeNode McaseTypeNode(Position pos, TypeNode base);
   
   ModeOrder ModeOrder(Position pos, String lower, String upper);
 

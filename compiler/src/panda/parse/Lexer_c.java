@@ -571,6 +571,7 @@ public class Lexer_c implements Lexer {
         keywords.put("attribute",     new Integer(sym.ATTRIBUTE));
         keywords.put("blammable",     new Integer(sym.BLAMMABLE));
         keywords.put("snapshot",      new Integer(sym.SNAPSHOT));
+        keywords.put("mcase",         new Integer(sym.MCASE));
     }
 
     @Override

@@ -1,31 +1,14 @@
 package panda.ast;
 
-import polyglot.ast.Term_c;
+import panda.types.*;
+import panda.translate.*;
 
-import polyglot.ast.Formal;
-import polyglot.ast.Term;
-import polyglot.ast.Node;
-import polyglot.ast.Block;
-import polyglot.ast.Id;
-import polyglot.ast.TypeNode; 
-import polyglot.types.Context;
-import polyglot.types.CodeInstance;
-import polyglot.types.Flags;
-import polyglot.types.MemberInstance;
-import polyglot.types.SemanticException;
-import polyglot.visit.CFGBuilder;
-import polyglot.visit.NodeVisitor;
-import polyglot.visit.TypeBuilder;
-import polyglot.visit.AmbiguityRemover;
-import polyglot.visit.TypeChecker;
-import polyglot.visit.PrettyPrinter;
-import polyglot.util.CodeWriter;
-import polyglot.util.Position;
-
-import panda.types.PandaContext;
-import panda.types.PandaParsedClassType;
-import panda.types.PandaTypeSystem;
-import panda.types.AttributeInstance;
+import polyglot.ast.*;
+import polyglot.translate.*;
+import polyglot.types.*;
+import polyglot.visit.*;
+import polyglot.util.*;
+import polyglot.qq.*;
 
 import java.util.List;
 
@@ -121,6 +104,23 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
   }
 
   @Override
+  public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
+    PandaRewriter prw = (PandaRewriter) rw;
+    NodeFactory nf = (NodeFactory) prw.nodeFactory();
+    QQ qq = prw.qq();
+
+    if (!prw.translatePanda()) {
+      return super.extRewrite(rw);
+    }
+
+    ClassMember md = 
+      qq.parseMember("public int PANDA_attribute() { %LS }", this.body().statements());
+
+    return md;
+  }
+
+  /*
+  @Override
   public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
     w.begin(0);
     w.write("public int PANDA_attribute() ");
@@ -128,6 +128,7 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
 
     print(this.body(), w, tr);
   }
+  */
 
   @Override
   public void dump(CodeWriter w) {

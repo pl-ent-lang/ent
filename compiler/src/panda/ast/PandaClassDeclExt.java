@@ -1,38 +1,23 @@
 package panda.ast;
 
-import panda.types.PandaContext;
-import panda.types.ModeTypeVariable;
-import panda.types.PandaTypeSystem;
-import panda.types.PandaParsedClassType;
+import panda.translate.*;
+import panda.types.*;
 
-import polyglot.ast.ClassDecl;
-import polyglot.ast.ClassDeclOps;
-import polyglot.ast.CanonicalTypeNode;
-import polyglot.ast.Node;
-import polyglot.ast.TypeNode;
-import polyglot.ast.NodeFactory;
-import polyglot.types.Context;
-import polyglot.types.Type;
-import polyglot.types.SemanticException;
-import polyglot.types.ConstructorInstance;
-import polyglot.types.TypeSystem;
-import polyglot.util.CollectionUtil;
-import polyglot.util.Copy;
-import polyglot.util.ListUtil;
-import polyglot.util.CodeWriter;
-import polyglot.util.Position;
-import polyglot.visit.AmbiguityRemover;
-import polyglot.visit.NodeVisitor;
-import polyglot.visit.TypeBuilder;
-import polyglot.visit.TypeChecker;
-import polyglot.visit.PrettyPrinter;
-import polyglot.visit.Translator;
+import polyglot.ast.*;
+import polyglot.types.*;
+import polyglot.util.*;
+import polyglot.visit.*;
+import polyglot.translate.*;
+import polyglot.qq.*;
 
-import java.util.Collections;
+import polyglot.ext.jl5.ast.*;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.HashSet;
 
 public class PandaClassDeclExt extends PandaExt {
 
@@ -111,26 +96,64 @@ public class PandaClassDeclExt extends PandaExt {
   } 
 
   @Override
-  public void translate(CodeWriter w, Translator tr) {
-    // A little dirty, but let's inject an implement of the Attributable
-    // interface into the class, and let the compiler do the rest of the
-    // work
-    ClassDecl n = (ClassDecl) this.node(); 
-    NodeFactory nf = tr.nodeFactory();
-    Context c = tr.context();
+  public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
+    PandaRewriter prw = (PandaRewriter) rw;
+    NodeFactory nf = (NodeFactory) prw.nodeFactory();
+    QQ qq = prw.qq();
 
-    try {
-      Type t = (Type) c.find("panda.runtime.PANDA_Attributable");
-      CanonicalTypeNode tn = nf.CanonicalTypeNode(Position.compilerGenerated(), t);
-      List<TypeNode> l = new ArrayList<TypeNode>(n.interfaces());
-      l.add(tn);
-      n = n.interfaces(l);
-    } catch (Exception e) {
-      System.out.println("ERROR, could not find panda.runtime.PANDA_Attributable");
-      System.exit(1);
+    if (!prw.translatePanda()) {
+      return super.extRewrite(rw);
     }
-    
-    superLang().translate(n, w, tr);
+
+    ClassDecl decl = (ClassDecl) this.node();
+    PandaParsedClassType ct = (PandaParsedClassType) decl.type();
+    ClassDecl n = (ClassDecl) super.extRewrite(rw);
+
+    // 1. Generate the PANDA_Attributable interface
+    if (ct.hasAttribute()) {
+      List<TypeNode> interfaces = new ArrayList<>(decl.interfaces());
+      interfaces.add(qq.parseType("PANDA_Attributable"));
+      n = n.interfaces(interfaces);
+    }
+
+    // 2. Generate a builtin PANDA_copy method
+    if (ct.hasAttribute() && !ct.hasCopy()) {
+      List<Stmt> stmts = new ArrayList<>();
+      // 2.1. Create a new expression for a shallow copy
+      stmts.add(
+        qq.parseStmt(
+          "%T PANDA_ld = new %T();", 
+          qq.parseType(decl.name()),
+          qq.parseType(decl.name())
+          )
+        );
+
+      // 2.2. Copy each member of the class manually
+      for (ClassMember m : decl.body().members()) {
+        if (!(m instanceof FieldDecl)) {
+          continue;
+        }
+        FieldDecl fd = (FieldDecl) m;
+        if (fd.flags().isStatic()) {
+          continue;
+        }
+        stmts.add(qq.parseStmt("PANDA_ld.%s = this.%s;", fd.name(), fd.name()));
+      }
+
+      // 2.3. Simply return the shallow copy
+      stmts.add(qq.parseStmt("return PANDA_ld;"));
+
+      ClassMember md = qq.parseMember("public PANDA_Attributable PANDA_copy() { %LS }", stmts);
+
+      // Handle the immutable part of polyglot
+      ClassBody body = n.body();
+      List<ClassMember> members = new ArrayList<>(body.members());
+      members.add(md);
+      body = body.members(members);
+      n = n.body(body);
+    } 
+
+    return n;
   }
 
 }

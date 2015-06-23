@@ -39,12 +39,20 @@ public class PandaParsedClassType_c extends JL5ParsedClassType_c implements Pand
     this.modeTypeVars = modeTypeVars;
   }
 
+  public boolean hasAttribute() {
+    return (this.attributeInstance() != null);
+  }
+
   public AttributeInstance attributeInstance() {
     return this.attributeInstance;
   }
 
   public void attributeInstance(AttributeInstance attributeInstance) {
     this.attributeInstance = attributeInstance;
+  }
+
+  public boolean hasCopy() {
+    return false;
   }
 
 }

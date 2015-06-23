@@ -1,19 +1,14 @@
 package panda.ast;
 
-import panda.types.PandaTypeSystem;
-import panda.types.ModeType;
-import panda.types.ModeSubstType;
+import panda.types.*;
+import panda.translate.*;
 
-import polyglot.ast.Node;
-import polyglot.ast.LocalDecl;
-import polyglot.ast.TypeNode;
-import polyglot.types.ReferenceType;
-import polyglot.types.Type;
-import polyglot.types.SemanticException;
-import polyglot.visit.TypeChecker;
-import polyglot.visit.Translator;
-import polyglot.visit.PrettyPrinter;
-import polyglot.util.CodeWriter;
+import polyglot.ast.*;
+import polyglot.translate.*;
+import polyglot.types.*;
+import polyglot.visit.*;
+import polyglot.util.*;
+import polyglot.qq.*;
 
 public class PandaLocalDeclExt extends PandaExt {
 
@@ -42,29 +37,50 @@ public class PandaLocalDeclExt extends PandaExt {
     return superLang().typeCheck(n, tc);
   }
 
+  /*
   @Override
-  public void translate(CodeWriter w, Translator tr) {
-    superLang().translate(this.node(), w, tr);
+  public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
+    PandaRewriter prw = (PandaRewriter) rw;
+    NodeFactory nf = prw.nodeFactory();
+    QQ qq = prw.qq();
+
+    if (!prw.translatePanda()) {
+      return super.extRewrite(rw);
+    }
 
     // Need to save information in the type table. Let optimization
     // passes remove uneeded information, assume that anything
     // that reaches this stage must be saved.
-    LocalDecl n = (LocalDecl) this.node();
+    LocalDecl decl = (LocalDecl) this.node();
 
-    ModeSubstType st = (ModeSubstType) n.type().type();
+    Type t = decl.type().type();
+    if (!(t instanceof ModeSubstType)) {
+      return super.extRewrite(rw);
+    }
+
+    ModeSubstType st = (ModeSubstType) t;
 
     if (!(st.baseType() instanceof ReferenceType)) {
       // Only need type information for types that can have
       // mcases, just exit for now, optimztion pass will fix later.
-      return;
+      return super.extRewrite(rw);
     }
+
+    // Peek down, don't generate type table information if
+    // the init is a Snapshot
+    if (decl.init() instanceof SnapshotExpr) {
+      return super.extRewrite(rw);
+    }
+
+    LocalDecl n = (LocalDecl) super.extRewrite(rw);
 
     ModeType mt = (ModeType) st.modeType();
     w.newline();
-    w.write("PandaTypeTable.put(");
-    w.write(n.name() + ", PandaMode." + mt.runtimeCode());
+    w.write("PANDA_ModeTable.put(");
+    w.write(n.name() + ", " + mt.runtimeCode());
     w.write(");");
 
   }
+  */
 
 }
