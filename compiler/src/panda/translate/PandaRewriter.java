@@ -19,7 +19,7 @@ public class PandaRewriter extends ExtensionRewriter {
   }
 
   public boolean translatePanda() {
-    return true;
+    return this.translatePanda;
   }
 
 }

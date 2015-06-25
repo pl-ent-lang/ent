@@ -24,14 +24,15 @@ public class PandaOptions extends JL5Options {
 
     flags.add(
         new Switch(
-          new String[]{ "-translatePanda", "--translatePanda" },
-          "Translate Panda features to Java features"
+          new String[]{ "-dontTranslatePanda", "--dontTranslatePanda" },
+          "Do not translate Panda features to Java features",
+          false
           ));
   }
 
   @Override
   protected void handleArg(Arg<?> arg) throws UsageError {
-    if (arg.flag().ids().contains("-translatePanda")) {
+    if (arg.flag().ids().contains("-dontTranslatePanda")) {
       this.translatePanda = (Boolean) arg.value();
     } else {
       super.handleArg(arg);

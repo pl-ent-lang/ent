@@ -60,6 +60,25 @@ public abstract class ModeSubstReferenceType_c extends ModeSubstType_c implement
   }
 
   @Override
+  public boolean typeEqualsImpl(Type ancestor) {
+    // TODO : We will let types that have not be subst with a mode
+    // "see through" and check for equality for now and flag a
+    // warning.
+
+    if (!(ancestor instanceof ModeSubstType)) {
+      System.out.println("WARNING: typeEqualsImpl   --- " + this + " -- " + ancestor);
+      System.out.println("         classes          --- " + this.getClass() + " -- " + ancestor.getClass());
+      return this.ts.typeEquals(this.baseType(), ancestor);
+    } 
+
+    // TODO : For now, force mode types to be the same, ad in proper subtyping
+    // later
+    ModeSubstType p = (ModeSubstType) ancestor;
+    return this.ts.typeEquals(this.baseType(), p.baseType()) && this.modeTypeArgsEquals(p);
+  }
+
+
+  @Override
   public boolean descendsFromImpl(Type ancestor) {
     // TODO : We will let types that have not be subst with a mode
     // "see through" and check for equality for now and flag a
@@ -74,8 +93,19 @@ public abstract class ModeSubstReferenceType_c extends ModeSubstType_c implement
     // TODO : For now, force mode types to be the same, ad in proper subtyping
     // later
     ModeSubstType p = (ModeSubstType) ancestor;
-    return this.ts.descendsFrom(this.baseType(), p.baseType()) &&
-           this.ts.typeEquals(this.modeType(), p.modeType());
+    return this.ts.descendsFrom(this.baseType(), p.baseType()) && this.modeTypeArgsEquals(p);
+  }
+
+  private boolean modeTypeArgsEquals(ModeSubstType ot) {
+    if (this.modeTypeArgs().size() != ot.modeTypeArgs().size()) {
+      return false;
+    }
+    for (int i = 0; i < this.modeTypeArgs().size(); ++i) {
+      if (!this.ts.typeEquals(this.modeTypeArgs().get(i), ot.modeTypeArgs().get(i))) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @Override

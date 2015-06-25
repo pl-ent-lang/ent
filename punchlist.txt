@@ -1,0 +1,23 @@
+-- Punchlist
+
+1. Add mode types on Array types.
+
+2. Add mode types proper to inheritances.
+
+3. Fix all cases of WARNING, each one indicates that there are parts of the type system that are missing.
+
+4. Fix PANDA_Copy to properly clone methods.
+
+5. Add object bounds codegen to snapshot.
+
+6. Add some context sensitivity to mode values to change @mode<low> to simply be low.
+
+7. Add mode type parameters to snapshot for resolution.
+
+8. Add mode type parameters code generation to table and update snapshot to handle this.
+
+9. Add in mcase typechecking.
+
+10. Add in mcase codegen.
+
+11. Add in mode subtyping proper (instead of forcing mode subst types to be equal).

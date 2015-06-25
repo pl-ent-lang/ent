@@ -101,10 +101,6 @@ public class PandaClassDeclExt extends PandaExt {
     NodeFactory nf = (NodeFactory) prw.nodeFactory();
     QQ qq = prw.qq();
 
-    if (!prw.translatePanda()) {
-      return super.extRewrite(rw);
-    }
-
     ClassDecl decl = (ClassDecl) this.node();
     PandaParsedClassType ct = (PandaParsedClassType) decl.type();
     ClassDecl n = (ClassDecl) super.extRewrite(rw);
@@ -116,10 +112,29 @@ public class PandaClassDeclExt extends PandaExt {
       n = n.interfaces(interfaces);
     }
 
-    // 2. Generate a builtin PANDA_copy method
+    // 2. Generate a default constructor if one does not exist
+    boolean defaultGenNeeded = true;
+    for (ConstructorInstance ci : ct.constructors()) {
+      if (ci.formalTypes().isEmpty()) {
+        defaultGenNeeded = false;
+        break;
+      }
+    }
+    if (defaultGenNeeded) {
+      ClassMember cons = qq.parseMember("public %s() { }", decl.name()); 
+
+      // Handle the immutable part of polyglot
+      ClassBody body = n.body();
+      List<ClassMember> members = new ArrayList<>(body.members());
+      members.add(cons);
+      body = body.members(members);
+      n = n.body(body);
+    }
+
+    // 3. Generate a builtin PANDA_copy method
     if (ct.hasAttribute() && !ct.hasCopy()) {
       List<Stmt> stmts = new ArrayList<>();
-      // 2.1. Create a new expression for a shallow copy
+      // 3.1. Create a new expression for a shallow copy
       stmts.add(
         qq.parseStmt(
           "%T PANDA_ld = new %T();", 
@@ -128,7 +143,7 @@ public class PandaClassDeclExt extends PandaExt {
           )
         );
 
-      // 2.2. Copy each member of the class manually
+      // 3.2. Copy each member of the class manually
       for (ClassMember m : decl.body().members()) {
         if (!(m instanceof FieldDecl)) {
           continue;
@@ -140,7 +155,7 @@ public class PandaClassDeclExt extends PandaExt {
         stmts.add(qq.parseStmt("PANDA_ld.%s = this.%s;", fd.name(), fd.name()));
       }
 
-      // 2.3. Simply return the shallow copy
+      // 3.3. Simply return the shallow copy
       stmts.add(qq.parseStmt("return PANDA_ld;"));
 
       ClassMember md = qq.parseMember("public PANDA_Attributable PANDA_copy() { %LS }", stmts);

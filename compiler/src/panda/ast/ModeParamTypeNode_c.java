@@ -1,24 +1,12 @@
 package panda.ast;
 
-import panda.types.PandaTypeSystem;
-import panda.types.ModeTypeVariable;
+import panda.types.*;
 
-import polyglot.ast.Id;
-import polyglot.ast.Node;
-import polyglot.ast.TypeNode;
-import polyglot.ast.TypeNode_c;
-import polyglot.types.Type;
-import polyglot.types.SemanticException;
-import polyglot.util.Position;
-import polyglot.util.CodeWriter;
-import polyglot.util.CollectionUtil;
-import polyglot.util.Copy;
-import polyglot.util.ListUtil;
-import polyglot.visit.AmbiguityRemover;
-import polyglot.visit.NodeVisitor;
-import polyglot.visit.PrettyPrinter;
-import polyglot.visit.TypeBuilder;
-import polyglot.visit.TypeChecker;
+import polyglot.ast.*;
+import polyglot.translate.*;
+import polyglot.types.*;
+import polyglot.util.*;
+import polyglot.visit.*;
 
 import java.util.Collections;
 import java.util.ArrayList;
@@ -69,12 +57,22 @@ public class ModeParamTypeNode_c extends TypeNode_c implements ModeParamTypeNode
   } 
 
   @Override
+  public Node copy(NodeFactory nf) {
+    PandaNodeFactory pnf = (PandaNodeFactory) nf;
+    return pnf.ModeParamTypeNode(
+                this.position(), 
+                this.id(), 
+                ListUtil.copy(this.bounds(), true)
+                );
+  }
+
+
+  @Override
   public Node buildTypes(TypeBuilder tb) throws SemanticException {
     PandaTypeSystem ts = (PandaTypeSystem) tb.typeSystem();
     ModeTypeVariable mtVar = 
       ts.createModeTypeVariable(this.position(), this.id().id());
-    TypeNode n = this;
-    return n.type(mtVar);
+    return this.type(mtVar);
   }
 
   @Override
@@ -94,13 +92,8 @@ public class ModeParamTypeNode_c extends TypeNode_c implements ModeParamTypeNode
   }
 
   @Override
-  public Node typeCheck(TypeChecker tc) throws SemanticException {
-    // Check that bounds are not a problem
-    
-    // Let the mode type try and find an upper bound if possible, otherwise
-    // we error.
-    
-    return super.typeCheck(tc);
+  public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
+    return null;
   }
 
   @Override

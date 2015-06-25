@@ -20,17 +20,12 @@ public class PandaFieldExt extends PandaExt {
   // TODO : I do not like how this is pretty much cut and paste from PandaCallExt.
   // I could add in a parent type to avoid the duplicate, maybe fix later.
   @Override
-  public Node typeCheck(TypeChecker tc) throws SemanticException {
-    if (tc.context().inStaticContext()) {
-      // Kick up to super lang for now
-      return superLang().typeCheck(this.node(), tc);
-    }
-
+  public Node typeCheck(TypeChecker tc) throws SemanticException { 
     Field c = (Field) this.node();
 
     Type t = c.target().type();
     if (!(t instanceof ModeSubstType)) {
-      System.out.println("WARNING: call on target " + c.target() + " on type " + t);
+      System.out.println("WARNING PandaFieldExt - call on target " + c.target() + " on type " + t);
       return superLang().typeCheck(this.node(), tc);
     }
 
@@ -47,6 +42,11 @@ public class PandaFieldExt extends PandaExt {
     PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
     if (mt.modeType() == ts.DynamicModeType()) {
       throw new SemanticException("Dynamic mode type cannot receive messages. Resolve using snapshot.");
+    }
+
+    if (tc.context().inStaticContext()) {
+      // Kick up to super lang for now
+      return superLang().typeCheck(this.node(), tc);
     }
 
     if (!ts.isSubtype(mt.modeType(), mtThis) && mtThis.upperBound() != ts.WildcardModeType()) {

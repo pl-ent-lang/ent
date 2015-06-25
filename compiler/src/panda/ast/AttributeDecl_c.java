@@ -73,6 +73,12 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
   }
 
   @Override
+  public Node copy(NodeFactory nf) {
+    PandaNodeFactory pnf = (PandaNodeFactory) nf;
+    return pnf.AttributeDecl(this.position(), this.body());
+  }
+
+  @Override
   public Context enterScope(Context c) {
     c = c.pushCode(this.ai);
     return c;
@@ -109,27 +115,15 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
     NodeFactory nf = (NodeFactory) prw.nodeFactory();
     QQ qq = prw.qq();
 
-    if (!prw.translatePanda()) {
-      return super.extRewrite(rw);
-    }
-
     ClassMember md = 
-      qq.parseMember("public int PANDA_attribute() { %LS }", this.body().statements());
+      qq.parseMember(
+          "public int PANDA_attribute() { %LS }", 
+          this.body().statements()
+          );
 
     return md;
-  }
-
-  /*
-  @Override
-  public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
-    w.begin(0);
-    w.write("public int PANDA_attribute() ");
-    w.end();
-
-    print(this.body(), w, tr);
-  }
-  */
-
+  } 
+  
   @Override
   public void dump(CodeWriter w) {
     super.dump(w);
@@ -140,8 +134,7 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
       w.write("(instance " + this.attributeInstance() + ")");
       w.end();
     }
-  }
-
+  } 
 
   // Term Method
   @Override

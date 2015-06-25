@@ -17,17 +17,12 @@ import polyglot.visit.TypeChecker;
 public class PandaCallExt extends PandaExt {
 
   @Override
-  public Node typeCheck(TypeChecker tc) throws SemanticException {
-    if (tc.context().inStaticContext()) {
-      // Kick up to super lang for now
-      return superLang().typeCheck(this.node(), tc);
-    }
-
+  public Node typeCheck(TypeChecker tc) throws SemanticException { 
     Call c = (Call) this.node();
 
     Type t = c.target().type();
     if (!(t instanceof ModeSubstType)) {
-      System.out.println("WARNING: call on target " + c.target() + " on type " + t);
+      System.out.println("WARNING PandaCallExt - call on target " + c.target() + " on type " + t);
       return superLang().typeCheck(this.node(), tc);
     }
 
@@ -45,6 +40,11 @@ public class PandaCallExt extends PandaExt {
     if (mt.modeType() == ts.DynamicModeType()) {
       throw new SemanticException("Dynamic mode type cannot receive messages. Resolve using snapshot.");
     }
+
+    if (tc.context().inStaticContext()) {
+      // Kick up to super lang for now
+      return superLang().typeCheck(this.node(), tc);
+    } 
 
     if (!ts.isSubtype(mt.modeType(), mtThis)) {
       throw new SemanticException("Cannot send message to " + t + " from mode " + mtThis.upperBound() + ".");

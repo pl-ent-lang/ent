@@ -76,6 +76,18 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
   }
 
   @Override
+  public Node copy(NodeFactory nf) {
+    PandaNodeFactory pnf = (PandaNodeFactory) nf;
+    return pnf.SnapshotExpr(
+             this.position(), 
+             this.target(), 
+             this.lower(), 
+             this.upper()
+             );
+  }
+
+
+  @Override
   public Node buildTypes(TypeBuilder tb) throws SemanticException {
     PandaTypeSystem ts = (PandaTypeSystem) tb.typeSystem();
     return this.type(ts.unknownType(this.position()));
@@ -140,10 +152,6 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
     NodeFactory nf = prw.nodeFactory();
     QQ qq = prw.qq();
 
-    if (!prw.translatePanda()) {
-      return super.extRewrite(rw);
-    }
-
     Expr expr = 
       qq.parseExpr(
         "PANDA_Snapshot.snapshot(%E, %E, %E)", 
@@ -154,21 +162,6 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
 
     return expr;
   }
-
-  /*
-  @Override
-  public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
-    Type lt = this.lower().type();
-    Type ut = this.upper().type();
-
-    ModeType lm = (ModeType) this.resolveMode(lt);
-    ModeType um = (ModeType) this.resolveMode(ut);
-
-    w.write("PANDA_Snapshot.snapshot(");
-    print(this.target(), w, tr); 
-    w.write(", " + lm.runtimeCode() + ", " + um.runtimeCode() +")");
-  }
-  */
 
   // Term Methods
   @Override

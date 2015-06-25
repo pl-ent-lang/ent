@@ -1,30 +1,17 @@
 package panda.ast;
 
-import panda.ast.PandaNodeFactory;
-import panda.types.ModeOrderingInstance;
-import panda.types.ModeType;
-import panda.types.PandaTypeSystem;
-import panda.translate.PandaRewriter;
+import panda.ast.*;
+import panda.translate.*;
+import panda.types.*;
 
 import polyglot.ast.*;
-
-import polyglot.types.SemanticException;
-import polyglot.util.Position;
-import polyglot.translate.ExtensionRewriter;
-import polyglot.visit.CFGBuilder;
-import polyglot.visit.AmbiguityRemover;
-import polyglot.visit.NodeVisitor;
-import polyglot.visit.TypeBuilder;
-import polyglot.visit.TypeChecker;
-import polyglot.visit.PrettyPrinter;
-import polyglot.types.Context;
-import polyglot.types.Flags;
-import polyglot.types.ParsedClassType;
-import polyglot.util.CodeWriter;
-import polyglot.util.Position;
-import polyglot.util.SerialVersionUID;
-
-import polyglot.ext.jl5.qq.QQ;
+import polyglot.types.*;
+import polyglot.util.*;
+import polyglot.translate.*;
+import polyglot.types.*;
+import polyglot.util.*;
+import polyglot.visit.*;
+import polyglot.qq.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,9 +35,9 @@ public class ModesDecl_c extends ClassDecl_c implements ModesDecl {
   }
 
   public <N extends ModesDecl_c> N orders(N n, List<ModeOrder> orders) {
-    if (this.orders() == orders) return n;
+    if (CollectionUtil.equals(n.orders(), orders)) return n;
     n = this.copyIfNeeded(n);
-    n.orders = orders;
+    n.orders = ListUtil.copy(orders, true);
     return n;
   }
 
@@ -79,6 +66,12 @@ public class ModesDecl_c extends ClassDecl_c implements ModesDecl {
   public Node visitChildren(NodeVisitor v) {
     List<ModeOrder> orders = visitList(this.orders(), v);
     return this.reconstruct(this, orders);
+  }
+
+  @Override
+  public Node copy(NodeFactory nf) {
+    PandaNodeFactory pnf = (PandaNodeFactory) nf;
+    return pnf.ModesDecl(this.position(), ListUtil.copy(this.orders(), true));
   }
 
   @Override
@@ -132,13 +125,9 @@ public class ModesDecl_c extends ClassDecl_c implements ModesDecl {
   @Override
   public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
     PandaRewriter prw = (PandaRewriter) rw;
-    if (!prw.translatePanda()) {
-      return super.extRewrite(rw);
-    }
-
-    polyglot.qq.QQ qq = prw.qq();
     PandaTypeSystem ts = (PandaTypeSystem) prw.typeSystem();
     NodeFactory nf = prw.nodeFactory();
+    QQ qq = prw.qq();
 
     List<ClassMember> members = new ArrayList<>();
     for (Map.Entry<String, ModeType> e : ts.createdModeTypes().entrySet()) {
@@ -170,34 +159,6 @@ public class ModesDecl_c extends ClassDecl_c implements ModesDecl {
     return cd;
   }
 
-  /*
-  @Override
-  public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
-    w.begin(0);
-    w.write("public class " + MODES_DECL_CLASS_NAME);
-    w.unifiedBreak(0);
-    w.end();
-    w.write("{");
-
-    w.newline(2);
-    w.begin(0);
-    for (Map.Entry<ModeType, ModeType> e : this.modeOrderingInstance()
-                                               .modeOrdering()
-                                               .entrySet()) {
-      ModeType modeType = e.getKey();
-      w.newline(0);
-      w.write("public static final int " + modeType.compileCode() + ";");
-    }
-    w.end();
-    w.newline(0);
-
-    w.begin(0);
-    w.write("}"); w.newline();
-    w.end();
-
-  }
-  */
-
   // Term Methods
   @Override
   public Term firstChild() {
@@ -210,8 +171,6 @@ public class ModesDecl_c extends ClassDecl_c implements ModesDecl {
       v.visitCFGList(this.orders(), this, ENTRY);
     }
     return succs;
-  }
-
-
+  } 
 
 }

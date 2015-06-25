@@ -31,6 +31,12 @@ public abstract class ModeSubstClassType_c extends ModeSubstReferenceType_c impl
     super(baseType, modeTypeArgs);
   }
 
+  @Override
+  public void modeTypeArgs(List<Type> modeTypeArgs) {
+    this.modeTypeArgs = modeTypeArgs;
+    this.modeSubst = null;
+  } 
+
   public ModeSubst modeSubst() {
     if (this.modeSubst == null) {
       Map<ModeTypeVariable, Type> mtMap = new HashMap<>();

@@ -28,6 +28,7 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
                             String name) {
     super(ts, name);
     this.bounds = Collections.emptyList();
+    this.name = name;
     this.uniqueId = this.genId();
   }
 

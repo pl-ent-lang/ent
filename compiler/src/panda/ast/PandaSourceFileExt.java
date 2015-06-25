@@ -71,30 +71,26 @@ public class PandaSourceFileExt extends PandaExt {
     PandaRewriter prw = (PandaRewriter) rw;
     NodeFactory nf = prw.nodeFactory();
 
-    if (prw.translatePanda()) {
-      SourceFile n = (SourceFile) super.extRewrite(rw);
+    SourceFile n = (SourceFile) super.extRewrite(rw);
 
-      // Inject the panda runtime into all source files
-      List<Import> imports = new LinkedList<>(n.imports()); 
-      imports.add(
-          nf.Import(Position.COMPILER_GENERATED,
-                    Import.TYPE_IMPORT_ON_DEMAND,
-                    "panda.runtime")
-          );
-      n = n.imports(imports);
+    // Inject the panda runtime into all source files
+    List<Import> imports = new LinkedList<>(n.imports()); 
+    imports.add(
+        nf.Import(Position.COMPILER_GENERATED,
+                  Import.TYPE_IMPORT_ON_DEMAND,
+                  "panda.runtime")
+        );
+    n = n.imports(imports);
 
-      // If this file had a modes decl, throw it in
-      PandaSourceFileExt ext = (PandaSourceFileExt) PandaExt.ext(this.node());
-      if (ext.modesDecl() != null) {
-        List<TopLevelDecl> decls = new LinkedList<>(n.decls());
-        decls.add(ext.modesDecl());
-        n = n.decls(decls);
-      } 
+    // If this file had a modes decl, throw it in
+    PandaSourceFileExt ext = (PandaSourceFileExt) PandaExt.ext(this.node());
+    if (ext.modesDecl() != null) {
+      List<TopLevelDecl> decls = new LinkedList<>(n.decls());
+      decls.add(ext.modesDecl());
+      n = n.decls(decls);
+    } 
 
-      return n;
-    }
-
-    return super.extRewrite(rw);
+    return n;
   }
 
 }

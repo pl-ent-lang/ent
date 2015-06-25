@@ -53,17 +53,23 @@ public class ModeValue_c extends Lit_c implements ModeValue {
     return n;
   }
 
-  // Node Methods
+  // Node Methods 
+  protected <N extends ModeValue_c> N reconstruct(N n, ModeTypeNode mtNode) {
+    n = this.modeTypeNode(n, mtNode);
+    return n;
+  } 
+
   @Override
   public Node visitChildren(NodeVisitor v) {
     ModeTypeNode mtNode = visitChild(this.modeTypeNode(), v);
     return this.reconstruct(this, mtNode);
   }
 
-  public <N extends ModeValue_c> N reconstruct(N n, ModeTypeNode mtNode) {
-    n = this.modeTypeNode(n, mtNode);
-    return n;
-  } 
+  @Override
+  public Node copy(NodeFactory nf) {
+    PandaNodeFactory pnf = (PandaNodeFactory) nf;
+    return pnf.ModeValue(this.position(), this.modeTypeNode());
+  }
 
   // Term Method
   @Override
@@ -119,29 +125,20 @@ public class ModeValue_c extends Lit_c implements ModeValue {
     PandaRewriter pwr = (PandaRewriter) rw;
     NodeFactory nf = pwr.nodeFactory();
 
-    if (pwr.translatePanda()) {
-      ModeValueType t = (ModeValueType) this.type();
-      ModeType mt = (ModeType) t.mode();
+    ModeValueType t = (ModeValueType) this.type();
+    ModeType mt = (ModeType) t.mode();
 
-      Field n = 
-        nf.Field(
+    Field n = 
+      nf.Field(
+        Position.COMPILER_GENERATED,
+        nf.AmbReceiver(
           Position.COMPILER_GENERATED,
-          nf.AmbReceiver(
-            Position.COMPILER_GENERATED,
-            nf.Id(Position.COMPILER_GENERATED, "PandaMode")
-            ),
-          nf.Id(Position.COMPILER_GENERATED, mt.runtimeCode())
-          );
+          nf.Id(Position.COMPILER_GENERATED, "PandaMode")
+          ),
+        nf.Id(Position.COMPILER_GENERATED, mt.runtimeCode())
+        );
 
-      return n;
-    }
-
-    return super.extRewrite(rw);
-  }
-
-  @Override
-  public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
-    w.write(((ModeType) this.modeTypeNode().type()).runtimeCode());
+    return n;
   }
 
 }
