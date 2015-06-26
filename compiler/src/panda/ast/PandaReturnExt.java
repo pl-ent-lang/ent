@@ -1,8 +1,10 @@
 package panda.ast;
 
 import panda.types.*;
+import panda.translate.*;
 
 import polyglot.ast.*;
+import polyglot.translate.*;
 import polyglot.types.*;
 import polyglot.visit.*;
 
@@ -36,5 +38,12 @@ public class PandaReturnExt extends PandaExt {
     
     return superLang().typeCheck(this.node(), tc);
   }
+
+  @Override 
+  public ExtensionRewriter extRewriteEnter(ExtensionRewriter rw) {
+    PandaRewriter prw = (PandaRewriter) rw;
+    return prw.rewriteModeValue(true);
+  }
+
 
 }

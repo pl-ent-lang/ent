@@ -120,8 +120,7 @@ public class ModeValue_c extends Lit_c implements ModeValue {
   }
   */
 
-  @Override
-  public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
+  public Node rewriteModeValue(ExtensionRewriter rw) throws SemanticException {
     PandaRewriter pwr = (PandaRewriter) rw;
     NodeFactory nf = pwr.nodeFactory();
 
@@ -139,6 +138,21 @@ public class ModeValue_c extends Lit_c implements ModeValue {
         );
 
     return n;
+  }
+
+  @Override
+  public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
+    PandaRewriter pwr = (PandaRewriter) rw;
+    NodeFactory nf = pwr.nodeFactory();
+
+    ModeValueType t = (ModeValueType) this.type();
+    ModeType mt = (ModeType) t.mode();
+
+    if (pwr.rewriteModeValue()) {
+      return this.rewriteModeValue(rw);
+    } else {
+      return this;
+    }
   }
 
 }

@@ -146,18 +146,48 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
     return this.type(ct);
   }
 
+  @Override 
+  public ExtensionRewriter extRewriteEnter(ExtensionRewriter rw) {
+    PandaRewriter prw = (PandaRewriter) rw;
+    return prw.rewriteModeValue(false);
+  }
+
   @Override
   public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
     PandaRewriter prw = (PandaRewriter) rw;
     NodeFactory nf = prw.nodeFactory();
     QQ qq = prw.qq();
 
+    Expr target = this.target();
+
+    Expr lower;
+    if (!(this.lower() instanceof ModeValue)) {
+      lower = 
+        qq.parseExpr(
+          "PANDA_ModeTable.get(%E)",
+          this.lower()
+          );
+    } else {
+      lower = (Expr) ((ModeValue) this.lower()).rewriteModeValue(rw);
+    }
+
+    Expr upper;
+    if (!(this.upper() instanceof ModeValue)) {
+      upper = 
+        qq.parseExpr(
+          "PANDA_ModeTable.get(%E)",
+          this.upper()
+          );
+    } else {
+      upper = (Expr) ((ModeValue) this.upper()).rewriteModeValue(rw);
+    }
+
     Expr expr = 
       qq.parseExpr(
         "PANDA_Snapshot.snapshot(%E, %E, %E)", 
-        this.target(), 
-        this.lower(), 
-        this.upper()
+        target,
+        lower,
+        upper
         );
 
     return expr;

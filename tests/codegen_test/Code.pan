@@ -7,7 +7,7 @@ public class Code @mode<X, Y <= X> {
 
   attribute {
     if (true) {
-      return @mode<low>;
+      return @mode<mid>;
     } else {
       return @mode<high>;
     }
@@ -26,8 +26,13 @@ public class Code @mode<X, Y <= X> {
   }
 
   public static void main(String[] args) {
-    Code@mode<?,high> c1 = new Code@mode<?,high>("just a test");
-    Code@mode<*,high> c2 = snapshot c1 ?mode[@mode<low>,@mode<high>];
+    Code@mode<high,mid> c1 = new Code@mode<high,mid>("just a test");
+
+    Code@mode<?,high> cd = new Code@mode<?,high>("just a test");
+
+    Code@mode<*,high> c2 = 
+      snapshot cd ?mode[@mode<low>,
+                        snapshot cd ?mode[@mode<low>,@mode<high>]];
 
     System.out.println("Count: " + c2.count());
   }
