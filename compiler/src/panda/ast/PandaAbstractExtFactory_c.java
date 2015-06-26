@@ -61,6 +61,28 @@ public abstract class PandaAbstractExtFactory_c extends JL7AbstractExtFactory_c
       return postExtTerm(e);
     } 
 
+    public final Ext extCopyDecl() {
+      Ext e = extCopyDeclImpl();
+      if (nextExtFactory() != null) {
+        Ext e2;
+        if (nextExtFactory() instanceof PandaExtFactory) {
+          e2 = ((PandaExtFactory) nextExtFactory()).extCopyDecl();
+        } else {
+          e2 = nextExtFactory().extTerm();
+        }
+        e = composeExts(e, e2);
+      }
+      return postExtCopyDecl(e);
+    }
+
+    protected Ext extCopyDeclImpl() { 
+      return extTermImpl();
+    }
+
+    protected Ext postExtCopyDecl(Ext e) { 
+      return postExtTerm(e);
+    } 
+
     public final Ext extMcaseFieldDecl() {
       Ext e = extMcaseFieldDeclImpl();
       if (nextExtFactory() != null) {

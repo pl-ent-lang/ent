@@ -4,10 +4,9 @@ import polyglot.ext.jl7.ast.JL7NodeFactory_c;
 
 import polyglot.ast.*;
 import polyglot.util.*;
-import polyglot.types.Flags;
+import polyglot.types.*;
 
-import polyglot.ext.jl5.ast.AnnotationElem;
-import polyglot.ext.jl5.ast.ParamTypeNode;
+import polyglot.ext.jl5.ast.*;
 
 import java.util.*;
 
@@ -116,6 +115,12 @@ public class PandaNodeFactory_c extends JL7NodeFactory_c implements PandaNodeFac
     public AttributeDecl AttributeDecl(Position pos, Block body) {
       AttributeDecl n = new AttributeDecl_c(pos, body);
       n = ext(n, extFactory().extAttributeDecl());
+      return n;
+    }
+
+    public CopyDecl CopyDecl(Position pos, Block body) {
+      CopyDecl n = new CopyDecl_c(pos, body);
+      n = ext(n, extFactory().extCopyDecl());
       return n;
     }
 

@@ -95,45 +95,90 @@ public class PandaClassDeclExt extends PandaExt {
     return decl;
   } 
 
+  // 2.1. Generate Cloneable if the class does not implement
+  /*
+  boolean genClone = true;
+  Type cloneableType = ts.typeForName("java.lang.Cloneable");
+  for (ReferenceType t : ct.interfaces()) {
+    if (ts.typeEquals(t, cloneableType)) {
+      genClone = false;
+      break;
+    }
+  }
+  
+  if (genClone) {
+    interfaces.add(qq.parseType("Cloneable"));
+    n = n.interfaces(interfaces);
+  }
+  */
+
+  /*
+  stmts.add(
+    qq.parseStmt(
+      "%T PANDA_ld = null;",
+      qq.parseType(decl.name())
+      )
+    );
+
+  stmts.add(
+    qq.parseStmt(
+      "try {"                                       +
+      "  PANDA_ld = (%T) super.clone(); "           +
+      "} catch (CloneNotSupportedException e) { "   + 
+      "  System.out.println(\"Could not clone\"); " +
+      "  System.exit(1);"                           +
+      "}", 
+      qq.parseType(decl.name()),
+      qq.parseType(decl.name())
+      )
+    );
+  */
+
+
+
   @Override
   public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
     PandaRewriter prw = (PandaRewriter) rw;
     NodeFactory nf = (NodeFactory) prw.nodeFactory();
+    TypeSystem ts = (TypeSystem) prw.typeSystem();
     QQ qq = prw.qq();
 
     ClassDecl decl = (ClassDecl) this.node();
     PandaParsedClassType ct = (PandaParsedClassType) decl.type();
     ClassDecl n = (ClassDecl) super.extRewrite(rw);
 
-    // 1. Generate the PANDA_Attributable interface
+    // 1. Generate PANDA_Attributable interface
+    List<TypeNode> interfaces = new ArrayList<>(decl.interfaces());
     if (ct.hasAttribute()) {
-      List<TypeNode> interfaces = new ArrayList<>(decl.interfaces());
-      interfaces.add(qq.parseType("PANDA_Attributable"));
+      // 1.1. Generate PANDA_Attributable
+      interfaces.add(qq.parseType("PANDA_Attributable")); 
       n = n.interfaces(interfaces);
     }
 
-    // 2. Generate a default constructor if one does not exist
-    boolean defaultGenNeeded = true;
-    for (ConstructorInstance ci : ct.constructors()) {
-      if (ci.formalTypes().isEmpty()) {
-        defaultGenNeeded = false;
-        break;
+    // 2. Generate default constructor if there is not one
+    if (ct.hasAttribute() && !ct.hasCopy()) {
+      boolean genDef = true;
+      for (ConstructorInstance ci : ct.constructors()) {
+        if (ci.formalTypes().isEmpty()) {
+          genDef = false;
+          break;
+        }
       }
-    }
-    if (defaultGenNeeded) {
-      ClassMember cons = qq.parseMember("public %s() { }", decl.name()); 
-
-      // Handle the immutable part of polyglot
-      ClassBody body = n.body();
-      List<ClassMember> members = new ArrayList<>(body.members());
-      members.add(cons);
-      body = body.members(members);
-      n = n.body(body);
+      if (genDef) {
+        ClassBody body = n.body();
+        List<ClassMember> members = new ArrayList<>(body.members());
+        members.add(qq.parseMember("public %s() { }", decl.name()));
+        body = body.members(members);
+        n = n.body(body);
+      }
     }
 
     // 3. Generate a builtin PANDA_copy method
     if (ct.hasAttribute() && !ct.hasCopy()) {
+      
       List<Stmt> stmts = new ArrayList<>();
+      
+      
       // 3.1. Create a new expression for a shallow copy
       stmts.add(
         qq.parseStmt(
@@ -141,7 +186,7 @@ public class PandaClassDeclExt extends PandaExt {
           qq.parseType(decl.name()),
           qq.parseType(decl.name())
           )
-        );
+        ); 
 
       // 3.2. Copy each member of the class manually
       for (ClassMember m : decl.body().members()) {

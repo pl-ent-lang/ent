@@ -120,6 +120,7 @@ import java.util.Set;
         // Panda Specific Keywords
         keywords.put("modes",         new Integer(sym.MODES));
         keywords.put("attribute",     new Integer(sym.ATTRIBUTE));
+        keywords.put("copy",          new Integer(sym.COPY));
         keywords.put("blammable",     new Integer(sym.BLAMMABLE));
         keywords.put("snapshot",      new Integer(sym.SNAPSHOT));
         keywords.put("mcase",         new Integer(sym.MCASE));

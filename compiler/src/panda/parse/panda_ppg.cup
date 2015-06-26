@@ -281,6 +281,7 @@ non terminal List<TypeNode> catch_type;
 non terminal Block finally_opt;
 terminal Token ATTRIBUTE;
 terminal Token BLAMMABLE;
+terminal Token COPY;
 terminal Token MODE;
 terminal Token MODES;
 terminal Token PARORD;
@@ -292,6 +293,7 @@ non terminal ModesDecl modes_declaration;
 non terminal ModeOrder mode_ordering;
 non terminal List mode_orderings;
 non terminal AttributeDecl attribute_declaration;
+non terminal CopyDecl copy_declaration;
 non terminal ModeValue mode_value;
 non terminal List mode_type_parameters_decl_opt;
 non terminal List mode_type_parameters_decl;
@@ -694,7 +696,14 @@ class_member_declaration ::=
     l.add(a);
     RESULT = l;
   
-                            :};
+                            :}
+ |  copy_declaration:a {:
+                      
+    List<ClassMember> l = new LinkedList<>();
+    l.add(a);
+    RESULT = l;
+  
+                       :};
 
 field_declaration ::=
     modifiers_or_annotations_opt:a type:b variable_declarators:c SEMICOLON:e {:
@@ -2538,6 +2547,13 @@ attribute_declaration ::=
     RESULT = parser.nf.AttributeDecl(parser.pos(a,b), b);
   
                               :};
+
+copy_declaration ::=
+    COPY:a method_body:body {:
+                           
+    RESULT = parser.nf.CopyDecl(parser.pos(a,body), body);
+  
+                            :};
 
 mode_value ::=
     MODE:m LT mode_type_node:n GT:g {:

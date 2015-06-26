@@ -112,6 +112,9 @@ public abstract class ModeSubstReferenceType_c extends ModeSubstType_c implement
   public boolean isImplicitCastValidImpl(Type toType) {
     // TODO : For now, force mode types to be the same, ad in proper subtyping
     // later
+
+    System.out.println("Checking " + toType);
+
     ModeSubstType p = (ModeSubstType) toType;
     return this.ts.isSubtype(this.baseType(), p.baseType()) &&
            this.ts.typeEquals(this.modeType(), p.modeType());

@@ -1,29 +1,15 @@
 package panda.types;
 
-import panda.ast.PandaLang_c;
+import panda.ast.*;
 
-import polyglot.ast.Id;
-import polyglot.frontend.Source;
+import polyglot.ast.*;
+import polyglot.frontend.*;
 import polyglot.types.*;
-import polyglot.util.InternalCompilerError;
-import polyglot.util.Position;
+import polyglot.util.*;
 
-import polyglot.ext.param.types.Subst;
-import polyglot.ext.param.types.SubstType;
-
-import polyglot.ext.jl5.types.RawClass;
-import polyglot.ext.jl5.types.TypeVariable;
-import polyglot.ext.jl5.types.JL5ArrayType;
-import polyglot.ext.jl5.types.JL5SubstClassType;
-import polyglot.ext.jl5.types.JL5ConstructorInstance;
-import polyglot.ext.jl5.types.JL5MethodInstance;
-import polyglot.ext.jl5.types.JL5ProcedureInstance;
-import polyglot.ext.jl5.types.JL5PrimitiveType;
-import polyglot.ext.jl5.types.JL5Subst;
-import polyglot.ext.jl5.types.JL5SubstType;
-
-import polyglot.ext.jl5.types.JL5ParsedClassType;
-import polyglot.ext.jl7.types.JL7TypeSystem_c;
+import polyglot.ext.param.types.*;
+import polyglot.ext.jl5.types.*;
+import polyglot.ext.jl7.types.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -94,6 +80,19 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
                                          Source fromSource) {
     return new PandaParsedClassType_c(this, init, fromSource);
   }
+
+  @Override
+  public boolean typeEquals(Type l, Type u) {
+    boolean b = super.typeEquals(l, u);
+    if (b) return true;
+
+    if (u instanceof ModeTypeVariable) {
+      return this.typeEquals(l, ((ModeTypeVariable) u).lowerBound());
+    }
+
+    return false;
+  }
+
 
   @Override
   public boolean descendsFrom(Type l, Type u) {
@@ -363,6 +362,10 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
       ReferenceType container, 
       Flags flags) {
     return new AttributeInstance_c(this, pos, container, flags);
+  }
+
+  public CopyInstance createCopyInstance(Position pos, ReferenceType container) {
+    return new CopyInstance_c(this, pos, container);
   }
 
   public McaseType createMcaseType(Type base) {

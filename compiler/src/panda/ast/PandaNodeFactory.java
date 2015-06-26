@@ -65,6 +65,8 @@ public interface PandaNodeFactory extends JL7NodeFactory {
 
   AttributeDecl AttributeDecl(Position pos, Block body);
 
+  CopyDecl CopyDecl(Position pos, Block body);
+
   McaseFieldDecl McaseFieldDecl(Position pos, Id field, Expr init);
 
   McaseLit McaseLit(Position pos, TypeNode mcaseTypeNode, List<McaseFieldDecl> fields);

@@ -25,6 +25,7 @@ parser Grm extends polyglot.ext.jl7.parse.Grm {:
 
 terminal Token ATTRIBUTE;
 terminal Token BLAMMABLE;
+terminal Token COPY;
 terminal Token MODE; 
 terminal Token MODES;
 terminal Token PARORD;
@@ -38,6 +39,7 @@ non terminal ModeOrder mode_ordering;
 non terminal List mode_orderings;
 
 non terminal AttributeDecl attribute_declaration;
+non terminal CopyDecl copy_declaration;
 
 non terminal ModeValue mode_value;
 
@@ -141,12 +143,25 @@ extend class_member_declaration ::=
     l.add(a);
     RESULT = l;
   :}
+| copy_declaration:a 
+  {:
+    List<ClassMember> l = new LinkedList<>();
+    l.add(a);
+    RESULT = l;
+  :}
 ;
 
 attribute_declaration ::=
   ATTRIBUTE:a method_body:b 
   {:
     RESULT = parser.nf.AttributeDecl(parser.pos(a,b), b);
+  :}
+;
+
+copy_declaration ::=
+  COPY:a method_body:body
+  {:
+    RESULT = parser.nf.CopyDecl(parser.pos(a,body), body);
   :}
 ;
 

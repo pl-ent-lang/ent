@@ -1,19 +1,12 @@
 package panda.visit;
 
-import panda.ast.AttributeDecl;
+import panda.ast.*;
 
-import polyglot.ast.CodeNode;
-import polyglot.ast.MethodDecl;
-import polyglot.ast.NodeFactory;
-import polyglot.ast.Return;
-import polyglot.ast.Term;
-import polyglot.frontend.Job;
-import polyglot.types.SemanticException;
-import polyglot.types.TypeSystem;
-import polyglot.visit.DataFlow;
-import polyglot.visit.FlowGraph;
-import polyglot.visit.FlowGraph.EdgeKey;
-import polyglot.visit.FlowGraph.Peer;
+import polyglot.ast.*;
+import polyglot.frontend.*;
+import polyglot.types.*;
+import polyglot.visit.*;
+import polyglot.visit.FlowGraph.*;
 
 import java.util.List;
 import java.util.Map;
@@ -31,6 +24,8 @@ public class AttributeExitChecker extends DataFlow<AttributeExitChecker.DataFlow
     this.code = code;
 
     if (code instanceof AttributeDecl) {
+      return super.initGraph(code, root);
+    } else if (code instanceof CopyDecl) {
       return super.initGraph(code, root);
     }
 
@@ -140,7 +135,7 @@ public class AttributeExitChecker extends DataFlow<AttributeExitChecker.DataFlow
         // are the same, so just take the first one.
         DataFlowItem outItem = outItems.values().iterator().next();
         if (outItem != null && !outItem.exits) {
-          throw new SemanticException("Attribute must always return.", code.position());
+          throw new SemanticException("Missing return statement.", code.position());
         }
       }
     }

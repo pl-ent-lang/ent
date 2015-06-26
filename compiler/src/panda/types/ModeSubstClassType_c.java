@@ -59,7 +59,6 @@ public abstract class ModeSubstClassType_c extends ModeSubstReferenceType_c impl
     ((PandaClassType) this.baseType()).modeTypeVars(modeTypeVars);
   } 
 
-
   public AttributeInstance attributeInstance() {
     return ((PandaClassType) this.baseType()).attributeInstance();
   }
@@ -67,6 +66,22 @@ public abstract class ModeSubstClassType_c extends ModeSubstReferenceType_c impl
   public void attributeInstance(AttributeInstance attributeInstance) {
     ((PandaClassType) this.baseType()).attributeInstance(attributeInstance);
   } 
+
+  public boolean hasAttribute() {
+    return ((PandaClassType) this.baseType()).hasAttribute();
+  }
+
+  public CopyInstance copyInstance() {
+    return ((PandaClassType) this.baseType()).copyInstance();
+  }
+
+  public void copyInstance(CopyInstance copyInstance) {
+    ((PandaClassType) this.baseType()).copyInstance(copyInstance);
+  } 
+
+  public boolean hasCopy() {
+    return ((PandaClassType) this.baseType()).hasCopy();
+  }
 
   // ClassType Methods
   @Override

@@ -1,8 +1,6 @@
 package panda.types;
 
-import polyglot.types.Type;
-import polyglot.types.CodeInstance;
-import polyglot.types.MemberInstance;
+import polyglot.types.*;
 
 public interface AttributeInstance extends CodeInstance, MemberInstance {
 

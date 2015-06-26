@@ -1,24 +1,21 @@
 package panda.ast;
 
-import panda.types.AttributeInstance;
-import panda.types.PandaContext;
-import panda.types.ModeValueType;
+import panda.types.*;
 
-import polyglot.ast.Node;
-import polyglot.ast.Return;
-import polyglot.types.Type;
-import polyglot.types.SemanticException;
-import polyglot.types.CodeInstance;
-import polyglot.visit.TypeChecker;
-import polyglot.visit.AmbiguityRemover;
+import polyglot.ast.*;
+import polyglot.types.*;
+import polyglot.visit.*;
 
 public class PandaReturnExt extends PandaExt {
 
   @Override
   public Node typeCheck(TypeChecker tc) throws SemanticException {
+    PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
+
     Return n = (Return) this.node();
 
     PandaContext c = (PandaContext) tc.context();
+    ClassType ct = c.currentClass();
     CodeInstance ci = c.currentCode();
     if (ci instanceof AttributeInstance) {
       if (n.expr() == null || !(n.expr().type() instanceof ModeValueType)) {
@@ -27,6 +24,12 @@ public class PandaReturnExt extends PandaExt {
 
       Type m = ((ModeValueType) n.expr().type()).mode();
       ((AttributeInstance) ci).addMode(m);
+
+      return n;
+    } else if (ci instanceof CopyInstance) {
+      if (n.expr() == null || !ts.typeEquals(n.expr().type(), ct)) {
+        throw new SemanticException("Must return " + ct + " in a copy");
+      }
 
       return n;
     }

@@ -1,8 +1,8 @@
 package panda.types;
 
-import polyglot.frontend.Source;
-import polyglot.types.LazyClassInitializer;
-import polyglot.ext.jl5.types.JL5ParsedClassType_c;
+import polyglot.frontend.*;
+import polyglot.types.*;
+import polyglot.ext.jl5.types.*;
 
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -13,6 +13,7 @@ public class PandaParsedClassType_c extends JL5ParsedClassType_c implements Pand
 
   private List<ModeTypeVariable> modeTypeVars = null;
   private AttributeInstance attributeInstance;
+  private CopyInstance copyInstance;
 
   public PandaParsedClassType_c(PandaTypeSystem ts,
                                 LazyClassInitializer init, 
@@ -51,8 +52,16 @@ public class PandaParsedClassType_c extends JL5ParsedClassType_c implements Pand
     this.attributeInstance = attributeInstance;
   }
 
+  public CopyInstance copyInstance() {
+    return this.copyInstance;
+  }
+
+  public void copyInstance(CopyInstance copyInstance) {
+    this.copyInstance = copyInstance;
+  } 
+
   public boolean hasCopy() {
-    return false;
+    return (this.copyInstance() != null);
   }
 
 }

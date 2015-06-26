@@ -31,5 +31,20 @@ public class PandaSubstClassType_c extends JL5SubstClassType_c implements PandaS
     ((PandaParsedClassType) this.base).attributeInstance(attributeInstance);
   } 
 
+  public boolean hasAttribute() {
+    return ((PandaParsedClassType) this.base).hasAttribute();
+  }
+
+  public CopyInstance copyInstance() {
+    return ((PandaParsedClassType) this.base).copyInstance();
+  }
+
+  public void copyInstance(CopyInstance copyInstance) {
+    ((PandaParsedClassType) this.base).copyInstance(copyInstance);
+  } 
+
+  public boolean hasCopy() {
+    return ((PandaParsedClassType) this.base).hasCopy();
+  }
 
 }

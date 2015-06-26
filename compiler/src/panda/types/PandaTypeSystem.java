@@ -1,9 +1,9 @@
 package panda.types;
 
-import polyglot.ast.Id;
+import polyglot.ast.*;
 import polyglot.types.*;
-import polyglot.util.Position;
-import polyglot.ext.jl7.types.JL7TypeSystem;
+import polyglot.util.*;
+import polyglot.ext.jl7.types.*;
 
 import java.util.List;
 import java.util.Map;
@@ -18,6 +18,8 @@ public interface PandaTypeSystem extends JL7TypeSystem {
 
   // Factory Methods 
   AttributeInstance createAttributeInstance(Position pos, ReferenceType container, Flags flags);
+
+  CopyInstance createCopyInstance(Position pos, ReferenceType container);
 
   McaseType createMcaseType(Type base);
 

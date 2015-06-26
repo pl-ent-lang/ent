@@ -1,23 +1,24 @@
 package panda.ast;
 
-import panda.types.*;
 import panda.translate.*;
+import panda.types.*;
 
 import polyglot.ast.*;
 import polyglot.qq.*;
 import polyglot.translate.*;
 import polyglot.types.*;
-import polyglot.visit.*;
 import polyglot.util.*;
+import polyglot.visit.*;
 
 import java.util.List;
+import java.util.Collections;
 
-public class AttributeDecl_c extends Term_c implements AttributeDecl {
-
+public class CopyDecl_c extends Term_c implements CopyDecl {
+  
   protected Block body;
-  protected AttributeInstance ai;
+  protected CopyInstance copyInstance;
 
-  public AttributeDecl_c(Position pos, Block body) {
+  public CopyDecl_c(Position pos, Block body) {
     super(pos, null);
     this.body = body;
   }
@@ -27,25 +28,29 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
     return this.body;
   }
 
-  public AttributeDecl body(Block body) {
+  public CopyDecl body(Block body) {
     return this.body(this, body);
   }
 
-  public <N extends AttributeDecl_c> N body(N n, Block body) {
+  public <N extends CopyDecl_c> N body(N n, Block body) {
     if (this.body() == body) return n;
     n = this.copyIfNeeded(n);
     n.body = body;
     return n;
   }
 
-  public AttributeInstance attributeInstance() {
-    return this.ai;
+  public CopyInstance copyInstance() {
+    return this.copyInstance;
   }
 
-  public <N extends AttributeDecl_c> N attributeInstance(N n, AttributeInstance ai) {
-    if (this.ai == ai) return n;
-    n = copyIfNeeded(n);
-    n.ai = ai;
+  public CopyDecl copyInstance(CopyInstance copyInstance) {
+    return this.copyInstance(this, copyInstance);
+  }
+
+  public <N extends CopyDecl_c> N copyInstance(N n, CopyInstance copyInstance) {
+    if (this.copyInstance() == copyInstance) return n;
+    n = this.copyIfNeeded(n);
+    n.copyInstance = copyInstance;
     return n;
   }
 
@@ -57,14 +62,13 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
 
   @Override
   public CodeInstance codeInstance() {
-    return this.attributeInstance();
+    return this.copyInstance();
   } 
 
-  // Node Methods 
-  protected <N extends AttributeDecl_c> N reconstruct(N n, Block body) {
+  protected <N extends CopyDecl_c> N reconstruct(N n, Block body) {
     n = this.body(n, body);
     return n;
-  } 
+  }
 
   @Override
   public Node visitChildren(NodeVisitor v) {
@@ -75,12 +79,12 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
   @Override
   public Node copy(NodeFactory nf) {
     PandaNodeFactory pnf = (PandaNodeFactory) nf;
-    return pnf.AttributeDecl(this.position(), this.body());
+    return pnf.CopyDecl(this.position(), this.body());
   }
 
   @Override
   public Context enterScope(Context c) {
-    c = c.pushCode(this.attributeInstance());
+    c = c.pushCode(this.copyInstance());
     return c;
   }
 
@@ -93,20 +97,15 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
       // Big error, attributor needs to be part of a class only
     }
 
-    if (ct.attributeInstance() != null) {
-      throw new SemanticException("Only one attributor may be defined per class.");
+    if (ct.copyInstance() != null) {
+      throw new SemanticException("Only one copy may be defined per class.");
     }
 
-    AttributeInstance ai = 
-      ts.createAttributeInstance(this.position(),ct,null);
-    ct.attributeInstance(ai);
+    CopyInstance ci = 
+      ts.createCopyInstance(this.position(), ct);
+    ct.copyInstance(ci);
 
-    return this.attributeInstance(this, ai);
-  }
-
-  @Override
-  public Node disambiguate(AmbiguityRemover sc) throws SemanticException {
-    return this;
+    return this.copyInstance(this, ci);
   }
 
   @Override
@@ -117,21 +116,21 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
 
     ClassMember md = 
       qq.parseMember(
-          "public int PANDA_attribute() { %LS }", 
-          this.body().statements()
-          );
+        "public PANDA_Attributable PANDA_copy() { %LS }", 
+        this.body().statements()
+        );
 
     return md;
   } 
-  
+
   @Override
   public void dump(CodeWriter w) {
     super.dump(w);
 
-    if (this.attributeInstance() != null) {
+    if (this.copyInstance() != null) {
       w.allowBreak(4, " ");
       w.begin(0);
-      w.write("(instance " + this.attributeInstance() + ")");
+      w.write("(instance " + this.copyInstance() + ")");
       w.end();
     }
   } 
@@ -154,7 +153,8 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
   // ClassMember Methods
   @Override
   public MemberInstance memberInstance() {
-    return this.ai;
+    return this.copyInstance();
   } 
-    
+
+  
 }

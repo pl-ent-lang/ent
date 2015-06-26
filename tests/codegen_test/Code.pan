@@ -13,6 +13,10 @@ public class Code @mode<X, Y <= X> {
     }
   } 
 
+  copy {
+    return new Code@mode<X,Y>(this.f1);
+  }
+
   public Code(String@mode<*> f1) {
     this.f1 = f1;
   }

@@ -119,6 +119,7 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
 
   @Override
   public String toString() {
+    /*
     String s = "";
     if (this.hasLowerBound()) {
       s += this.lowerBound() + " <: ";
@@ -126,6 +127,8 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
     s += this.name() + " <: ";
     s += this.upperBound();
     return s;
+    */
+    return this.name();
   }
 
   @Override
@@ -139,9 +142,19 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
 
   @Override
   public boolean typeEqualsImpl(Type o) {
+    PandaTypeSystem ts = (PandaTypeSystem) this.typeSystem();
+
+    // We allow wildcard for now
+    // TODO: Not sure how to let this happen, wildcards need
+    // to be allowed.
+    if (o == ts.WildcardModeType()) {
+      return true;
+    } 
+
     if (!(o instanceof ModeTypeVariable)) {
       return false;
-    }
+    } 
+    
     ModeTypeVariable tv = (ModeTypeVariable) o;
     return this.uniqueId() == tv.uniqueId();
   }

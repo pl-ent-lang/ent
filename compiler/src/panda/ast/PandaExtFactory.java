@@ -13,6 +13,8 @@ public interface PandaExtFactory extends JL7ExtFactory {
 
   Ext extAttributeDecl();
 
+  Ext extCopyDecl();
+
   Ext extMcaseFieldDecl();
 
   Ext extMcaseLit();

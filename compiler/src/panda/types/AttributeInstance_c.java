@@ -1,11 +1,7 @@
 package panda.types;
 
-import polyglot.types.Type;
-import polyglot.types.MemberInstance;
-import polyglot.types.Flags;
-import polyglot.types.ReferenceType;
-import polyglot.types.TypeObject_c;
-import polyglot.util.Position;
+import polyglot.types.*;
+import polyglot.util.*;
 
 import java.util.ArrayList;
 import java.util.List;
