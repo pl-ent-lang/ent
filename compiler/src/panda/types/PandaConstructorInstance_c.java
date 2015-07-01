@@ -20,6 +20,7 @@ import java.util.List;
 public class PandaConstructorInstance_c extends JL5ConstructorInstance_c implements PandaConstructorInstance {
 
   private List<ModeTypeVariable> modeTypeVars;
+  private PandaProcedureInstance baseInstance;
 
   public PandaConstructorInstance_c(PandaTypeSystem ts, 
                                     Position pos, 
@@ -44,5 +45,14 @@ public class PandaConstructorInstance_c extends JL5ConstructorInstance_c impleme
       this.modeTypeVars = Collections.emptyList();
     }
   } 
+
+  public PandaProcedureInstance baseInstance() {
+    return this.baseInstance;
+  }
+
+  public void baseInstance(PandaProcedureInstance baseInstance) {
+    this.baseInstance = baseInstance;
+  }
+
 
 }

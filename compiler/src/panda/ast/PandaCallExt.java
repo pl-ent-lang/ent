@@ -87,6 +87,7 @@ public class PandaCallExt extends PandaExt {
   @Override
   public Node typeCheck(TypeChecker tc) throws SemanticException { 
     Call c = (Call) this.node();
+    PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
 
     Type t = c.target().type();
     if (!(t instanceof ModeSubstType)) {
@@ -104,7 +105,6 @@ public class PandaCallExt extends PandaExt {
     ModeTypeVariable mtThis = ct.modeTypeVars().get(0);
 
     // Disallow dynamic type seperately for better diagnostics
-    PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
     if (mt.modeType() == ts.DynamicModeType()) {
       throw new SemanticException("Dynamic mode type cannot receive messages. Resolve using snapshot.");
     }
@@ -117,7 +117,7 @@ public class PandaCallExt extends PandaExt {
 
     c = (Call) superLang().typeCheck(this.node(), tc);
 
-    PandaMethodInstance pi = (PandaMethodInstance) c.methodInstance();
+    PandaProcedureInstance pi = (PandaProcedureInstance) c.methodInstance();
     if (pi.modeTypeVars().isEmpty()) {
       return c;
     }
@@ -131,7 +131,7 @@ public class PandaCallExt extends PandaExt {
     }
     Type expectedRetType = ((PandaCallExt) PandaExt.ext(c)).expectedReturnType;
 
-    ModeSubst subst = ts.inferModeTypeArgs((PandaProcedureInstance) pi.baseInstance(), argTypes, expectedRetType);
+    ModeSubst subst = ts.inferModeTypeArgs(pi.baseInstance(), argTypes, expectedRetType);
 
     PandaCallExt ext = (PandaCallExt) PandaExt.ext(c);
 
@@ -189,7 +189,7 @@ public class PandaCallExt extends PandaExt {
         closInit
         );
 
-            args.add(larg);
+    args.add(larg);
 
     return n.arguments(args);
   }

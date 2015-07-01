@@ -16,8 +16,8 @@
 
 7. Add mode type parameters to snapshot for resolution.
 8. Add mode type parameters code generation to table and update snapshot to handle this.
-  - In progress, the only tricky part is getting the type variables information to resolve
-    for method type variables
+  - Have added this with a closure for methods, working fine. Tricky part is now
+    handling the chaining issue.
 
 9. Add in mcase typechecking.
 

@@ -9,5 +9,7 @@ public interface PandaProcedureInstance extends JL5ProcedureInstance {
   List<ModeTypeVariable> modeTypeVars();
   void modeTypeVars(List<ModeTypeVariable> modeTypeVars);
 
+  PandaProcedureInstance baseInstance();
+  void baseInstance(PandaProcedureInstance baseInstance);
 }
 

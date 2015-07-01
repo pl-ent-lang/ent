@@ -145,6 +145,7 @@ public class ModeSubst {
     subst.setFormalTypes(formalTypes);
     subst.setThrowTypes(throwTypes);
     subst.setContainer((ReferenceType) this.baseType());
+    ((PandaConstructorInstance) subst).baseInstance((PandaConstructorInstance) ci);
     return subst;
   }
 

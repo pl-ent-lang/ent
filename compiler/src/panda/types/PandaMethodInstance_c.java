@@ -16,7 +16,7 @@ import java.util.List;
 public class PandaMethodInstance_c extends JL5MethodInstance_c implements PandaMethodInstance {
 
   private List<ModeTypeVariable> modeTypeVars;
-  private PandaMethodInstance baseInstance;
+  private PandaProcedureInstance baseInstance;
 
   public PandaMethodInstance_c(PandaTypeSystem ts, 
                                Position pos, 
@@ -45,11 +45,11 @@ public class PandaMethodInstance_c extends JL5MethodInstance_c implements PandaM
     }
   } 
 
-  public PandaMethodInstance baseInstance() {
+  public PandaProcedureInstance baseInstance() {
     return this.baseInstance;
   }
 
-  public void baseInstance(PandaMethodInstance baseInstance) {
+  public void baseInstance(PandaProcedureInstance baseInstance) {
     this.baseInstance = baseInstance;
   }
 
