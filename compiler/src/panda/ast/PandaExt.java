@@ -8,6 +8,8 @@ import polyglot.util.*;
 public class PandaExt extends Ext_c implements PandaOps {
     private static final long serialVersionUID = SerialVersionUID.generate();
 
+    protected boolean needsTypePreservation = false;
+
     public static PandaExt ext(Node n) {
         Ext e = n.ext();
         while (e != null && !(e instanceof PandaExt)) {
@@ -33,6 +35,26 @@ public class PandaExt extends Ext_c implements PandaOps {
     @Override
     public Node typePreserve(TypePreserver tp) {
       return this.node();
+    }
+
+    @Override
+    public boolean needsTypePreservation() {
+      return this.needsTypePreservation;
+    }
+
+    public Node needsTypePreservation(boolean needsTypePreservation) {
+      return this.needsTypePreservation(this.node(), needsTypePreservation);
+    }
+
+    protected <N extends Node> N needsTypePreservation(N n, boolean needsTypePreservation) {
+      PandaExt ext = PandaExt.ext(n);
+      if (ext.needsTypePreservation() == needsTypePreservation) return n;
+      if (this.node() == n) {
+        n = Copy.Util.copy(n);
+        ext = PandaExt.ext(n);
+      }
+      ext.needsTypePreservation = needsTypePreservation;
+      return n;
     }
 
 }

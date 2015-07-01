@@ -164,7 +164,7 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
     if (!(this.lower() instanceof ModeValue)) {
       lower = 
         qq.parseExpr(
-          "PANDA_ModeTable.get(%E)",
+          "PANDA_Runtime.getObjMode(%E, 0)",
           this.lower()
           );
     } else {
@@ -175,7 +175,7 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
     if (!(this.upper() instanceof ModeValue)) {
       upper = 
         qq.parseExpr(
-          "PANDA_ModeTable.get(%E)",
+          "PANDA_Runtime.getObjMode(%E, 0)",
           this.upper()
           );
     } else {

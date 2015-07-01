@@ -1,7 +1,8 @@
 package panda.types;
 
-import polyglot.ast.Id;
-import polyglot.types.Type;
+import polyglot.ast.*;
+import polyglot.types.*;
+import polyglot.visit.*;
 
 public interface ModeType extends Type {
   // Property Methods
@@ -16,4 +17,6 @@ public interface ModeType extends Type {
 
   String compileCode(); 
   String runtimeCode(); 
+
+  Expr rewriteForLookup(NodeFactory nf);
 }

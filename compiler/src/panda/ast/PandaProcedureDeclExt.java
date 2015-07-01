@@ -1,30 +1,18 @@
 package panda.ast;
 
-import panda.types.PandaContext;
-import panda.types.ModeTypeVariable;
-import panda.types.PandaTypeSystem;
-import panda.types.PandaProcedureInstance;
+import panda.types.*;
+import panda.visit.*;
 
-import polyglot.ast.ProcedureDecl;
-import polyglot.ast.Node;
-import polyglot.ast.TypeNode;
-import polyglot.types.Context;
-import polyglot.types.Type;
-import polyglot.types.SemanticException;
-import polyglot.util.CollectionUtil;
-import polyglot.util.Copy;
-import polyglot.util.ListUtil;
-import polyglot.visit.AmbiguityRemover;
-import polyglot.visit.NodeVisitor;
-import polyglot.visit.TypeBuilder;
-import polyglot.visit.TypeChecker;
+import polyglot.ast.*;
+import polyglot.types.*;
+import polyglot.util.*;
+import polyglot.visit.*;
 
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 
 public class PandaProcedureDeclExt extends PandaExt {
 
@@ -79,6 +67,7 @@ public class PandaProcedureDeclExt extends PandaExt {
     PandaTypeSystem ts = (PandaTypeSystem) tb.typeSystem();
     PandaProcedureInstance mi = (PandaProcedureInstance) pd.procedureInstance();
 
+    int index = 0;
     if (this.modeParams() != null && !this.modeParams().isEmpty()) {
       List<ModeTypeVariable> mtVars = 
         new ArrayList<ModeTypeVariable>(this.modeParams().size());
@@ -93,13 +82,60 @@ public class PandaProcedureDeclExt extends PandaExt {
         mtVarCheck.add(n.name());
 
         ModeTypeVariable mtVar = (ModeTypeVariable) n.type();
-        //mtVar.declaringClass(ct);
+        mtVar.declaringProc(mi);
+        mtVar.index(index);
         mtVars.add(mtVar);
+        ++index;
       }
       mi.modeTypeVars(mtVars);
     }
 
     return pd;
+  }
+
+  @Override
+  public Node typePreserve(TypePreserver tp) {
+    ProcedureDecl n = (ProcedureDecl) this.node();
+    PandaNodeFactory nf = (PandaNodeFactory) tp.nodeFactory();
+    PandaTypeSystem ts = (PandaTypeSystem) tp.typeSystem();
+
+    PandaProcedureInstance pi = (PandaProcedureInstance) n.procedureInstance();
+    if (pi.modeTypeVars().isEmpty()) {
+      return n;
+    }
+
+    // To preserve the context of the mode type vars, we simply accept PANDA_Closure
+    List<Formal> formals = new ArrayList<>(n.formals());
+    Formal f =
+      nf.Formal(
+        Position.COMPILER_GENERATED,
+        Flags.NONE,
+        nf.AmbTypeNode(
+          Position.COMPILER_GENERATED,
+          nf.Id(
+            Position.COMPILER_GENERATED,
+            "PANDA_Closure"
+            )
+          ),
+        nf.Id(
+          Position.COMPILER_GENERATED,
+          "PANDA_this"
+          )
+        );
+    LocalInstance li =
+      ts.localInstance(
+        f.position(),
+        f.flags(),
+        ts.unknownType(
+          Position.COMPILER_GENERATED
+          ),
+        f.name()
+        );
+
+    f = f.localInstance(li);
+    formals.add(f);
+     
+    return n.formals(formals);
   }
 
 }

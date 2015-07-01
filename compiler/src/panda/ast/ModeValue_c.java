@@ -1,30 +1,13 @@
 package panda.ast;
 
-import panda.translate.PandaRewriter;
-import panda.types.AttributeInstance;
-import panda.types.PandaTypeSystem;
-import panda.types.ModeType;
-import panda.types.ModeValueType;
+import panda.translate.*;
+import panda.types.*;
 
-import polyglot.ast.Lang;
-import polyglot.ast.Lit;
-import polyglot.ast.Lit_c;
-import polyglot.ast.Node;
-import polyglot.ast.NodeFactory;
-import polyglot.ast.Term;
-import polyglot.ast.Field;
-import polyglot.translate.ExtensionRewriter;
-import polyglot.types.SemanticException;
-import polyglot.visit.CFGBuilder;
-import polyglot.visit.NodeVisitor;
-import polyglot.visit.TypeBuilder;
-import polyglot.visit.TypeChecker;
-import polyglot.visit.AmbiguityRemover;
-import polyglot.visit.PrettyPrinter;
-import polyglot.util.Position;
-import polyglot.util.CodeWriter;
-
-import panda.types.PandaContext;
+import polyglot.ast.*;
+import polyglot.translate.*;
+import polyglot.types.*;
+import polyglot.visit.*;
+import polyglot.util.*;
 
 import java.util.List;
 
@@ -127,17 +110,7 @@ public class ModeValue_c extends Lit_c implements ModeValue {
     ModeValueType t = (ModeValueType) this.type();
     ModeType mt = (ModeType) t.mode();
 
-    Field n = 
-      nf.Field(
-        Position.COMPILER_GENERATED,
-        nf.AmbReceiver(
-          Position.COMPILER_GENERATED,
-          nf.Id(Position.COMPILER_GENERATED, "PandaMode")
-          ),
-        nf.Id(Position.COMPILER_GENERATED, mt.runtimeCode())
-        );
-
-    return n;
+    return mt.rewriteForLookup(nf);
   }
 
   @Override

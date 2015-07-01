@@ -119,21 +119,22 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
       return true;
     }
 
-    // TODO : This is an O(n) lookup, keep a hash to avoid
+    // TODO : This is an O(n^2) lookup, keep a hash to avoid
     ModeSubstType st = (ModeSubstType) baset;
-    if (st.modeType() instanceof ModeTypeVariable &&
-        mtVars.contains(st.modeType())) {
-
-      // This is a mode type var that is part of our inference, so infer it
-      ModeTypeVariable mtVar = (ModeTypeVariable) st.modeType();
-      Type inft = actt.modeType();
-      if (mtMap.containsKey(mtVar)) {
-        if (!mtMap.get(mtVar).typeEqualsImpl(inft)) {
-          return false;
-        }
-      } else {
-        mtMap.put(mtVar, inft);
-      } 
+    for (Type t : st.modeTypeArgs()) {
+      // The O(n) lookup from mtVars.contains
+      if (t instanceof ModeTypeVariable && mtVars.contains(t)) {
+        // This is a mode type var that is part of our inference, so infer it
+        ModeTypeVariable mtVar = (ModeTypeVariable) t;
+        Type inft = actt.modeType();
+        if (mtMap.containsKey(mtVar)) {
+          if (!mtMap.get(mtVar).typeEqualsImpl(inft)) {
+            return false;
+          }
+        } else {
+          mtMap.put(mtVar, inft);
+        } 
+      }
     }
 
     // Just like the opposite (in ModeSubst) we need to dip down in the subst
@@ -185,10 +186,10 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
     return true;
   }
 
-  private ModeSubst inferModeTypeArgs(PandaProcedureInstance pi,
+  public ModeSubst inferModeTypeArgs(PandaProcedureInstance pi,
                                       List <? extends Type> argTypes,
                                       Type expectedReturnType) {
-
+    
     // Infer the mode type variable first, error if not possible
     Map<ModeTypeVariable,Type> mtMap = new HashMap<>();
     for (int i = 0; i < pi.formalTypes().size(); ++i) {
@@ -261,14 +262,16 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
       }
     }
 
-    ModeSubst subst = this.inferModeTypeArgs((PandaProcedureInstance) mi, argTypes, null);
+    PandaProcedureInstance pi = (PandaProcedureInstance) mi;
+
+    ModeSubst subst = this.inferModeTypeArgs(pi, argTypes, null);
     if (subst == null) {
       // No matter what we should be able to create a valid subst,
       // null indicates error
       return null;
     }
 
-    PandaProcedureInstance smi = (PandaProcedureInstance) subst.substProcedure(mi);
+    PandaProcedureInstance smi = (PandaProcedureInstance) subst.substProcedure(pi);
 
     // Let's perform a subst over modes, a hack for now, just prototyping
     // Can do a subst over the mi container type with a new type map

@@ -1,12 +1,11 @@
 package panda.types;
 
-import panda.runtime.PANDA_Modes;
+import panda.runtime.*;
 
-import polyglot.ast.Id;
-import polyglot.types.TypeObject;
-import polyglot.types.Type;
-import polyglot.types.Type_c;
-import polyglot.types.Resolver;
+import polyglot.ast.*;
+import polyglot.types.*;
+import polyglot.util.*;
+import polyglot.visit.*;
 
 public class ModeType_c extends Type_c implements ModeType {
   protected String name;
@@ -130,6 +129,20 @@ public class ModeType_c extends Type_c implements ModeType {
       return false;
     }
     return ts.isSubtype(this.superType(), o);
+  }
+
+  @Override
+  public Expr rewriteForLookup(NodeFactory nf) {
+    Expr n = 
+      nf.Field(
+        Position.COMPILER_GENERATED,
+        nf.AmbReceiver(
+          Position.COMPILER_GENERATED,
+          nf.Id(Position.COMPILER_GENERATED, "PandaMode")
+          ),
+        nf.Id(Position.COMPILER_GENERATED, this.runtimeCode())
+        );
+    return n;
   }
 
 }

@@ -1,9 +1,7 @@
 package panda.types;
 
-import polyglot.types.ClassType;
-import polyglot.types.Type;
-import polyglot.types.ReferenceType;
-import polyglot.ext.param.types.Param;
+import polyglot.types.*;
+import polyglot.ext.param.types.*;
 
 import java.util.List;
 
@@ -26,8 +24,14 @@ public interface ModeTypeVariable extends ModeType {
   ClassType declaringClass();
   void declaringClass(ClassType declaringClass);
 
+  ProcedureInstance declaringProc();
+  void declaringProc(ProcedureInstance declaringProc);
+
   int uniqueId();
 
   public boolean inferUpperBound();
+
+  int index();
+  void index(int index);
 }
 

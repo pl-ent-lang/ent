@@ -72,6 +72,7 @@ public class PandaClassDeclExt extends PandaExt {
     PandaTypeSystem ts = (PandaTypeSystem) tb.typeSystem();
     PandaParsedClassType ct = (PandaParsedClassType) decl.type();
 
+    int index = 0;
     if (this.modeParams() != null && !this.modeParams().isEmpty()) {
       List<ModeTypeVariable> mtVars = 
         new ArrayList<ModeTypeVariable>(this.modeParams().size());
@@ -87,7 +88,9 @@ public class PandaClassDeclExt extends PandaExt {
 
         ModeTypeVariable mtVar = (ModeTypeVariable) n.type();
         mtVar.declaringClass(ct);
+        mtVar.index(index);
         mtVars.add(mtVar);
+        ++index;
       }
       ct.modeTypeVars(mtVars);
     } 

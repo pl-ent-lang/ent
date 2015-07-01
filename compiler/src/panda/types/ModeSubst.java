@@ -73,10 +73,13 @@ public class ModeSubst {
     ModeSubstType subst = type.deepCopy();
 
     Type bt = this.substType(subst.baseType());
-    Type mt = (Type) this.substType(subst.modeType());
+    List<Type> mtArgs = new ArrayList<>();
+    for (Type t : subst.modeTypeArgs()) {
+      mtArgs.add(this.substType(t));
+    }
 
     subst.baseType(bt);
-    subst.modeType(mt);
+    subst.modeTypeArgs(mtArgs);
 
     return subst;
   }
@@ -130,6 +133,7 @@ public class ModeSubst {
     subst.setFormalTypes(formalTypes);
     subst.setThrowTypes(throwTypes);
     subst.setContainer((ReferenceType) this.baseType());
+    ((PandaMethodInstance) subst).baseInstance((PandaMethodInstance) mi);
     return subst;
   }
 

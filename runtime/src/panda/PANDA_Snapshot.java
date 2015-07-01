@@ -16,8 +16,11 @@ public class PANDA_Snapshot {
     }
 
     T copy = (T) o.PANDA_copy();
-    PANDA_ModeTable.put(o, new Integer(mode));
-    return o;
+    Integer[] cmodes = PANDA_Runtime.getObjAll(o).clone();
+    cmodes[0] = mode;
+
+    PANDA_Runtime.putObj(copy, cmodes);
+    return copy;
   }
 
 }

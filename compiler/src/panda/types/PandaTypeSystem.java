@@ -35,4 +35,6 @@ public interface PandaTypeSystem extends JL7TypeSystem {
   ClassType wrapperClassOfModeSubstPrimitive(ModeSubstPrimitiveType t);
 
   Type createModeSubst(Type bt, List<Type> modeTypes);
+
+  ModeSubst inferModeTypeArgs(PandaProcedureInstance pi, List<? extends Type> argTypes, Type expectedReturnType);
 }

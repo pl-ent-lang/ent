@@ -12,4 +12,6 @@ public interface PandaLang extends J7Lang {
 
   Node typePreserve(Node n, TypePreserver tp);
 
+  boolean needsTypePreservation(Node n);
+
 }

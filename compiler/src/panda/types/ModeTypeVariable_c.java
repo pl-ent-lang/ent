@@ -1,12 +1,9 @@
 package panda.types;
 
-import polyglot.types.Type_c;
-import polyglot.types.ClassType;
-import polyglot.types.Type;
-import polyglot.types.FieldInstance;
-import polyglot.types.MethodInstance;
-import polyglot.types.Resolver;
-import polyglot.util.Position;
+import polyglot.ast.*;
+import polyglot.types.*;
+import polyglot.visit.*;
+import polyglot.util.*;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -21,7 +18,9 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
   protected Type upperBound;
   protected Type lowerBound;
   protected ClassType declaringClass;
+  protected ProcedureInstance declaringProc;
   protected int uniqueId;
+  protected int index;
 
   public ModeTypeVariable_c(PandaTypeSystem ts,
                             Position pos,
@@ -30,6 +29,7 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
     this.bounds = Collections.emptyList();
     this.name = name;
     this.uniqueId = this.genId();
+    this.index = -1;
   }
 
   // Property Methods
@@ -85,8 +85,25 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
     this.declaringClass = declaringClass;
   }
 
+  public ProcedureInstance declaringProc() {
+    return this.declaringProc;
+  }
+
+  public void declaringProc(ProcedureInstance declaringProc) {
+    this.declaringProc = declaringProc;
+  }
+
+
   public int uniqueId() {
     return this.uniqueId;
+  }
+
+  public int index() {
+    return this.index;
+  }
+
+  public void index(int index) {
+    this.index = index;
   }
 
   public boolean inferUpperBound() {
@@ -173,4 +190,56 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
     return ((ModeType) this.upperBound()).runtimeCode();
   }
 
+  @Override
+  public Expr rewriteForLookup(NodeFactory nf) {
+    Expr n = null;
+    if (this.declaringClass() != null) {
+      n = 
+        nf.Call(
+          Position.COMPILER_GENERATED,
+          nf.AmbTypeNode(
+            Position.COMPILER_GENERATED,
+            nf.Id(
+              Position.COMPILER_GENERATED,
+              "PANDA_Runtime"
+              )
+            ),
+          nf.Id(
+            Position.COMPILER_GENERATED,
+            "getObjMode"
+            ),
+          nf.This(Position.COMPILER_GENERATED),
+          nf.IntLit(
+            Position.COMPILER_GENERATED,
+            IntLit.INT,
+            this.index()
+            )
+          );
+    } else if (this.declaringProc() != null) {
+      n =
+        nf.Call(
+          Position.COMPILER_GENERATED,
+          nf.Local(
+            Position.COMPILER_GENERATED,
+            nf.Id(
+              Position.COMPILER_GENERATED,
+              "PANDA_this"
+              )
+            ),
+          nf.Id(
+            Position.COMPILER_GENERATED,
+            "getModeVar"
+            ),
+          nf.IntLit(
+            Position.COMPILER_GENERATED,
+            IntLit.INT,
+            this.index()
+            )
+          );
+    } else {
+      System.out.println("ERROR - Mode type variable does not have declaring class or proc");
+      System.exit(1);
+    }
+    return n;
+  }
 }

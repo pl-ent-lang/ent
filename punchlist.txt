@@ -6,16 +6,18 @@
 
 3. Fix all cases of WARNING, each one indicates that there are parts of the type system that are missing.
 
-4. Fix PANDA_Copy to properly clone methods (DONE)
+4. Fix PANDA_Copy to properly clone methods. (DONE)
   - See commit notes, chose to add copy semantics to the language.
 
-5. Add object bounds codegen to snapshot.
+5. Add object bounds codegen to snapshot. (DONE)
+  - See commit notes, context sensitivity added for ModeValues/SnapshotExpr.
 
 6. Add some context sensitivity to mode values to change @mode<low> to simply be low.
 
 7. Add mode type parameters to snapshot for resolution.
-
 8. Add mode type parameters code generation to table and update snapshot to handle this.
+  - In progress, the only tricky part is getting the type variables information to resolve
+    for method type variables
 
 9. Add in mcase typechecking.
 

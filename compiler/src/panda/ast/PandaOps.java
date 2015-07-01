@@ -10,4 +10,6 @@ public interface PandaOps extends NodeOps {
 
   Node typePreserve(TypePreserver tp);
 
+  boolean needsTypePreservation();
+
 }

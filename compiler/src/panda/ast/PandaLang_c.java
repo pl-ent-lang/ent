@@ -46,4 +46,8 @@ public class PandaLang_c extends J7Lang_c implements PandaLang {
       return this.PandaOps(n).typePreserve(tp);
     }
 
+    public final boolean needsTypePreservation(Node n) {
+      return this.PandaOps(n).needsTypePreservation();
+    }
+
 }

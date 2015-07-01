@@ -3,38 +3,40 @@ package codegen_test;
 modes { low <: mid; mid <: high; high <: veryHigh; }
 
 public class Code @mode<X, Y <= X> {
-  private String@mode<Y> f1;
-
   attribute {
     if (true) {
-      return @mode<mid>;
+      return @mode<high>;
     } else {
       return @mode<high>;
     }
   } 
 
   copy {
-    return new Code@mode<X,Y>(this.f1);
+    return new Code@mode<X,Y>();
   }
 
-  public Code(String@mode<*> f1) {
-    this.f1 = f1;
+  public void foo(Code@mode<X,Y> c1) {
   }
 
-  public int count() {
-    return this.f1.length();
+  public @mode<Z> Code@mode<*,Z> scopy(Code@mode<*,Z> c1) {
+    Code@mode<?,Z> cd = new Code@mode<?,Z>();
+    return snapshot cd ?mode[@mode<low>, @mode<Z>];
+  }
+
+  public Code@mode<X,Y> dcopy(Code@mode<X,Y> c1) {
+    c1.scopy(c1);
+
+    return new Code@mode<X,Y>();
   }
 
   public static void main(String[] args) {
-    Code@mode<high,mid> c1 = new Code@mode<high,mid>("just a test");
+    Code@mode<high,high> c1 = new Code@mode<high,high>();
+    Code@mode<mid,mid> c2 = new Code@mode<mid,mid>();
 
-    Code@mode<?,high> cd = new Code@mode<?,high>("just a test");
+    c1.scopy(c1);
+    c1.foo(c1);
 
-    Code@mode<*,high> c2 = 
-      snapshot cd ?mode[@mode<low>,
-                        snapshot cd ?mode[@mode<low>,@mode<high>]];
-
-    System.out.println("Count: " + c2.count());
+    c2.scopy(c2);
   }
 }
 
