@@ -8,6 +8,7 @@ public interface PandaClassType extends JL5ClassType {
 
   // Property Methods
   List<ModeTypeVariable> modeTypeVars();
+  boolean isImplicitModeTypeVar();
   void modeTypeVars(List<ModeTypeVariable> modeTypeVars);
 
   AttributeInstance attributeInstance();

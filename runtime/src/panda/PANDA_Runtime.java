@@ -19,8 +19,9 @@ public class PANDA_Runtime {
     return PANDA_Runtime.objTab.get(o);
   }
 
-  public static void putObj(Object o, Integer[] modes) {
+  public static Object putObj(Object o, Integer[] modes) {
     PANDA_Runtime.objTab.put(o, modes);
+    return o;
   }
 
   public static int getModeVar(int uniqueId) {

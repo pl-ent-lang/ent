@@ -331,6 +331,71 @@ override primitive_type ::=
   :}
 ;
 
+override array_type ::=	
+  primitive_type:a dims:b
+  {: 
+    TypeNode tn = parser.array(a, b.intValue()); 
+    RESULT = parser.nf.AmbModeTypeInstantiation(parser.pos(a,b), tn);
+  :}
+|
+  primitive_type:a dims:b mode_type_args:args
+  {: 
+    TypeNode tn = parser.array(a, b.intValue()); 
+    RESULT = parser.nf.AmbModeTypeInstantiation(parser.pos(a,b), tn, args);
+  :}
+	// we have class_or_interface_type here even though only unbounded
+	// wildcards are really allowed in the parameterization.
+	// we have to expand this to avoid lookahead problems.
+|	name:a dims:b
+  {: 
+    TypeNode tn = parser.array(a.toType(), b.intValue()); 
+    RESULT = parser.nf.AmbModeTypeInstantiation(parser.pos(a,b), tn);
+  :}
+| name:a dims:b mode_type_args:args
+  {: 
+    TypeNode tn = parser.array(a.toType(), b.intValue()); 
+    RESULT = parser.nf.AmbModeTypeInstantiation(parser.pos(a,b), tn, args);
+  :}
+|	class_or_interface:a LT type_argument_list_1:b DOT name:c dims:d
+  // Instantiating type arguments
+  {: 
+    TypeNode tn = parser.nf.AmbTypeInstantiation(parser.pos(a, b), a, b);
+    TypeNode aa = ((JL5Name) c).toType(tn);
+    RESULT = parser.array(aa, d.intValue()); 
+  :}
+|	class_or_interface:a LT type_argument_list_1:b dims:c
+  // Instantiating type arguments
+  {: 
+    RESULT = parser.array(parser.nf.AmbTypeInstantiation(parser.pos(a, b), a, b), c.intValue()); 
+  :}
+;
+
+/*
+override array_creation_expression ::= 
+  // NewArray
+  NEW:n primitive_type:a dim_exprs:b dims_opt:c
+  {: 
+    TypeNode tn = parser.nf.AmbModeTypeInstantiation(parser.pos(a), a);
+    RESULT = parser.nf.NewArray(parser.pos(n, b), tn, b, c.intValue()); 
+  :}
+  NEW:n primitive_type:a dim_exprs:b dims_opt:c
+  {: 
+    TypeNode tn = parser.nf.AmbModeTypeInstantiation(parser.pos(a), a);
+    RESULT = parser.nf.NewArray(parser.pos(n, b), tn, b, c.intValue()); 
+  :}
+| NEW:n class_or_interface_type:a dim_exprs:b dims_opt:c
+  {: 
+    TypeNode tn = parser.nf.AmbModeTypeInstantiation(parser.pos(a), a);
+    RESULT = parser.nf.NewArray(parser.pos(n, b), tn, b, c.intValue()); 
+  :}
+| initialized_array_creation_expression:a
+	{: 
+    RESULT = a; 
+  :}
+;		
+*/
+
+
 mode_type_args ::=
   MODE LT mode_type_nodes:nodes GT
   {:

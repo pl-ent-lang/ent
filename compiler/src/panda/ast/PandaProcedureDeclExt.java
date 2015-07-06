@@ -65,9 +65,10 @@ public class PandaProcedureDeclExt extends PandaExt {
     ProcedureDecl pd = (ProcedureDecl) superLang().buildTypes(this.node(), tb);
 
     PandaTypeSystem ts = (PandaTypeSystem) tb.typeSystem();
-    PandaProcedureInstance mi = (PandaProcedureInstance) pd.procedureInstance();
+    PandaProcedureInstance pi = (PandaProcedureInstance) pd.procedureInstance();
+    PandaClassType ct = (PandaClassType) pi.container();
 
-    int index = 0;
+    int dbInd = ct.modeTypeVars().size();
     if (this.modeParams() != null && !this.modeParams().isEmpty()) {
       List<ModeTypeVariable> mtVars = 
         new ArrayList<ModeTypeVariable>(this.modeParams().size());
@@ -82,12 +83,12 @@ public class PandaProcedureDeclExt extends PandaExt {
         mtVarCheck.add(n.name());
 
         ModeTypeVariable mtVar = (ModeTypeVariable) n.type();
-        mtVar.declaringProc(mi);
-        mtVar.index(index);
+        mtVar.declaringProc(pi);
+        mtVar.index(dbInd);
         mtVars.add(mtVar);
-        ++index;
+        ++dbInd;
       }
-      mi.modeTypeVars(mtVars);
+      pi.modeTypeVars(mtVars);
     }
 
     return pd;
@@ -98,11 +99,6 @@ public class PandaProcedureDeclExt extends PandaExt {
     ProcedureDecl n = (ProcedureDecl) this.node();
     PandaNodeFactory nf = (PandaNodeFactory) tp.nodeFactory();
     PandaTypeSystem ts = (PandaTypeSystem) tp.typeSystem();
-
-    PandaProcedureInstance pi = (PandaProcedureInstance) n.procedureInstance();
-    if (pi.modeTypeVars().isEmpty()) {
-      return n;
-    }
 
     // To preserve the context of the mode type vars, we simply accept PANDA_Closure
     List<Formal> formals = new ArrayList<>(n.formals());

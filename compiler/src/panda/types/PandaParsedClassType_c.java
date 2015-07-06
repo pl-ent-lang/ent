@@ -14,6 +14,7 @@ public class PandaParsedClassType_c extends JL5ParsedClassType_c implements Pand
   private List<ModeTypeVariable> modeTypeVars = null;
   private AttributeInstance attributeInstance;
   private CopyInstance copyInstance;
+  private boolean isImplicitModeTypeVar = true;
 
   public PandaParsedClassType_c(PandaTypeSystem ts,
                                 LazyClassInitializer init, 
@@ -32,12 +33,18 @@ public class PandaParsedClassType_c extends JL5ParsedClassType_c implements Pand
         // Problem
       }
       this.modeTypeVars = Arrays.asList(mtv);
+      this.isImplicitModeTypeVar = true;
     }
     return this.modeTypeVars;
   }
   
   public void modeTypeVars(List<ModeTypeVariable> modeTypeVars) {
     this.modeTypeVars = modeTypeVars;
+    this.isImplicitModeTypeVar = false;
+  }
+
+  public boolean isImplicitModeTypeVar() {
+    return this.isImplicitModeTypeVar;
   }
 
   public boolean hasAttribute() {

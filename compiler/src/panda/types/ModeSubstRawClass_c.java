@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class ModeSubstRawClass_c extends ModeSubstClassType_c implements ModeSubstRawClass{
+public class ModeSubstRawClass_c extends ModeSubstClassType_c implements ModeSubstRawClass {
 
   public ModeSubstRawClass_c(PandaRawClass baseType, List<Type> modeTypeArgs) {
     super(baseType, modeTypeArgs);

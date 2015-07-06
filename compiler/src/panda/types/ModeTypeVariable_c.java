@@ -191,9 +191,12 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
   }
 
   @Override
-  public Expr rewriteForLookup(NodeFactory nf) {
+  public Expr rewriteForLookup(NodeFactory nf, Context c) {
     Expr n = null;
-    if (this.declaringClass() != null) {
+    // Use class variable context if class mode type variable
+    // and used outside of constructor.
+    if (this.declaringClass() != null && 
+        !(c.currentCode() instanceof ConstructorInstance)) {
       n = 
         nf.Call(
           Position.COMPILER_GENERATED,
@@ -215,7 +218,8 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
             this.index()
             )
           );
-    } else if (this.declaringProc() != null) {
+    } else if (this.declaringProc() != null ||
+               c.currentCode() instanceof ConstructorInstance) {
       n =
         nf.Call(
           Position.COMPILER_GENERATED,

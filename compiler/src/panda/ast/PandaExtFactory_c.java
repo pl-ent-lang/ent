@@ -13,10 +13,12 @@ public final class PandaExtFactory_c extends PandaAbstractExtFactory_c {
     super(nextExtFactory);
   }
 
+  /*
   @Override 
   protected Ext extBlockImpl() {
     return new PandaBlockExt();
   } 
+  */
 
   @Override 
   protected Ext extCallImpl() {

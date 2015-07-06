@@ -104,24 +104,26 @@ public class ModeValue_c extends Lit_c implements ModeValue {
   */
 
   public Node rewriteModeValue(ExtensionRewriter rw) throws SemanticException {
-    PandaRewriter pwr = (PandaRewriter) rw;
-    NodeFactory nf = pwr.nodeFactory();
+    PandaRewriter prw = (PandaRewriter) rw;
+    NodeFactory nf = prw.nodeFactory();
+    Context c = prw.context();
 
     ModeValueType t = (ModeValueType) this.type();
     ModeType mt = (ModeType) t.mode();
 
-    return mt.rewriteForLookup(nf);
+    return mt.rewriteForLookup(nf, c);
   }
 
   @Override
   public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
-    PandaRewriter pwr = (PandaRewriter) rw;
-    NodeFactory nf = pwr.nodeFactory();
+    PandaRewriter prw = (PandaRewriter) rw;
+    NodeFactory nf = prw.nodeFactory();
 
     ModeValueType t = (ModeValueType) this.type();
     ModeType mt = (ModeType) t.mode();
+    Context c = prw.context();
 
-    if (pwr.rewriteModeValue()) {
+    if (prw.rewriteModeValue()) {
       return this.rewriteModeValue(rw);
     } else {
       return this;

@@ -98,47 +98,6 @@ public class PandaClassDeclExt extends PandaExt {
     return decl;
   } 
 
-  // 2.1. Generate Cloneable if the class does not implement
-  /*
-  boolean genClone = true;
-  Type cloneableType = ts.typeForName("java.lang.Cloneable");
-  for (ReferenceType t : ct.interfaces()) {
-    if (ts.typeEquals(t, cloneableType)) {
-      genClone = false;
-      break;
-    }
-  }
-  
-  if (genClone) {
-    interfaces.add(qq.parseType("Cloneable"));
-    n = n.interfaces(interfaces);
-  }
-  */
-
-  /*
-  stmts.add(
-    qq.parseStmt(
-      "%T PANDA_ld = null;",
-      qq.parseType(decl.name())
-      )
-    );
-
-  stmts.add(
-    qq.parseStmt(
-      "try {"                                       +
-      "  PANDA_ld = (%T) super.clone(); "           +
-      "} catch (CloneNotSupportedException e) { "   + 
-      "  System.out.println(\"Could not clone\"); " +
-      "  System.exit(1);"                           +
-      "}", 
-      qq.parseType(decl.name()),
-      qq.parseType(decl.name())
-      )
-    );
-  */
-
-
-
   @Override
   public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
     PandaRewriter prw = (PandaRewriter) rw;
@@ -170,7 +129,7 @@ public class PandaClassDeclExt extends PandaExt {
       if (genDef) {
         ClassBody body = n.body();
         List<ClassMember> members = new ArrayList<>(body.members());
-        members.add(qq.parseMember("public %s() { }", decl.name()));
+        members.add(qq.parseMember("public %s(PANDA_Closure PANDA_this) { }", decl.name()));
         body = body.members(members);
         n = n.body(body);
       }
@@ -185,7 +144,7 @@ public class PandaClassDeclExt extends PandaExt {
       // 3.1. Create a new expression for a shallow copy
       stmts.add(
         qq.parseStmt(
-          "%T PANDA_ld = new %T();", 
+          "%T PANDA_ld = new %T(null);", 
           qq.parseType(decl.name()),
           qq.parseType(decl.name())
           )

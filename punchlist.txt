@@ -24,3 +24,17 @@
 10. Add in mcase codegen.
 
 11. Add in mode subtyping proper (instead of forcing mode subst types to be equal).
+
+
+String[][]@mode<low> s;
+
+- Initial work
+  - Get Array of (String@mode*>[]) working
+  - Get mode of entire array String[]@mode<*> working
+  - After that, we can figure out the obscurities of all cases,
+    right now can force a multi dim array to only have one mode.
+
+
+List<List<String>> s;
+
+List<List<String@mode<*> >@mode<*> >@mode<*> s;

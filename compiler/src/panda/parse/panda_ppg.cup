@@ -461,16 +461,41 @@ interface_type ::=
     class_or_interface_type:a {:  RESULT = a;  :};
 
 array_type ::=
-    primitive_type:a dims:b {:  RESULT = parser.array(a, b.intValue());  :}
- |  name:a dims:b {:  RESULT = parser.array(a.toType(), b.intValue());  :}
+    primitive_type:a dims:b {:
+                            
+    TypeNode tn = parser.array(a, b.intValue()); 
+    RESULT = parser.nf.AmbModeTypeInstantiation(parser.pos(a,b), tn);
+  
+                            :}
+ |  primitive_type:a dims:b mode_type_args:args {:
+                                                
+    TypeNode tn = parser.array(a, b.intValue()); 
+    RESULT = parser.nf.AmbModeTypeInstantiation(parser.pos(a,b), tn, args);
+  
+                                                :}
+ |  name:a dims:b {:
+                  
+    TypeNode tn = parser.array(a.toType(), b.intValue()); 
+    RESULT = parser.nf.AmbModeTypeInstantiation(parser.pos(a,b), tn);
+  
+                  :}
+ |  name:a dims:b mode_type_args:args {:
+                                      
+    TypeNode tn = parser.array(a.toType(), b.intValue()); 
+    RESULT = parser.nf.AmbModeTypeInstantiation(parser.pos(a,b), tn, args);
+  
+                                      :}
  |  class_or_interface:a LT type_argument_list_1:b DOT name:c dims:d {:
-                                                                     TypeNode tn = parser.nf.AmbTypeInstantiation(parser.pos(a, b), a, b);
-           TypeNode aa = ((JL5Name) c).toType(tn);
-           RESULT = parser.array(aa, d.intValue()); 
+                                                                     
+    TypeNode tn = parser.nf.AmbTypeInstantiation(parser.pos(a, b), a, b);
+    TypeNode aa = ((JL5Name) c).toType(tn);
+    RESULT = parser.array(aa, d.intValue()); 
+  
                                                                      :}
  |  class_or_interface:a LT type_argument_list_1:b dims:c {:
                                                           
-            RESULT = parser.array(parser.nf.AmbTypeInstantiation(parser.pos(a, b), a, b), c.intValue()); 
+    RESULT = parser.array(parser.nf.AmbTypeInstantiation(parser.pos(a, b), a, b), c.intValue()); 
+  
                                                           :};
 
 name ::=

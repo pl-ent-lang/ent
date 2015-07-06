@@ -59,6 +59,11 @@ public abstract class ModeSubstClassType_c extends ModeSubstReferenceType_c impl
     ((PandaClassType) this.baseType()).modeTypeVars(modeTypeVars);
   } 
 
+  @Override
+  public boolean isImplicitModeTypeVar() {
+    return ((PandaClassType) this.baseType()).isImplicitModeTypeVar();
+  }
+
   public AttributeInstance attributeInstance() {
     return ((PandaClassType) this.baseType()).attributeInstance();
   }

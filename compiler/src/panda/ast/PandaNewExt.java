@@ -71,22 +71,35 @@ public class PandaNewExt extends PandaExt {
   public Node typePreserve(TypePreserver tp) {
     New n = (New) this.node();
     PandaNodeFactory nf = (PandaNodeFactory) tp.nodeFactory();
+    Context ctx = tp.context();
 
-    if (!this.needsTypePreservation()) {
-      return n;
-    }
+    // Steps to preserve types
+    // 1. Create a PANDA_Closure for mode type variables
+    // 2. Rewrite new A() to new A(new PANDA_Closure()) if non
+    // builtin constructor.
+    // 3. Rewrite new A() to ((A) PANDA_Runtime.putObj(new A(), constants))
 
-    System.out.println("Preserving!");
-
+    // 1. Create a PANDA_Closure
     List<Expr> elems = new ArrayList<>();
     List<Expr> args = new ArrayList<>(n.arguments());
+  
+    // 1.1. Capture all of the variables from the instantiation of the class
+    // mode type variables.
+    ModeSubstType st = (ModeSubstType) n.type();
+    PandaClassType ct = (PandaClassType) st.baseType();
+    for (Type t : st.modeTypeArgs()) {
+      elems.add(((ModeType) t).rewriteForLookup(nf, ctx));
+    }
 
+    // 1.2. Capture the inferred variables from the instantiation of the method
+    // mode type variables.
     PandaProcedureInstance pi = (PandaProcedureInstance) n.procedureInstance();
     for (ModeTypeVariable v : pi.modeTypeVars()) {
       ModeType mt = (ModeType) this.infModeTypes().get(v);
-      elems.add(mt.rewriteForLookup(nf));
+      elems.add(mt.rewriteForLookup(nf, ctx));
     }
 
+    // 1.3. Build the closure expression
     List<Expr> closInit = new ArrayList<>();
     closInit.add(
       nf.NewArray(
@@ -106,22 +119,67 @@ public class PandaNewExt extends PandaExt {
         )
       );
 
-    Expr larg =
-      nf.New(
+    // 2. Rewrite if non builtin
+    if (!ct.isImplicitModeTypeVar()) {
+      args.add(
+        nf.New(
+          Position.COMPILER_GENERATED,
+          nf.AmbTypeNode(
+            Position.COMPILER_GENERATED,
+            nf.Id(
+              Position.COMPILER_GENERATED,
+              "PANDA_Closure"
+              )
+            ),
+          closInit
+          )
+        );
+    } 
+    n = n.arguments(args);
+
+    // 3. Rewrite to insert call into the mode table
+    Cast c =
+      nf.Cast(
         Position.COMPILER_GENERATED,
         nf.AmbTypeNode(
           Position.COMPILER_GENERATED,
           nf.Id(
             Position.COMPILER_GENERATED,
-            "PANDA_Closure"
+            ct.name()
             )
           ),
-        closInit
+        nf.Call(
+          Position.COMPILER_GENERATED,
+          nf.AmbTypeNode(
+            Position.COMPILER_GENERATED,
+            nf.Id(
+              Position.COMPILER_GENERATED,
+              "PANDA_Runtime"
+              )
+            ),
+          nf.Id(
+            Position.COMPILER_GENERATED,
+            "putObj"
+            ),
+            n,
+          nf.NewArray(
+            Position.COMPILER_GENERATED,
+            nf.AmbTypeNode(
+              Position.COMPILER_GENERATED,
+              nf.Id(
+                Position.COMPILER_GENERATED,
+                "Integer"
+                )
+              ),
+            1,
+            nf.ArrayInit(
+              Position.COMPILER_GENERATED,
+              elems
+              )
+            )
+          )
         );
 
-    args.add(larg);
-
-    return n.arguments(args);
+    return c;
   }
-
 }

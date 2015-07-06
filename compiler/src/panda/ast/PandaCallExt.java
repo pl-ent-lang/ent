@@ -143,6 +143,7 @@ public class PandaCallExt extends PandaExt {
   public Node typePreserve(TypePreserver tp) {
     Call n = (Call) this.node();
     PandaNodeFactory nf = (PandaNodeFactory) tp.nodeFactory();
+    Context c = tp.context();
 
     if (!this.needsTypePreservation()) {
       return n;
@@ -154,7 +155,7 @@ public class PandaCallExt extends PandaExt {
     PandaProcedureInstance pi = (PandaProcedureInstance) n.procedureInstance();
     for (ModeTypeVariable v : pi.modeTypeVars()) {
       ModeType mt = (ModeType) this.infModeTypes().get(v);
-      elems.add(mt.rewriteForLookup(nf));
+      elems.add(mt.rewriteForLookup(nf, c));
     }
 
     List<Expr> closInit = new ArrayList<>();

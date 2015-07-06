@@ -21,6 +21,10 @@ public class PandaRawClass_c extends RawClass_c implements PandaRawClass {
     ((PandaParsedClassType) this.base()).modeTypeVars(modeTypeVars);
   } 
 
+  public boolean isImplicitModeTypeVar() {
+    return ((PandaParsedClassType) this.base()).isImplicitModeTypeVar();
+  }
+
   public AttributeInstance attributeInstance() {
     return ((PandaParsedClassType) this.base()).attributeInstance();
   }

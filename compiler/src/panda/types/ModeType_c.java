@@ -132,7 +132,7 @@ public class ModeType_c extends Type_c implements ModeType {
   }
 
   @Override
-  public Expr rewriteForLookup(NodeFactory nf) {
+  public Expr rewriteForLookup(NodeFactory nf, Context c) {
     Expr n = 
       nf.Field(
         Position.COMPILER_GENERATED,

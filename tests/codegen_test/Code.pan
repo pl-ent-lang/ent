@@ -3,7 +3,6 @@ package codegen_test;
 modes { low <: mid; mid <: high; high <: veryHigh; }
 
 public class Code @mode<X, Y <= X> {
-  /*
   attribute {
     if (true) {
       return @mode<high>;
@@ -12,22 +11,23 @@ public class Code @mode<X, Y <= X> {
     }
   } 
 
-  copy {
-    return new Code@mode<X,Y>();
-  }
-  */
-
-  /*
   public Code() {
   }
 
+  public Code(Code@mode<?,*> c1) {
+    Code@mode<*,*> cd = snapshot c1 ?mode[@mode<X>,@mode<Y>];
+  }
+
+  /*
   public @mode<Z> Code@mode<*,Z> scopy(Code@mode<*,Z> c1) {
     return c1;
   } 
   */
 
   public static void main(String[] args) {
-    String[] s1 = new String[] { "first", "second" };
+    String@mode<high> s1 = new String@mode<high>(new String@mode<high>());
+
+    Code@mode<high,mid> s2 = new Code@mode<high,mid>();
   }
 }
 

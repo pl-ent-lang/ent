@@ -23,6 +23,10 @@ public class PandaSubstClassType_c extends JL5SubstClassType_c implements PandaS
     ((PandaParsedClassType) this.base).modeTypeVars(modeTypeVars);
   } 
 
+  public boolean isImplicitModeTypeVar() {
+    return ((PandaParsedClassType) this.base).isImplicitModeTypeVar();
+  } 
+
   public AttributeInstance attributeInstance() {
     return ((PandaParsedClassType) this.base).attributeInstance();
   }
