@@ -12,13 +12,12 @@ public class PandaReturnExt extends PandaExt {
 
   @Override
   public Node typeCheck(TypeChecker tc) throws SemanticException {
-    PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
-
     Return n = (Return) this.node();
+    PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
+    PandaContext ctx = (PandaContext) tc.context();
+    ClassType ct = ctx.currentClass();
+    CodeInstance ci = ctx.currentCode();
 
-    PandaContext c = (PandaContext) tc.context();
-    ClassType ct = c.currentClass();
-    CodeInstance ci = c.currentCode();
     if (ci instanceof AttributeInstance) {
       if (n.expr() == null || !(n.expr().type() instanceof ModeValueType)) {
         throw new SemanticException("Must return mode value in an attributor");
@@ -34,9 +33,9 @@ public class PandaReturnExt extends PandaExt {
       }
 
       return n;
+    } else {
+      return superLang().typeCheck(n, tc);
     }
-    
-    return superLang().typeCheck(this.node(), tc);
   }
 
   @Override 

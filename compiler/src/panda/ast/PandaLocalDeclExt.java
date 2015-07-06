@@ -25,38 +25,37 @@ public class PandaLocalDeclExt extends PandaExt {
   @Override
   public Node typeCheck(TypeChecker tc) throws SemanticException {
     LocalDecl n = (LocalDecl) this.node();
-    ModeSubstType st = (ModeSubstType) n.type().type();
     PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
     
-    if (st.modeType() == ts.WildcardModeType() &&
-        n.init() != null) {
-      // Right now this will trigger inference
-      ModeSubstType inf = (ModeSubstType) n.init().type();
-      
-      // Allow all wildcard types to be inferenced
-      List<Type> mtArgs = st.modeTypeArgs();
-      List<Type> infArgs = inf.modeTypeArgs();
-      if (mtArgs.size() != infArgs.size()) {
-        // This is an error, just send it up to the super lang for now, it will
-        // catch it
-        return superLang().typeCheck(n, tc);
-      }
-      List<Type> newArgs = new ArrayList<>();
-      for (int i = 0; i < mtArgs.size(); ++i) {
-        if (mtArgs.get(i) == ts.WildcardModeType()) {
-          newArgs.add(infArgs.get(i));
-        } else {
-          newArgs.add(mtArgs.get(i));
-        }
-      }
-
-      st = st.deepCopy();
-      st.modeTypeArgs(newArgs);
-
-      n = this.reconstruct(n, st);
+    ModeSubstType st = (ModeSubstType) n.type().type();
+    if (st.modeType() != ts.WildcardModeType() || n.init() == null) {
+      return superLang().typeCheck(n, tc);
     }
 
-    return superLang().typeCheck(n, tc);
+    // Right now this will trigger inference
+    List<Type> mtArgs = st.modeTypeArgs();
+    ModeSubstType inf = (ModeSubstType) n.init().type();
+    List<Type> infArgs = inf.modeTypeArgs();
+    
+    // Allow all wildcard types to be inferenced
+    if (mtArgs.size() != infArgs.size()) {
+      // This is an error, just send it up to the super lang for now, it will
+      // catch it
+      return superLang().typeCheck(n, tc);
+    }
+    List<Type> newArgs = new ArrayList<>();
+    for (int i = 0; i < mtArgs.size(); ++i) {
+      if (mtArgs.get(i) == ts.WildcardModeType()) {
+        newArgs.add(infArgs.get(i));
+      } else {
+        newArgs.add(mtArgs.get(i));
+      }
+    }
+
+    st = st.deepCopy();
+    st.modeTypeArgs(newArgs);
+
+    return superLang().typeCheck(this.reconstruct(n, st), tc);
   }
 
 }

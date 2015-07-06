@@ -15,16 +15,12 @@ import java.util.Set;
 public class PandaConstructorDeclExt extends PandaProcedureDeclExt { 
 
   @Override
-  public Node typePreserve(TypePreserver tp) {
+  protected boolean preserveTypes() {
     ProcedureDecl n = (ProcedureDecl) this.node();
     PandaProcedureInstance pi = (PandaProcedureInstance) n.procedureInstance();
     PandaClassType ct = (PandaClassType) pi.container();
 
-    if (pi.modeTypeVars().isEmpty() && ct.isImplicitModeTypeVar()) {
-      return n;
-    }
-
-    return super.typePreserve(tp);
+    return !pi.modeTypeVars().isEmpty() || !ct.isImplicitModeTypeVar();
   }
 
 }

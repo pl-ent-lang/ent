@@ -86,73 +86,71 @@ public class PandaCallExt extends PandaExt {
 
   @Override
   public Node typeCheck(TypeChecker tc) throws SemanticException { 
-    Call c = (Call) this.node();
+    Call n = (Call) this.node();
     PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
-
-    Type t = c.target().type();
-    if (!(t instanceof ModeSubstType)) {
-      System.out.println("WARNING PandaCallExt - call on target " + c.target() + " on type " + t);
-      return superLang().typeCheck(this.node(), tc);
-    }
-
     PandaContext ctx = (PandaContext) tc.context();
     PandaClassType ct = (PandaClassType) ctx.currentClassScope();
 
-    ModeSubstType mt = (ModeSubstType) t;
-
-    // Call is valid if the first mode type variable upper bound is greater
-    // than the recievers mode type.
-    ModeTypeVariable mtThis = ct.modeTypeVars().get(0);
+    Type t = n.target().type();
+    if (!(t instanceof ModeSubstType)) {
+      if (n.target() instanceof Special) {
+        return superLang().typeCheck(n, tc);
+      } else {
+        throw new InternalCompilerError(n.position(), 
+            "Receiver does not have a mode substituted type and is not 'this'");
+      }
+    } 
 
     // Disallow dynamic type seperately for better diagnostics
+    ModeSubstType mt = (ModeSubstType) t;
     if (mt.modeType() == ts.DynamicModeType()) {
       throw new SemanticException("Dynamic mode type cannot receive messages. Resolve using snapshot.");
     }
 
-    if (!tc.context().inStaticContext()) {
-      if (!ts.isSubtype(mt.modeType(), mtThis)) {
-        throw new SemanticException("Cannot send message to " + t + " from mode " + mtThis.upperBound() + ".");
-      }
+    if (ctx.inStaticContext()) {
+      // Kick up to super lang for now
+      return superLang().typeCheck(this.node(), tc);
     } 
 
-    c = (Call) superLang().typeCheck(this.node(), tc);
+    // Call is valid if the first mode type variable upper bound is greater
+    // than the recievers mode type.
+    ModeTypeVariable mtThis = ct.modeTypeVars().get(0);
+    if (!ts.isSubtype(mt.modeType(), mtThis)) {
+      throw new SemanticException("Cannot send message to " + t + " from mode " + mtThis.upperBound() + ".");
+    }
 
-    PandaProcedureInstance pi = (PandaProcedureInstance) c.methodInstance();
+    n = (Call) superLang().typeCheck(this.node(), tc);
+    PandaProcedureInstance pi = (PandaProcedureInstance) n.methodInstance();
     if (pi.modeTypeVars().isEmpty()) {
-      return c;
+      return n;
     }
 
     // TODO : This is ugly, but until the parent language has been type checked
     // can not really use the inference functions. At least it can be a protoype
     // for now
     List<Type> argTypes = new ArrayList<>();
-    for (Expr e : c.arguments()) {
+    for (Expr e : n.arguments()) {
       argTypes.add(e.type());
     }
-    Type expectedRetType = ((PandaCallExt) PandaExt.ext(c)).expectedReturnType;
-
+    Type expectedRetType = ((PandaCallExt) PandaExt.ext(n)).expectedReturnType;
     ModeSubst subst = ts.inferModeTypeArgs(pi.baseInstance(), argTypes, expectedRetType);
-
-    PandaCallExt ext = (PandaCallExt) PandaExt.ext(c);
-
-    c = ext.infModeTypes(subst.modeTypeMap());
-    return this.needsTypePreservation(c, true);
+    PandaCallExt ext = (PandaCallExt) PandaExt.ext(n);
+    return ext.infModeTypes(subst.modeTypeMap());
   }
 
   @Override
   public Node typePreserve(TypePreserver tp) {
     Call n = (Call) this.node();
-    PandaNodeFactory nf = (PandaNodeFactory) tp.nodeFactory();
-    Context c = tp.context();
 
-    if (!this.needsTypePreservation()) {
+    if (this.infModeTypes() == null) {
       return n;
     }
 
-    List<Expr> elems = new ArrayList<>();
-    List<Expr> args = new ArrayList<>(n.arguments());
+    PandaNodeFactory nf = (PandaNodeFactory) tp.nodeFactory();
+    Context c = tp.context();
 
     PandaProcedureInstance pi = (PandaProcedureInstance) n.procedureInstance();
+    List<Expr> elems = new ArrayList<>();
     for (ModeTypeVariable v : pi.modeTypeVars()) {
       ModeType mt = (ModeType) this.infModeTypes().get(v);
       elems.add(mt.rewriteForLookup(nf, c));
@@ -190,6 +188,7 @@ public class PandaCallExt extends PandaExt {
         closInit
         );
 
+    List<Expr> args = new ArrayList<>(n.arguments());
     args.add(larg);
 
     return n.arguments(args);

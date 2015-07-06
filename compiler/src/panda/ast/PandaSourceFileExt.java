@@ -1,23 +1,12 @@
 package panda.ast;
 
-import panda.translate.PandaRewriter;
+import panda.translate.*;
 
-import polyglot.ast.Node;
-import polyglot.ast.SourceFile;
-import polyglot.ast.ClassDecl;
-import polyglot.ast.NodeFactory;
-import polyglot.ast.Import;
-import polyglot.ast.TopLevelDecl;
-import polyglot.visit.TypeBuilder;
-import polyglot.visit.NodeVisitor;
-import polyglot.visit.PrettyPrinter;
-import polyglot.translate.ExtensionRewriter;
-import polyglot.types.SemanticException;
-import polyglot.util.CodeWriter;
-import polyglot.util.CollectionUtil;
-import polyglot.util.Copy;
-import polyglot.util.ListUtil;
-import polyglot.util.Position;
+import polyglot.ast.*;
+import polyglot.visit.*;
+import polyglot.translate.*;
+import polyglot.types.*;
+import polyglot.util.*;
 
 import java.util.List;
 import java.util.LinkedList;

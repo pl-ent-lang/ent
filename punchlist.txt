@@ -14,10 +14,10 @@
 
 6. Add some context sensitivity to mode values to change @mode<low> to simply be low.
 
-7. Add mode type parameters to snapshot for resolution.
-8. Add mode type parameters code generation to table and update snapshot to handle this.
-  - Have added this with a closure for methods, working fine. Tricky part is now
-    handling the chaining issue.
+7. Add mode type parameters to snapshot for resolution. (DONE)
+
+8. Add mode type parameters code generation to table and update snapshot to handle this. (DONE)
+  - Last part is fixing the way 'this' is handled inside a constructor.
 
 9. Add in mcase typechecking.
 

@@ -63,8 +63,7 @@ public class PandaNewExt extends PandaExt {
     ModeSubst subst = ts.inferModeTypeArgs(pi.baseInstance(), argTypes, null);
 
     PandaNewExt ext = (PandaNewExt) PandaExt.ext(n);
-    n = ext.infModeTypes(subst.modeTypeMap());
-    return this.needsTypePreservation(n, true);
+    return ext.infModeTypes(subst.modeTypeMap());
   }
 
   @Override

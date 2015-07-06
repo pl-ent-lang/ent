@@ -63,7 +63,6 @@ public class PandaProcedureDeclExt extends PandaExt {
   @Override
   public Node buildTypes(TypeBuilder tb) throws SemanticException {
     ProcedureDecl pd = (ProcedureDecl) superLang().buildTypes(this.node(), tb);
-
     PandaTypeSystem ts = (PandaTypeSystem) tb.typeSystem();
     PandaProcedureInstance pi = (PandaProcedureInstance) pd.procedureInstance();
     PandaClassType ct = (PandaClassType) pi.container();
@@ -94,11 +93,19 @@ public class PandaProcedureDeclExt extends PandaExt {
     return pd;
   }
 
+  protected boolean preserveTypes() {
+    return false;
+  }
+
   @Override
   public Node typePreserve(TypePreserver tp) {
     ProcedureDecl n = (ProcedureDecl) this.node();
     PandaNodeFactory nf = (PandaNodeFactory) tp.nodeFactory();
     PandaTypeSystem ts = (PandaTypeSystem) tp.typeSystem();
+
+    if (!this.preserveTypes()) {
+      return n;
+    }
 
     // To preserve the context of the mode type vars, we simply accept PANDA_Closure
     List<Formal> formals = new ArrayList<>(n.formals());

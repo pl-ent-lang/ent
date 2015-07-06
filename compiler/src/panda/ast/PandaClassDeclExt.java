@@ -67,42 +67,39 @@ public class PandaClassDeclExt extends PandaExt {
 
   @Override
   public Node buildTypes(TypeBuilder tb) throws SemanticException {
-    ClassDecl decl = (ClassDecl) superLang().buildTypes(this.node(), tb);
-
+    ClassDecl n = (ClassDecl) superLang().buildTypes(this.node(), tb);
     PandaTypeSystem ts = (PandaTypeSystem) tb.typeSystem();
-    PandaParsedClassType ct = (PandaParsedClassType) decl.type();
+    PandaParsedClassType ct = (PandaParsedClassType) n.type();
 
-    int index = 0;
-    if (this.modeParams() != null && !this.modeParams().isEmpty()) {
-      List<ModeTypeVariable> mtVars = 
-        new ArrayList<ModeTypeVariable>(this.modeParams().size());
-      Set<String> mtVarCheck = new HashSet<>();
+    if (this.modeParams() == null || this.modeParams().isEmpty()) {
+      return n;
+    }
 
-      for (ModeParamTypeNode n : this.modeParams()) {
-        // Check and catch duplicate error as early as possible
-        if (mtVarCheck.contains(n.name())) {
-          throw new SemanticException("Duplicate mode type variable declaration.",
-                                      n.position());
-        }
-        mtVarCheck.add(n.name());
-
-        ModeTypeVariable mtVar = (ModeTypeVariable) n.type();
-        mtVar.declaringClass(ct);
-        mtVar.index(index);
-        mtVars.add(mtVar);
-        ++index;
+    int dbInd = 0;
+    List<ModeTypeVariable> mtVars = new ArrayList<>(this.modeParams().size());
+    Set<String> mtVarCheck = new HashSet<>();
+    for (ModeParamTypeNode m : this.modeParams()) {
+      // Check and catch duplicate error as early as possible
+      if (mtVarCheck.contains(m.name())) {
+        throw new SemanticException("Duplicate mode type variable declaration.",
+                                    n.position());
       }
-      ct.modeTypeVars(mtVars);
-    } 
+      mtVarCheck.add(m.name());
 
-    return decl;
+      ModeTypeVariable mtVar = (ModeTypeVariable) m.type();
+      mtVar.declaringClass(ct);
+      mtVar.index(dbInd);
+      mtVars.add(mtVar);
+      ++dbInd;
+    }
+    ct.modeTypeVars(mtVars);
+
+    return n;
   } 
 
   @Override
   public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
     PandaRewriter prw = (PandaRewriter) rw;
-    NodeFactory nf = (NodeFactory) prw.nodeFactory();
-    TypeSystem ts = (TypeSystem) prw.typeSystem();
     QQ qq = prw.qq();
 
     ClassDecl decl = (ClassDecl) this.node();
@@ -137,10 +134,8 @@ public class PandaClassDeclExt extends PandaExt {
 
     // 3. Generate a builtin PANDA_copy method
     if (ct.hasAttribute() && !ct.hasCopy()) {
-      
       List<Stmt> stmts = new ArrayList<>();
-      
-      
+
       // 3.1. Create a new expression for a shallow copy
       stmts.add(
         qq.parseStmt(
