@@ -24,7 +24,7 @@ public class PandaFieldExt extends PandaExt {
         return superLang().typeCheck(n, tc);
       } else {
         throw new InternalCompilerError(n.position(), 
-            "Receiver does not have a mode substituted type and is not 'this'");
+            "Field target does not have a mode substituted type and is not 'this'");
       }
     } 
 
