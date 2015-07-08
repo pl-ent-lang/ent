@@ -140,6 +140,7 @@ public class PandaNewExt extends PandaExt {
     Cast c =
       nf.Cast(
         Position.COMPILER_GENERATED,
+        /*
         nf.AmbTypeNode(
           Position.COMPILER_GENERATED,
           nf.Id(
@@ -147,6 +148,8 @@ public class PandaNewExt extends PandaExt {
             ct.name()
             )
           ),
+          */
+        n.objectType(),
         nf.Call(
           Position.COMPILER_GENERATED,
           nf.AmbTypeNode(
@@ -160,7 +163,7 @@ public class PandaNewExt extends PandaExt {
             Position.COMPILER_GENERATED,
             "putObj"
             ),
-            n,
+          n,
           nf.NewArray(
             Position.COMPILER_GENERATED,
             nf.AmbTypeNode(

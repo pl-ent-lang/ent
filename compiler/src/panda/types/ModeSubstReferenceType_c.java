@@ -1,13 +1,9 @@
 package panda.types;
 
-import polyglot.types.FieldInstance;
-import polyglot.types.MemberInstance;
-import polyglot.types.MethodInstance;
-import polyglot.types.ReferenceType;
-import polyglot.types.Type;
+import polyglot.types.*;
+import polyglot.util.*;
 
-import polyglot.ext.jl5.types.EnumInstance;
-import polyglot.ext.jl5.types.JL5ReferenceType;
+import polyglot.ext.jl5.types.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,14 +57,9 @@ public abstract class ModeSubstReferenceType_c extends ModeSubstType_c implement
 
   @Override
   public boolean typeEqualsImpl(Type ancestor) {
-    // TODO : We will let types that have not be subst with a mode
-    // "see through" and check for equality for now and flag a
-    // warning.
-
     if (!(ancestor instanceof ModeSubstType)) {
-      System.out.println("WARNING: typeEqualsImpl   --- " + this + " -- " + ancestor);
-      System.out.println("         classes          --- " + this.getClass() + " -- " + ancestor.getClass());
-      return this.ts.typeEquals(this.baseType(), ancestor);
+      throw new InternalCompilerError(
+          "mode subst did not occur - comparing " + this + " -- " + ancestor);
     } 
 
     // TODO : For now, force mode types to be the same, ad in proper subtyping
@@ -80,14 +71,9 @@ public abstract class ModeSubstReferenceType_c extends ModeSubstType_c implement
 
   @Override
   public boolean descendsFromImpl(Type ancestor) {
-    // TODO : We will let types that have not be subst with a mode
-    // "see through" and check for equality for now and flag a
-    // warning.
-
     if (!(ancestor instanceof ModeSubstType)) {
-      System.out.println("WARNING: descendsFromImpl --- " + this + " -- " + ancestor);
-      System.out.println("         classes          --- " + this.getClass() + " -- " + ancestor.getClass());
-      return this.ts.descendsFrom(this.baseType(), ancestor);
+      throw new InternalCompilerError(
+          "mode subst did not occur - comparing " + this + " -- " + ancestor);
     } 
 
     // TODO : For now, force mode types to be the same, ad in proper subtyping
@@ -109,11 +95,29 @@ public abstract class ModeSubstReferenceType_c extends ModeSubstType_c implement
   }
 
   @Override
+  public boolean isCastValidImpl(Type toType) {
+    // TODO : For now, force mode types to be the same, ad in proper subtyping
+    // later
+    if (!(toType instanceof ModeSubstType)) {
+      throw new InternalCompilerError(
+          "mode subst did not occur - comparing " + this + " -- " + toType);
+    } 
+
+    ModeSubstType p = (ModeSubstType) toType;
+    return (this.ts.isSubtype(this.baseType(), p.baseType()) ||
+            this.ts.isSubtype(p.baseType(), this.baseType())) &&
+           this.ts.typeEquals(this.modeType(), p.modeType());
+  }
+
+
+  @Override
   public boolean isImplicitCastValidImpl(Type toType) {
     // TODO : For now, force mode types to be the same, ad in proper subtyping
     // later
-
-    System.out.println("Checking " + toType);
+    if (!(toType instanceof ModeSubstType)) {
+      throw new InternalCompilerError(
+          "mode subst did not occur - comparing " + this + " -- " + toType);
+    } 
 
     ModeSubstType p = (ModeSubstType) toType;
     return this.ts.isSubtype(this.baseType(), p.baseType()) &&

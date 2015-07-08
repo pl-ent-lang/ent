@@ -11,6 +11,7 @@ import polyglot.ext.param.types.*;
 import polyglot.ext.jl5.types.*;
 import polyglot.ext.jl7.types.*;
 
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -80,7 +81,7 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
                                          Source fromSource) {
     return new PandaParsedClassType_c(this, init, fromSource);
   }
-
+  
   @Override
   public boolean typeEquals(Type l, Type u) {
     boolean b = super.typeEquals(l, u);
@@ -358,6 +359,24 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
   protected Subst<TypeVariable, ReferenceType> substImpl(Map<TypeVariable, ? extends ReferenceType> substMap) {
     return new PandaSubst_c(this, substMap);
   }
+
+  @Override
+  public TypeVariable typeVariable(Position pos, String name, ReferenceType upperBound) {
+    return new PandaTypeVariable_c(this, pos, name, upperBound);
+  }
+
+  @Override
+  public ReferenceType intersectionType(Position pos, List<ReferenceType> types) {
+    ReferenceType type = super.intersectionType(pos, types);
+    if (type == this.Object()) {
+      type = (ReferenceType) this.createModeSubst(
+          this.Object(),
+          Arrays.<Type>asList(this.WildcardModeType())
+          );
+    }
+    return type;
+  }
+
 
   // Panda TypeSystem Methods
 

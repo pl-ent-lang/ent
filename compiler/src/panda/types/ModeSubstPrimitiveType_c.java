@@ -1,12 +1,9 @@
 package panda.types;
 
-import polyglot.types.PrimitiveType;
-import polyglot.types.Resolver;
-import polyglot.types.Type;
-import polyglot.types.Type_c;
-import polyglot.types.TypeSystem;
+import polyglot.types.*;
+import polyglot.util.*;
 
-import polyglot.ext.jl5.types.JL5PrimitiveType;
+import polyglot.ext.jl5.types.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,10 +39,22 @@ public class ModeSubstPrimitiveType_c extends ModeSubstType_c implements ModeSub
   }
 
   @Override
+  public boolean isCastValidImpl(Type toType) {
+    if (!(toType instanceof ModeSubstType)) {
+      throw new InternalCompilerError(
+          "mode subst did not occur - comparing " + this + " -- " + toType);
+    }
+
+    ModeSubstType m = (ModeSubstType) toType;
+    return ts.isCastValid(this.baseType(), m.baseType()) &&
+           ts.typeEquals(this.modeType(), m.modeType());
+  }
+
+  @Override
   public boolean isImplicitCastValidImpl(Type toType) {
     if (!(toType instanceof ModeSubstType)) {
-      System.out.println("WARNING: isImplicitCastValidImpl check on " + this + " " + toType);
-      return this.ts.typeEquals(this.baseType(), toType);
+      throw new InternalCompilerError(
+          "mode subst did not occur - comparing " + this + " -- " + toType);
     }
 
     ModeSubstType m = (ModeSubstType) toType;

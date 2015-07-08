@@ -1,24 +1,12 @@
 package panda.types;
 
-import polyglot.types.ClassType;
-import polyglot.types.ConstructorInstance;
-import polyglot.types.FieldInstance;
-import polyglot.types.Flags;
-import polyglot.types.MethodInstance;
+import polyglot.types.*;
 import polyglot.types.Package;
-import polyglot.types.ReferenceType;
-import polyglot.types.Resolver;
-import polyglot.types.Type;
-import polyglot.util.CodeWriter;
+import polyglot.util.*;
 
-import polyglot.ext.param.types.PClass;
-import polyglot.ext.param.types.Subst;
+import polyglot.ext.param.types.*;
 
-import polyglot.ext.jl5.types.Annotations;
-import polyglot.ext.jl5.types.AnnotationTypeElemInstance;
-import polyglot.ext.jl5.types.EnumInstance;
-import polyglot.ext.jl5.types.TypeVariable;
-import polyglot.ext.jl5.types.JL5ParsedClassType;
+import polyglot.ext.jl5.types.*;
 
 import java.util.Iterator;
 import java.util.ArrayList;

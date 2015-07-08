@@ -98,13 +98,20 @@ public class PandaClassDeclExt extends PandaExt {
   } 
 
   @Override
-  public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
+  public Node extRewrite(ExtensionRewriter rw) throws SemanticException { 
     PandaRewriter prw = (PandaRewriter) rw;
     QQ qq = prw.qq();
 
     ClassDecl decl = (ClassDecl) this.node();
+    JL5ClassDeclExt ext = (JL5ClassDeclExt) JL5Ext.ext(decl);
+    System.out.println("before paramTypes: " + ext.paramTypes());
+
     PandaParsedClassType ct = (PandaParsedClassType) decl.type();
     ClassDecl n = (ClassDecl) super.extRewrite(rw);
+    ext = (JL5ClassDeclExt) JL5Ext.ext(n);
+    System.out.println("after paramTypes: " + ext.paramTypes());
+
+    System.exit(1);
 
     // 1. Generate PANDA_Attributable interface
     List<TypeNode> interfaces = new ArrayList<>(decl.interfaces());

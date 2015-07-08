@@ -1,25 +1,29 @@
 package codegen_test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 modes { low <: mid; mid <: high; high <: veryHigh; }
 
-public class Code @mode<X, Y <= X> {
-  private String@mode<Y> s1;
+public class Code<T> @mode<X, Y <= X> {
+  private int i = 0;
+  private String s = "abc";
 
   attribute {
-    if (true) {
+    if (this.s == "abc") {
       return @mode<high>;
     } else {
       return @mode<high>;
     }
   } 
 
-  public Code(String@mode<Y> s1) {
-    this.s1 = s1;
-  }
-
   public static void main(String[] args) {
-    String@mode<mid> s1 = new String@mode<mid>();
+    // NOTE 
+    //int x = 1 + 2;
+    //List<String@mode<high> > l1 = new ArrayList<String@mode<high> >();
 
-    Code@mode<high,mid> s2 = new Code@mode<high,mid>(s1);
+    //List<Code@mode<high,mid> > l2 = new ArrayList<Code@mode<high,mid> >();
+    Code<String>@mode<*,*> c1 = new Code<String>@mode<*,*>();
   }
 }
+

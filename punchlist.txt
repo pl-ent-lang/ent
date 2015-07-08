@@ -4,7 +4,8 @@
 
 2. Add mode types proper to inheritances.
 
-3. Fix all cases of WARNING, each one indicates that there are parts of the type system that are missing.
+3. Fix all cases of WARNING, each one indicates that there are parts of the type system that are missing. (DONE)
+  - Most of this is easily fixed, special cases for primitives most likely.
 
 4. Fix PANDA_Copy to properly clone methods. (DONE)
   - See commit notes, chose to add copy semantics to the language.
@@ -24,6 +25,8 @@
 10. Add in mcase codegen.
 
 11. Add in mode subtyping proper (instead of forcing mode subst types to be equal).
+
+12. Work through the mode subst types. This is a big deal, cleanup here will be very helpful.
 
 
 String[][]@mode<low> s;

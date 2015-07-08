@@ -1,9 +1,0 @@
-package java_test;
-
-public class B<T> extends A<T> {
-
-  public static void main() {
-    B<String> b = new B<String>();
-    String f1 = b.getF1();
-  }
-}

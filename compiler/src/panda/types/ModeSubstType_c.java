@@ -1,17 +1,8 @@
 package panda.types;
 
-import polyglot.types.ArrayType;
-import polyglot.types.ClassType;
-import polyglot.types.NullType;
+import polyglot.types.*;
 import polyglot.types.Package;
-import polyglot.types.PrimitiveType;
-import polyglot.types.ReferenceType;
-import polyglot.types.Resolver;
-import polyglot.types.Type;
-import polyglot.types.TypeObject;
-import polyglot.types.Type_c;
-import polyglot.types.TypeSystem;
-import polyglot.util.Position;
+import polyglot.util.*;
 
 import java.util.List;
 
@@ -220,16 +211,12 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
 
   @Override
   public boolean typeEqualsImpl(Type t) {
-    // TODO : We will let types that have not be subst with a mode
-    // "see through" and check for equality for now and flag a
-    // warning.
     if (!(t instanceof ModeSubstType)) {
-      System.out.println("WARNING: typeEqualsImpl --- " + this + " -- " + t);
-      System.out.println("         classes        --- " + this.getClass() + " -- " + t.getClass());
-      return this.ts.typeEquals(this.baseType(), t);
-    }
-    ModeSubstType p = (ModeSubstType) t;
+      throw new InternalCompilerError(
+          "mode subst did not occur - comparing " + this + " -- " + t);
+    } 
 
+    ModeSubstType p = (ModeSubstType) t;
     return this.ts.typeEquals(this.baseType(), p.baseType()) &&
            this.ts.typeEquals(this.modeType(), p.modeType());
   }
