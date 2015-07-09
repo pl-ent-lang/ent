@@ -68,6 +68,7 @@ public class PandaClassDeclExt extends PandaExt {
   @Override
   public Node buildTypes(TypeBuilder tb) throws SemanticException {
     ClassDecl n = (ClassDecl) superLang().buildTypes(this.node(), tb);
+
     PandaTypeSystem ts = (PandaTypeSystem) tb.typeSystem();
     PandaParsedClassType ct = (PandaParsedClassType) n.type();
 
@@ -100,18 +101,25 @@ public class PandaClassDeclExt extends PandaExt {
   @Override
   public Node extRewrite(ExtensionRewriter rw) throws SemanticException { 
     PandaRewriter prw = (PandaRewriter) rw;
+    JL5NodeFactory nf = (JL5NodeFactory) prw.to_nf();
     QQ qq = prw.qq();
 
     ClassDecl decl = (ClassDecl) this.node();
     JL5ClassDeclExt ext = (JL5ClassDeclExt) JL5Ext.ext(decl);
-    System.out.println("before paramTypes: " + ext.paramTypes());
-
     PandaParsedClassType ct = (PandaParsedClassType) decl.type();
-    ClassDecl n = (ClassDecl) super.extRewrite(rw);
-    ext = (JL5ClassDeclExt) JL5Ext.ext(n);
-    System.out.println("after paramTypes: " + ext.paramTypes());
 
-    System.exit(1);
+    // Manual translation to JL5
+    ClassDecl n = 
+      nf.ClassDecl(
+        decl.position(),
+        decl.flags(),
+        ext.annotationElems(),
+        decl.id(),
+        decl.superClass(),
+        decl.interfaces(),
+        decl.body(),
+        ext.paramTypes()
+        );
 
     // 1. Generate PANDA_Attributable interface
     List<TypeNode> interfaces = new ArrayList<>(decl.interfaces());
