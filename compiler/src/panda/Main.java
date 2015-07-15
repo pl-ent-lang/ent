@@ -7,6 +7,8 @@ package panda;
  */
 public class Main
 {
+  public static boolean PDEBUG = false;
+
   public static void main(String[] args) {
       polyglot.main.Main polyglotMain = new polyglot.main.Main();
 

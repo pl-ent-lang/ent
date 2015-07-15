@@ -1,14 +1,17 @@
 package panda.types;
 
 import panda.ast.*;
+import panda.types.reflect.*;
 
 import polyglot.ast.*;
 import polyglot.frontend.*;
 import polyglot.types.*;
+import polyglot.types.reflect.*;
 import polyglot.util.*;
 
 import polyglot.ext.param.types.*;
 import polyglot.ext.jl5.types.*;
+import polyglot.ext.jl5.types.inference.*;
 import polyglot.ext.jl7.types.*;
 
 import java.util.Arrays;
@@ -56,7 +59,27 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
     return this.substEngine;
   }
 
+  private ClassType ModeSubstObject = null;
+
+  public ClassType ModeSubstObject() {
+    if (this.ModeSubstObject == null) {
+      this.ModeSubstObject =
+        (ClassType) this.createModeSubst(
+          this.Object(),
+          Arrays.<Type>asList(this.WildcardModeType())
+          );
+    }
+    return this.ModeSubstObject;
+  }
+
   // Factory Methods / Previous TypeSystem Methods
+  /*
+  @Override
+  public ClassFileLazyClassInitializer classFileLazyClassInitializer(ClassFile clazz) { 
+    return new PandaClassFileLazyClassInitializer(clazz, this);
+  }
+  */
+
   @Override
   public JL5ConstructorInstance constructorInstance(Position pos,
           ClassType container, Flags flags, List<? extends Type> argTypes,
@@ -81,14 +104,54 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
                                          Source fromSource) {
     return new PandaParsedClassType_c(this, init, fromSource);
   }
-  
+
+  private boolean isSpecialModeSubstCase(Type l, Type u) {
+    return (!(l instanceof ModeSubstType) && u instanceof ModeSubstType);
+  }
+
   @Override
   public boolean typeEquals(Type l, Type u) {
-    boolean b = super.typeEquals(l, u);
-    if (b) return true;
+    if (panda.Main.PDEBUG) {
+      System.out.println("PandaTypeSystem::typeEquals(" + l + ", " + u + ")");
+      System.out.println("PandaTypeSystem::typeEquals-Class(" + l.getClass() + ", " + u.getClass() + ")");
+    }
+
+    if (super.typeEquals(l, u)) {
+      return true;
+    }
 
     if (u instanceof ModeTypeVariable) {
       return this.typeEquals(l, ((ModeTypeVariable) u).lowerBound());
+    }
+
+    if (this.isSpecialModeSubstCase(l, u)) {
+      return this.typeEquals(l, ((ModeSubstType) u).baseType());
+    }
+
+    return false;
+  }
+
+  @Override
+  public boolean isSubtype(Type l, Type u) {
+    if (super.isSubtype(l, u)) {
+      return true;
+    }
+    if (panda.Main.PDEBUG) {
+      System.out.println("PandaTypeSystem::isSubtype(" + l + ", " + u + ")");
+      System.out.println("PandaTypeSystem::isSubtype-Class(" + l.getClass() + ", " + u.getClass() + ")");
+    }
+    // TODO : Special interception of the way type variables are handled.
+    // Until we decide on strengthening/weaking for type variables, let
+    // type variables that do not yet have a mode subst pass through to
+    // an objec that does
+    if (l instanceof TypeVariable && 
+        !(l instanceof ModeSubstType) &&
+        u instanceof ModeSubstType) {
+      return this.isSubtype(l, ((ModeSubstType) u).baseType());
+    }
+
+    if (this.isSpecialModeSubstCase(l, u)) {
+      return this.isSubtype(l, ((ModeSubstType) u).baseType());
     }
 
     return false;
@@ -97,12 +160,53 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
 
   @Override
   public boolean descendsFrom(Type l, Type u) {
-    boolean b = super.descendsFrom(l, u);
-    if (b) return true;
+    if (panda.Main.PDEBUG) {
+      System.out.println("PandaTypeSystem::descendsFrom(" + l + ", " + u + ")");
+      System.out.println("PandaTypeSystem::descendsFrom-Class(" + l.getClass() + ", " + u.getClass() + ")");
+    }
+    if (super.descendsFrom(l, u)) {
+      return true;
+    }
 
     if (u instanceof ModeTypeVariable) {
       return this.isSubtype(l, ((ModeTypeVariable) u).lowerBound());
     }
+
+    /*
+    if (this.isSpecialModeSubstCase(l, u)) {
+      return this.descendsFrom(l, ((ModeSubstType) u).baseType());
+    }
+    */
+
+    return false;
+  }
+
+  @Override
+  public boolean isCastValid(Type l, Type u) {
+    if (super.isCastValid(l, u)) {
+      return true;
+    }
+
+    /*
+    if (this.isSpecialModeSubstCase(l, u)) {
+      return this.isCastValid(l, ((ModeSubstType) u).baseType());
+    }
+    */
+
+    return false;
+  }
+
+  @Override
+  public boolean isImplicitCastValid(Type l, Type u) {
+    if (super.isImplicitCastValid(l, u)) {
+      return true;
+    }
+
+    /*
+    if (this.isSpecialModeSubstCase(l, u)) {
+      return this.isImplicitCastValid(l, ((ModeSubstType) u).baseType());
+    }
+    */
 
     return false;
   }
@@ -114,7 +218,7 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
 
   private boolean inferModeTypeArg(List<ModeTypeVariable> mtVars,
                                    Type baset, 
-                                   ModeSubstType actt,
+                                   Type actt,
                                    Map<ModeTypeVariable, Type> mtMap) {
     if (!(baset instanceof ModeSubstType)) {
       return true;
@@ -127,7 +231,16 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
       if (t instanceof ModeTypeVariable && mtVars.contains(t)) {
         // This is a mode type var that is part of our inference, so infer it
         ModeTypeVariable mtVar = (ModeTypeVariable) t;
-        Type inft = actt.modeType();
+
+        // MODE_NOTE: If the actual type is not a mode subst type, throw in
+        // wildcard for now.
+        Type inft = null;
+        if (actt instanceof ModeSubstType) {
+          inft = ((ModeSubstType) actt).modeType();
+        } else {
+          inft = this.WildcardModeType();
+        }
+
         if (mtMap.containsKey(mtVar)) {
           if (!mtMap.get(mtVar).typeEqualsImpl(inft)) {
             return false;
@@ -140,10 +253,16 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
 
     // Just like the opposite (in ModeSubst) we need to dip down in the subst
     // over the generic type
-    if (st.baseType() instanceof SubstType && 
-        actt.baseType() instanceof SubstType) {
+    Type actt1 = null;
+    if (actt instanceof ModeSubstType) {
+      actt1 = ((ModeSubstType) actt).baseType();
+    } else {
+      actt1 = actt;
+    }
+
+    if (st.baseType() instanceof SubstType && actt1 instanceof SubstType) {
       Type t1 = ((SubstType) st.baseType()).base();
-      Type t2 = ((SubstType) actt.baseType()).base();
+      Type t2 = ((SubstType) actt1).base();
 
       if (!this.isCastValid(t1, t2)) {
         // Forget the inference, the type system will flag this as invalid
@@ -153,7 +272,7 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
       Map<TypeVariable,ReferenceType> stSubsts = 
         ((SubstType) st.baseType()).subst().substitutions();
       Map<TypeVariable,ReferenceType> acttSubsts = 
-        ((SubstType) actt.baseType()).subst().substitutions();
+        ((SubstType) actt1).subst().substitutions();
 
       JL5SubstClassType t3 = 
         this.findGenericSupertype((JL5ParsedClassType) t1, (ReferenceType) t2);
@@ -177,7 +296,7 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
 
         if (!this.inferModeTypeArg(mtVars,
                                    stSubsts.get(e.getKey()),
-                                   (ModeSubstType) acttSubsts.get(e.getValue()),
+                                   acttSubsts.get(e.getValue()),
                                    mtMap)) {
           return false;
         }
@@ -190,13 +309,12 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
   public ModeSubst inferModeTypeArgs(PandaProcedureInstance pi,
                                       List <? extends Type> argTypes,
                                       Type expectedReturnType) {
-    
     // Infer the mode type variable first, error if not possible
     Map<ModeTypeVariable,Type> mtMap = new HashMap<>();
     for (int i = 0; i < pi.formalTypes().size(); ++i) {
       if (!this.inferModeTypeArg(pi.modeTypeVars(),
                                  pi.formalTypes().get(i),
-                                 (ModeSubstType) argTypes.get(i),
+                                 argTypes.get(i),
                                  mtMap)) {
         return null;
       }
@@ -206,7 +324,7 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
     if (expectedReturnType != null && 
         !this.inferModeTypeArg(pi.modeTypeVars(),
                                ((PandaMethodInstance) pi).returnType(),
-                               (ModeSubstType) expectedReturnType,
+                               expectedReturnType,
                                mtMap)) {
       return null;
     }
@@ -284,7 +402,7 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
                                            String name,
                                            List<? extends Type> argTypes,
                                            List<? extends ReferenceType> actualTypeArgs,
-                                           Type expectedReturnType) {
+                                           Type expectedReturnType) { 
     if (!(mi.container() instanceof ModeSubstType)) {
       // TODO : Just kick up to parent for now
       return super.methodCallValid(mi, name, argTypes, actualTypeArgs, expectedReturnType);

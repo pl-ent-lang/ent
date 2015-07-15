@@ -1,5 +1,7 @@
 -- Punchlist
 
+0. Fix modes declaration. Make it a seperate file, and make panda code error if not included (could be generated).
+
 1. Add mode types on Array types.
 
 2. Add mode types proper to inheritances.

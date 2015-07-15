@@ -1,5 +1,7 @@
 package simple;
 
+modes {low <: mid; mid <: high; }
+
 public class Stringer {
   private String intern = null;
 

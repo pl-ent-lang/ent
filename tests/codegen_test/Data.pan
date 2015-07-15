@@ -1,22 +1,12 @@
 package codegen_test;
 
-public class Data@mode<X <= mid, Y <= X> {
-  attribute {
+import java.util.List;
 
-    if (true) {
-      return @mode<high>;
-    } else {
-      return @mode<high>;
-    }
-  } 
+public class Data<T> extends Code<T> {
+  private List<T>@mode<*> l1;
 
-  copy {
-    return new Data@mode<X,Y>();
-  }
-
-  public void t1() {
-    Data@mode<?,mid> d1 = new Data@mode<?,mid>();
-    Data@mode<*,mid> d2 = snapshot d1 ?mode[@mode<low>,@mode<Y>];
+  public List<T>@mode<*> iter() {
+    return this.l1;
   }
 
 }

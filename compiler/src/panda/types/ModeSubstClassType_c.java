@@ -1,21 +1,10 @@
 package panda.types;
 
-import polyglot.types.ConstructorInstance;
-import polyglot.types.ClassType;
-import polyglot.types.ClassType_c;
-import polyglot.types.Declaration;
-import polyglot.types.Flags;
-import polyglot.types.FieldInstance;
-import polyglot.types.MethodInstance;
-import polyglot.types.MemberInstance;
+import polyglot.types.*;
 import polyglot.types.Package;
-import polyglot.types.ReferenceType;
-import polyglot.types.Resolver;
-import polyglot.types.Type;
+import polyglot.util.*;
 
-import polyglot.ext.jl5.types.EnumInstance;
-import polyglot.ext.jl5.types.JL5ClassType;
-import polyglot.ext.jl5.types.JL5ClassType_c;
+import polyglot.ext.jl5.types.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +14,7 @@ import java.util.Map;
 
 public abstract class ModeSubstClassType_c extends ModeSubstReferenceType_c implements ModeSubstClassType {
 
-  private ModeSubst modeSubst = null;
+  private transient ModeSubst modeSubst = null;
 
   public ModeSubstClassType_c(ClassType baseType, List<Type> modeTypeArgs) {
     super(baseType, modeTypeArgs);
@@ -261,6 +250,50 @@ public abstract class ModeSubstClassType_c extends ModeSubstReferenceType_c impl
     return ((JL5ClassType) this.baseType()).enumConstantNamed(name);
   }
 
+  // Type Methods
+  @Override
+  public boolean descendsFromImpl(Type ansT) {
+    PandaTypeSystem ts = (PandaTypeSystem) this.ts;
+
+    if (!ansT.isCanonical() || ansT.isNull() || ts.typeEquals(this, ansT)) {
+      return false;
+    }
+
+    if (ts.typeEquals(ansT, ts.ModeSubstObject())) {
+      return true;
+    }
+
+      // Check subtype relation for classes.
+    if (!flags().isInterface()) {
+      if (ts.typeEquals(this, ts.ModeSubstObject())) {
+        return false;
+      }
+
+      if (superType() == null) {
+        return false;
+      }
+
+      if (ts.isSubtype(superType(), ansT)) {
+        return true;
+      }
+    }
+
+    // Next check interfaces.
+    for (Type parentType : interfaces()) {
+      if (ts.isSubtype(parentType, ansT)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  @Override
+  public boolean isImplicitCastValidImpl(Type toT) {
+    if (!toT.isClass()) return false;
+    return this.ts.isSubtype(this, toT);
+  }
+
   @Override
   public LinkedList<Type> isImplicitCastValidChainImpl(Type toType) {
     PandaTypeSystem ts = (PandaTypeSystem) this.ts;
@@ -279,4 +312,6 @@ public abstract class ModeSubstClassType_c extends ModeSubstReferenceType_c impl
     }
     return chain;
   }
+
+
 }

@@ -1,20 +1,9 @@
 package panda.types;
 
-import polyglot.util.InternalCompilerError;
-import polyglot.types.SemanticException;
-import polyglot.types.Type;
-import polyglot.types.ReferenceType;
-import polyglot.types.ConstructorInstance;
-import polyglot.types.FieldInstance;
-import polyglot.types.MethodInstance;
-import polyglot.types.MemberInstance; 
+import polyglot.types.*;
+import polyglot.util.*;
 
-import polyglot.ext.jl5.types.RawClass;
-import polyglot.ext.jl5.types.TypeVariable;
-import polyglot.ext.jl5.types.JL5ArrayType;
-import polyglot.ext.jl5.types.JL5PrimitiveType;
-
-import polyglot.ext.jl5.types.JL5ParsedClassType;
+import polyglot.ext.jl5.types.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -157,6 +146,9 @@ public class ModeSubstEngine {
     } else if (t instanceof McaseType) {
       return new ModeSubstMcaseType_c((McaseType) t, mtArgs);
     
+    } else if (t instanceof NullType) {
+      return new ModeSubstNullType_c((NullType) t, mtArgs);
+
     } else {
       // Not yet impl
       throw new InternalCompilerError("Implement " + t.getClass() + "!"); 

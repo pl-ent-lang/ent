@@ -115,35 +115,6 @@ public class ModeSubstTypeVariable_c extends ModeSubstReferenceType_c implements
     return ((TypeVariable) this.baseType()).translate(c);
   }
 
-  /*
-  @Override
-  public boolean isCastValidImpl(Type toType) {
-    if (super.isCastValidImpl(toType)) {
-      return true;
-    }
-
-    return ts.isCastValid(this.upperBound(), toType);
-  }
-
-  @Override
-  public boolean descendsFromImpl(Type ancestor) {
-    if (super.descendsFromImpl(ancestor)) {
-      return true;
-    }
-    // See JLS 3rd ed 4.10.2
-    return ts.isSubtype(this.upperBound, ancestor);
-  }
-
-  @Override
-  public boolean isImplicitCastValidImpl(Type toType) {
-    if (super.isImplicitCastValidImpl(toType)) {
-      return true;
-    }
-      
-    return ts.isImplicitCastValid(this.upperBound, toType);
-  }
-  */
-
   @Override
   public boolean hasLowerBound() {
     return ((TypeVariable) this.baseType()).hasLowerBound();

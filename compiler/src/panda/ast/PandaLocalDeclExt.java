@@ -28,7 +28,9 @@ public class PandaLocalDeclExt extends PandaExt {
     PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
     
     ModeSubstType st = (ModeSubstType) n.type().type();
-    if (st.modeType() != ts.WildcardModeType() || n.init() == null) {
+    if (st.modeType() != ts.WildcardModeType() || 
+        n.init() == null ||
+        !(n.init().type() instanceof ModeSubstType)) {
       return superLang().typeCheck(n, tc);
     }
 

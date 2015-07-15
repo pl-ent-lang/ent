@@ -1,5 +1,6 @@
 package panda.translate;
 
+import panda.types.*;
 import panda.PandaOptions;
 
 import polyglot.ast.*;

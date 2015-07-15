@@ -487,5 +487,46 @@ mcase_field ::=
                                       e);
   :}
 ;
-  
+
+// LAST : Fixing cast_expression for mode subst type
+
+override cast_expression ::=
+  LPAREN:a primitive_type:b dims_opt:c RPAREN unary_expression:e
+  {: 
+    RESULT = parser.nf.Cast(parser.pos(a, e, b), parser.array(b, c.intValue()), e); 
+  :} 
+|	LPAREN:a name:b RPAREN unary_expression_not_plus_minus:d
+  {: 
+    TypeNode tn = parser.nf.AmbModeTypeInstantiation(parser.pos(b), b.toType());
+    RESULT = parser.nf.Cast(parser.pos(a, d, b), tn, d); 
+  :}
+| LPAREN:a name:b mode_type_args:args RPAREN unary_expression_not_plus_minus:d
+  {: 
+    TypeNode tn = parser.nf.AmbModeTypeInstantiation(parser.pos(b), b.toType(), args);
+    RESULT = parser.nf.Cast(parser.pos(a, d, b), tn, d); 
+  :}
+
+|	LPAREN:a name:b dims:c RPAREN unary_expression_not_plus_minus:e
+  {: 
+    RESULT = parser.nf.Cast(parser.pos(a, e, b), parser.array(b.toType(), c.intValue()), e); 
+  :}
+|	LPAREN:a name:b LT type_argument_list_1:d dims_opt:e RPAREN unary_expression_not_plus_minus:g
+  {: 
+    TypeNode tn = parser.nf.AmbTypeInstantiation(parser.pos(b, d), b.toType(),d);
+    RESULT = parser.nf.Cast(parser.pos(a, g, b), parser.array(tn, e.intValue()), g); 
+  :}
+|	LPAREN:a name:b LT type_argument_list_1:d DOT class_or_interface:f dims_opt:g RPAREN unary_expression_not_plus_minus:i
+  {: 
+    AmbTypeNode bb = (AmbTypeNode)f;
+    TypeNode tn = parser.nf.AmbTypeInstantiation(parser.pos(b, d), parser.exprToType(b.toExpr()),d);
+    RESULT = parser.nf.Cast(parser.pos(a, i, b), parser.array(parser.nf.AmbTypeNode(parser.pos(b, f), tn, bb.id()), g.intValue()), i); 
+  :}
+|	LPAREN:a name:b LT type_argument_list_1:d DOT class_or_interface:f LT type_argument_list_1:h dims_opt:j RPAREN unary_expression_not_plus_minus:i 
+  {: 
+    AmbTypeNode bb = (AmbTypeNode)f;
+    TypeNode tn = parser.nf.AmbTypeInstantiation(parser.pos(b, d), parser.exprToType(b.toExpr()), d);
+    tn = parser.nf.AmbTypeInstantiation(parser.pos(b, h), parser.nf.AmbTypeNode(parser.pos(b, f), tn, bb.id()), h);
+    RESULT = parser.nf.Cast(parser.pos(a, i, b), parser.array(tn, j.intValue()), i); 
+  :}
+;
 

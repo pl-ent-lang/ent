@@ -36,6 +36,11 @@ public final class PandaExtFactory_c extends PandaAbstractExtFactory_c {
   } 
 
   @Override 
+  protected Ext extExtendedForImpl() {
+    return new PandaExtendedForExt();
+  } 
+
+  @Override 
   protected Ext extFieldImpl() {
     return new PandaFieldExt();
   } 

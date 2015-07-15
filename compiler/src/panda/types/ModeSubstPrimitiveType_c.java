@@ -18,48 +18,16 @@ public class ModeSubstPrimitiveType_c extends ModeSubstType_c implements ModeSub
   @Override
   public ModeSubstType deepCopy() {
     return 
-      new ModeSubstPrimitiveType_c((JL5PrimitiveType) this.baseType(),
-                                   new ArrayList<Type>(this.modeTypeArgs()));
+      new ModeSubstPrimitiveType_c(
+          (JL5PrimitiveType) this.baseType(), 
+          new ArrayList<Type>(this.modeTypeArgs())
+          );
   }
 
   // PrimitiveType Methods
   @Override
-  public boolean isPrimitive() {
-    return true;
-  }
-
-  @Override
   public Kind kind() {
     return ((JL5PrimitiveType) this.baseType()).kind();
-  }
-
-  @Override
-  public PrimitiveType toPrimitive() {
-    return this;
-  }
-
-  @Override
-  public boolean isCastValidImpl(Type toType) {
-    if (!(toType instanceof ModeSubstType)) {
-      throw new InternalCompilerError(
-          "mode subst did not occur - comparing " + this + " -- " + toType);
-    }
-
-    ModeSubstType m = (ModeSubstType) toType;
-    return ts.isCastValid(this.baseType(), m.baseType()) &&
-           ts.typeEquals(this.modeType(), m.modeType());
-  }
-
-  @Override
-  public boolean isImplicitCastValidImpl(Type toType) {
-    if (!(toType instanceof ModeSubstType)) {
-      throw new InternalCompilerError(
-          "mode subst did not occur - comparing " + this + " -- " + toType);
-    }
-
-    ModeSubstType m = (ModeSubstType) toType;
-    return ts.isImplicitCastValid(this.baseType(), m.baseType()) &&
-           ts.typeEquals(this.modeType(), m.modeType());
   }
 
   // JL5PrimitiveType Methods
@@ -77,6 +45,29 @@ public class ModeSubstPrimitiveType_c extends ModeSubstType_c implements ModeSub
   @Override
   public String name() {
     return this.toString();
+  }
+
+  // Type Methods
+  @Override
+  public boolean isImplicitCastValidImpl(Type toT) {
+    if (!(toT instanceof ModeSubstType)) {
+      return this.ts.isImplicitCastValid(this.baseType(), toT);
+    } 
+
+    ModeSubstType st = (ModeSubstType) toT;
+    return this.ts.isImplicitCastValid(this.baseType(), st.baseType()) &&
+           this.modeTypeArgsEquals(st);
+  }
+
+  @Override
+  public boolean isCastValidImpl(Type toT) {
+    if (!(toT instanceof ModeSubstType)) {
+      return this.ts.isCastValid(this.baseType(), toT);
+    } 
+
+    ModeSubstType st = (ModeSubstType) toT;
+    return this.ts.isCastValid(this.baseType(), st.baseType()) &&
+           this.modeTypeArgsEquals(st);
   }
 
 }

@@ -5,6 +5,7 @@ import polyglot.types.Package;
 import polyglot.util.*;
 
 import java.util.List;
+import java.io.*;
 
 public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
 
@@ -78,6 +79,11 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
   @Override
   public boolean isCanonical() {
     return this.baseType.isCanonical();
+  }
+
+  @Override
+  public boolean isPrimitive() {
+    return this.baseType.isPrimitive();
   }
 
   @Override
@@ -172,7 +178,7 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
 
   @Override
   public ClassType toClass() {
-    return null;
+    return this.baseType.toClass();
   }
 
   @Override
@@ -187,7 +193,7 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
 
   @Override
   public PrimitiveType toPrimitive() {
-    return null;
+    return this.baseType.toPrimitive();
   }
 
   @Override
@@ -200,78 +206,104 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
     return this.baseType.arrayOf(dims);
   }
 
+  // TODO: Aux method, if you get the ModeSubst object workign better this should
+  // be a constant compare (intern substs);
+  protected boolean modeTypeArgsEquals(ModeSubstType ot) {
+    if (this.modeTypeArgs().size() != ot.modeTypeArgs().size()) {
+      return false;
+    }
+    for (int i = 0; i < this.modeTypeArgs().size(); ++i) {
+      if (!this.ts.typeEquals(this.modeTypeArgs().get(i), ot.modeTypeArgs().get(i))) {
+        return false;
+      }
+    }
+    return true;
+  } 
+
+  // MODE_NOTE:
+  // hashCode and equalsImpl are very tricky right now.
+  // if we take the approach of stripping mode types when comparing
+  // to non mode type substituted types then we have to loosen what
+  // it means for be "equal" (not typeEqual).
+  //
+  // Object@mode<..> equals Object
+  // Object@mode<low> does not equal Object@mode<high>
+  //
+  // Hash code is created based on our base type, not as big of a deal,
+  // just could cause performance issues.
+  @Override
+  public int hashCode() {
+    return this.baseType().hashCode();
+  }
+
   @Override 
   public boolean equalsImpl(TypeObject o) {
     if (!(o instanceof ModeSubstType)) {
-      return false;
-    }
-    ModeSubstType p = (ModeSubstType) o;
-    return (this.baseType().equals(p.baseType()) && this.modeType().equals(p.modeType()));
+      return this.ts.equals(this.baseType(), o);
+    } 
+
+    ModeSubstType st = (ModeSubstType) o;
+    return this.baseType().equals(st.baseType()) && 
+           this.modeTypeArgsEquals(st);
   } 
 
   @Override
-  public boolean typeEqualsImpl(Type t) {
-    if (!(t instanceof ModeSubstType)) {
-      throw new InternalCompilerError(
-          "mode subst did not occur - comparing " + this + " -- " + t);
+  public boolean typeEqualsImpl(Type ansT) {
+    if (!(ansT instanceof ModeSubstType)) {
+      return this.ts.typeEquals(this.baseType(), ansT);
     } 
 
-    ModeSubstType p = (ModeSubstType) t;
-    return this.ts.typeEquals(this.baseType(), p.baseType()) &&
-           this.ts.typeEquals(this.modeType(), p.modeType());
-  }
-
-  // NOTE : This are all methods that may need to be intercepted, checked
-  // for mode type, and then dispatched.
-  @Override
-  public boolean isSubtypeImpl(Type ancestor) {
-    return this.ts.typeEquals(this, ancestor) ||
-           this.ts.descendsFrom(this, ancestor);
+    ModeSubstType st = (ModeSubstType) ansT;
+    return this.ts.typeEquals(this.baseType(), st.baseType()) &&
+           this.modeTypeArgsEquals(st);
   }
 
   @Override
-  public boolean descendsFromImpl(Type ancestor) {
-    return false;
+  public boolean isSubtypeImpl(Type ansT) {
+    return this.ts.typeEquals(this, ansT) || this.ts.descendsFrom(this, ansT);
   }
 
   @Override
-  public boolean isCastValidImpl(Type toType) {
-    return false;
+  public boolean descendsFromImpl(Type ansT) {
+    if (!(ansT instanceof ModeSubstType)) {
+      throw new InternalCompilerError(
+          "unexpected non mode substituted type " + ansT + ". typeEquals should allow the special case.");
+    } 
+
+    ModeSubstType st = (ModeSubstType) ansT;
+    return this.ts.descendsFrom(this.baseType(), st.baseType()) &&
+           this.modeTypeArgsEquals(st);
   }
 
   @Override
-  public boolean isImplicitCastValidImpl(Type toType) {
-    return false;
-  }
+  public boolean isCastValidImpl(Type toT) {
+    if (!(toT instanceof ModeSubstType)) {
+      throw new InternalCompilerError(
+          "unexpected non mode substituted type " + toT + " from " + this + ". typeEquals should allow the special case.");
+    } 
 
-  /*
-  @Deprecated
-  @Override
-  public final boolean numericConversionValid(long value) {
-    return ts.numericConversionValid(this, value);
-  }
-
-  @Deprecated
-  @Override
-  public boolean numericConversionValidImpl(long value) {
-    return numericConversionValidImpl(new Long(value));
+    ModeSubstType st = (ModeSubstType) toT;
+    return this.ts.isCastValid(this.baseType(), st.baseType()) &&
+           this.modeTypeArgsEquals(st);
   }
 
   @Override
-  public final boolean numericConversionValid(Object value) {
-    return ts.numericConversionValid(this, value);
+  public boolean isImplicitCastValidImpl(Type toT) {
+    if (!(toT instanceof ModeSubstType)) {
+      throw new InternalCompilerError(
+          "unexpected non mode substituted type " + toT + ". typeEquals should allow the special case.");
+      //return this.ts.isImplicitCastValid(this.baseType(), toT);
+    } 
+
+    ModeSubstType st = (ModeSubstType) toT;
+    return this.ts.isImplicitCastValid(this.baseType(), st.baseType()) &&
+           this.modeTypeArgsEquals(st);
   }
 
   @Override
   public boolean numericConversionValidImpl(Object value) {
-    return false;
+    return this.ts.numericConversionValid(this.baseType(), value);
   }
-
-  @Override
-  public boolean isComparable(Type t) {
-    return t.typeSystem() == ts;
-  }
-  */
 
   @Override
   public String argsAsString() {
@@ -282,11 +314,7 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
     args = args.substring(0, args.length()-1);
     args += ">";
     return args;
-  }
-
-
-
-
+  } 
 
 }
 

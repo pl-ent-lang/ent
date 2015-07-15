@@ -16,6 +16,8 @@ public interface PandaTypeSystem extends JL7TypeSystem {
   ModeType BottomModeType();
   ModeType DynamicModeType();
 
+  ClassType ModeSubstObject();
+
   // Factory Methods 
   AttributeInstance createAttributeInstance(Position pos, ReferenceType container, Flags flags);
 

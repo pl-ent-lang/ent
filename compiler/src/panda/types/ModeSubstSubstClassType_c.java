@@ -165,7 +165,6 @@ public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements M
 
   @Override
   public List<? extends FieldInstance> fields() {
-    System.out.println("Requested a field subst");
     if (this.fields == null) {
       this.fields = this.modeSubst().substFieldList(((PandaSubstClassType) this.baseType()).fields());
     }
@@ -234,6 +233,77 @@ public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements M
   @Override
   public void setContainer(ReferenceType container) {
     ((PandaSubstClassType) this.baseType()).setContainer(container);
+  }
+
+  private boolean hasWildCardArg() {
+    JL5ParsedClassType b = (JL5ParsedClassType) this.base();
+
+    for (TypeVariable t : b.typeVariables()) {
+      Type substType = this.subst().substType(t);
+      if (substType instanceof WildCardType && 
+          !(substType instanceof CaptureConvertedWildCardType)) {
+          return true;
+      }
+    }
+    return false;
+  }
+
+
+  // Type Methods
+  @Override
+  public boolean descendsFromImpl(Type ansT) {
+    if (super.descendsFromImpl(ansT)) {
+      return true;
+    }
+
+    PandaTypeSystem ts = (PandaTypeSystem) this.ts;
+
+    if (this.hasWildCardArg()) {
+      Type captured;
+      try {
+        captured = ts.applyCaptureConversion(this, null);
+        // Note: we want descendsFrom, not isSubtype, since the direct ancestors of this class
+        // are the direct ancestors of captured, but not captured itself.
+        if (ts.descendsFrom(captured, ansT)) {
+          return true;
+        }
+      }
+      catch (SemanticException e) {
+        // nope, can't apply capture conversion.
+      }
+    }
+
+    if (ansT instanceof RawClass) {
+      // TODO : We inject a mode subst when our base is requested, take that into account
+      // for the check.
+      //
+      // Revist exactly why we do this
+      ModeSubstType st = (ModeSubstType) this.base();
+      RawClass rc = (RawClass) ansT;
+      if (st.baseType().equals(rc.base())) {
+        return true;
+      }
+    }
+    if (ansT instanceof JL5SubstClassType_c) {
+      JL5SubstClassType_c anc = (JL5SubstClassType_c) ansT;
+      if (this.base().equals(anc.base())) {
+        // same base. check the params
+        // go through each type variable, and check containment
+        boolean allContained = true;
+        for (TypeVariable tv : ts.classAndEnclosingTypeVariables(base())) {
+          Type ti = this.subst().substType(tv);
+          Type si = anc.subst().substType(tv);
+          if (!ts.isContained(ti, si)) {
+            allContained = false;
+            break;
+          }
+        }
+        if (allContained) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
 }

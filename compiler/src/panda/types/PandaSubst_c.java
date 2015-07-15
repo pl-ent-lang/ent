@@ -11,6 +11,7 @@ import polyglot.ext.jl5.types.JL5ClassType;
 import polyglot.ext.jl5.types.JL5Subst_c;
 import polyglot.ext.jl5.types.TypeVariable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,9 +26,21 @@ public class PandaSubst_c extends JL5Subst_c implements PandaSubst {
   // but there is no nice solution without type ext objects.
   @Override
   protected ClassType substClassTypeImpl(ClassType t) {
+    PandaTypeSystem ts = (PandaTypeSystem) this.ts;
+
     // Don't bother trying to substitute into a non-JL5 class.
     if (!(t instanceof JL5ClassType)) {
       return t;
+    }
+
+    if (t instanceof ModeSubstClassType) {
+      // NOTE: This is here just until I am confident this is the right way to handle
+      ModeSubstClassType st = (ModeSubstClassType) t;
+      return (ClassType)
+        ts.createModeSubst(
+          ts.subst(st.baseType(), this.substitutions()),
+          new ArrayList<>(st.modeTypeArgs())
+          );
     }
 
     if (t instanceof PandaRawClass) {
@@ -41,7 +54,6 @@ public class PandaSubst_c extends JL5Subst_c implements PandaSubst {
 
     if (t instanceof PandaParsedClassType) {
       PandaParsedClassType pct = (PandaParsedClassType) t;
-      PandaTypeSystem ts = (PandaTypeSystem) this.ts;
       List<TypeVariable> typeVars =
               ts.classAndEnclosingTypeVariables(pct);
       // are the type variables of pct actually relevant to this subst? If not, then return the pct.

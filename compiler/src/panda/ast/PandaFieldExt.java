@@ -20,12 +20,7 @@ public class PandaFieldExt extends PandaExt {
 
     Type t = n.target().type();
     if (!(t instanceof ModeSubstType)) {
-      if (n.target() instanceof Special) {
-        return superLang().typeCheck(n, tc);
-      } else {
-        throw new InternalCompilerError(n.position(), 
-            "Field target does not have a mode substituted type and is not 'this'");
-      }
+      return superLang().typeCheck(n, tc);
     } 
 
     // Disallow dynamic type seperately for better diagnostics

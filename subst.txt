@@ -1,0 +1,39 @@
+- Hierarchy of the mode substituted types is as follows. This needs to be tracked
+  so we can do a proper refactor for what messages need to be forwarded to base
+  types and what can be kept in super classes.
+
+  Once that is done, we can add in submoding proper
+
+  ModeSubstType
+  |   (provide base forward for type system methods)
+  |
+  |__ ModeSubstPrimitiveType
+  |
+  |__ ModeSubstReferenceType
+      |
+      |__ ModeSubstArrayType
+      |
+      |__ ModeSubstClassType
+      |   |
+      |   |__ ModeSubstParsedClassType
+      |   |
+      |   |__ ModeSubstRawClass
+      |   |
+      |   |__ ModeSubstSubstClassType
+      |
+      |__ ModeSubstTypeVariable
+
+
+- In general, the methods I care about are...
+  - typeEqualsImpl
+  - descendsFromImpl
+  - isSubtypeImpl
+
+  - class forward methods
+  - class subst methods
+
+
+- Unfortunately, it looks like the type methods need to be handled specifically,
+  and can not simply be a forward to the base types.
+
+  Not horrible, but needs some work now.

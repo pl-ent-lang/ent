@@ -7,19 +7,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Iterator;
 
+modes {low <: mid; mid <: high; }
+
 public class Wrapper<T> implements Iterable<T> {
   private List<T> wrap;
 
   public Wrapper() {
-    this.wrap = new ArrayList<>();
+    this.wrap = new ArrayList<T>();
   }
 
+  /*
   public Wrapper(T... args) {
-    this.wrap = new ArrayList<>();
-    for (int i = 0; i < args.length; ++i) {
-      this.wrap.add(args[i]);
-    }
+    this.wrap = new ArrayList<T>(args);
   }
+  */
 
   public boolean add(T t) {
     return this.wrap.add(t);
@@ -43,7 +44,7 @@ public class Wrapper<T> implements Iterable<T> {
 
   public static void main(String[] args) {
     // 1. Simple cases, just String
-    Wrapper<String> w1 = new Wrapper("a", "b", "c", "d", "e");
+    Wrapper<String> w1 = new Wrapper<String>();
 
     w1.add("f");
     w1.add("g");
@@ -62,11 +63,19 @@ public class Wrapper<T> implements Iterable<T> {
 
     // 2. Complex, build a bunch of Lists
     List<String> l1 = Arrays.asList("a", "b", "c");
-    List<String> l2 = Arrays.asList("b", "c", "d");
-    List<String> l3 = Arrays.asList("e", "f", "g");
+    List<String> l2 = Arrays.asList("d", "e", "f");
+    List<String> l3 = Arrays.asList("g", "h", "i");
 
-    Wrapper<List<String> > w2 = new Wrapper(l1, l2, l3);
-    w2.add(Arrays.asList("h", "i", "j"));
+    Wrapper<List<String> > w2 = new Wrapper<List<String> >();
+    w2.add(l1);
+    w2.add(l2);
+    w2.add(l3);
+
+    List<String> l4 = new ArrayList<String>(); l4.add("i"); l4.add("j"); l4.add("k");
+    w2.add(l4);
+
+    List<String> l5 = new ArrayList<String>(3); l5.add("i!"); l4.add("j!"); l4.add("k!");
+    w2.add(l5);
 
     w2.set(0, Arrays.asList("a!", "b!", "c!"));
 

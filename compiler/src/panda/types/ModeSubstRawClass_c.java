@@ -58,13 +58,6 @@ public class ModeSubstRawClass_c extends ModeSubstClassType_c implements ModeSub
     return ((PandaRawClass) this.baseType()).enumConstants();
   }
 
-  /*
-  @Override
-  public Job job() {
-    return null;
-  }
-  */
-
   @Override
   public Kind kind() {
     return ((PandaRawClass) this.baseType()).kind();
