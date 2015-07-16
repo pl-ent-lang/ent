@@ -9,11 +9,11 @@ import java.util.Set;
 
 modes {low <: mid; mid <: high; }
 
-public class Mapper<K,V> {
-  private Map<K,V> wrap;
+public class Mapper<K1,V1> {
+  private Map<K1,V1> wrap;
 
   public Mapper() {
-    this.wrap = new HashMap<>();
+    this.wrap = new HashMap<K1,V1>();
   }
 
   public boolean containsKey(Object k) {
@@ -24,15 +24,15 @@ public class Mapper<K,V> {
     return this.wrap.containsValue(v);
   }
 
-  Set<Map.Entry<K,V>> entrySet() {
+  Set<Map.Entry<K1,V1>> entrySet() {
     return this.wrap.entrySet();
   }
 
-  public V get(Object k) {
+  public V1 get(Object k) {
     return this.wrap.get(k);
   }
 
-  public V put(K k, V v) {
+  public V1 put(K1 k, V1 v) {
     return this.wrap.put(k,v);
   }
 

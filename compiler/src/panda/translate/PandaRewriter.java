@@ -113,7 +113,7 @@ public class PandaRewriter extends ExtensionRewriter {
   @Override
   public TypeNode typeToJava(Type t, Position pos) throws SemanticException {
     if (t instanceof DiamondType) {
-      return this.typeToJava(((DiamondType) t).base(), pos);
+      return this.typeToJava(((DiamondType) t).inferred(), pos);
     } 
     return this.j5TypeToJava(t, pos);
   }

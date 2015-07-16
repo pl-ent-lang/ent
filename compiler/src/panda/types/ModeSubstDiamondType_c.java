@@ -7,6 +7,7 @@ import polyglot.ext.jl7.types.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.Set;
 
 public class ModeSubstDiamondType_c extends ModeSubstClassType_c implements ModeSubstDiamondType {
@@ -155,6 +156,13 @@ public class ModeSubstDiamondType_c extends ModeSubstClassType_c implements Mode
     ((DiamondType) this.baseType()).setFlags(flags); 
   }
 
+  // Type Methods
+  @Override
+  public LinkedList<Type> isImplicitCastValidChainImpl(Type toT) {
+    PandaTypeSystem ts = (PandaTypeSystem) this.ts;
+    // MODE_NOTE: This breaks out of our mode subst types
+    return ts.isImplicitCastValidChain(this.inferred(), toT);
+  }
 
 }
 
