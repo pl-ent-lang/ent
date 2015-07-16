@@ -7,11 +7,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+modes {low <: mid; mid <: high; }
+
 public class Mapper<K,V> {
   private Map<K,V> wrap;
 
   public Mapper() {
+    // LAST: Working on diamond type
     this.wrap = new HashMap<>();
+    this.wrap = new HashMap<K,V>();
   }
 
   public boolean containsKey(Object k) {
@@ -36,7 +40,7 @@ public class Mapper<K,V> {
 
   public static void main(String[] args) {
     // 1. Simple, just String
-    Mapper<String,String> m1 = new Mapper();
+    Mapper<String,String> m1 = new Mapper<String,String>();
     m1.put("a", "a");
     m1.put("b", "b");
     m1.put("c", "c");
@@ -56,12 +60,12 @@ public class Mapper<K,V> {
     List<String> l2 = Arrays.asList("b", "c", "d");
     List<String> l3 = Arrays.asList("e", "f", "g");
 
-    Mapper<String, List<String>> m2 = new Mapper();
+    Mapper<String, List<String>> m2 = new Mapper<String, List<String>>();
     m2.put("a", l1);
     m2.put("b", l2);
     m2.put("c", l3);
 
-    List<String> l4 = new ArrayList<>();
+    List<String> l4 = new ArrayList<String>();
 
     System.out.println(m2.containsKey("a"));
     System.out.println(m2.containsKey("f"));

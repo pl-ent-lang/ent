@@ -69,6 +69,7 @@ public class PandaNewExt extends PandaExt {
   @Override
   public Node typePreserve(TypePreserver tp) {
     New n = (New) this.node();
+
     PandaNodeFactory nf = (PandaNodeFactory) tp.nodeFactory();
     Context ctx = tp.context();
 

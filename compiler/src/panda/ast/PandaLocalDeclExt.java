@@ -26,7 +26,12 @@ public class PandaLocalDeclExt extends PandaExt {
   public Node typeCheck(TypeChecker tc) throws SemanticException {
     LocalDecl n = (LocalDecl) this.node();
     PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
-    
+
+    // MODE_NOTE: Kicking up to superLang() if not a mode subst type
+    if (!(n.type().type() instanceof ModeSubstType)) {
+      return superLang().typeCheck(n, tc);
+    }
+
     ModeSubstType st = (ModeSubstType) n.type().type();
     if (st.modeType() != ts.WildcardModeType() || 
         n.init() == null ||

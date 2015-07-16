@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+modes {low <: mid; mid <: high; }
+
 public class Sorter {
 
   private static <T extends Comparable<T>> void swap(List<T> l, int x, int y) {
@@ -39,9 +41,10 @@ public class Sorter {
   }
 
   public static <T extends Comparable<T>> List<T> qsort(List<T> l) {
-    List<T> copy = new ArrayList<>(l);
-    Sorter.qsort(copy, 0, copy.size()-1); 
-    return copy;
+    //List<T> copy1 = new ArrayList<>(l);
+    List<T> copy1 = new ArrayList<T>(l);
+    Sorter.qsort(copy1, 0, copy1.size()-1); 
+    return copy1;
   }
 
   private static void swapInt(List<Integer> l, int x, int y) {
@@ -74,9 +77,10 @@ public class Sorter {
   }
 
   public static List<Integer> qsortInt(List<Integer> l) {
-    List<Integer> copy = new ArrayList<>(l);
-    Sorter.qsortInt(copy, 0, copy.size()-1); 
-    return copy;
+    //List<Integer> copy1 = new ArrayList<>(l);
+    List<Integer> copy1 = new ArrayList<Integer>(l);
+    Sorter.qsortInt(copy1, 0, copy1.size()-1); 
+    return copy1;
   }
 
   public static void main(String[] args) {
@@ -84,7 +88,8 @@ public class Sorter {
 
     // Just test for lists up to size 100
     for (int i = 0; i < 100; ++i) {
-      List<Integer> l = new ArrayList<>();
+      //List<Integer> l = new ArrayList<>();
+      List<Integer> l = new ArrayList<Integer>();
       for (int j = 0; j < i; ++j) {
         l.add(rand.nextInt(1000));
       }
@@ -99,7 +104,8 @@ public class Sorter {
 
     // Just test for Strings up to size 100
     for (int i = 0; i < 100; ++i) {
-      List<String> l = new ArrayList<>();
+      //List<String> l = new ArrayList<>();
+      List<String> l = new ArrayList<String>();
       for (int j = 0; j < i; ++j) {
         l.add(UUID.randomUUID().toString());
       }

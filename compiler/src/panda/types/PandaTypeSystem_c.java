@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -133,13 +134,15 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
 
   @Override
   public boolean isSubtype(Type l, Type u) {
-    if (super.isSubtype(l, u)) {
-      return true;
-    }
     if (panda.Main.PDEBUG) {
       System.out.println("PandaTypeSystem::isSubtype(" + l + ", " + u + ")");
       System.out.println("PandaTypeSystem::isSubtype-Class(" + l.getClass() + ", " + u.getClass() + ")");
     }
+
+    if (super.isSubtype(l, u)) {
+      return true;
+    }
+
     // TODO : Special interception of the way type variables are handled.
     // Until we decide on strengthening/weaking for type variables, let
     // type variables that do not yet have a mode subst pass through to
@@ -183,6 +186,11 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
 
   @Override
   public boolean isCastValid(Type l, Type u) {
+    if (panda.Main.PDEBUG) {
+      System.out.println("PandaTypeSystem::isCastValid(" + l + ", " + u + ")");
+      System.out.println("PandaTypeSystem::isCastValid-Class(" + l.getClass() + ", " + u.getClass() + ")");
+    }
+
     if (super.isCastValid(l, u)) {
       return true;
     }
@@ -198,6 +206,11 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
 
   @Override
   public boolean isImplicitCastValid(Type l, Type u) {
+    if (panda.Main.PDEBUG) {
+      System.out.println("PandaTypeSystem::isImplicitCastValid(" + l + ", " + u + ")");
+      System.out.println("PandaTypeSystem::isImplicitCastValid-Class(" + l.getClass() + ", " + u.getClass() + ")");
+    }
+
     if (super.isImplicitCastValid(l, u)) {
       return true;
     }
@@ -209,6 +222,15 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
     */
 
     return false;
+  }
+
+  @Override
+  public LinkedList<Type> isImplicitCastValidChain(Type l, Type u) {
+    if (panda.Main.PDEBUG) {
+      System.out.println("PandaTypeSystem::isImplicitCastValidChain(" + l + ", " + u + ")");
+      System.out.println("PandaTypeSystem::isImplicitCastValidChain-Class(" + l.getClass() + ", " + u.getClass() + ")");
+    }
+    return super.isImplicitCastValidChain(l, u);
   }
 
   @Override

@@ -87,9 +87,15 @@ public class PandaCallExt extends PandaExt {
   @Override
   public Node typeCheck(TypeChecker tc) throws SemanticException { 
     Call n = (Call) this.node();
+
     PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
     PandaContext ctx = (PandaContext) tc.context();
     PandaClassType ct = (PandaClassType) ctx.currentClassScope();
+
+    // NOTE: No target means this is a static call, kick it up
+    if (n.target() == null) {
+      return superLang().typeCheck(this.node(), tc);
+    } 
 
     Type t = n.target().type();
     if (!(t instanceof ModeSubstType)) {

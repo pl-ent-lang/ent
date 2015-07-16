@@ -4,8 +4,10 @@ import polyglot.types.*;
 import polyglot.types.Package;
 import polyglot.util.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.io.*;
+
 
 public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
 
@@ -176,29 +178,56 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
     return this.baseType.isUncheckedException();
   }
 
+  // MODE_NOTE: It was an oversight to not inject a mode
+  // subst type for these methods.
   @Override
   public ClassType toClass() {
-    return this.baseType.toClass();
+    PandaTypeSystem ts = (PandaTypeSystem) this.ts;
+    return 
+      (ClassType) ts.createModeSubst(
+        this.baseType.toClass(),
+        Arrays.<Type>asList(ts.WildcardModeType())
+        );
   }
 
   @Override
   public NullType toNull() {
-    return this.baseType.toNull();
+    PandaTypeSystem ts = (PandaTypeSystem) this.ts;
+    return 
+      (NullType) ts.createModeSubst(
+        this.baseType.toNull(),
+        Arrays.<Type>asList(ts.WildcardModeType())
+        );
   }
 
   @Override
   public ReferenceType toReference() {
-    return this.baseType.toReference();
+    PandaTypeSystem ts = (PandaTypeSystem) this.ts;
+    return 
+      (ReferenceType) ts.createModeSubst(
+        this.baseType.toReference(),
+        Arrays.<Type>asList(ts.WildcardModeType())
+        );
   }
 
   @Override
   public PrimitiveType toPrimitive() {
-    return this.baseType.toPrimitive();
+    PandaTypeSystem ts = (PandaTypeSystem) this.ts;
+    return 
+      (PrimitiveType) ts.createModeSubst(
+        this.baseType.toPrimitive(),
+        Arrays.<Type>asList(ts.WildcardModeType())
+        );
   }
 
   @Override
   public ArrayType toArray() {
-    return this.baseType.toArray();
+    PandaTypeSystem ts = (PandaTypeSystem) this.ts;
+    return 
+      (ArrayType) ts.createModeSubst(
+        this.baseType.toArray(),
+        Arrays.<Type>asList(ts.WildcardModeType())
+        );
   }
 
   @Override

@@ -295,19 +295,27 @@ public abstract class ModeSubstClassType_c extends ModeSubstReferenceType_c impl
   }
 
   @Override
-  public LinkedList<Type> isImplicitCastValidChainImpl(Type toType) {
+  public LinkedList<Type> isImplicitCastValidChainImpl(Type toT) {
     PandaTypeSystem ts = (PandaTypeSystem) this.ts;
+
+    // MODE_NOTE: FIXME Forwarding may not be the right solution here
+    // May skirt around a lot of potential bugs
+    if (!(toT instanceof ModeSubstType)) {
+      return ts.isImplicitCastValidChain(this.baseType(), toT);
+    } 
+
     LinkedList<Type> chain = null;
-    if (ts.isSubtype(this, toType)) {
+    if (ts.isSubtype(this, toT)) {
       chain = new LinkedList<>();
       chain.add(this);
-      chain.add(toType);
-    } else if (toType().isPrimitive()) { 
-      ModeSubstPrimitiveType pt = (ModeSubstPrimitiveType) toType.toPrimitive();
+      chain.add(toT);
+    } else if (toT.isPrimitive()) { 
+      // MODE_NOTE: FIXME This is going to pop up as a bug eventually
+      ModeSubstPrimitiveType pt = (ModeSubstPrimitiveType) toT.toPrimitive();
       ClassType wrapperType = ts.wrapperClassOfModeSubstPrimitive(pt); 
       chain = ts.isImplicitCastValidChain(this, wrapperType);
       if (chain != null) {
-        chain.addLast(toType);
+        chain.addLast(toT);
       }
     }
     return chain;
