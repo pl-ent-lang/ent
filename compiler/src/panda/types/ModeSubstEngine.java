@@ -4,6 +4,7 @@ import polyglot.types.*;
 import polyglot.util.*;
 
 import polyglot.ext.jl5.types.*;
+import polyglot.ext.jl7.types.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,6 +130,9 @@ public class ModeSubstEngine {
 
     } else if (t instanceof PandaSubstClassType) {
       return new ModeSubstSubstClassType_c((PandaSubstClassType) t, mtArgs);
+
+    } else if (t instanceof PandaDiamondType) {
+      return new ModeSubstDiamondType_c((DiamondType) t, mtArgs);
 
     } else {
       // Not yet impl

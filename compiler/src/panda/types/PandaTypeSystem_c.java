@@ -106,6 +106,11 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
     return new PandaParsedClassType_c(this, init, fromSource);
   }
 
+  @Override
+  public DiamondType diamondType(Position pos, JL5ParsedClassType base) {
+    return new PandaDiamondType_c(pos, base);
+  }
+
   private boolean isSpecialModeSubstCase(Type l, Type u) {
     return (!(l instanceof ModeSubstType) && u instanceof ModeSubstType);
   }

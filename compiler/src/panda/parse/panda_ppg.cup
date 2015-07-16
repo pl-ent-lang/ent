@@ -1409,53 +1409,69 @@ primary_no_new_array ::=
 
 class_instance_creation_expression ::=
     NEW:a class_or_interface_type:b LPAREN argument_list_opt:d RPAREN class_body_opt:f {:
-                                                                                       RESULT = parser.nf.New(parser.pos(a), b, d, f); 
+                                                                                       
+    RESULT = parser.nf.New(parser.pos(a), b, d, f); 
+  
                                                                                        :}
  |  NEW:a type_arguments:b class_or_interface_type:c LPAREN argument_list_opt:e RPAREN class_body_opt:g {:
-                                                                                                        RESULT = parser.nf.New(parser.pos(a), b, c, e, g); 
+                                                                                                        
+    RESULT = parser.nf.New(parser.pos(a), b, c, e, g); 
+  
                                                                                                         :}
  |  primary:a DOT NEW type_arguments_opt:d IDENTIFIER:e LPAREN argument_list_opt:h RPAREN class_body_opt:j {:
-                                                                                                           TypeNode aa = (new JL5Name(parser.nf, parser.ts, parser.pos(e), parser.nf.Id(parser.pos(e), e.getIdentifier()))).toType();
-           RESULT = parser.nf.New(parser.pos(a), a, d, aa, h, j); 
+                                                                                                           
+    TypeNode aa = (new JL5Name(parser.nf, parser.ts, parser.pos(e), parser.nf.Id(parser.pos(e), e.getIdentifier()))).toType();
+    RESULT = parser.nf.New(parser.pos(a), a, d, aa, h, j); 
+  
                                                                                                            :}
  |  name:a DOT NEW type_arguments_opt:d IDENTIFIER:e LPAREN argument_list_opt:h RPAREN class_body_opt:j {:
-                                                                                                        TypeNode aa = (new JL5Name(parser.nf, parser.ts, parser.pos(e), parser.nf.Id(parser.pos(e), e.getIdentifier()))).toType();
-           RESULT = parser.nf.New(parser.pos(a), a.toExpr(), d, aa, h, j); 
+                                                                                                        
+    TypeNode aa = (new JL5Name(parser.nf, parser.ts, parser.pos(e), parser.nf.Id(parser.pos(e), e.getIdentifier()))).toType();
+    RESULT = parser.nf.New(parser.pos(a), a.toExpr(), d, aa, h, j); 
+  
                                                                                                         :}
  |  primary:a DOT NEW type_arguments_opt:d IDENTIFIER:e type_arguments:f LPAREN argument_list_opt:h RPAREN class_body_opt:j {:
-                                                                                                                            TypeNode aa = (new JL5Name(parser.nf, parser.ts, parser.pos(e), parser.nf.Id(parser.pos(e), e.getIdentifier()))).toType();
-           TypeNode tn = parser.nf.AmbTypeInstantiation(parser.pos(e, f), aa, f); 
-           RESULT = parser.nf.New(parser.pos(a), a, d, tn, h, j); 
+                                                                                                                            
+    TypeNode aa = (new JL5Name(parser.nf, parser.ts, parser.pos(e), parser.nf.Id(parser.pos(e), e.getIdentifier()))).toType();
+    TypeNode tn = parser.nf.AmbTypeInstantiation(parser.pos(e, f), aa, f); 
+    RESULT = parser.nf.New(parser.pos(a), a, d, tn, h, j); 
+  
                                                                                                                             :}
  |  name:a DOT NEW type_arguments_opt:d IDENTIFIER:e type_arguments:f LPAREN argument_list_opt:h RPAREN class_body_opt:j {:
-                                                                                                                         TypeNode aa = (new JL5Name(parser.nf, parser.ts, parser.pos(e), parser.nf.Id(parser.pos(e), e.getIdentifier()))).toType();
-           TypeNode tn = parser.nf.AmbTypeInstantiation(parser.pos(e, f), aa, f);
-           RESULT = parser.nf.New(parser.pos(a), a.toExpr(), d, tn, h, j); 
+                                                                                                                         
+    TypeNode aa = (new JL5Name(parser.nf, parser.ts, parser.pos(e), parser.nf.Id(parser.pos(e), e.getIdentifier()))).toType();
+    TypeNode tn = parser.nf.AmbTypeInstantiation(parser.pos(e, f), aa, f);
+    RESULT = parser.nf.New(parser.pos(a), a.toExpr(), d, tn, h, j); 
+  
                                                                                                                          :}
  |  NEW:a class_or_interface:b LT GT:d LPAREN argument_list_opt:f RPAREN class_body_opt:h {:
                                                                                          
 		TypeNode tn = parser.nf.AmbDiamondTypeNode(parser.pos(b, d), b);
-		RESULT = parser.nf.New(parser.pos(a), tn, f, h);
+    TypeNode mn = parser.nf.AmbModeTypeInstantiation(parser.pos(tn), tn);
+		RESULT = parser.nf.New(parser.pos(a), mn, f, h);
 	
                                                                                           :}
  |  NEW:a type_arguments:b class_or_interface:c LT GT:e LPAREN argument_list_opt:g RPAREN class_body_opt:i {:
                                                                                                           
 		TypeNode tn = parser.nf.AmbDiamondTypeNode(parser.pos(c, e), c);
-		RESULT = parser.nf.New(parser.pos(a), b, tn, g, i);
+    TypeNode mn = parser.nf.AmbModeTypeInstantiation(parser.pos(tn), tn);
+		RESULT = parser.nf.New(parser.pos(a), b, mn, g, i);
 	
                                                                                                            :}
  |  primary:a DOT NEW type_arguments_opt:d IDENTIFIER:e LT GT:g LPAREN argument_list_opt:i RPAREN class_body_opt:k {:
                                                                                                                   
-		TypeNode aa = (new JL5Name(parser.nf, parser.ts, parser.pos(e), parser.nf.Id(parser.pos(e), e.getIdentifier()))).toType();
-		TypeNode tn = parser.nf.AmbDiamondTypeNode(parser.pos(e, g), aa);
-		RESULT = parser.nf.New(parser.pos(a), a, d, tn, i, k);
+	  TypeNode aa = (new JL5Name(parser.nf, parser.ts, parser.pos(e), parser.nf.Id(parser.pos(e), e.getIdentifier()))).toType();
+	  TypeNode tn = parser.nf.AmbDiamondTypeNode(parser.pos(e, g), aa);
+    TypeNode mn = parser.nf.AmbModeTypeInstantiation(parser.pos(tn), tn);
+	  RESULT = parser.nf.New(parser.pos(a), a, d, mn, i, k);
 	
                                                                                                                    :}
  |  name:a DOT NEW type_arguments_opt:d IDENTIFIER:e LT GT:g LPAREN argument_list_opt:i RPAREN class_body_opt:k {:
                                                                                                                
 		TypeNode aa = (new JL5Name(parser.nf, parser.ts, parser.pos(e), parser.nf.Id(parser.pos(e), e.getIdentifier()))).toType();
 		TypeNode tn = parser.nf.AmbDiamondTypeNode(parser.pos(e, g), aa);
-		RESULT = parser.nf.New(parser.pos(a), a.toExpr(), d, tn, i, k);
+    TypeNode mn = parser.nf.AmbModeTypeInstantiation(parser.pos(tn), tn);
+		RESULT = parser.nf.New(parser.pos(a), a.toExpr(), d, mn, i, k);
 	
                                                                                                                 :};
 

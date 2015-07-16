@@ -12,6 +12,7 @@ import polyglot.util.*;
 import polyglot.ext.jl5.ast.*;
 import polyglot.ext.jl5.types.*;
 import polyglot.ext.jl5.types.inference.*;
+import polyglot.ext.jl7.types.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,7 +112,10 @@ public class PandaRewriter extends ExtensionRewriter {
 
   @Override
   public TypeNode typeToJava(Type t, Position pos) throws SemanticException {
-    return j5TypeToJava(t, pos);
+    if (t instanceof DiamondType) {
+      return this.typeToJava(((DiamondType) t).base(), pos);
+    } 
+    return this.j5TypeToJava(t, pos);
   }
 
 

@@ -1,10 +1,10 @@
 package simple;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Arrays;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 modes {low <: mid; mid <: high; }
@@ -13,9 +13,7 @@ public class Mapper<K,V> {
   private Map<K,V> wrap;
 
   public Mapper() {
-    // LAST: Working on diamond type
     this.wrap = new HashMap<>();
-    this.wrap = new HashMap<K,V>();
   }
 
   public boolean containsKey(Object k) {
