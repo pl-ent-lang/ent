@@ -1,7 +1,8 @@
 package panda.types;
 
-import polyglot.ext.jl5.types.JL5SubstClassType_c;
-import polyglot.util.Position;
+import polyglot.types.*;
+import polyglot.util.*;
+import polyglot.ext.jl5.types.*;
 
 import java.util.List;
 
@@ -50,5 +51,18 @@ public class PandaSubstClassType_c extends JL5SubstClassType_c implements PandaS
   public boolean hasCopy() {
     return ((PandaParsedClassType) this.base).hasCopy();
   }
+
+  // LAST
+
+  @Override
+  public List<? extends ConstructorInstance> constructors() {
+    List<? extends ConstructorInstance> constructors = this.base().constructors();
+    if (!constructors.equals(this.constructors)) {
+      this.constructors = deepCopy(constructors);
+      substConstructors = subst.substConstructorList(constructors);
+    }
+    return substConstructors;
+  } 
+
 
 }

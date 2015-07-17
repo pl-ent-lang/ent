@@ -12,6 +12,7 @@ import polyglot.ext.jl5.types.TypeVariable;
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
 
 public class PandaMethodInstance_c extends JL5MethodInstance_c implements PandaMethodInstance {
 
@@ -52,6 +53,27 @@ public class PandaMethodInstance_c extends JL5MethodInstance_c implements PandaM
   public void baseInstance(PandaProcedureInstance baseInstance) {
     this.baseInstance = baseInstance;
   }
+
+  @Override
+  public boolean hasFormalsImpl(List<? extends Type> formalTypes) {
+    List<? extends Type> l1 = this.formalTypes();
+    List<? extends Type> l2 = formalTypes;
+
+    Iterator<? extends Type> i1 = l1.iterator();
+    Iterator<? extends Type> i2 = l2.iterator();
+
+    while (i1.hasNext() && i2.hasNext()) {
+      Type t1 = i1.next();
+      Type t2 = i2.next();
+
+      if (!ts.typeEquals(t1, t2)) {
+        return false;
+      }
+    }
+
+    return !(i1.hasNext() || i2.hasNext());
+  }
+
 
 }
 

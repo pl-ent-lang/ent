@@ -393,6 +393,7 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
   public JL5ProcedureInstance callValid(JL5ProcedureInstance mi,
                                         List<? extends Type> argTypes,
                                         List<? extends ReferenceType> actualTypeArgs) {
+
     if (!(mi.container() instanceof ModeSubstType)) {
       // TODO : Just kick up to parent for now
       return super.callValid(mi, argTypes, actualTypeArgs);
@@ -412,6 +413,7 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
 
     ModeSubst subst = this.inferModeTypeArgs(pi, argTypes, null);
     if (subst == null) {
+      System.out.println("Nulled");
       // No matter what we should be able to create a valid subst,
       // null indicates error
       return null;

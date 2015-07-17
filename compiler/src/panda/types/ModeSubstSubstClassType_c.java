@@ -137,7 +137,15 @@ public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements M
 
   @Override
   public String toString() {
-    return this.name();
+    String name = ((PandaSubstClassType) this.baseType()).toString() + "@mode<";
+    for (int i = 0; i < this.modeTypeArgs().size(); ++i) {
+      name += this.modeTypeArgs().get(i);
+      if (i+1 < this.modeTypeArgs().size()) {
+        name += ",";
+      }
+    }
+    name += ">";
+    return name;
   }
 
   @Override
@@ -205,7 +213,8 @@ public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements M
   @Override
   public List<? extends ConstructorInstance> constructors() {
     if (this.constructors == null) {
-      this.constructors = this.modeSubst().substConstructorList(((PandaSubstClassType) this.baseType()).constructors());
+      this.constructors = ((PandaSubstClassType) this.baseType()).constructors();
+      this.constructors = this.modeSubst().substConstructorList(this.constructors);
     }
     return this.constructors;
   } 
@@ -284,8 +293,9 @@ public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements M
         return true;
       }
     }
-    if (ansT instanceof JL5SubstClassType_c) {
-      JL5SubstClassType_c anc = (JL5SubstClassType_c) ansT;
+    if (ansT instanceof JL5SubstClassType) {
+      JL5SubstClassType anc = (JL5SubstClassType) ansT;
+
       if (this.base().equals(anc.base())) {
         // same base. check the params
         // go through each type variable, and check containment

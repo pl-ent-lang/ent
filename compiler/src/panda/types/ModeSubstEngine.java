@@ -91,8 +91,16 @@ public class ModeSubstEngine {
   } 
 
   public boolean modeSubstSatisfiesConstraints(PandaClassType t, List<Type> mtArgs) {
+    // FIXME: Probably shoud move how constraints are satisfied so we can
+    // throw SemanticException.
+
     Map<ModeTypeVariable, Type> mtMap = new HashMap<>();
     List<ModeTypeVariable> mtVars = t.modeTypeVars();
+
+    if (mtVars.size() != mtArgs.size()) {
+      return false;
+    }
+
     for (int i = 0; i < mtVars.size(); ++i) {
       Type sm = mtArgs.get(i);
 

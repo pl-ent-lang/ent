@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+modes {low <: mid; mid <: high; };
+
 public class Mapper<K,V> {
   private Map<K,V> wrap;
 
@@ -36,7 +38,7 @@ public class Mapper<K,V> {
 
   public static void main(String[] args) {
     // 1. Simple, just String
-    Mapper<String@mode<mid>,String@mode<high>> m1 = new Mapper<String@mode<mid>,String@mode<high>>();
+    Mapper<String@mode<mid>,String@mode<high> > m1 = new Mapper<String@mode<mid>,String@mode<high> >();
     m1.put("a", "a");
     m1.put("b", "b");
     m1.put("c", "c");
@@ -52,11 +54,13 @@ public class Mapper<K,V> {
     System.out.println(m1.containsValue("a"));
     System.out.println(m1.containsValue("f"));
 
-    for (Map.Entry<String@mode<mid>,String@mode<high>> e : m1.entrySet()) {
+    for (Map.Entry<String@mode<mid>,String@mode<high> > e : m1.entrySet()) {
       System.out.println(e.getKey() + " " + e.getValue());
     }
 
-    Mapper<String@mode<low>,String@mode<low>> m2 = new Mapper<String@mode<low>,String@mode<low>>();
+
+    // 1. Simple, just String with different mode types
+    Mapper<String@mode<low>,String@mode<low> > m2 = new Mapper<String@mode<low>,String@mode<low> >();
     m2.put("a", "a");
     m2.put("b", "b");
     m2.put("c", "c");
@@ -72,7 +76,7 @@ public class Mapper<K,V> {
     System.out.println(m2.containsValue("a"));
     System.out.println(m2.containsValue("f"));
 
-    for (Map.Entry<String@mode<low>,String@mode<low>> e : m2.entrySet()) {
+    for (Map.Entry<String@mode<low>,String@mode<low> > e : m2.entrySet()) {
       System.out.println(e.getKey() + " " + e.getValue());
     }
 
@@ -81,19 +85,19 @@ public class Mapper<K,V> {
     List<String>@mode<high> l2 = Arrays.asList("b", "c", "d");
     List<String>@mode<high> l3 = Arrays.asList("e", "f", "g");
 
-    Mapper<String, List<String>@mode<high>> m2 = new Mapper();
-    m2.put("a", l1);
-    m2.put("b", l2);
-    m2.put("c", l3);
+    Mapper<String, List<String>@mode<high> > m3 = new Mapper<String, List<String>@mode<high> >();
+    m3.put("a", l1);
+    m3.put("b", l2);
+    m3.put("c", l3);
 
     List<String>@mode<high> l4 = new ArrayList<>();
 
-    System.out.println(m2.containsKey("a"));
-    System.out.println(m2.containsKey("f"));
-    System.out.println(m2.containsValue(l1));
-    System.out.println(m2.containsValue(l4));
+    System.out.println(m3.containsKey("a"));
+    System.out.println(m3.containsKey("f"));
+    System.out.println(m3.containsValue(l1));
+    System.out.println(m3.containsValue(l4));
 
-    for (Map.Entry<String,List<String>@mode<high>> e : m2.entrySet()) {
+    for (Map.Entry<String,List<String>@mode<high> > e : m3.entrySet()) {
       System.out.println(e.getKey() + " " + e.getValue());
     }
   }

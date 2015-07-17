@@ -22,6 +22,10 @@ public class PandaSubst_c extends JL5Subst_c implements PandaSubst {
     super(ts, subst);
   }
 
+  // FIXME: (From Panda) Probably a bad equals issue with subst types. Bug
+  // due to equals hack that allows ModeSubstType and Type to be equals if
+  // bases are equal.
+
   // NOTE : This is an ugly hack to get mode types onto JL5SubstClassTypes,
   // but there is no nice solution without type ext objects.
   @Override
@@ -34,6 +38,7 @@ public class PandaSubst_c extends JL5Subst_c implements PandaSubst {
     }
 
     if (t instanceof ModeSubstClassType) {
+
       // NOTE: This is here just until I am confident this is the right way to handle
       ModeSubstClassType st = (ModeSubstClassType) t;
       return (ClassType)

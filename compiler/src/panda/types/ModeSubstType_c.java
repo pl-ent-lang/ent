@@ -5,6 +5,7 @@ import polyglot.types.Package;
 import polyglot.util.*;
 
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.io.*;
 
@@ -206,7 +207,7 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
     return 
       (ReferenceType) ts.createModeSubst(
         this.baseType.toReference(),
-        Arrays.<Type>asList(ts.WildcardModeType())
+        new ArrayList<>(this.modeTypeArgs())
         );
   }
 
@@ -265,10 +266,11 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
     return this.baseType().hashCode();
   }
 
+  // FIXME: See Stringer.java to catch bug
   @Override 
   public boolean equalsImpl(TypeObject o) {
     if (!(o instanceof ModeSubstType)) {
-      return this.ts.equals(this.baseType(), o);
+      return false;
     } 
 
     ModeSubstType st = (ModeSubstType) o;

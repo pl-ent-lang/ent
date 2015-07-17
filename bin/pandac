@@ -37,6 +37,7 @@ java=java
 ext=panda
 
 polyglot() {
+  #eval "$java" "$vmargs" -classpath "'$classpath'" -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y panda.Main "$@"
   eval "$java" "$vmargs" -classpath "'$classpath'" panda.Main "$@"
 }
 
