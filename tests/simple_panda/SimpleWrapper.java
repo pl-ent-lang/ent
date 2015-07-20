@@ -12,7 +12,6 @@ public class SimpleWrapper@mode<X <= high, Y <= X> {
     this.wrap = new ArrayList<>();
   }
 
-  /*
   public boolean add(String@mode<Y> t) {
     return this.wrap.add(t);
   }
@@ -30,7 +29,6 @@ public class SimpleWrapper@mode<X <= high, Y <= X> {
   }
 
   public static void main(String[] args) {
-    /*
     SimpleWrapper@mode<high,mid> s1 = new SimpleWrapper@mode<high,mid>();
     String@mode<mid> sa = "a";
     String@mode<mid> sb = "b";
@@ -53,7 +51,7 @@ public class SimpleWrapper@mode<X <= high, Y <= X> {
     s1.add(sc1);
 
     String@mode<high> s3 = s1.get(0);
-  }
     */
+  }
 
 }

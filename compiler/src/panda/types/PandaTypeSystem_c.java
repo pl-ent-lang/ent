@@ -2,6 +2,7 @@ package panda.types;
 
 import panda.ast.*;
 import panda.types.reflect.*;
+import panda.types.inference.*;
 
 import polyglot.ast.*;
 import polyglot.frontend.*;
@@ -523,6 +524,29 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
           );
     }
     return type;
+  }
+
+  @Override
+  protected InferenceSolver inferenceSolver(JL5ProcedureInstance pi, List<? extends Type> argTypes) {
+    return new PandaInferenceSolver_c(pi, argTypes, this);
+  }
+
+  // MODE_NOTE: We need to figure out what a generic supertype of a mode subst
+  // type is.
+  @Override
+  public JL5SubstClassType findGenericSupertype(JL5ParsedClassType base, ReferenceType sub) {
+    JL5SubstClassType t = super.findGenericSupertype(base, sub);
+    if (t == null) {
+      return null;
+    }
+    if (base instanceof ModeSubstType) {
+      t = (JL5SubstClassType)
+        this.createModeSubst(
+          t,
+          new ArrayList<>(((ModeSubstType) base).modeTypeArgs())
+          );
+    }
+    return t;
   }
 
 
