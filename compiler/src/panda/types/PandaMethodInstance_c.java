@@ -54,6 +54,12 @@ public class PandaMethodInstance_c extends JL5MethodInstance_c implements PandaM
     this.baseInstance = baseInstance;
   }
 
+  // MODE_NOTE: Needed to do this here to switch...
+  // if (!ts.equals( 
+  // to
+  // if (!ts.typeEquals(
+  //
+  // Because of our whole ModeSubstType/Type issues.
   @Override
   public boolean hasFormalsImpl(List<? extends Type> formalTypes) {
     List<? extends Type> l1 = this.formalTypes();
