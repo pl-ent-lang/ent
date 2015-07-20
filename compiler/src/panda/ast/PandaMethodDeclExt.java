@@ -19,6 +19,13 @@ import java.util.Set;
 public class PandaMethodDeclExt extends PandaProcedureDeclExt { 
 
   @Override
+  protected int modeTypeVarStartIndex(PandaProcedureInstance pi) {
+    PandaClassType ct = (PandaClassType) pi.container();
+    
+    return ct.modeTypeVars().size();
+  }
+
+  @Override
   protected boolean preserveTypes() {
     ProcedureDecl n = (ProcedureDecl) this.node();
     PandaProcedureInstance pi = (PandaProcedureInstance) n.procedureInstance();

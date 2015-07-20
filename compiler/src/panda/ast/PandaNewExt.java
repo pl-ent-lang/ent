@@ -70,8 +70,17 @@ public class PandaNewExt extends PandaExt {
   public Node typePreserve(TypePreserver tp) {
     New n = (New) this.node();
 
+    PandaProcedureInstance pi = (PandaProcedureInstance) n.procedureInstance();
+    if (pi.modeTypeVars().size() == 0) {
+      // Optimization, no preservation needed
+      return n;
+    }
+
     PandaNodeFactory nf = (PandaNodeFactory) tp.nodeFactory();
     Context ctx = tp.context();
+
+    ModeSubstType st = (ModeSubstType) n.type();
+    PandaClassType ct = (PandaClassType) st.baseType();
 
     // Steps to preserve types
     // 1. Create a PANDA_Closure for mode type variables
@@ -83,17 +92,8 @@ public class PandaNewExt extends PandaExt {
     List<Expr> elems = new ArrayList<>();
     List<Expr> args = new ArrayList<>(n.arguments());
   
-    // 1.1. Capture all of the variables from the instantiation of the class
-    // mode type variables.
-    ModeSubstType st = (ModeSubstType) n.type();
-    PandaClassType ct = (PandaClassType) st.baseType();
-    for (Type t : st.modeTypeArgs()) {
-      elems.add(((ModeType) t).rewriteForLookup(nf, ctx));
-    }
-
     // 1.2. Capture the inferred variables from the instantiation of the method
     // mode type variables.
-    PandaProcedureInstance pi = (PandaProcedureInstance) n.procedureInstance();
     for (ModeTypeVariable v : pi.modeTypeVars()) {
       ModeType mt = (ModeType) this.infModeTypes().get(v);
       elems.add(mt.rewriteForLookup(nf, ctx));

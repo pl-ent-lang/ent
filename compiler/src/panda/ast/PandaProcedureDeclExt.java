@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class PandaProcedureDeclExt extends PandaExt {
+public abstract class PandaProcedureDeclExt extends PandaExt {
 
   protected List<ModeParamTypeNode> modeParams = Collections.emptyList();
 
@@ -65,9 +65,8 @@ public class PandaProcedureDeclExt extends PandaExt {
     ProcedureDecl pd = (ProcedureDecl) superLang().buildTypes(this.node(), tb);
     PandaTypeSystem ts = (PandaTypeSystem) tb.typeSystem();
     PandaProcedureInstance pi = (PandaProcedureInstance) pd.procedureInstance();
-    PandaClassType ct = (PandaClassType) pi.container();
 
-    int dbInd = ct.modeTypeVars().size();
+    int dbInd = this.modeTypeVarStartIndex(pi);
     if (this.modeParams() != null && !this.modeParams().isEmpty()) {
       List<ModeTypeVariable> mtVars = 
         new ArrayList<ModeTypeVariable>(this.modeParams().size());
@@ -93,9 +92,9 @@ public class PandaProcedureDeclExt extends PandaExt {
     return pd;
   }
 
-  protected boolean preserveTypes() {
-    return false;
-  }
+  protected abstract int modeTypeVarStartIndex(PandaProcedureInstance pi);
+
+  protected abstract boolean preserveTypes();
 
   @Override
   public Node typePreserve(TypePreserver tp) {

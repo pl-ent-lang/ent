@@ -5,11 +5,16 @@ import java.util.List;
 
 modes { low <: mid; mid <: high; high <: veryHigh; }
 
-public class Code<T> {
-  private List<T>@mode<*> l1;
+public class Code@mode<X,Y> {
+  public Code() {
+  }
 
-  public List<T>@mode<*> iter() {
-    return this.l1;
+  public @mode<T> Code(Code@mode<X,T> c1) {
+  }
+
+  public static void main(String[] args) {
+    Code@mode<high,mid> c2 = new Code@mode<high,mid>();
+    Code@mode<high,low> c1 = new Code@mode<high,low>(c2);
   }
 }
 
