@@ -36,6 +36,16 @@ public class ModeValueType_c extends Type_c implements ModeValueType {
     return true;
   }
 
+  @Override
+  public boolean containsBuiltin() {
+    return !(this.mode() instanceof ModeTypeVariable);
+  }
+
+  @Override
+  public boolean containsVariable() {
+    return (this.mode() instanceof ModeTypeVariable);
+  }
+
 
 
 }

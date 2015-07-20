@@ -130,18 +130,20 @@ public class PandaClassDeclExt extends PandaExt {
     }
 
     // 2. Generate default constructor if there is not one
+    PandaConstructorInstance pci = null;
     if (ct.hasAttribute() && !ct.hasCopy()) {
       boolean genDef = true;
       for (ConstructorInstance ci : ct.constructors()) {
         if (ci.formalTypes().isEmpty()) {
           genDef = false;
+          pci = (PandaConstructorInstance) ci;
           break;
         }
       }
       if (genDef) {
         ClassBody body = n.body();
         List<ClassMember> members = new ArrayList<>(body.members());
-        members.add(qq.parseMember("public %s(PANDA_Closure PANDA_this) { }", decl.name()));
+        members.add(qq.parseMember("public %s() { }", decl.name()));
         body = body.members(members);
         n = n.body(body);
       }
@@ -152,9 +154,15 @@ public class PandaClassDeclExt extends PandaExt {
       List<Stmt> stmts = new ArrayList<>();
 
       // 3.1. Create a new expression for a shallow copy
+      String newStr = null;
+      if (pci == null || pci.modeTypeVars().size() == 0) {
+        newStr = "%T PANDA_ld = new %T();";
+      } else {
+        newStr = "%T PANDA_ld = new %T();";
+      }
       stmts.add(
         qq.parseStmt(
-          "%T PANDA_ld = new %T(null);", 
+          newStr,
           qq.parseType(decl.name()),
           qq.parseType(decl.name())
           )

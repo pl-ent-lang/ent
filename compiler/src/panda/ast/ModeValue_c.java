@@ -92,16 +92,27 @@ public class ModeValue_c extends Lit_c implements ModeValue {
 
   // TODO : Relaxing the restriction for ease implementation of Snapshot. Need to
   // revisit this.
-  /*
   @Override
   public Node typeCheck(TypeChecker tc) throws SemanticException {
-    PandaContext c = (PandaContext) tc.context();
-    if (!(c.currentCode() instanceof AttributeInstance)) {
-      throw new SemanticException("Mode values can only be used inside an attributor.");
+    // TODO : Add in a restriction to keep this inside attribute and snapshot only
+    //
+    Context ctx = tc.context();
+    PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
+
+    ModeValueType t = (ModeValueType) this.type();
+
+    if (ctx.currentCode() instanceof ConstructorInstance && t.containsVariable()) {
+      PandaConstructorInstance ci = (PandaConstructorInstance) ctx.currentCode();
+      PandaClassType ct = (PandaClassType) ci.container();
+      ModeTypeVariable mtVar = (ModeTypeVariable) t.mode();
+      if (mtVar.declaringClass() != null && 
+          ts.typeEquals(ct, mtVar.declaringClass())) {
+        throw new SemanticException("Invalid use of class mode type variable inside constructor!");
+      }
     }
+        
     return this;
   }
-  */
 
   public Node rewriteModeValue(ExtensionRewriter rw) throws SemanticException {
     PandaRewriter prw = (PandaRewriter) rw;
