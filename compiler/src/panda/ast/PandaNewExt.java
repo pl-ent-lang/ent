@@ -12,16 +12,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class PandaNewExt extends PandaExt {
+public class PandaNewExt extends PandaExt implements NewOps {
 
   protected Map<ModeTypeVariable, Type> infModeTypes;
+
+  @Override
+  public New node() {
+    return (New) super.node();
+  }
 
   protected Map<ModeTypeVariable, Type> infModeTypes() {
     return this.infModeTypes;
   }
 
   protected New infModeTypes(Map<ModeTypeVariable, Type> infModeTypes) {
-    return this.infModeTypes((New)this.node(), infModeTypes);
+    return this.infModeTypes(this.node(), infModeTypes);
   }
 
   protected <N extends New> N infModeTypes(N n, Map<ModeTypeVariable, Type> infModeTypes) {
@@ -34,6 +39,73 @@ public class PandaNewExt extends PandaExt {
     ext.infModeTypes = infModeTypes;
     return n;
   }
+
+  // ProcedureCallOps
+  @Override
+  public void printArgs(CodeWriter w, PrettyPrinter tr) {
+    superLang().printArgs(this.node(), w, tr);
+  }
+
+  // ExprOps
+  @Override
+  public boolean constantValueSet(Lang lang) {
+    return superLang().constantValueSet(node(), lang);
+  }
+
+  @Override
+  public boolean isConstant(Lang lang) {
+    return superLang().isConstant(node(), lang);
+  }
+
+  @Override
+  public Object constantValue(Lang lang) {
+    return superLang().constantValue(node(), lang);
+  }
+
+
+  @Override
+  public TypeNode findQualifiedTypeNode(AmbiguityRemover ar, ClassType outer,
+            TypeNode objectType) throws SemanticException {
+    return superLang().findQualifiedTypeNode(this.node(), ar, outer, objectType);
+  }
+
+  @Override
+  public Expr findQualifier(AmbiguityRemover ar, ClassType ct) throws SemanticException {
+    return superLang().findQualifier(this.node(), ar, ct);
+  }
+
+  @Override
+  public void typeCheckFlags(TypeChecker tc) throws SemanticException {
+    superLang().typeCheckFlags(this.node(), tc);
+  }
+
+  @Override
+  public void typeCheckNested(TypeChecker tc) throws SemanticException {
+    superLang().typeCheckNested(this.node(), tc);
+  }
+
+  @Override
+  public void printQualifier(CodeWriter w, PrettyPrinter tr) {
+    superLang().printQualifier(this.node(), w, tr);
+  }
+
+  @Override
+  public void printShortObjectType(CodeWriter w, PrettyPrinter tr) {
+    superLang().printShortObjectType(this.node(), w, tr);
+  } 
+
+  @Override
+  public void printBody(CodeWriter w, PrettyPrinter tr) {
+    superLang().printBody(this.node(), w, tr);
+  }
+
+  @Override
+  public ClassType findEnclosingClass(Context c, ClassType ct) {
+    if (ct instanceof ModeSubstType) {
+      ct = (ClassType) ((ModeSubstType) ct).baseType();
+    }
+    return superLang().findEnclosingClass(this.node(), c, ct);
+  } 
 
   @Override
   public Node typeCheck(TypeChecker tc) throws SemanticException { 
@@ -68,7 +140,7 @@ public class PandaNewExt extends PandaExt {
 
   @Override
   public Node typePreserve(TypePreserver tp) {
-    New n = (New) this.node();
+    New n = this.node();
 
     PandaProcedureInstance pi = (PandaProcedureInstance) n.procedureInstance();
     if (pi.modeTypeVars().size() == 0) {

@@ -4,6 +4,8 @@ import panda.visit.*;
 
 import polyglot.ast.*;
 import polyglot.util.*;
+import polyglot.translate.*;
+import polyglot.types.*;
 
 public class PandaExt extends Ext_c implements PandaOps {
   private static final long serialVersionUID = SerialVersionUID.generate();

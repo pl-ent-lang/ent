@@ -288,6 +288,88 @@ public abstract class ModeSubstClassType_c extends ModeSubstReferenceType_c impl
     return false;
   }
 
+  protected boolean isCastValidImplJL(Type toType) {
+    if (!toType.isCanonical()) return false;
+    if (!toType.isReference()) return false;
+
+    if (toType.isArray()) {
+      // From type is not an array, but to type is.  Check if the array
+      // is a subtype of the from type.  This happens when from type
+      // is java.lang.Object.
+      return ts.isSubtype(toType, this);
+    }
+
+    // Both types should be classes now.
+    if (!toType.isClass()) return false;
+
+    // From and to are neither primitive nor an array. They are distinct.
+    boolean fromInterface = flags().isInterface();
+    boolean toInterface = toType.toClass().flags().isInterface();
+    boolean fromFinal = flags().isFinal();
+    boolean toFinal = toType.toClass().flags().isFinal();
+
+    // This is taken from Section 5.5 of the JLS.
+    if (!fromInterface) {
+      // From is not an interface.
+      if (!toInterface) {
+        // Neither from nor to is an interface.
+        return ts.isSubtype(this, toType) || ts.isSubtype(toType, this);
+      }
+
+      if (fromFinal) {
+        // From is a final class, and to is an interface
+        return ts.isSubtype(this, toType);
+      }
+
+      // From is a non-final class, and to is an interface.
+      return true;
+    } else {
+      // From is an interface
+      if (!toInterface && !toFinal) {
+          // To is a non-final class.
+          return true;
+      }
+
+      if (toFinal) {
+          // To is a final class.
+          return ts.isSubtype(toType, this);
+      }
+
+      // To and From are both interfaces.
+      // If To and From contain methods with the same signature but
+      // different return types, then a compile-time error occurs.
+      Map<String, MethodInstance> signatureMap = new HashMap<>();
+      List<ReferenceType> typeList = new LinkedList<>();
+      typeList.add(this);
+      typeList.add(toType.toClass());
+      while (!typeList.isEmpty()) {
+          ReferenceType type = typeList.remove(0);
+          for (MethodInstance mi : type.methods()) {
+              String signature = mi.signature();
+              if (signatureMap.containsKey(signature)) {
+                  MethodInstance mj = signatureMap.get(signature);
+                  if (!ts.typeEquals(mi.returnType(), mj.returnType())) {
+                      return false;
+                  }
+              }
+              else signatureMap.put(signature, mi);
+          }
+          typeList.addAll(type.interfaces());
+      }
+      return true;
+    }
+  }
+
+  @Override
+  public boolean isCastValidImpl(Type toType) {
+    if (this.isCastValidImplJL(toType)) {
+      return true;
+    }
+    return (this.ts.isSubtype(this, toType) || 
+            this.ts.isSubtype(toType, this));
+  }
+
+
   @Override
   public boolean isImplicitCastValidImpl(Type toT) {
     if (!toT.isClass()) return false;

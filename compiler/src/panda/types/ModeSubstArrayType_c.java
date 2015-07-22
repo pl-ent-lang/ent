@@ -95,4 +95,28 @@ public class ModeSubstArrayType_c extends ModeSubstReferenceType_c implements Mo
   public EnumInstance enumConstantNamed(String name) {
     return null;
   }
+
+  // Type Methods
+
+  @Override
+  public boolean isImplicitCastValidImpl(Type toT) {
+    if (!(toT instanceof ModeSubstType)) {
+      return this.ts.isImplicitCastValid(this.baseType(), toT);
+    }
+    ModeSubstType st = (ModeSubstType) toT;
+    return this.ts.isImplicitCastValid(this.baseType(), st.baseType()) &&
+           this.modeTypeArgsEquals(st);
+  }
+
+
+  @Override
+  public boolean isCastValidImpl(Type toT) {
+    if (!(toT instanceof ModeSubstType)) {
+      return this.ts.isCastValid(this.baseType(), toT);
+    }
+    ModeSubstType st = (ModeSubstType) toT;
+    return this.ts.isCastValid(this.baseType(), st.baseType()) &&
+           this.modeTypeArgsEquals(st);
+  }
+
 }

@@ -34,6 +34,11 @@ public class PandaLang_c extends J7Lang_c implements PandaLang {
     return pandaExt(n);
   }
 
+  @Override
+  protected NewOps NewOps(New n) {
+    return (NewOps) pandaExt(n);
+  } 
+
   protected PandaOps PandaOps(Node n) {
     return pandaExt(n);
   }

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSystem { 
   private Map<String, ModeType> createdModeTypes = new HashMap<>();
@@ -548,6 +549,87 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
     }
     return t;
   }
+
+  protected boolean hasSameSignature(JL5ProcedureInstance mi, JL5ProcedureInstance mj, boolean eraseMj) {
+    // JLS 3rd Ed. | 8.4.2
+    // Two methods have the same signature if they have the same name
+    // and argument types.
+    // Two methods have the same argument types if all of the following hold:
+    // - They have same number of formal parameters
+    // - They have same number of type parameters
+    // - After renaming type parameters to match, the bounds of type
+    //   variables and argument types are the same.
+    if (mi instanceof JL5MethodInstance && mj instanceof JL5MethodInstance) {
+      if (!((JL5MethodInstance) mi).name()
+                                   .equals(((JL5MethodInstance) mj).name())) {
+        return false;
+      }
+    }
+    if (mi.formalTypes().size() != mj.formalTypes().size()) {
+      return false;
+    }
+    if (eraseMj && !mi.typeParams().isEmpty()) {
+      // we are erasing mj, so it has no type parameters.
+      // so mi better have no type parameters
+      return false;
+    } else if (!eraseMj && mi.typeParams().size() != mj.typeParams().size()) {
+      // we are not erasing mj, so it and mi better
+      // have the same number of type parameters.
+      return false;
+    }
+
+    // replace the type variables of mj with the type variables of mi
+    if (!eraseMj && !mi.typeParams().isEmpty()) {
+      Map<TypeVariable, ReferenceType> substm = new LinkedHashMap<>();
+      for (int i = 0; i < mi.typeParams().size(); i++) {
+        substm.put(mj.typeParams().get(i), mi.typeParams().get(i));
+      }
+      Subst<TypeVariable, ReferenceType> subst = this.subst(substm);
+
+      // Check that bounds of type variables match
+      for (Iterator<? extends TypeVariable> typesi =
+              mi.typeParams().iterator(), typesj =
+              mj.typeParams().iterator(); typesi.hasNext();) {
+        TypeVariable ti = typesi.next();
+        TypeVariable tj = typesj.next();
+        if (!ti.upperBound().equals(subst.substType(tj.upperBound())))
+          return false;
+      }
+
+      if (mj instanceof JL5MethodInstance)
+          mj = subst.substMethod((JL5MethodInstance) mj);
+      else mj = subst.substConstructor((JL5ConstructorInstance) mj);
+    }
+
+    // Check that the argument types match
+    for (Iterator<? extends Type> typesi = mi.formalTypes().iterator(), typesj =
+            mj.formalTypes().iterator(); typesi.hasNext();) {
+      Type ti = typesi.next();
+      Type tj = typesj.next();
+      if (eraseMj) {
+        tj = this.erasureType(tj);
+      }
+      if (!ti.typeEquals(tj)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  @Override
+  public boolean areReturnTypeSubstitutable(Type ri, Type rj) {
+    if (ri.isPrimitive()) {
+        return ri.typeEquals(rj);
+    } else if (ri.isReference()) {
+        return ri.isSubtype(rj) || isUncheckedConversion(ri, rj)
+                || ri.isSubtype(this.erasureType(rj));
+    } else if (ri.isVoid()) {
+        return rj.isVoid();
+    } else {
+        throw new InternalCompilerError("Unexpected return type: " + ri);
+    }
+  } 
+
 
 
   // Panda TypeSystem Methods

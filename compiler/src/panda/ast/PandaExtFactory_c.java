@@ -13,12 +13,20 @@ public final class PandaExtFactory_c extends PandaAbstractExtFactory_c {
     super(nextExtFactory);
   }
 
-  /*
   @Override 
-  protected Ext extBlockImpl() {
-    return new PandaBlockExt();
+  protected Ext extNormalAnnotationElemImpl() {
+    return new PandaAnnotationElemExt();
   } 
-  */
+
+  @Override 
+  protected Ext extMarkerAnnotationElemImpl() {
+    return new PandaAnnotationElemExt();
+  } 
+
+  @Override 
+  protected Ext extSingleElementAnnotationElemImpl() {
+    return new PandaAnnotationElemExt();
+  } 
 
   @Override 
   protected Ext extCallImpl() {
@@ -36,6 +44,21 @@ public final class PandaExtFactory_c extends PandaAbstractExtFactory_c {
   } 
 
   @Override 
+  protected Ext extEnumConstantDeclImpl() {
+    return new PandaEnumConstantDeclExt();
+  } 
+
+  @Override 
+  protected Ext extEnumConstantImpl() {
+    return new PandaEnumConstantExt();
+  } 
+
+  @Override 
+  protected Ext extElementValuePairImpl() {
+    return new PandaElementValuePairExt();
+  } 
+
+  @Override 
   protected Ext extExtendedForImpl() {
     return new PandaExtendedForExt();
   } 
@@ -43,6 +66,11 @@ public final class PandaExtFactory_c extends PandaAbstractExtFactory_c {
   @Override 
   protected Ext extFieldImpl() {
     return new PandaFieldExt();
+  } 
+
+  @Override 
+  protected Ext extFormalImpl() {
+    return new PandaFormalExt();
   } 
 
   @Override

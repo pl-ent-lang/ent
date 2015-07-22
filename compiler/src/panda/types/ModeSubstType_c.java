@@ -204,6 +204,7 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
   @Override
   public ReferenceType toReference() {
     PandaTypeSystem ts = (PandaTypeSystem) this.ts;
+
     return 
       (ReferenceType) ts.createModeSubst(
         this.baseType.toReference(),
@@ -297,6 +298,8 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
   @Override
   public boolean descendsFromImpl(Type ansT) {
     if (!(ansT instanceof ModeSubstType)) {
+      System.out.println("Types: " + this + " " + ansT);
+      System.out.println("Classes: " + this.getClass() + " " + ansT.getClass());
       throw new InternalCompilerError(
           "unexpected non mode substituted type " + ansT + ". typeEquals should allow the special case.");
     } 
@@ -309,6 +312,8 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
   @Override
   public boolean isCastValidImpl(Type toT) {
     if (!(toT instanceof ModeSubstType)) {
+      System.out.println("Types: " + this + " " + toT);
+      System.out.println("Classes: " + this.getClass() + " " + toT.getClass());
       throw new InternalCompilerError(
           "unexpected non mode substituted type " + toT + " from " + this + ". typeEquals should allow the special case.");
     } 
@@ -321,9 +326,10 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
   @Override
   public boolean isImplicitCastValidImpl(Type toT) {
     if (!(toT instanceof ModeSubstType)) {
+      System.out.println("Types: " + this + " " + toT);
+      System.out.println("Classes: " + this.getClass() + " " + toT.getClass());
       throw new InternalCompilerError(
           "unexpected non mode substituted type " + toT + ". typeEquals should allow the special case.");
-      //return this.ts.isImplicitCastValid(this.baseType(), toT);
     } 
 
     ModeSubstType st = (ModeSubstType) toT;
