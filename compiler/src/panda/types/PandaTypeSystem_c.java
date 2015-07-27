@@ -1,6 +1,7 @@
 package panda.types;
 
 import panda.ast.*;
+import polyglot.types.Package;
 import panda.types.reflect.*;
 import panda.types.inference.*;
 
@@ -33,6 +34,8 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
   private ModeType BottomModeType;
 
   private ModeSubstEngine substEngine = new ModeSubstEngine(this);
+
+  private Package modesDeclPkg;
   
   public PandaTypeSystem_c() {
     // Setup both the bottom and dynamic mode type instances
@@ -73,6 +76,14 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
           );
     }
     return this.ModeSubstObject;
+  }
+
+  public void modesDeclPackage(Package pkg) {
+    this.modesDeclPkg = pkg;
+  }
+
+  public Package modesDeclPackage() {
+    return this.modesDeclPkg;
   }
 
   // Factory Methods / Previous TypeSystem Methods

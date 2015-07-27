@@ -18,5 +18,5 @@ public interface ModeType extends Type {
   String compileCode(); 
   String runtimeCode(); 
 
-  Expr rewriteForLookup(NodeFactory nf, Context c);
+  Expr rewriteForLookup(NodeFactory nf, Context c, TypeSystem to_ts);
 }

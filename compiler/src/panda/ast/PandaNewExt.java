@@ -142,57 +142,56 @@ public class PandaNewExt extends PandaExt implements NewOps {
   public Node typePreserve(TypePreserver tp) {
     New n = this.node();
 
-    PandaProcedureInstance pi = (PandaProcedureInstance) n.procedureInstance();
-    if (pi.modeTypeVars().size() == 0) {
-      // Optimization, no preservation needed
-      return n;
-    }
-
     PandaNodeFactory nf = (PandaNodeFactory) tp.nodeFactory();
     Context ctx = tp.context();
+
+    if (!(n.type() instanceof ModeSubstType)) {
+      return n;
+    }
 
     ModeSubstType st = (ModeSubstType) n.type();
     PandaClassType ct = (PandaClassType) st.baseType();
 
     // Steps to preserve types
-    // 1. Create a PANDA_Closure for mode type variables
+    // 1. Create a PANDA_Closure for method mode type variables
     // 2. Rewrite new A() to new A(new PANDA_Closure()) if non
     // builtin constructor.
     // 3. Rewrite new A() to ((A) PANDA_Runtime.putObj(new A(), constants))
 
-    // 1. Create a PANDA_Closure
-    List<Expr> elems = new ArrayList<>();
-    List<Expr> args = new ArrayList<>(n.arguments());
-  
-    // 1.2. Capture the inferred variables from the instantiation of the method
+    // 1.1. Capture the inferred variables from the instantiation of the method
     // mode type variables.
-    for (ModeTypeVariable v : pi.modeTypeVars()) {
-      ModeType mt = (ModeType) this.infModeTypes().get(v);
-      elems.add(mt.rewriteForLookup(nf, ctx));
-    }
+    PandaProcedureInstance pi = (PandaProcedureInstance) n.procedureInstance();
 
-    // 1.3. Build the closure expression
-    List<Expr> closInit = new ArrayList<>();
-    closInit.add(
-      nf.NewArray(
-        Position.COMPILER_GENERATED,
-        nf.AmbTypeNode(
+    if (pi.modeTypeVars().size() != 0) {
+      // 1.1. Capture the inferred method mode type variables.
+      List<Expr> closElems = new ArrayList<>();
+      for (ModeTypeVariable v : pi.modeTypeVars()) {
+        ModeType mt = (ModeType) this.infModeTypes().get(v);
+        closElems.add(mt.rewriteForLookup(nf, ctx, tp.to_ts()));
+      }
+
+      // 1.2. Build the closure expression
+      List<Expr> closInit = new ArrayList<>();
+      closInit.add(
+        nf.NewArray(
           Position.COMPILER_GENERATED,
-          nf.Id(
+          nf.AmbTypeNode(
             Position.COMPILER_GENERATED,
-            "Integer"
+            nf.Id(
+              Position.COMPILER_GENERATED,
+              "Integer"
+              )
+            ),
+          1,
+          nf.ArrayInit(
+            Position.COMPILER_GENERATED,
+            closElems
             )
-          ),
-        1,
-        nf.ArrayInit(
-          Position.COMPILER_GENERATED,
-          elems
           )
-        )
-      );
+        );
 
-    // 2. Rewrite if non builtin
-    if (!ct.isImplicitModeTypeVar()) {
+      // 1.3. Rewrite if non builtin
+      List<Expr> args = new ArrayList<>(n.arguments());
       args.add(
         nf.New(
           Position.COMPILER_GENERATED,
@@ -206,22 +205,20 @@ public class PandaNewExt extends PandaExt implements NewOps {
           closInit
           )
         );
-    } 
-    n = n.arguments(args);
+      n = n.arguments(args);
+    }
 
-    // 3. Rewrite to insert call into the mode table
+    // 2.1. Capure mode type arguments to insert into the mode table.
+    List<Expr> tabElems = new ArrayList<>();
+    for (Type t : ((ModeSubstType) n.type()).modeTypeArgs()) {
+      ModeType mt = (ModeType) t;
+      tabElems.add(mt.rewriteForLookup(nf, ctx, tp.to_ts()));
+    }
+
+    // 2.2. Rewrite to insert the new object into the mode table.
     Cast c =
       nf.Cast(
         Position.COMPILER_GENERATED,
-        /*
-        nf.AmbTypeNode(
-          Position.COMPILER_GENERATED,
-          nf.Id(
-            Position.COMPILER_GENERATED,
-            ct.name()
-            )
-          ),
-          */
         n.objectType(),
         nf.Call(
           Position.COMPILER_GENERATED,
@@ -249,7 +246,7 @@ public class PandaNewExt extends PandaExt implements NewOps {
             1,
             nf.ArrayInit(
               Position.COMPILER_GENERATED,
-              elems
+              tabElems
               )
             )
           )

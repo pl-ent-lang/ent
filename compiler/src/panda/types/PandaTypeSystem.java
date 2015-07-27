@@ -2,6 +2,7 @@ package panda.types;
 
 import polyglot.ast.*;
 import polyglot.types.*;
+import polyglot.types.Package;
 import polyglot.util.*;
 import polyglot.ext.jl7.types.*;
 
@@ -17,6 +18,9 @@ public interface PandaTypeSystem extends JL7TypeSystem {
   ModeType DynamicModeType();
 
   ClassType ModeSubstObject();
+
+  void modesDeclPackage(Package pkg);
+  Package modesDeclPackage();
 
   // Factory Methods 
   AttributeInstance createAttributeInstance(Position pos, ReferenceType container, Flags flags);

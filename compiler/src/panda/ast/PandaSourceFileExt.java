@@ -54,7 +54,6 @@ public class PandaSourceFileExt extends PandaExt {
     return superLang().buildTypes(this.node(), tb);
   }
 
-
   @Override
   public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
     PandaRewriter prw = (PandaRewriter) rw;
@@ -71,6 +70,7 @@ public class PandaSourceFileExt extends PandaExt {
         );
     n = n.imports(imports);
 
+    /*
     // If this file had a modes decl, throw it in
     PandaSourceFileExt ext = (PandaSourceFileExt) PandaExt.ext(this.node());
     if (ext.modesDecl() != null) {
@@ -78,6 +78,7 @@ public class PandaSourceFileExt extends PandaExt {
       decls.add(ext.modesDecl());
       n = n.decls(decls);
     } 
+    */
 
     return n;
   }

@@ -1,15 +1,10 @@
 package panda.ast;
 
-import polyglot.ast.Expr;
-import polyglot.ast.Id;
-import polyglot.ast.Node;
-import polyglot.ast.Term;
-import polyglot.ast.Term_c;
-import polyglot.util.Position;
-import polyglot.util.CodeWriter;
-import polyglot.visit.CFGBuilder;
-import polyglot.visit.NodeVisitor;
-import polyglot.visit.PrettyPrinter;
+import polyglot.ast.*;
+import polyglot.translate.*;
+import polyglot.types.*;
+import polyglot.util.*;
+import polyglot.visit.*;
 
 import java.util.List;
 
@@ -69,6 +64,12 @@ public class McaseFieldDecl_c extends Term_c implements McaseFieldDecl {
   public <T> List<T> acceptCFG(CFGBuilder<?> v, List<T> succs) {
     return succs;
   }
+
+  @Override
+  public Node extRewrite(ExtensionRewriter rw) throws SemanticException { 
+    return this.init();
+  }
+
 
 
 

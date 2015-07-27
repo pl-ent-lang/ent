@@ -1,17 +1,11 @@
 package panda.ast;
 
-import panda.types.PandaTypeSystem;
+import panda.types.*;
 
-import polyglot.ast.TypeNode;
-import polyglot.ast.TypeNode_c;
-import polyglot.ast.Node;
-import polyglot.types.SemanticException;
-import polyglot.util.CodeWriter;
-import polyglot.util.Position;
-import polyglot.visit.AmbiguityRemover;
-import polyglot.visit.TypeBuilder;
-import polyglot.visit.NodeVisitor;
-import polyglot.visit.PrettyPrinter;
+import polyglot.ast.*;
+import polyglot.types.*;
+import polyglot.util.*;
+import polyglot.visit.*;
 
 public class McaseTypeNode_c extends TypeNode_c implements McaseTypeNode {
 
@@ -59,6 +53,8 @@ public class McaseTypeNode_c extends TypeNode_c implements McaseTypeNode {
 
     // Create new mode case type
     PandaTypeSystem ts = (PandaTypeSystem) sc.typeSystem();
+    Type tt = ts.createMcaseType(this.base().type());
+
     return this.type(ts.createMcaseType(this.base().type()));
   }
 

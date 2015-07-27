@@ -2715,9 +2715,16 @@ snapshot_expr ::=
 mcase_type ::=
     MCASE:a LT type:t GT:b {:
                           
-    RESULT = parser.nf.McaseTypeNode(parser.pos(a,b), t);
+    TypeNode n = parser.nf.McaseTypeNode(parser.pos(a,b), t);
+    RESULT = parser.nf.AmbModeTypeInstantiation(parser.pos(a), n);
   
-                           :};
+                           :}
+ |  MCASE:a LT type:t GT:b mode_type_args:args {:
+                                              
+    TypeNode n = parser.nf.McaseTypeNode(parser.pos(a,b), t);
+    RESULT = parser.nf.AmbModeTypeInstantiation(parser.pos(a), n, args);
+  
+                                               :};
 
 mcase_lit ::=
     mcase_type:t LBRACE mcase_fields:f RBRACE:b {:

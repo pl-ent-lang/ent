@@ -1,7 +1,5 @@
 package simple_panda;
 
-modes { low <: mid; mid <: high; high <: veryHigh; }
-
 public class Dynamic@mode<X <= high, Y <= X> {
   private boolean choice;
 
@@ -19,6 +17,10 @@ public class Dynamic@mode<X <= high, Y <= X> {
 
   public Dynamic(boolean choice) {
     this.choice = choice;
+  }
+
+  public void internal() {
+    Dynamic@mode<X,Y> dc = new Dynamic@mode<X,Y>();
   }
 
   public static void main(String[] args) {

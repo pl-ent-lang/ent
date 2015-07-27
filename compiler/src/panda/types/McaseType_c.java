@@ -36,12 +36,34 @@ public class McaseType_c extends Type_c implements McaseType {
 
   @Override
   public boolean typeEqualsImpl(Type o) {
-    if (!(o instanceof McaseType)) {
+    PandaTypeSystem ts = (PandaTypeSystem) this.typeSystem();
+    if (o instanceof McaseType) {
       return false;
     }
     McaseType_c m = (McaseType_c) o;
-    PandaTypeSystem ts = (PandaTypeSystem) this.typeSystem();
     return ts.typeEquals(this.base(), m.base());
+  }
+
+  @Override
+  public boolean isCastValidImpl(Type toT) {
+    PandaTypeSystem ts = (PandaTypeSystem) this.typeSystem();
+    if (toT instanceof McaseType) {
+      McaseType m = (McaseType) toT;
+      return ts.isCastValid(this.base(), m.base());
+    }
+
+    return ts.isCastValid(this.base(), toT);
+  }
+
+  @Override
+  public boolean isImplicitCastValidImpl(Type toT) {
+    PandaTypeSystem ts = (PandaTypeSystem) this.typeSystem();
+    if (toT instanceof McaseType) {
+      McaseType m = (McaseType) toT;
+      return ts.isImplicitCastValid(this.base(), m.base());
+    }
+
+    return ts.isImplicitCastValid(this.base(), toT);
   }
 
 }

@@ -1,29 +1,17 @@
 package panda.ast;
 
-import panda.types.ModeType;
-import panda.types.McaseType;
-import panda.types.PandaTypeSystem;
+import panda.types.*;
+import panda.translate.*;
 
-import polyglot.ast.Lang;
-import polyglot.ast.Lit;
-import polyglot.ast.Lit_c;
-import polyglot.ast.Id;
-import polyglot.ast.Expr;
-import polyglot.ast.Node;
-import polyglot.ast.TypeNode;
-import polyglot.types.SemanticException;
-import polyglot.util.CollectionUtil;
-import polyglot.util.Copy;
-import polyglot.util.ListUtil;
-import polyglot.util.Position;
-import polyglot.util.CodeWriter;
-import polyglot.visit.NodeVisitor;
-import polyglot.visit.TypeBuilder;
-import polyglot.visit.TypeChecker;
-import polyglot.visit.AmbiguityRemover;
-import polyglot.visit.PrettyPrinter;
-import polyglot.visit.Translator;
+import polyglot.ast.*;
+import polyglot.types.*;
+import polyglot.translate.*;
+import polyglot.qq.*;
+import polyglot.util.*;
+import polyglot.visit.*;
+import polyglot.ext.jl5.ast.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.Map;
@@ -98,7 +86,7 @@ public class McaseLit_c extends Lit_c implements McaseLit {
 
     Set<String> found = new HashSet<>();
     PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
-    McaseType mcT = (McaseType) this.type();
+    McaseType mcT = (McaseType) this.mcaseTypeNode().type();
 
     for (McaseFieldDecl fd : this.fields()) {
       String mode = fd.field().id();
@@ -159,6 +147,34 @@ public class McaseLit_c extends Lit_c implements McaseLit {
   @Override
   public Object constantValue(Lang lang) {
     return null;
+  }
+
+  @Override
+  public Node extRewrite(ExtensionRewriter rw) throws SemanticException { 
+    PandaRewriter prw = (PandaRewriter) rw;
+    JL5NodeFactory nf = (JL5NodeFactory) prw.to_nf();
+    QQ qq = prw.qq();
+
+    List<Expr> exprs = new ArrayList<Expr>();
+    for (int i = 0 ; i < this.fields().size(); i++) {
+      exprs.add((Expr) this.fields().get(i));
+    }
+
+    Node n =
+      nf.NewArray(
+        Position.COMPILER_GENERATED,
+        prw.typeToJava(
+          ((McaseType) this.type()).base(),
+          this.position()
+          ),
+        1,
+        nf.ArrayInit(
+          Position.COMPILER_GENERATED,
+          exprs
+          )
+        );
+
+    return n;
   }
 
 }

@@ -154,7 +154,7 @@ public class PandaCallExt extends PandaExt {
     List<Expr> elems = new ArrayList<>();
     for (ModeTypeVariable v : pi.modeTypeVars()) {
       ModeType mt = (ModeType) this.infModeTypes().get(v);
-      elems.add(mt.rewriteForLookup(nf, c));
+      elems.add(mt.rewriteForLookup(nf, c, tp.to_ts()));
     }
 
     List<Expr> closInit = new ArrayList<>();

@@ -86,7 +86,12 @@ public class ModesDecl_c extends ClassDecl_c implements ModesDecl {
 
   @Override
   public Node buildTypes(TypeBuilder tb) throws SemanticException {
+    // Save the package we are defined in
     PandaTypeSystem ts = (PandaTypeSystem) tb.typeSystem();
+    if (ts.modesDeclPackage() != null) {
+      throw new SemanticException("redeclaration of modes!");
+    }
+    ts.modesDeclPackage(tb.currentPackage());
 
     ModeOrderingInstance oi = ts.createModeOrderingInstance();
 
@@ -124,6 +129,8 @@ public class ModesDecl_c extends ClassDecl_c implements ModesDecl {
 
   @Override
   public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
+    return null;
+    /*
     PandaRewriter prw = (PandaRewriter) rw;
     PandaTypeSystem ts = (PandaTypeSystem) prw.typeSystem();
     NodeFactory nf = prw.nodeFactory();
@@ -157,6 +164,7 @@ public class ModesDecl_c extends ClassDecl_c implements ModesDecl {
     ClassDecl cd = qq.parseDecl("class PandaMode { %LM }", members);
 
     return cd;
+    */
   }
 
   // Term Methods
