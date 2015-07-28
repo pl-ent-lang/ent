@@ -13,6 +13,7 @@ import java.util.Set;
 
 public class PandaOptions extends JL5Options {
   public boolean translatePanda = true;
+  public boolean preserveTypes = true;
 
   public PandaOptions(ExtensionInfo extension) {
     super(extension);
@@ -28,12 +29,22 @@ public class PandaOptions extends JL5Options {
           "Do not translate Panda features to Java features",
           false
           ));
+
+    flags.add(
+        new Switch(
+          new String[]{ "-dontPreserveTypes", "--dontPreserveTypes" },
+          "Do not translate preserve types from Panda, removing overhead.",
+          false
+          ));
+
   }
 
   @Override
   protected void handleArg(Arg<?> arg) throws UsageError {
     if (arg.flag().ids().contains("-dontTranslatePanda")) {
       this.translatePanda = (Boolean) arg.value();
+    } else if (arg.flag().ids().contains("-dontPreserveTypes")) {
+      this.preserveTypes = (Boolean) arg.value();
     } else {
       super.handleArg(arg);
     }

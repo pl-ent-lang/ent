@@ -1,13 +1,20 @@
 package panda.runtime;
 
+import java.util.WeakHashMap;
 import java.util.HashMap;
 import java.util.Map;
 
 public class PANDA_Runtime {
-  private static Map<Object, Integer[]> objTab = new HashMap<>();
-  private static Map<Integer, Integer> modeVarTab = new HashMap<>();
+  private static Map<Object, Integer[]> objTab = new WeakHashMap<>();
+  private static Map<Integer, Integer> modeVarTab = new WeakHashMap<>();
+
+  // For performance analysis
+  private static int numGetObjModeCalls = 0;
+  private static int numPutObjCalls = 0;
 
   public static int getObjMode(Object o, int m) {
+    PANDA_Runtime.numGetObjModeCalls++;
+
     Integer mode = PANDA_Runtime.objTab.get(o)[m];
     if (mode == null) {
       return -1;
@@ -20,6 +27,8 @@ public class PANDA_Runtime {
   }
 
   public static Object putObj(Object o, Integer[] modes) {
+    PANDA_Runtime.numPutObjCalls++;
+
     PANDA_Runtime.objTab.put(o, modes);
     return o;
   }
@@ -47,6 +56,19 @@ public class PANDA_Runtime {
       }
       return s;
     }
+  }
+
+  public static void report() {
+    System.out.println("----- Calls -----");
+    System.out.println("putObj: " + PANDA_Runtime.numPutObjCalls);
+    System.out.println("getObjMode: " + PANDA_Runtime.numGetObjModeCalls);
+    System.out.println("-----------------\n");
+
+    System.out.println("----- Table -----");
+    System.out.println("Table Size: " + PANDA_Runtime.objTab.size());
+    System.out.println("-----------------\n");
+
+    System.exit(1);
   }
 
 
