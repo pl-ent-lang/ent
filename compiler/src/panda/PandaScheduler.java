@@ -29,9 +29,9 @@ public class PandaScheduler extends JL7Scheduler {
     ExtensionInfo outInfo = extInfo.outputExtensionInfo();
     Scheduler outScheduler = outInfo.scheduler();
 
-    SourceFile sf = PandaBuilder.buildPandaMode(extInfo, outInfo);
+    SourceFile sf = PandaBuilder.instance().buildPandaMode(extInfo, outInfo);
     Source source = 
-      PandaBuilder.buildSource(
+      PandaBuilder.instance().buildSource(
         extInfo, 
         ((PandaTypeSystem) extInfo.typeSystem()).modesDeclPackage(), 
         "PandaMode.java"

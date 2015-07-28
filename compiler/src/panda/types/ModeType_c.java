@@ -46,6 +46,10 @@ public class ModeType_c extends Type_c implements ModeType {
     this.subType = subType;
   }
 
+  public int uniqueId() {
+    return this.uniqueId;
+  }
+
   public String compileId() {
     if (this.name().equals("?")) {
       return "DYNAMIC_MODE";

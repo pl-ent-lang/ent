@@ -1,5 +1,7 @@
 package simple_panda;
 
+modes { low <: mid; mid <: high; high <: veryHigh; }
+
 public class Dynamic@mode<X <= high, Y <= X> {
   private boolean choice;
 

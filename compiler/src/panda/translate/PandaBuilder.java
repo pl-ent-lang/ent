@@ -10,6 +10,7 @@ import polyglot.types.Package;
 import polyglot.util.*;
 import polyglot.qq.*;
 
+import java.util.Comparator;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,17 +21,63 @@ import javax.tools.JavaFileManager.*;
 import javax.tools.*;
 
 public class PandaBuilder {
+  private static PandaBuilder instance = null;
 
-  public static SourceFile buildPandaMode(ExtensionInfo extInfo, ExtensionInfo outInfo) {
+  public static PandaBuilder instance() {
+    if (PandaBuilder.instance == null) {
+      PandaBuilder.instance = new PandaBuilder();
+    }
+    return PandaBuilder.instance;
+  }
+
+  protected PandaBuilder() {
+  }
+
+  private class ModeTypeComparator implements Comparator<ModeType> {
+    public int compare(ModeType o1, ModeType o2) {
+      return o1.uniqueId() - o2.uniqueId();
+    }
+  }
+
+  public Node buildNewArray(ExtensionInfo extInfo, ExtensionInfo outInfo, String base, int dims, List<Expr> initExprs) {
+    NodeFactory nf = outInfo.nodeFactory();
+    TypeSystem ts = outInfo.typeSystem();
+
+    Expr newArr =
+      nf.NewArray(
+        Position.COMPILER_GENERATED,
+        nf.AmbTypeNode(
+          Position.COMPILER_GENERATED,
+          nf.Id(
+            Position.COMPILER_GENERATED,
+            base
+            )
+          ),
+        dims,
+        nf.ArrayInit(
+          Position.COMPILER_GENERATED,
+          initExprs
+          )
+        );
+
+    return newArr;
+  }
+
+  public SourceFile buildPandaMode(ExtensionInfo extInfo, ExtensionInfo outInfo) {
     PandaTypeSystem fromTs = (PandaTypeSystem) extInfo.typeSystem();
     QQ qq = new QQ(outInfo);
     NodeFactory nf = outInfo.nodeFactory();
     TypeSystem ts = outInfo.typeSystem();
 
-    List<ClassMember> members = new ArrayList<>();
+    List<ModeType> modeTypes = new ArrayList<>(); 
     for (Map.Entry<String, ModeType> e : fromTs.createdModeTypes().entrySet()) {
-      ModeType mt = e.getValue();
+      modeTypes.add(e.getValue());
+    }
+    modeTypes.sort(new ModeTypeComparator());
 
+    List<ClassMember> members = new ArrayList<>();
+    List<Expr> initExprs = new ArrayList<>();
+    for (ModeType mt : modeTypes) {
       Expr expr = null;
       if (mt == fromTs.DynamicModeType() || mt == fromTs.WildcardModeType()) {
         expr = 
@@ -46,11 +93,31 @@ public class PandaBuilder {
         expr = nf.IntLit(Position.COMPILER_GENERATED, IntLit.INT, Integer.parseInt(mt.compileExpr()));
       }
 
-      ClassMember fd = 
-        qq.parseMember("public static final int %s = %E;", mt.compileId(), expr);
+      members.add(
+        qq.parseMember("public static final int %s = %E;", mt.compileId(), expr)
+        );
 
-      members.add(fd);
+      // Preserve names of modes for better diagnostics
+      if (mt.uniqueId() >= 0) {
+        initExprs.add(
+          nf.StringLit(Position.COMPILER_GENERATED, mt.name())
+          );
+      }
     }
+
+    // Preserve names of modes for better diagnostics
+    members.add(
+      qq.parseMember(
+        "public static final String[] MODE_NAMES = %E;", 
+        this.buildNewArray(
+          extInfo,
+          outInfo,
+          "String",
+          1,
+          initExprs
+          )
+        )
+      );
 
     ClassDecl cd = qq.parseDecl("public class PandaMode { %LM }", members);
 
@@ -78,7 +145,7 @@ public class PandaBuilder {
     return sf;
   }
 
-  public static Source buildSource(ExtensionInfo extInfo, Package pkg, String file) {
+  public Source buildSource(ExtensionInfo extInfo, Package pkg, String file) {
     String pkgName = pkg != null ? pkg.fullName() : "";
     Source source = null;
     try {

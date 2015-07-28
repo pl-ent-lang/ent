@@ -119,15 +119,6 @@ public class PandaNewExt extends PandaExt implements NewOps {
       return n;
     }
 
-    // TODO : This is ugly, but until the parent language has been type checked
-    // can not really use the inference functions. At least it can be a protoype
-    // for now.
-
-    System.out.println("OCont: " + pi.container());
-
-    System.out.println("Base: " + pi.baseInstance());
-    System.out.println("Cont: " + pi.baseInstance().container());
-
     List<Type> argTypes = new ArrayList<>();
     for (Expr e : n.arguments()) {
       argTypes.add(e.type());

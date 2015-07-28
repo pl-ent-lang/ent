@@ -6,11 +6,15 @@ import polyglot.visit.*;
 
 public interface ModeType extends Type {
   // Property Methods
+  String name();
+
   Type superType();
   void superType(Type superType);
 
   Type subType();
   void subType(Type subType);
+
+  int uniqueId();
 
   String compileId(); 
   String compileExpr();
