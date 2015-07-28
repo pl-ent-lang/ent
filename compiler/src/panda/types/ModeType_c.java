@@ -132,20 +132,16 @@ public class ModeType_c extends Type_c implements ModeType {
   }
 
   @Override
-  public Expr rewriteForLookup(NodeFactory nf, Context c, TypeSystem to_ts) {
-    if (to_ts instanceof PandaTypeSystem) {
-      new Exception().printStackTrace(System.out);
-    }
-
-    PandaTypeSystem ts = (PandaTypeSystem) this.typeSystem();
+  public Expr rewriteForLookup(NodeFactory nf, TypeSystem ts, Context c) {
+    PandaTypeSystem fromTs = (PandaTypeSystem) this.typeSystem();
     Receiver recv = null;
-      if (ts.modesDeclPackage() != null) {
+      if (fromTs.modesDeclPackage() != null) {
         recv =
           nf.AmbReceiver(
             Position.COMPILER_GENERATED,
             nf.PackageNode(
               Position.COMPILER_GENERATED,
-              to_ts.createPackage(ts.modesDeclPackage().fullName())
+              ts.createPackage(fromTs.modesDeclPackage().fullName())
             ),
             nf.Id(Position.COMPILER_GENERATED, "PandaMode")
             );

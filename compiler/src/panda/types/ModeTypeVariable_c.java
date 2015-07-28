@@ -191,7 +191,7 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
   }
 
   @Override
-  public Expr rewriteForLookup(NodeFactory nf, Context c, TypeSystem to_ts) {
+  public Expr rewriteForLookup(NodeFactory nf, TypeSystem ts, Context c) {
     Expr n = null;
     // Use class variable context if class mode type variable
     // and used outside of constructor.

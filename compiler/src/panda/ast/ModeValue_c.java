@@ -122,7 +122,7 @@ public class ModeValue_c extends Lit_c implements ModeValue {
     ModeValueType t = (ModeValueType) this.type();
     ModeType mt = (ModeType) t.mode();
 
-    return mt.rewriteForLookup(nf, c, prw.to_ext().typeSystem());
+    return mt.rewriteForLookup(nf, prw.toTypeSystem(), c);
   }
 
   @Override

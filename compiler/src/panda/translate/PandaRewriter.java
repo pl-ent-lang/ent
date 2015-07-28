@@ -29,6 +29,10 @@ public class PandaRewriter extends ExtensionRewriter {
     this.translatePanda = options.translatePanda;
   }
 
+  public TypeSystem toTypeSystem() {
+    return this.to_ext.typeSystem();
+  }
+
   public boolean translatePanda() {
     return this.translatePanda;
   }

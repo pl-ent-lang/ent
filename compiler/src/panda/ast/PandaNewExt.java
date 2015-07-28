@@ -167,7 +167,7 @@ public class PandaNewExt extends PandaExt implements NewOps {
       List<Expr> closElems = new ArrayList<>();
       for (ModeTypeVariable v : pi.modeTypeVars()) {
         ModeType mt = (ModeType) this.infModeTypes().get(v);
-        closElems.add(mt.rewriteForLookup(nf, ctx, tp.to_ts()));
+        closElems.add(mt.rewriteForLookup(nf, tp.toTypeSystem(), ctx));
       }
 
       // 1.2. Build the closure expression
@@ -212,7 +212,7 @@ public class PandaNewExt extends PandaExt implements NewOps {
     List<Expr> tabElems = new ArrayList<>();
     for (Type t : ((ModeSubstType) n.type()).modeTypeArgs()) {
       ModeType mt = (ModeType) t;
-      tabElems.add(mt.rewriteForLookup(nf, ctx, tp.to_ts()));
+      tabElems.add(mt.rewriteForLookup(nf, tp.toTypeSystem(), ctx));
     }
 
     // 2.2. Rewrite to insert the new object into the mode table.

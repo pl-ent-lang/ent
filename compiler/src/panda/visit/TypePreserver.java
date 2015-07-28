@@ -10,15 +10,15 @@ import polyglot.qq.*;
 
 public class TypePreserver extends ContextVisitor {
   protected QQ qq;
-  protected TypeSystem to_ts;
+  protected TypeSystem toTypeSystem;
 
-  public TypePreserver(Job job, TypeSystem ts, NodeFactory nf, TypeSystem to_ts) {
-    super(job, ts, nf);
-    this.to_ts = to_ts;
+  public TypePreserver(Job job, TypeSystem fromTs, NodeFactory fromNf, TypeSystem toTs) {
+    super(job, fromTs, fromNf);
+    this.toTypeSystem = toTs;
   }
 
-  public TypeSystem to_ts() {
-    return this.to_ts;
+  public TypeSystem toTypeSystem() {
+    return this.toTypeSystem;
   }
 
   public QQ qq() {
