@@ -1,21 +1,13 @@
 package panda.ast;
 
-import panda.translate.PandaRewriter;
-import panda.types.ModeType;
-import panda.types.ModeTypeVariable;
-import panda.types.PandaContext;
-import panda.types.PandaTypeSystem;
+import panda.translate.*;
+import panda.types.*;
 
-import polyglot.ast.Node;
-import polyglot.ast.TypeNode_c;
-import polyglot.util.CodeWriter;
-import polyglot.util.Position;
-import polyglot.translate.ExtensionRewriter;
-import polyglot.types.SemanticException;
-import polyglot.types.Type;
-import polyglot.visit.AmbiguityRemover;
-import polyglot.visit.PrettyPrinter;
-import polyglot.visit.TypeBuilder;
+import polyglot.ast.*;
+import polyglot.util.*;
+import polyglot.translate.*;
+import polyglot.types.*;
+import polyglot.visit.*;
 
 import java.util.Map;
 
@@ -52,6 +44,17 @@ public class ModeTypeNode_c extends TypeNode_c implements ModeTypeNode {
     PandaContext c = (PandaContext) sc.context();
     ModeTypeVariable mtVar = c.findModeTypeVariableInThisScope(this.name());
     if (mtVar != null) {
+      // Check to make sure this is not a class mode type variable used inside the classes
+      // constructor.
+      if (c.currentCode() instanceof ConstructorInstance) {
+        ConstructorInstance ci = (ConstructorInstance) c.currentCode();
+        PandaClassType ct = (PandaClassType) ci.container();
+        if (mtVar.declaringClass() != null && 
+            ts.typeEquals(ct, mtVar.declaringClass())) {
+          throw new SemanticException("Invalid use of class mode type variable inside constructor!");
+        }
+      } 
+
       return this.type(mtVar);
     }
 

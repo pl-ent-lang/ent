@@ -2,8 +2,6 @@ package estream;
 
 import java.util.List;
 
-modes { low <: mid; mid <: high; }
-
 public interface EnergyOutputStream@mode<T, U<=T> {
 
   void close();
