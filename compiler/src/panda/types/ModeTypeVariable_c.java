@@ -136,16 +136,13 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
 
   @Override
   public String toString() {
-    /*
-    String s = "";
+    String s = "(";
     if (this.hasLowerBound()) {
-      s += this.lowerBound() + " <: ";
+      s += this.lowerBound() + " <= ";
     }
-    s += this.name() + " <: ";
-    s += this.upperBound();
+    s += this.name() + " <= ";
+    s += this.upperBound() + ")";
     return s;
-    */
-    return this.name();
   }
 
   @Override

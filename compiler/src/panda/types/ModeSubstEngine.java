@@ -90,33 +90,36 @@ public class ModeSubstEngine {
     } 
   } 
 
-  public boolean modeSubstSatisfiesConstraints(PandaClassType t, List<Type> mtArgs) {
+  public boolean modeSubstSatisfiesConstraints(PandaClassType baseT, List<Type> mtArgs) {
     // FIXME: Probably shoud move how constraints are satisfied so we can
     // throw SemanticException.
+    //System.out.format("Checking constraints for %s\n", baseT);
 
     Map<ModeTypeVariable, Type> mtMap = new HashMap<>();
-    List<ModeTypeVariable> mtVars = t.modeTypeVars();
+    List<ModeTypeVariable> baseMtVars = baseT.modeTypeVars();
 
-    if (mtVars.size() != mtArgs.size()) {
+    if (baseMtVars.size() != mtArgs.size()) {
       return false;
     }
 
-    for (int i = 0; i < mtVars.size(); ++i) {
-      Type sm = mtArgs.get(i);
+    for (int i = 0; i < baseMtVars.size(); ++i) {
+      Type mtArg = mtArgs.get(i);
+
+      //System.out.format("Checking arg %s on var %s\n", mtArg, baseMtVars.get(i));
 
       // All constraints must be satisfied (all upper bounds)
-      for (Type vm : mtVars.get(i).bounds()) {
-        if (vm instanceof ModeTypeVariable) {
-          vm = mtMap.get(vm);
+      for (Type bound : baseMtVars.get(i).bounds()) {
+        if (bound instanceof ModeTypeVariable) {
+          bound = mtMap.get(bound);
         }
 
-        if (!this.typeSystem().isSubtype(sm, vm) && sm != this.typeSystem().DynamicModeType()) {
-          System.out.println("Attempting to subst with " + sm + " failing on contraint " + vm);
+        if (!this.typeSystem().isSubtype(mtArg, bound) && mtArg != this.typeSystem().DynamicModeType()) {
+          System.out.println("Attempting to subst with " + mtArg + " failing on contraint " + bound);
           return false;
         }
       }
 
-      mtMap.put(mtVars.get(i), sm);
+      mtMap.put(baseMtVars.get(i), mtArg);
     }
     return true;
   }

@@ -51,8 +51,8 @@ public class PandaClassDeclExt extends PandaExt {
 
   @Override
   public Node visitChildren(NodeVisitor v) {
-    Node n = superLang().visitChildren(this.node(), v);
     List<ModeParamTypeNode> modeParams = visitList(this.modeParams(), v);
+    Node n = superLang().visitChildren(this.node(), v);
     return this.reconstruct(n, modeParams);
   }
 

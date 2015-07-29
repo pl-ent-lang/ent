@@ -29,3 +29,8 @@
 11. Put together a test fixture for semantic checking, spend the minimum amount
     of time on it.
    
+12. IMPORTANT : Wildcard mode types placed on unannotated types need to create a wildcard mode type 
+    FOR EACH mode type varaible of the base type.
+
+13. IMPORTANT : Properly connect wildcard resolution to a lookup in an mcase (we need to know it is
+    a wildcard, but can't return -1).

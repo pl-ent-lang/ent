@@ -1,10 +1,8 @@
 package panda.types;
 
-import panda.types.PandaTypeSystem;
+import panda.types.*;
 
-import polyglot.types.Type;
-import polyglot.types.Type_c;
-import polyglot.types.Resolver;
+import polyglot.types.*;
 
 public class McaseType_c extends Type_c implements McaseType {
   protected Type base;
@@ -22,6 +20,16 @@ public class McaseType_c extends Type_c implements McaseType {
   @Override
   public boolean isCanonical() {
     return true;
+  }
+
+  @Override
+  public PrimitiveType toPrimitive() {
+    return this.base().toPrimitive();
+  }
+
+  @Override
+  public boolean isNumeric() {
+    return this.base().isNumeric();
   }
 
   @Override

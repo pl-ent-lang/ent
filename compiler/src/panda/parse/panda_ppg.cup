@@ -610,15 +610,18 @@ modifier ::=
 class_declaration ::=
     modifiers_or_annotations_opt:a CLASS:n IDENTIFIER:b type_parameters_opt:c mode_type_parameters_decl_opt:m super_opt:d interfaces_opt:e class_body:f {:
                                                                                                                                                         
-    RESULT = parser.nf.ClassDecl(parser.pos(n, e),  
-                                a.flags(), 
-                                a.annotations(), 
-                                parser.nf.Id(parser.pos(b), b.getIdentifier()), 
-                                d, 
-                                e, 
-                                f, 
-                                c,
-                                m); 
+    RESULT = 
+      parser.nf.ClassDecl(
+        parser.pos(n, e),  
+        a.flags(), 
+        a.annotations(), 
+        parser.nf.Id(parser.pos(b), b.getIdentifier()), 
+        d, 
+        e, 
+        f, 
+        c,
+        m
+        ); 
   
                                                                                                                                                         :};
 
@@ -951,18 +954,36 @@ explicit_constructor_invocation ::=
                                                                                      :};
 
 interface_declaration ::=
-    modifiers_or_annotations_opt:a INTERFACE:b IDENTIFIER:c type_parameters_opt:d extends_interfaces_opt:e interface_body:f {:
-                                                                                                                            RESULT = parser.nf.ClassDecl(parser.pos(b, f), a.setFlag(Flags.INTERFACE).flags(), a.annotations(), parser.nf.Id(parser.pos(c), c.getIdentifier()), null, e, f, d); 
-                                                                                                                            :}
+    modifiers_or_annotations_opt:a INTERFACE:b IDENTIFIER:c type_parameters_opt:d mode_type_parameters_decl_opt:m extends_interfaces_opt:e interface_body:f {:
+                                                                                                                                                            
+    RESULT = 
+      parser.nf.ClassDecl(
+        parser.pos(b, f), 
+        a.setFlag(Flags.INTERFACE).flags(), 
+        a.annotations(), 
+        parser.nf.Id(parser.pos(c), 
+        c.getIdentifier()), 
+        null, 
+        e, 
+        f, 
+        d,
+        m
+        ); 
+  
+                                                                                                                                                            :}
  |  AT:a INTERFACE:b IDENTIFIER:c annotation_body:d {:
-                                                    List<TypeNode> superints = new LinkedList<>();
-           superints.add(parser.nf.CanonicalTypeNode(parser.pos(b, d), parser.ts.Annotation()));
-           RESULT = parser.nf.ClassDecl(parser.pos(a, d), Flags.INTERFACE.set(JL5Flags.ANNOTATION), null, parser.nf.Id(parser.pos(c), c.getIdentifier()), null, superints, d, null); 
+                                                    
+    List<TypeNode> superints = new LinkedList<>();
+    superints.add(parser.nf.CanonicalTypeNode(parser.pos(b, d), parser.ts.Annotation()));
+    RESULT = parser.nf.ClassDecl(parser.pos(a, d), Flags.INTERFACE.set(JL5Flags.ANNOTATION), null, parser.nf.Id(parser.pos(c), c.getIdentifier()), null, superints, d, null); 
+  
                                                     :}
  |  modifiers_or_annotations:a AT:b INTERFACE IDENTIFIER:d annotation_body:e {:
-                                                                             List<TypeNode> superints = new LinkedList<>();
-           superints.add(parser.nf.CanonicalTypeNode(parser.pos(b, e), parser.ts.Annotation()));
-           RESULT = parser.nf.ClassDecl(parser.pos(b, d), a.setFlag(Flags.INTERFACE.set(JL5Flags.ANNOTATION)).flags(), a.annotations(), parser.nf.Id(parser.pos(d), d.getIdentifier()), null, superints, e, null); 
+                                                                             
+    List<TypeNode> superints = new LinkedList<>();
+    superints.add(parser.nf.CanonicalTypeNode(parser.pos(b, e), parser.ts.Annotation()));
+    RESULT = parser.nf.ClassDecl(parser.pos(b, d), a.setFlag(Flags.INTERFACE.set(JL5Flags.ANNOTATION)).flags(), a.annotations(), parser.nf.Id(parser.pos(d), d.getIdentifier()), null, superints, e, null); 
+  
                                                                              :};
 
 extends_interfaces_opt ::=
