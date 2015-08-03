@@ -1,42 +1,7 @@
 -- Punchlist
 
-1. Solve mcase resolve issue
-   - When do we resolve an mcase? When to we return the translated array?
-   - How do we allow initialization on mcases?
-
-2. Add in mode subtyping proper to all the type system methods.
-
-3. Add in mode subst types over arrays.
-
-4. Optimization pass for snapshot. 
-  - Semantic checking for what will always fail.
-  - Removing extra check for range if it can never fail.
-  - Switch this to be able to turn on and off to record the reduction in overhead.
-
-5. Allow mode type variables to be returned inside attributor.
-
-6. Add full mode type variable inference.
-
-7. Handle JL5/JL codegen issues.
-
-8. Cleanup TODOs.
-
-9. Optimize mode subst with caching and equivalence to speed up compilation.
-
-10. See about pulling out common codegen code into some sort of mini module
-    to reuse.
-
-11. Put together a test fixture for semantic checking, spend the minimum amount
-    of time on it.
-   
 12. IMPORTANT : Wildcard mode types placed on unannotated types need to create a wildcard mode type 
     FOR EACH mode type varaible of the base type.
-
-13. IMPORTANT : Properly connect wildcard resolution to a lookup in an mcase (we need to know it is
-    a wildcard, but can't return -1).
-
-14. In addition to mcase resolve issue, figure out the right way to return an mcase type from a method...
-    - public mcase<int> m1() ... instead of public int m1()
 
 15. Look further into the way mode types are created and built (the partial ordering). Not very
     object oriented right now, could be cleaned up a little. This will end up being fixed when
