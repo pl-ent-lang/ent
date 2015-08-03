@@ -7,7 +7,7 @@ The repository contains the following tags in comments:
   - Come back later to investigate.
 - NOTE
   - Anything special that needed to be pointed out in the code. 
-- MODE_NOTE
+- MODE-NOTE
   - Point in the code where we allow Types to equal ModeSubstTypes. Special tag to investigate that relationship later.
 - OPTIMIZATION
   - Some kind of permanent or temporary optimization done on the compiler or generated code.
