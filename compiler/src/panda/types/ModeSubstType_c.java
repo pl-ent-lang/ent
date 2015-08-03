@@ -179,7 +179,7 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
     return this.baseType.isUncheckedException();
   }
 
-  // MODE_NOTE: It was an oversight to not inject a mode
+  // MODE-NOTE: It was an oversight to not inject a mode
   // subst type for these methods.
   @Override
   public ClassType toClass() {
@@ -251,7 +251,7 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
     return true;
   } 
 
-  // MODE_NOTE:
+  // MODE-NOTE:
   // hashCode and equalsImpl are very tricky right now.
   // if we take the approach of stripping mode types when comparing
   // to non mode type substituted types then we have to loosen what

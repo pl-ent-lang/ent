@@ -54,7 +54,7 @@ public class PandaMethodInstance_c extends JL5MethodInstance_c implements PandaM
     this.baseInstance = baseInstance;
   }
 
-  // MODE_NOTE: Needed to do this here to switch...
+  // MODE-NOTE: Needed to do this here to switch...
   // if (!ts.equals( 
   // to
   // if (!ts.typeEquals(

@@ -27,7 +27,7 @@ public class PandaLocalDeclExt extends PandaExt {
     LocalDecl n = (LocalDecl) this.node();
     PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
 
-    // MODE_NOTE: Kicking up to superLang() if not a mode subst type
+    // MODE-NOTE: Kicking up to superLang() if not a mode subst type
     if (!(n.type().type() instanceof ModeSubstType)) {
       return superLang().typeCheck(n, tc);
     }

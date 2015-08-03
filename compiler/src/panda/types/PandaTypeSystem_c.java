@@ -277,7 +277,7 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
         // This is a mode type var that is part of our inference, so infer it
         ModeTypeVariable mtVar = (ModeTypeVariable) t;
 
-        // MODE_NOTE: If the actual type is not a mode subst type, throw in
+        // MODE-NOTE: If the actual type is not a mode subst type, throw in
         // wildcard for now.
         Type infT = null;
         if (actT instanceof ModeSubstType) {
@@ -414,7 +414,7 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
                                         Type expectedReturnType) {
 
     if (!(mi.container() instanceof ModeSubstType)) {
-      // MODE_NOTE : Need to return to address this. ModeSubstType/Type issue.
+      // MODE-NOTE : Need to return to address this. ModeSubstType/Type issue.
       // Should the container always be a ModeSubstType?
       return super.callValid(mi, argTypes, actualTypeArgs, expectedReturnType);
     } 
@@ -452,7 +452,7 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
                                            List<? extends ReferenceType> actualTypeArgs,
                                            Type expectedReturnType) { 
     if (!(mi.container() instanceof ModeSubstType)) {
-      // MODE_NOTE : Need to return to address this. ModeSubstType/Type issue.
+      // MODE-NOTE : Need to return to address this. ModeSubstType/Type issue.
       // Should the container always be a ModeSubstType?
       return super.methodCallValid(mi, name, argTypes, actualTypeArgs, expectedReturnType);
     }
@@ -549,7 +549,7 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
     return new PandaInferenceSolver_c(pi, argTypes, this);
   }
 
-  // MODE_NOTE: We need to figure out what a generic supertype of a mode subst
+  // MODE-NOTE: We need to figure out what a generic supertype of a mode subst
   // type is.
   @Override
   public JL5SubstClassType findGenericSupertype(JL5ParsedClassType base, ReferenceType sub) {

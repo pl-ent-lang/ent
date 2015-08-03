@@ -160,7 +160,7 @@ public class ModeSubstDiamondType_c extends ModeSubstClassType_c implements Mode
   @Override
   public LinkedList<Type> isImplicitCastValidChainImpl(Type toT) {
     PandaTypeSystem ts = (PandaTypeSystem) this.ts;
-    // MODE_NOTE: This breaks out of our mode subst types
+    // MODE-NOTE: This breaks out of our mode subst types
     return ts.isImplicitCastValidChain(this.inferred(), toT);
   }
 
