@@ -90,12 +90,12 @@ public class ModeValue_c extends Lit_c implements ModeValue {
     return this.type(ts.createModeValueType(this.modeTypeNode().type()));
   }
 
-  // TODO : Relaxing the restriction for ease implementation of Snapshot. Need to
-  // revisit this.
   @Override
   public Node typeCheck(TypeChecker tc) throws SemanticException {
-    // TODO : Add in a restriction to keep this inside attribute and snapshot only
-    //
+    // TODO : Add in a restriction to prevent ModeValues from being used in invalid
+    // contexts. ModeValues should be allowed inside an attributor and snapshot bounds
+    // only.
+
     Context ctx = tc.context();
     PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
 

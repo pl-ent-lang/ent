@@ -65,9 +65,6 @@ public class ModeOrder_c extends Term_c implements ModeOrder {
   }
 
   // Term Methods
-  
-  // TODO : firstChild & acceptCFG not needed to visit the Id's
-  // makes me think this shouldn't be a term.
   @Override
   public Term firstChild() {
     return null;
@@ -75,8 +72,6 @@ public class ModeOrder_c extends Term_c implements ModeOrder {
 
   @Override
   public <T> List<T> acceptCFG(CFGBuilder<?> v, List<T> succs) {
-    // TODO : I'll need to figure out exactly how the CFG visit
-    // works
     return succs;
   }
 

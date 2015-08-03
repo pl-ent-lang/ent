@@ -414,7 +414,8 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
                                         Type expectedReturnType) {
 
     if (!(mi.container() instanceof ModeSubstType)) {
-      // TODO : Just kick up to parent for now
+      // MODE_NOTE : Need to return to address this. ModeSubstType/Type issue.
+      // Should the container always be a ModeSubstType?
       return super.callValid(mi, argTypes, actualTypeArgs, expectedReturnType);
     } 
 
@@ -451,7 +452,8 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
                                            List<? extends ReferenceType> actualTypeArgs,
                                            Type expectedReturnType) { 
     if (!(mi.container() instanceof ModeSubstType)) {
-      // TODO : Just kick up to parent for now
+      // MODE_NOTE : Need to return to address this. ModeSubstType/Type issue.
+      // Should the container always be a ModeSubstType?
       return super.methodCallValid(mi, name, argTypes, actualTypeArgs, expectedReturnType);
     }
 
@@ -507,9 +509,9 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
       throw new InternalCompilerError("Can only create a raw class with a parameterized class");
     }
 
-    // TODO : I do not like putting the mode subst logic here for raw class types
-    // but they are created not from walking the AST with a TypeNode but instead
-    // through the type systems after a JL5SubstClassType has been created
+    // The ModeSubstType creation for RawClasses is here because a RawClass
+    // is created not from walking the AST with a TypeNode but instead
+    // through the type systems after a JL5SubstClassType has been created.
     if (base instanceof ModeSubstParsedClassType) {
       ModeSubstParsedClassType st = (ModeSubstParsedClassType) base;
       PandaRawClass_c rc = 

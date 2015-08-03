@@ -237,7 +237,7 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
     return this.baseType.arrayOf(dims);
   }
 
-  // TODO: Aux method, if you get the ModeSubst object workign better this should
+  // OPTIMIZATION-TODO : Aux method, if you get the ModeSubst object workign better this should
   // be a constant compare (intern substs);
   protected boolean modeTypeArgsEquals(ModeSubstType ot) {
     if (this.modeTypeArgs().size() != ot.modeTypeArgs().size()) {
