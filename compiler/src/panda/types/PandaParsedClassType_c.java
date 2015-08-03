@@ -15,6 +15,8 @@ public class PandaParsedClassType_c extends JL5ParsedClassType_c implements Pand
   private AttributeInstance attributeInstance;
   private CopyInstance copyInstance;
   private boolean isImplicitModeTypeVar = true;
+  private boolean needsAttribute;
+  private boolean hasMcaseFields;
 
   public PandaParsedClassType_c(PandaTypeSystem ts,
                                 LazyClassInitializer init, 
@@ -69,6 +71,22 @@ public class PandaParsedClassType_c extends JL5ParsedClassType_c implements Pand
 
   public boolean hasCopy() {
     return (this.copyInstance() != null);
+  }
+
+  public boolean needsAttribute() {
+    return this.needsAttribute;
+  }
+
+  public void needsAttribute(boolean needsAttribute) {
+    this.needsAttribute = needsAttribute;
+  }
+
+  public boolean hasMcaseFields() {
+    return this.hasMcaseFields;
+  }
+
+  public void hasMcaseFields(boolean hasMcaseFields) {
+    this.hasMcaseFields = hasMcaseFields;
   }
 
 }

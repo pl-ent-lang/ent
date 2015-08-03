@@ -31,14 +31,23 @@ public class ModeSubstNullType_c extends ModeSubstType_c implements ModeSubstNul
   } 
 
   @Override
+  public boolean typeEqualsImpl(Type ansT) {
+    if (!(ansT instanceof ModeSubstType)) {
+      return this.ts.descendsFrom(this.baseType(), ansT);
+    }
+
+    ModeSubstType st = (ModeSubstType) ansT;
+    return this.ts.descendsFrom(this.baseType(), st.baseType());
+  }
+
+  @Override
   public boolean descendsFromImpl(Type ansT) {
     if (!(ansT instanceof ModeSubstType)) {
       return this.ts.descendsFrom(this.baseType(), ansT);
     }
 
     ModeSubstType st = (ModeSubstType) ansT;
-    return this.ts.descendsFrom(this.baseType(), st.baseType()) &&
-           this.modeTypeArgsEquals(st);
+    return this.ts.descendsFrom(this.baseType(), st.baseType());
   }
 
   @Override
@@ -48,8 +57,7 @@ public class ModeSubstNullType_c extends ModeSubstType_c implements ModeSubstNul
     } 
 
     ModeSubstType st = (ModeSubstType) toT;
-    return this.ts.isCastValid(this.baseType(), st.baseType()) &&
-           this.modeTypeArgsEquals(st);
+    return this.ts.isCastValid(this.baseType(), st.baseType());
   }
 
   @Override
@@ -59,8 +67,7 @@ public class ModeSubstNullType_c extends ModeSubstType_c implements ModeSubstNul
     } 
 
     ModeSubstType st = (ModeSubstType) toT;
-    return this.ts.isImplicitCastValid(this.baseType(), st.baseType()) &&
-           this.modeTypeArgsEquals(st);
+    return this.ts.isImplicitCastValid(this.baseType(), st.baseType());
   }
 
 

@@ -16,8 +16,12 @@ public class Mcase@mode<X> {
     high: "high";
   };
 
-  public mcase<int> getF1() {
+  public int getF1() {
     return this.f1;
+  }
+
+  attribute {
+    return @mode<high>;
   }
 
   // Issue with Mcase
@@ -30,6 +34,7 @@ public class Mcase@mode<X> {
   //
   //    Loosen to method call returns, 
 
+  /*
   public Mcase() {
     this.f1 = mcase<int> {
       low: 1;
@@ -39,6 +44,7 @@ public class Mcase@mode<X> {
     int x = this.f1;
   }
 
+
   public void internal() {
     int x = this.f1;
     int y = f1;
@@ -47,13 +53,12 @@ public class Mcase@mode<X> {
     String sy = f2;
 
   }
+  */
 
   public static void main(String[] args) {
-    Mcase@mode<high> m1 = new Mcase@mode<high>();
+    Mcase@mode<?> m1 = new Mcase@mode<?>();
+    Mcase@mode<*> m2 = snapshot m1 ?mode[@mode<low>, @mode<high>];
 
-    int x = m1.f1;
-    String sx = m1.f2;
-
-    int x = m1.getF1();
+    System.out.println("Getting: " +  m2.getF1());
   }
 }

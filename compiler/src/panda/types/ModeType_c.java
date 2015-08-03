@@ -11,14 +11,12 @@ public class ModeType_c extends Type_c implements ModeType {
   protected String name;
 
   private int uniqueId;
-  private static int uniqueIdGen = PANDA_Modes.FREE_MODE;
 
   protected Type superType;
   protected Type subType;
 
   public ModeType_c(PandaTypeSystem ts, String name) {
     super(ts);
-    this.uniqueId = ModeType_c.uniqueIdGen++;
     this.name = name;
   }
 
@@ -48,6 +46,10 @@ public class ModeType_c extends Type_c implements ModeType {
 
   public int uniqueId() {
     return this.uniqueId;
+  }
+
+  public void uniqueId(int uniqueId) {
+    this.uniqueId = uniqueId;
   }
 
   public String compileId() {

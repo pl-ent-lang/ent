@@ -39,7 +39,12 @@ public class PandaBuilder {
     }
   }
 
-  public Node buildNewArray(ExtensionInfo extInfo, ExtensionInfo outInfo, String base, int dims, List<Expr> initExprs) {
+  public Node buildNewArray(
+      ExtensionInfo extInfo, 
+      ExtensionInfo outInfo, 
+      String base, 
+      int dims, 
+      List<Expr> initExprs) {
     NodeFactory nf = outInfo.nodeFactory();
     TypeSystem ts = outInfo.typeSystem();
 
@@ -158,6 +163,149 @@ public class PandaBuilder {
       throw new InternalCompilerError("Fatal, failed to get a file object for " + fullName + "!");
     }
     return source;
+  }
+
+  public New buildPandaClosure(
+      ExtensionInfo extInfo, 
+      ExtensionInfo outInfo, 
+      List<ModeTypeVariable> capturedMtArgs, 
+      Map<ModeTypeVariable, Type> mtEnv, 
+      Context ctx) {
+    return 
+      this.buildPandaClosure(
+        extInfo.nodeFactory(), 
+        outInfo.typeSystem(), 
+        capturedMtArgs, 
+        mtEnv, 
+        ctx
+        );
+  }
+
+  public New buildPandaClosure(
+      NodeFactory nf, 
+      TypeSystem toTs, 
+      List<ModeTypeVariable> capturedMtArgs, 
+      Map<ModeTypeVariable, Type> mtEnv, 
+      Context ctx) {
+    // 1.1. Capture the inferred method mode type variables.
+    List<Expr> closElems = new ArrayList<>();
+    for (ModeTypeVariable v : capturedMtArgs) {
+      ModeType mt = (ModeType) mtEnv.get(v);
+      closElems.add(mt.rewriteForLookup(nf, toTs, ctx));
+    }
+
+    // 1.2. Build the closure expression
+    List<Expr> closInit = new ArrayList<>();
+    closInit.add(
+      nf.NewArray(
+        Position.COMPILER_GENERATED,
+        nf.AmbTypeNode(
+          Position.COMPILER_GENERATED,
+          nf.Id(
+            Position.COMPILER_GENERATED,
+            "Integer"
+            )
+          ),
+        1,
+        nf.ArrayInit(
+          Position.COMPILER_GENERATED,
+          closElems
+          )
+        )
+      );
+
+    New n = 
+      nf.New(
+        Position.COMPILER_GENERATED,
+        nf.AmbTypeNode(
+          Position.COMPILER_GENERATED,
+          nf.Id(
+            Position.COMPILER_GENERATED,
+            "PANDA_Closure"
+            )
+          ),
+        closInit
+        );
+
+    return n;
+  }
+
+  public Call buildModeTableObject(
+      ExtensionInfo extInfo, 
+      ExtensionInfo outInfo, 
+      New newCall, 
+      List<Type> mtArgs, 
+      Context ctx) {
+    return 
+      this.buildModeTableObject(
+        extInfo.nodeFactory(), 
+        outInfo.typeSystem(), 
+        newCall, 
+        mtArgs, 
+        ctx
+        );
+  }
+
+  public Call buildModeTableObject(
+      NodeFactory nf, 
+      TypeSystem toTs, 
+      New newCall, 
+      List<Type> mtArgs, 
+      Context ctx) {
+    List<Expr> preservedTypes = new ArrayList<>();
+    for (Type t : mtArgs) {
+      ModeType mt = (ModeType) t;
+      preservedTypes.add(mt.rewriteForLookup(nf, toTs, ctx));
+    }
+
+    Call c =
+      nf.Call(
+        Position.COMPILER_GENERATED,
+        nf.AmbTypeNode(
+          Position.COMPILER_GENERATED,
+          nf.Id(
+            Position.COMPILER_GENERATED,
+            "PANDA_Runtime"
+            )
+          ),
+        nf.Id(
+          Position.COMPILER_GENERATED,
+          "putObj"
+          ),
+        newCall,
+        nf.NewArray(
+          Position.COMPILER_GENERATED,
+          nf.AmbTypeNode(
+            Position.COMPILER_GENERATED,
+            nf.Id(
+              Position.COMPILER_GENERATED,
+              "Integer"
+              )
+            ),
+          1,
+          nf.ArrayInit(
+            Position.COMPILER_GENERATED,
+            preservedTypes
+            )
+          )
+        );
+
+    return c;
+  }
+
+  public Cast buildModeTableObjectWithCast(
+      NodeFactory nf, 
+      TypeSystem toTs, 
+      New newCall, 
+      List<Type> mtArgs, 
+      Context ctx) {
+    Cast c =
+      nf.Cast(
+        Position.COMPILER_GENERATED,
+        newCall.objectType(),
+        this.buildModeTableObject(nf, toTs, newCall, mtArgs, ctx)
+      );
+    return c;
   }
 
 }

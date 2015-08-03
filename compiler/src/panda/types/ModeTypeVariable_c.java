@@ -93,7 +93,6 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
     this.declaringProc = declaringProc;
   }
 
-
   public int uniqueId() {
     return this.uniqueId;
   }

@@ -1,5 +1,6 @@
 package panda.ast;
 
+import panda.translate.*;
 import panda.types.*;
 import panda.visit.*;
 
@@ -129,120 +130,60 @@ public class PandaNewExt extends PandaExt implements NewOps {
     return ext.infModeTypes(subst.modeTypeMap());
   }
 
+  public boolean needsPandaClosure() {
+    return this.infModeTypes() != null;
+  }
+  
+  public boolean needsModeTablePreservation(TypePreserver tp) {
+    ModeSubstType st = (ModeSubstType) this.node().type();
+    PandaTypeSystem ts = (PandaTypeSystem) tp.typeSystem();
+    return st.modeType() == ts.DynamicModeType() || 
+           ((PandaClassType) st.baseType()).hasMcaseFields();
+  }
+
   @Override
   public Node typePreserve(TypePreserver tp) {
     New n = this.node();
 
     PandaNodeFactory nf = (PandaNodeFactory) tp.nodeFactory();
+    PandaTypeSystem ts = (PandaTypeSystem) tp.typeSystem();
     Context ctx = tp.context();
 
     if (!(n.type() instanceof ModeSubstType)) {
       return n;
     }
 
-    ModeSubstType st = (ModeSubstType) n.type();
-    PandaClassType ct = (PandaClassType) st.baseType();
-
     // Steps to preserve types
     // 1. Create a PANDA_Closure for method mode type variables
     // 2. Rewrite new A() to new A(new PANDA_Closure()) if non
     // builtin constructor.
     // 3. Rewrite new A() to ((A) PANDA_Runtime.putObj(new A(), constants))
-
-    // 1.1. Capture the inferred variables from the instantiation of the method
-    // mode type variables.
-    PandaProcedureInstance pi = (PandaProcedureInstance) n.procedureInstance();
-
-    if (pi.modeTypeVars().size() != 0) {
-      // 1.1. Capture the inferred method mode type variables.
-      List<Expr> closElems = new ArrayList<>();
-      for (ModeTypeVariable v : pi.modeTypeVars()) {
-        ModeType mt = (ModeType) this.infModeTypes().get(v);
-        closElems.add(mt.rewriteForLookup(nf, tp.toTypeSystem(), ctx));
-      }
-
-      // 1.2. Build the closure expression
-      List<Expr> closInit = new ArrayList<>();
-      closInit.add(
-        nf.NewArray(
-          Position.COMPILER_GENERATED,
-          nf.AmbTypeNode(
-            Position.COMPILER_GENERATED,
-            nf.Id(
-              Position.COMPILER_GENERATED,
-              "Integer"
-              )
-            ),
-          1,
-          nf.ArrayInit(
-            Position.COMPILER_GENERATED,
-            closElems
-            )
-          )
-        );
-
-      // 1.3. Rewrite if non builtin
+    if (this.needsPandaClosure()) {
       List<Expr> args = new ArrayList<>(n.arguments());
       args.add(
-        nf.New(
-          Position.COMPILER_GENERATED,
-          nf.AmbTypeNode(
-            Position.COMPILER_GENERATED,
-            nf.Id(
-              Position.COMPILER_GENERATED,
-              "PANDA_Closure"
-              )
-            ),
-          closInit
+        PandaBuilder.instance().buildPandaClosure(
+          nf,
+          tp.toTypeSystem(),
+          ((PandaProcedureInstance) n.procedureInstance()).modeTypeVars(),
+          this.infModeTypes(),
+          ctx
           )
-        );
+        ); 
       n = n.arguments(args);
     }
 
-    // 2.1. Capure mode type arguments to insert into the mode table.
-    List<Expr> tabElems = new ArrayList<>();
-    for (Type t : ((ModeSubstType) n.type()).modeTypeArgs()) {
-      ModeType mt = (ModeType) t;
-      tabElems.add(mt.rewriteForLookup(nf, tp.toTypeSystem(), ctx));
+    if (this.needsModeTablePreservation(tp)) { 
+      return
+        PandaBuilder.instance().
+          buildModeTableObjectWithCast(
+            nf, 
+            tp.toTypeSystem(), 
+            n, 
+            ((ModeSubstType) n.type()).modeTypeArgs(), 
+            ctx
+            );
+    } else {
+      return n;
     }
-
-    // 2.2. Rewrite to insert the new object into the mode table.
-    Cast c =
-      nf.Cast(
-        Position.COMPILER_GENERATED,
-        n.objectType(),
-        nf.Call(
-          Position.COMPILER_GENERATED,
-          nf.AmbTypeNode(
-            Position.COMPILER_GENERATED,
-            nf.Id(
-              Position.COMPILER_GENERATED,
-              "PANDA_Runtime"
-              )
-            ),
-          nf.Id(
-            Position.COMPILER_GENERATED,
-            "putObj"
-            ),
-          n,
-          nf.NewArray(
-            Position.COMPILER_GENERATED,
-            nf.AmbTypeNode(
-              Position.COMPILER_GENERATED,
-              nf.Id(
-                Position.COMPILER_GENERATED,
-                "Integer"
-                )
-              ),
-            1,
-            nf.ArrayInit(
-              Position.COMPILER_GENERATED,
-              tabElems
-              )
-            )
-          )
-        );
-
-    return c;
   }
 }

@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PANDA_Runtime {
-  private static Map<Object, Integer[]> objTab = new WeakHashMap<>();
-  private static Map<Integer, Integer> modeVarTab = new WeakHashMap<>();
+  private static Map<Object, Integer[]> objTab = new HashMap<>();
+  private static Map<Integer, Integer> modeVarTab = new HashMap<>();
 
   // For performance analysis
   private static int numGetObjModeCalls = 0;
@@ -67,8 +67,6 @@ public class PANDA_Runtime {
     System.out.println("----- Table -----");
     System.out.println("Table Size: " + PANDA_Runtime.objTab.size());
     System.out.println("-----------------\n");
-
-    System.exit(1);
   }
 
 

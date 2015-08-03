@@ -1,6 +1,7 @@
 package panda.types;
 
 import panda.ast.*;
+import panda.runtime.*;
 import polyglot.types.Package;
 import panda.types.reflect.*;
 import panda.types.inference.*;
@@ -40,8 +41,11 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
   public PandaTypeSystem_c() {
     // Setup both the bottom and dynamic mode type instances
     this.BottomModeType = this.createModeType("_");
+    this.BottomModeType.uniqueId(PANDA_Modes.FREE_MODE);
     this.WildcardModeType = this.createModeType("*");
+    this.WildcardModeType.uniqueId(PANDA_Modes.WILDCARD_MODE);
     this.DynamicModeType = this.createModeType("?");
+    this.DynamicModeType.uniqueId(PANDA_Modes.DYNAMIC_MODE);
   } 
 
   // Property Methods
@@ -641,7 +645,20 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
     }
   } 
 
-
+  @Override
+  public void checkClassConformance(ClassType ct) throws SemanticException {
+    PandaClassType pct = (PandaClassType) ct;
+    List<ReferenceType> superInterfaces = abstractSuperInterfaces(ct);
+    for (ReferenceType rt : superInterfaces) {
+      if (this.typeEquals(pct, rt)) {
+        continue;
+      }
+      if (((PandaClassType) rt).needsAttribute() && pct.attributeInstance() == null) {
+        throw new SemanticException(rt + " requires an attributor. " + ct + " must implement an attributor.");
+      }
+    }
+    super.checkClassConformance(ct);
+  }
 
   // Panda TypeSystem Methods
 

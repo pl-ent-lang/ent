@@ -18,4 +18,10 @@ public interface PandaClassType extends JL5ClassType {
   CopyInstance copyInstance();
   void copyInstance(CopyInstance ci);
   boolean hasCopy();
+
+  boolean needsAttribute();
+  void needsAttribute(boolean needsAttribute);
+
+  boolean hasMcaseFields();
+  public void hasMcaseFields(boolean hasMcaseFields);
 }

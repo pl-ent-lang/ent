@@ -66,9 +66,16 @@ public class ModeOrderingInstance_c extends TypeObject_c implements ModeOrdering
     ModeType iter = ts.BottomModeType();
     ModeType last = null;
 
+    int uniqueId = 0;
+    
+    // Set a uniqueId for each mode for compilation
     while(iter != null) {
       if (visited.get(iter)) {
         throw new SemanticException("Modes do not form a partial ordering!");
+      }
+
+      if (iter != ts.BottomModeType() && iter != ts.DynamicModeType()) {
+        iter.uniqueId(uniqueId++);
       }
 
       visited.put(iter, true);

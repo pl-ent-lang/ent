@@ -2,6 +2,7 @@ package panda.ast;
 
 import panda.types.*;
 import panda.visit.*;
+import panda.translate.*;
 
 
 import polyglot.ast.*;
@@ -139,60 +140,29 @@ public class PandaCallExt extends PandaExt {
     return ext.infModeTypes(subst.modeTypeMap());
   }
 
+  public boolean needsPandaClosure() {
+    return this.infModeTypes() != null;
+  }
+
   @Override
   public Node typePreserve(TypePreserver tp) {
     Call n = (Call) this.node();
 
-    if (this.infModeTypes() == null) {
-      return n;
-    }
-
-    PandaNodeFactory nf = (PandaNodeFactory) tp.nodeFactory();
-    Context c = tp.context();
-
-    PandaProcedureInstance pi = (PandaProcedureInstance) n.procedureInstance();
-    List<Expr> elems = new ArrayList<>();
-    for (ModeTypeVariable v : pi.modeTypeVars()) {
-      ModeType mt = (ModeType) this.infModeTypes().get(v);
-      elems.add(mt.rewriteForLookup(nf, tp.toTypeSystem(), c));
-    }
-
-    List<Expr> closInit = new ArrayList<>();
-    closInit.add(
-      nf.NewArray(
-        Position.COMPILER_GENERATED,
-        nf.AmbTypeNode(
-          Position.COMPILER_GENERATED,
-          nf.Id(
-            Position.COMPILER_GENERATED,
-            "Integer"
-            )
-          ),
-        1,
-        nf.ArrayInit(
-          Position.COMPILER_GENERATED,
-          elems
+    if (this.needsPandaClosure()) {
+      List<Expr> args = new ArrayList<>(n.arguments());
+      args.add(
+        PandaBuilder.instance().buildPandaClosure(
+          tp.nodeFactory(),
+          tp.toTypeSystem(),
+          ((PandaProcedureInstance) n.procedureInstance()).modeTypeVars(),
+          this.infModeTypes(),
+          tp.context()
           )
-        )
-      );
+        ); 
+      n = (Call) n.arguments(args);
+    }
 
-    Expr larg =
-      nf.New(
-        Position.COMPILER_GENERATED,
-        nf.AmbTypeNode(
-          Position.COMPILER_GENERATED,
-          nf.Id(
-            Position.COMPILER_GENERATED,
-            "PANDA_Closure"
-            )
-          ),
-        closInit
-        );
-
-    List<Expr> args = new ArrayList<>(n.arguments());
-    args.add(larg);
-
-    return n.arguments(args);
+    return n;
   }
 
 

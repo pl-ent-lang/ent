@@ -15,6 +15,7 @@ public interface ModeType extends Type {
   void subType(Type subType);
 
   int uniqueId();
+  void uniqueId(int uniqueId);
 
   String compileId(); 
   String compileExpr();

@@ -119,6 +119,14 @@ public class AmbModeTypeInstantiation_c extends ModeTypeNode_c implements AmbMod
       return false;
     }
     PandaClassType ct = (PandaClassType) bt;
+
+    // If the class is an interface, flag that all who implement must
+    // have an attributor.
+    if (ct.flags().isInterface()) {
+      ct.needsAttribute(true);
+      return true;
+    }
+
     return ct.attributeInstance() != null;
   }
 

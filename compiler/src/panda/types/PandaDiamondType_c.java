@@ -50,5 +50,20 @@ public class PandaDiamondType_c extends DiamondType_c implements PandaDiamondTyp
     return ((PandaParsedClassType) this.base).hasCopy();
   }
 
+  public boolean needsAttribute() {
+    return ((PandaParsedClassType) this.base).needsAttribute();
+  }
+
+  public void needsAttribute(boolean needsAttribute) {
+    ((PandaParsedClassType) this.base).needsAttribute(needsAttribute);
+  } 
+
+  public boolean hasMcaseFields() {
+    return ((PandaClassType) this.base).hasMcaseFields();
+  } 
+
+  public void hasMcaseFields(boolean hasMcaseFields) {
+    ((PandaClassType) this.base).hasMcaseFields(hasMcaseFields);
+  } 
 
 }
