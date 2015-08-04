@@ -2,7 +2,7 @@ package simple_panda;
 
 modes { low <: mid; mid <: high; high <: veryHigh; }
 
-public class Dynamic@mode<X <= high, Y <= X> {
+public class Dynamic@mode<X, Y <= X> {
   private boolean choice;
 
   attribute {
@@ -23,6 +23,10 @@ public class Dynamic@mode<X <= high, Y <= X> {
 
   public void internal() {
     Dynamic@mode<X,Y> dc = new Dynamic@mode<X,Y>();
+  }
+
+  public void internal2(Dynamic@mode<?,Y> d1) {
+    Dynamic@mode<*,Y> d2 = snapshot d1 ?mode[@mode<low>, @mode<X>];
   }
 
   public static void main(String[] args) {

@@ -6,3 +6,6 @@
 15. Look further into the way mode types are created and built (the partial ordering). Not very
     object oriented right now, could be cleaned up a little. This will end up being fixed when
     PandaMode.java is addressed (to properly communicate with the runtime).
+
+16. The way preservation is checked on PandaClassTypes is not very object oriented. Probably should
+    fix this.

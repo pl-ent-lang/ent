@@ -138,6 +138,12 @@ public class ModeType_c extends Type_c implements ModeType {
   }
 
   @Override
+  public boolean isImplicitCastValidImpl(Type o) {
+    return ts.typeEquals(this, o);
+  }
+
+
+  @Override
   public Expr rewriteForLookup(NodeFactory nf, TypeSystem ts, Context c) {
     PandaTypeSystem fromTs = (PandaTypeSystem) this.typeSystem();
     Receiver recv = null;

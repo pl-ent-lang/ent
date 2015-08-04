@@ -197,12 +197,6 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
       return this.isSubtype(l, ((ModeTypeVariable) u).lowerBound());
     }
 
-    /*
-    if (this.isSpecialModeSubstCase(l, u)) {
-      return this.descendsFrom(l, ((ModeSubstType) u).baseType());
-    }
-    */
-
     return false;
   }
 
@@ -237,11 +231,9 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
       return true;
     }
 
-    /*
-    if (this.isSpecialModeSubstCase(l, u)) {
-      return this.isImplicitCastValid(l, ((ModeSubstType) u).baseType());
+    if (u instanceof ModeTypeVariable) {
+      return this.isImplicitCastValid(l, ((ModeTypeVariable) u).lowerBound());
     }
-    */
 
     return false;
   }

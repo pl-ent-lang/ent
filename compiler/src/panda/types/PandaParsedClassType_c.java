@@ -17,6 +17,7 @@ public class PandaParsedClassType_c extends JL5ParsedClassType_c implements Pand
   private boolean isImplicitModeTypeVar = true;
   private boolean needsAttribute;
   private boolean hasMcaseFields;
+  private boolean instancesNeedTypePreservation;
 
   public PandaParsedClassType_c(PandaTypeSystem ts,
                                 LazyClassInitializer init, 
@@ -87,6 +88,26 @@ public class PandaParsedClassType_c extends JL5ParsedClassType_c implements Pand
 
   public void hasMcaseFields(boolean hasMcaseFields) {
     this.hasMcaseFields = hasMcaseFields;
+  }
+
+  public boolean containsModeTypeVariable(ModeTypeVariable mt) {
+    // TODO : This needs to be fixed to properly handle super types
+    // and member classes. Also, it's a O(N) lookup when it could be
+    // O(1), but probably doesn't matter.
+    for (ModeTypeVariable m : this.modeTypeVars()) {
+      if (this.typeSystem().typeEquals(mt, m)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean instancesNeedTypePreservation() {
+    return this.instancesNeedTypePreservation;
+  }
+
+  public void instancesNeedTypePreservation(boolean needs) {
+    this.instancesNeedTypePreservation = needs;
   }
 
 }

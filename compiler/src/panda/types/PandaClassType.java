@@ -24,4 +24,12 @@ public interface PandaClassType extends JL5ClassType {
 
   boolean hasMcaseFields();
   public void hasMcaseFields(boolean hasMcaseFields);
+
+  boolean containsModeTypeVariable(ModeTypeVariable mt);
+
+  void instancesNeedTypePreservation(boolean needs);
+  boolean instancesNeedTypePreservation();
+
+  // TODO : This probably needs to become a little more OO
+  // Something like needsPreservation instead of seperate methods.
 }

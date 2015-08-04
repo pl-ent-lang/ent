@@ -93,6 +93,19 @@ public abstract class ModeSubstClassType_c extends ModeSubstReferenceType_c impl
     ((PandaClassType) this.baseType()).hasMcaseFields(hasMcaseFields);
   } 
 
+  public boolean containsModeTypeVariable(ModeTypeVariable mt) {
+    return ((PandaClassType) this.baseType()).containsModeTypeVariable(mt);
+  }
+
+  public boolean instancesNeedTypePreservation() {
+    return ((PandaClassType) this.baseType()).instancesNeedTypePreservation();
+  }
+
+  public void instancesNeedTypePreservation(boolean needs) {
+    ((PandaClassType) this.baseType()).instancesNeedTypePreservation(needs);
+  }
+
+
   // ClassType Methods
   @Override
   public Resolver resolver() {
@@ -389,7 +402,14 @@ public abstract class ModeSubstClassType_c extends ModeSubstReferenceType_c impl
   @Override
   public boolean isImplicitCastValidImpl(Type toT) {
     if (!toT.isClass()) return false;
-    return this.ts.isSubtype(this, toT);
+
+    if (!(toT instanceof ModeSubstType)) {
+      return this.ts.isImplicitCastValid(this.baseType(), toT);
+    } 
+
+    ModeSubstType st = (ModeSubstType) toT;
+    return this.ts.isSubtype(this.baseType(), st.baseType()) &&
+           this.modeTypeArgsImplicit(st);
   }
 
   @Override
@@ -403,7 +423,9 @@ public abstract class ModeSubstClassType_c extends ModeSubstReferenceType_c impl
     } 
 
     LinkedList<Type> chain = null;
-    if (ts.isSubtype(this, toT)) {
+    ModeSubstType st = (ModeSubstType) toT;
+    if (ts.isSubtype(this.baseType(), st.baseType()) &&
+        this.modeTypeArgsImplicit(st)) {
       chain = new LinkedList<>();
       chain.add(this);
       chain.add(toT);

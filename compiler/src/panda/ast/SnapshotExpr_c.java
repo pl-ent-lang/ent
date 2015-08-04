@@ -93,12 +93,12 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
     return this.type(ts.unknownType(this.position()));
   }
 
-  private Type resolveMode(Type t) {
+  private ModeType resolveMode(Type t) {
     // We could have a mode value, or a mode subst type
     if (t instanceof ModeValueType) {
-      return ((ModeValueType) t).mode(); 
+      return (ModeType) ((ModeValueType) t).mode(); 
     } else if (t instanceof ModeSubstType) {
-      return ((ModeSubstType) t).modeType();
+      return (ModeType) ((ModeSubstType) t).modeType();
     } else {
       System.out.println("ERROR : Bounds of snapshot have not been resolved, " + t);
       System.exit(1);
@@ -106,8 +106,36 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
     }
   }
 
+  private ModeType checkMode(Type t, Context ctx) throws SemanticException {
+    ModeType mt = (ModeType) this.resolveMode(t);
+
+    if (mt instanceof ModeTypeVariable) {
+      ModeTypeVariable mtVar = (ModeTypeVariable) mt;
+      PandaClassType ct = (PandaClassType) ctx.currentClass();
+      // OPTIMIZATION-NOTE : This check lets us use a classes mode type variables inside snapshot
+      // bounds without getting too performance critical. The same idea can be applied to 'this'
+      // inside the bounds. These two are obvious without context sensitive analysis.
+      if (ct.containsModeTypeVariable(mtVar)) {
+        if (ctx.inStaticContext()) {
+          throw new SemanticException("Attempting to use class mode type variable inside a static context.");
+        }
+        ct.instancesNeedTypePreservation(true);
+      }
+    }
+
+    return mt;
+  }
+
   @Override
   public Node typeCheck(TypeChecker tc) throws SemanticException {
+    PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
+
+    // NOTE : Even though it is safe to re-typecheck a SnapshotExpr it
+    // causes extra ModeTypeVariables to be created. This check prevents
+    // that.
+    if (this.type().isCanonical()) {
+      return this;
+    }
 
     Type tt = this.target().type();
 
@@ -116,7 +144,6 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
       System.exit(1);
     }
 
-    PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
     if (((ModeSubstType) tt).modeType() != ts.DynamicModeType()) {
       System.out.println("ERROR : Target type of dynamic mode type (not yet impl)");
       System.exit(1);
@@ -125,8 +152,9 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
     Type lt = this.lower().type();
     Type ut = this.upper().type();
 
-    Type lm = this.resolveMode(lt);
-    Type um = this.resolveMode(ut);
+    Context ctx = tc.context();
+    Type lm = this.checkMode(lt, ctx);
+    Type um = this.checkMode(ut, ctx);
 
     if (!ts.isSubtype(lm,um)) {
       throw new SemanticException("Lower bound must be a submode of upper bound.");
@@ -139,11 +167,22 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
     elm.upperBound(um);
     elm.lowerBound(lm);
 
+
     // We introduce a type variable bounded by the bounds supplied in snapshot
     ModeSubstType ct = ((ModeSubstType) tt).deepCopy();
     ct.modeType(elm);
 
     return this.type(ct);
+  }
+
+  // OPTIMIZATION : Do a quick check. If a mode type variable is one of the classes
+  // mode type variables, preserve instances of the class.
+  public void checkTypePreservation(TypeChecker tc, Type lowMode, Type upMode) {
+    Context ctx = tc.context();
+    if (ctx.inStaticContext()) {
+      return;
+    }
+    PandaClassType ct = (PandaClassType) ctx.currentClass();
   }
 
   @Override 

@@ -65,6 +65,19 @@ public class PandaRawClass_c extends RawClass_c implements PandaRawClass {
     ((PandaParsedClassType) this.base()).hasMcaseFields(hasMcaseFields);
   } 
 
+  public boolean containsModeTypeVariable(ModeTypeVariable mt) {
+    return ((PandaParsedClassType) this.base()).containsModeTypeVariable(mt);
+  }
+
+  public boolean instancesNeedTypePreservation() {
+    return ((PandaParsedClassType) this.base()).instancesNeedTypePreservation();
+  }
+
+  public void instancesNeedTypePreservation(boolean needs) {
+    ((PandaParsedClassType) this.base()).instancesNeedTypePreservation(needs);
+  }
+
+
 
 }
 

@@ -138,7 +138,8 @@ public class PandaNewExt extends PandaExt implements NewOps {
     ModeSubstType st = (ModeSubstType) this.node().type();
     PandaTypeSystem ts = (PandaTypeSystem) tp.typeSystem();
     return st.modeType() == ts.DynamicModeType() || 
-           ((PandaClassType) st.baseType()).hasMcaseFields();
+           ((PandaClassType) st.baseType()).hasMcaseFields() ||
+           ((PandaClassType) st.baseType()).instancesNeedTypePreservation();
   }
 
   @Override

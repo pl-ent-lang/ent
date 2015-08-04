@@ -167,7 +167,7 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
     if (!(o instanceof ModeTypeVariable)) {
       return false;
     } 
-    
+
     ModeTypeVariable tv = (ModeTypeVariable) o;
     return this.uniqueId() == tv.uniqueId();
   }
@@ -179,6 +179,15 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
       return true;
     }
     return ts.isSubtype(this.upperBound(), o);
+  }
+
+  @Override
+  public boolean isImplicitCastValidImpl(Type toType) {
+    PandaTypeSystem ts = (PandaTypeSystem) this.typeSystem();
+    if (ts.typeEquals(this,toType)) {
+      return true;
+    }
+    return ts.isImplicitCastValid(this.upperBound(), toType);
   }
 
   @Override

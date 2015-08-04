@@ -251,6 +251,18 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
     return true;
   } 
 
+  protected boolean modeTypeArgsImplicit(ModeSubstType ot) {
+    if (this.modeTypeArgs().size() != ot.modeTypeArgs().size()) {
+      return false;
+    }
+    for (int i = 0; i < this.modeTypeArgs().size(); ++i) {
+      if (!this.ts.isImplicitCastValid(this.modeTypeArgs().get(i), ot.modeTypeArgs().get(i))) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   // MODE-NOTE:
   // hashCode and equalsImpl are very tricky right now.
   // if we take the approach of stripping mode types when comparing
@@ -334,7 +346,7 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
 
     ModeSubstType st = (ModeSubstType) toT;
     return this.ts.isImplicitCastValid(this.baseType(), st.baseType()) &&
-           this.modeTypeArgsEquals(st);
+           this.modeTypeArgsImplicit(st);
   }
 
   @Override
