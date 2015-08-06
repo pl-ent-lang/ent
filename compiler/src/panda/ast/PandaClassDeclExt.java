@@ -123,10 +123,15 @@ public class PandaClassDeclExt extends PandaExt {
 
     // 1. Generate PANDA_Attributable interface
     List<TypeNode> interfaces = new ArrayList<>(decl.interfaces());
-    if (ct.hasAttribute()) {
+    if (ct.hasAttribute() || ct.needsAttribute()) {
       // 1.1. Generate PANDA_Attributable
       interfaces.add(qq.parseType("PANDA_Attributable")); 
       n = n.interfaces(interfaces);
+    }
+
+    // If we are an interface, we are done.
+    if (n.flags().isInterface()) {
+      return n;
     }
 
     // 2. Generate default constructor if there is not one

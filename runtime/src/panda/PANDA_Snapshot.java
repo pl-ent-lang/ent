@@ -4,7 +4,7 @@ public class PANDA_Snapshot {
   public static int WILDCARD  = 0;
   public static int DYNAMIC   = 0;
 
-  public static <T extends PANDA_Attributable> T snapshot(T o, int lb, int ub) {
+  public static <T extends PANDA_Attributable> T snapshot(T o, int lb, int ub, boolean saveMode) {
     int mode = o.PANDA_attribute();
 
     if (mode < lb && lb != PANDA_Modes.WILDCARD_MODE) {
@@ -16,11 +16,14 @@ public class PANDA_Snapshot {
     }
 
     T copy = (T) o.PANDA_copy();
-    Integer[] cmodes = PANDA_Runtime.getObjAll(o).clone();
-    cmodes[0] = mode;
+    if (saveMode) {
+      Integer[] cmodes = PANDA_Runtime.getObjAll(o).clone();
+      cmodes[0] = mode;
+      PANDA_Runtime.putObj(copy, cmodes);
+    }
 
-    PANDA_Runtime.putObj(copy, cmodes);
     return copy;
   }
+
 
 }

@@ -17,12 +17,14 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
   protected Expr target;
   protected Expr lower;
   protected Expr upper;
+  protected boolean saveMode;
 
-  SnapshotExpr_c(Position pos, Expr target, Expr lower, Expr upper) {
+  SnapshotExpr_c(Position pos, Expr target, Expr lower, Expr upper, boolean saveMode) {
     super(pos);
     this.target = target;
     this.lower = lower;
     this.upper = upper;
+    this.saveMode = saveMode;
   }
 
   // Property Methods
@@ -59,6 +61,21 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
     return n;
   }
 
+  protected boolean saveMode() {
+    return this.saveMode;
+  }
+
+  protected SnapshotExpr saveMode(boolean saveMode) {
+    return this.saveMode(this, saveMode);
+  }
+
+  protected <N extends SnapshotExpr_c> N saveMode(N n, boolean saveMode) {
+    if (this.saveMode() == saveMode) return n;
+    n = this.copyIfNeeded(n);
+    n.saveMode = saveMode;
+    return n;
+  } 
+
   // Node Methods
   protected <N extends SnapshotExpr_c> N reconstruct(N n, Expr target, Expr lower, Expr upper) {
     n = this.target(n, target);
@@ -82,7 +99,8 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
              this.position(), 
              this.target(), 
              this.lower(), 
-             this.upper()
+             this.upper(),
+             this.saveMode()
              );
   }
 
@@ -129,15 +147,16 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
   @Override
   public Node typeCheck(TypeChecker tc) throws SemanticException {
     PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
+    SnapshotExpr_c n = this;
 
     // NOTE : Even though it is safe to re-typecheck a SnapshotExpr it
     // causes extra ModeTypeVariables to be created. This check prevents
     // that.
-    if (this.type().isCanonical()) {
+    if (n.type().isCanonical()) {
       return this;
     }
 
-    Type tt = this.target().type();
+    PandaClassType tt = (PandaClassType) n.target().type();
 
     if (!(tt instanceof ModeSubstType)) {
       System.out.println("ERROR : Target type of snapshot is not a mode subst type");
@@ -149,12 +168,18 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
       System.exit(1);
     }
 
-    Type lt = this.lower().type();
-    Type ut = this.upper().type();
+    // OPTIMIZATION-NOTE : For now, we wont save the resolved object's mode in the table
+    // unless instances needs preservation
+    if (tt.hasMcaseFields() || tt.instancesNeedTypePreservation() || tt.flags().isInterface()) {
+      n = (SnapshotExpr_c) n.saveMode(true);
+    }
+
+    Type lt = n.lower().type();
+    Type ut = n.upper().type();
 
     Context ctx = tc.context();
-    Type lm = this.checkMode(lt, ctx);
-    Type um = this.checkMode(ut, ctx);
+    Type lm = n.checkMode(lt, ctx);
+    Type um = n.checkMode(ut, ctx);
 
     if (!ts.isSubtype(lm,um)) {
       throw new SemanticException("Lower bound must be a submode of upper bound.");
@@ -172,17 +197,7 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
     ModeSubstType ct = ((ModeSubstType) tt).deepCopy();
     ct.modeType(elm);
 
-    return this.type(ct);
-  }
-
-  // OPTIMIZATION : Do a quick check. If a mode type variable is one of the classes
-  // mode type variables, preserve instances of the class.
-  public void checkTypePreservation(TypeChecker tc, Type lowMode, Type upMode) {
-    Context ctx = tc.context();
-    if (ctx.inStaticContext()) {
-      return;
-    }
-    PandaClassType ct = (PandaClassType) ctx.currentClass();
+    return n.type(ct);
   }
 
   @Override 
@@ -223,10 +238,14 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
 
     Expr expr = 
       qq.parseExpr(
-        "PANDA_Snapshot.snapshot(%E, %E, %E)", 
+        "PANDA_Snapshot.snapshot(%E, %E, %E, %E)", 
         target,
         lower,
-        upper
+        upper,
+        nf.BooleanLit(
+          Position.COMPILER_GENERATED,
+          this.saveMode()
+          )
         );
 
     return expr;

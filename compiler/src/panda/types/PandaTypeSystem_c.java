@@ -443,6 +443,7 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
                                            List<? extends Type> argTypes,
                                            List<? extends ReferenceType> actualTypeArgs,
                                            Type expectedReturnType) { 
+
     if (!(mi.container() instanceof ModeSubstType)) {
       // MODE-NOTE : Need to return to address this. ModeSubstType/Type issue.
       // Should the container always be a ModeSubstType?
