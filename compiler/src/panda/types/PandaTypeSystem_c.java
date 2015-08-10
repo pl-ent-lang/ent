@@ -175,6 +175,8 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
       return this.isSubtype(l, ((ModeSubstType) u).baseType());
     }
 
+    // LAST : Compile batik to hit this
+
     if (this.isSpecialModeSubstCase(l, u)) {
       return this.isSubtype(l, ((ModeSubstType) u).baseType());
     }
@@ -655,6 +657,30 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
     super.checkClassConformance(ct);
   }
 
+  @Override
+  public PrimitiveType primitiveTypeOfWrapper(Type l) {
+    if (!(l instanceof ModeSubstType)) {
+      return super.primitiveTypeOfWrapper(l);
+    } 
+
+    ModeSubstType st = (ModeSubstType) l;
+    PrimitiveType pt = super.primitiveTypeOfWrapper(st.baseType());
+    if (pt == null) {
+      return null;
+    }
+    return 
+      (PrimitiveType) 
+        this.createModeSubst(
+          pt, 
+          new ArrayList<Type>(st.modeTypeArgs())
+          );
+  } 
+
+  @Override
+  public LubType lub(Position pos, List<ReferenceType> us) {
+    return new PandaLubType_c(this, pos, us);
+  } 
+  
   // Panda TypeSystem Methods
 
   public AttributeInstance createAttributeInstance(Position pos, 

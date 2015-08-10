@@ -49,6 +49,11 @@ public class ModeSubstPrimitiveType_c extends ModeSubstType_c implements ModeSub
 
   // Type Methods
   @Override
+  public boolean descendsFromImpl(Type ancestor) {
+    return false;
+  }
+
+  @Override
   public boolean isImplicitCastValidImpl(Type toT) {
     if (!(toT instanceof ModeSubstType)) {
       return this.ts.isImplicitCastValid(this.baseType(), toT);
