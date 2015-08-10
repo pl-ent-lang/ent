@@ -139,8 +139,8 @@ public class ModeSubstDiamondType_c extends ModeSubstClassType_c implements Mode
   }
 
   @Override
-  public String name() {
-    String name = ((DiamondType) this.baseType()).name() + "@mode<";
+  public String toString() {
+    String name = ((DiamondType) this.baseType()).toString() + "@mode<";
     for (int i = 0; i < this.modeTypeArgs().size(); ++i) {
       name += this.modeTypeArgs().get(i);
       if (i+1 < this.modeTypeArgs().size()) {

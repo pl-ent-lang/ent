@@ -1,7 +1,5 @@
 package simple;
 
-modes {low <: mid; mid <: high; }
-
 public class Prim {
   // 1. Create public, protected, and private fields for primtive types
   public byte b1 = 1;

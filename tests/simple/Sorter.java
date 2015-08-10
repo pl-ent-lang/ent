@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-modes {low <: mid; mid <: high; }
-
 public class Sorter {
 
   private static <T extends Comparable<T>> void swap(List<T> l, int x, int y) {

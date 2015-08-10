@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-modes {low <: mid; mid <: high; }
-
 public class Mapper<K1,V1> {
   private Map<K1,V1> wrap;
 

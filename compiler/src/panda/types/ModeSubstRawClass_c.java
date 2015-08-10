@@ -69,13 +69,8 @@ public class ModeSubstRawClass_c extends ModeSubstClassType_c implements ModeSub
   }
 
   @Override
-  public String name() {
-    return ((PandaRawClass) this.baseType()).name() + "@mode<" + this.modeType() + ">";
-  }
-
-  @Override
   public String toString() {
-    return this.name();
+    return ((PandaRawClass) this.baseType()).toString() + "@mode<" + this.modeType() + ">";
   }
 
   @Override

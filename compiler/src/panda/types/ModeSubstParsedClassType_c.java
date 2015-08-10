@@ -240,19 +240,6 @@ public class ModeSubstParsedClassType_c extends ModeSubstClassType_c implements 
   }
 
   @Override
-  public String name() {
-    String name = ((PandaParsedClassType) this.baseType()).name() + "@mode<";
-    for (int i = 0; i < this.modeTypeArgs().size(); ++i) {
-      name += this.modeTypeArgs().get(i);
-      if (i+1 < this.modeTypeArgs().size()) {
-        name += ",";
-      }
-    }
-    name += ">";
-    return name;
-  }
-
-  @Override
   public String toString() {
     String name = ((PandaParsedClassType) this.baseType()).toString() + "@mode<";
     for (int i = 0; i < this.modeTypeArgs().size(); ++i) {

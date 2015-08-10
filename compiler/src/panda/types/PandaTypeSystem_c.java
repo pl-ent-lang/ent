@@ -680,7 +680,16 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
   public LubType lub(Position pos, List<ReferenceType> us) {
     return new PandaLubType_c(this, pos, us);
   } 
-  
+
+  @Override
+  public PandaFieldInstance fieldInstance(Position pos,
+          ReferenceType container, Flags flags, Type type, String name) {
+    assert_(container);
+    assert_(type);
+    return new PandaFieldInstance_c(this, pos, container, flags, type, name);
+  }
+
+    
   // Panda TypeSystem Methods
 
   public AttributeInstance createAttributeInstance(Position pos, 

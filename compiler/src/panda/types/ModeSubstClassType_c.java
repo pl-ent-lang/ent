@@ -108,6 +108,16 @@ public abstract class ModeSubstClassType_c extends ModeSubstReferenceType_c impl
 
   // ClassType Methods
   @Override
+  public String name() {
+    return ((PandaClassType) this.baseType()).name();
+  }
+
+  @Override
+  public String fullName() {
+    return ((PandaClassType) this.baseType()).fullName();
+  }
+
+  @Override
   public Resolver resolver() {
     return ((JL5ClassType) this.baseType()).resolver();
   }
@@ -132,12 +142,7 @@ public abstract class ModeSubstClassType_c extends ModeSubstReferenceType_c impl
   public ReferenceType container() {
     return ((JL5ClassType) this.baseType()).container();
   }
-
-  @Override
-  public String fullName() {
-    return ((JL5ClassType) this.baseType()).fullName();
-  }
-
+  
   @Override
   public boolean isTopLevel() {
     return ((JL5ClassType) this.baseType()).isTopLevel();
