@@ -92,6 +92,21 @@ public abstract class PandaProcedureDeclExt extends PandaExt {
     return pd;
   }
 
+  @Override
+  public Node typeCheck(TypeChecker tc) throws SemanticException {
+    ProcedureDecl n = (ProcedureDecl) superLang().typeCheck(this.node(), tc);
+    PandaProcedureDeclExt ext = (PandaProcedureDeclExt) PandaExt.ext(n);
+    for (ModeParamTypeNode m : this.modeParams()) {
+      if (m.isDynRecvr()) {
+        throw new SemanticException(
+          "Method mode type variable cannot be a dynamic reciever.",
+          m.position()
+          );
+      }
+    }
+    return n;
+  }
+
   protected abstract int modeTypeVarStartIndex(PandaProcedureInstance pi);
 
   protected abstract boolean preserveTypes();

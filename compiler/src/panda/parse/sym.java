@@ -58,6 +58,7 @@ public class sym {
   public static final int PRIVATE = 27;
   public static final int CONTINUE = 52;
   public static final int DIV = 65;
+  public static final int RARROW = 121;
   public static final int MODES = 116;
   public static final int GTEQ = 73;
   public static final int EQEQ = 75;
@@ -250,7 +251,8 @@ public class sym {
   "PARORD",
   "SNAPSHOT",
   "MODEBOUND",
-  "MCASE"
+  "MCASE",
+  "RARROW"
   };
 }
 

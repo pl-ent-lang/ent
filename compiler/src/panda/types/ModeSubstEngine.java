@@ -91,10 +91,6 @@ public class ModeSubstEngine {
   } 
 
   public boolean modeSubstSatisfiesConstraints(PandaClassType baseT, List<Type> mtArgs) {
-    // FIXME: Probably shoud move how constraints are satisfied so we can
-    // throw SemanticException.
-    //System.out.format("Checking constraints for %s\n", baseT);
-
     Map<ModeTypeVariable, Type> mtMap = new HashMap<>();
     List<ModeTypeVariable> baseMtVars = baseT.modeTypeVars();
 
@@ -113,13 +109,26 @@ public class ModeSubstEngine {
           bound = mtMap.get(bound);
         }
 
-        if (!this.typeSystem().isSubtype(mtArg, bound) && mtArg != this.typeSystem().DynamicModeType()) {
-          System.out.println("Attempting to subst with " + mtArg + " failing on contraint " + bound);
-          return false;
+        // Strengthing this restriction, can not blindly dump a DynamicModeType, must be a subtype
+        // of constraints
+        //if (!this.typeSystem().isSubtype(mtArg, bound) && mtArg != this.typeSystem().DynamicModeType()) {
+
+        if (this.typeSystem().isSubtype(mtArg, bound)) {
+          continue;
         }
+
+        if (this.typeSystem().DynamicModeType() == mtArg && baseMtVars.get(i).isDynRecvr()) {
+          continue;
+        }
+        
+        return false;
       }
 
-      mtMap.put(baseMtVars.get(i), mtArg);
+      if (!baseMtVars.get(i).isDynRecvr()) {
+        mtMap.put(baseMtVars.get(i), mtArg);
+      } else {
+        mtMap.put(baseMtVars.get(i), baseMtVars.get(i).upperBound());
+      }
     }
     return true;
   }

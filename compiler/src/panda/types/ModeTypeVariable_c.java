@@ -14,6 +14,7 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
   private static int gen = 0;
 
   protected String name;
+  protected boolean isDynRecvr;
   protected List<Type> bounds;
   protected Type upperBound;
   protected Type lowerBound;
@@ -39,6 +40,14 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
 
   public void name(String name) {
     this.name = name;
+  }
+
+  public boolean isDynRecvr() {
+    return this.isDynRecvr;
+  }
+
+  public void isDynRecvr(boolean isDynRecvr) {
+    this.isDynRecvr = isDynRecvr;
   }
 
   public List<Type> bounds() {
@@ -114,9 +123,6 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
       return true;
     }
 
-    // We must be able to unify and select an upper bound
-    // This part is really easy, just select the LUB,
-    // the challenge is making sure subst satisfies constraints
     Type lub = null;
     for (Type m : this.bounds()) {
       if (lub == null) {
@@ -128,7 +134,7 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
         lub = m;
       }
     }
-  
+
     this.upperBound(lub);
     return true;
   }

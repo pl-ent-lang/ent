@@ -289,6 +289,7 @@ terminal Token PARORD;
 terminal Token SNAPSHOT;
 terminal Token MODEBOUND;
 terminal Token MCASE;
+terminal Token RARROW;
 non terminal ModesDecl modes_declaration_opt;
 non terminal ModesDecl modes_declaration;
 non terminal ModeOrder mode_ordering;
@@ -309,6 +310,8 @@ non terminal TypeNode mcase_type;
 non terminal Lit mcase_lit;
 non terminal List mcase_fields;
 non terminal McaseFieldDecl mcase_field;
+non terminal dynamic_mode_recvr_annon;
+non terminal Boolean dynamic_mode_recvr_annon_opt;
 
 
 start with goal;
@@ -2665,17 +2668,24 @@ mode_type_parameters ::=
   
                                                             :};
 
+dynamic_mode_recvr_annon ::=
+    QUESTION RARROW;
+
+dynamic_mode_recvr_annon_opt ::=
+    {:  RESULT = false;  :}
+ |  dynamic_mode_recvr_annon {:  RESULT = true;  :};
+
 mode_type_parameter ::=
-    IDENTIFIER:id {:
-                  
-    RESULT = parser.nf.ModeParamTypeNode(parser.pos(id), parser.nf.Id(parser.pos(id), id.getIdentifier()), null);
+    dynamic_mode_recvr_annon_opt:recvr IDENTIFIER:id {:
+                                                     
+    RESULT = parser.nf.ModeParamTypeNode(parser.pos(id), parser.nf.Id(parser.pos(id), id.getIdentifier()), recvr, null);
   
-                  :}
- |  IDENTIFIER:id LTEQ mode_type_parameter_bounds:b {:
-                                                   
-    RESULT = parser.nf.ModeParamTypeNode(parser.pos(id), parser.nf.Id(parser.pos(id), id.getIdentifier()), b);
+                                                     :}
+ |  dynamic_mode_recvr_annon_opt:recvr IDENTIFIER:id LTEQ mode_type_parameter_bounds:b {:
+                                                                                      
+    RESULT = parser.nf.ModeParamTypeNode(parser.pos(id), parser.nf.Id(parser.pos(id), id.getIdentifier()), recvr, b);
   
-                                                    :};
+                                                                                       :};
 
 mode_type_parameter_bounds ::=
     mode_type_node:n {:

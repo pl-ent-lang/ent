@@ -66,6 +66,10 @@ public class PandaDiamondType_c extends DiamondType_c implements PandaDiamondTyp
     ((PandaClassType) this.base).hasMcaseFields(hasMcaseFields);
   } 
 
+  public boolean hasDynamicRecv() {
+    return ((PandaClassType) this.base).hasDynamicRecv();
+  } 
+
   public boolean containsModeTypeVariable(ModeTypeVariable mt) {
     return ((PandaClassType) this.base()).containsModeTypeVariable(mt);
   }

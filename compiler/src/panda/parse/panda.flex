@@ -438,6 +438,8 @@ OctalEscape = \\ [0-7]
 	  "@mode" { return op(sym.MODE);		  }
 	  "?mode" { return op(sym.MODEBOUND); }
 
+	  "->" { return op(sym.RARROW); }
+
     /* 3.10.1 Integer Literals */
     {OctalNumeral} [lL]          { return long_lit(chop(), 8); }
     {HexNumeral} [lL]            { return long_lit(chop(2,1), 16); }

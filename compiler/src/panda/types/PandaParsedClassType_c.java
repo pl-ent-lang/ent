@@ -33,7 +33,7 @@ public class PandaParsedClassType_c extends JL5ParsedClassType_c implements Pand
       PandaTypeSystem ts = (PandaTypeSystem) this.typeSystem();
       ModeTypeVariable mtv = ts.createModeTypeVariable(this.position(), "_LM");
       if (!mtv.inferUpperBound()) {
-        // Problem
+        // TODO: Problem
       }
       this.modeTypeVars = Arrays.asList(mtv);
       this.isImplicitModeTypeVar = true;
@@ -88,6 +88,11 @@ public class PandaParsedClassType_c extends JL5ParsedClassType_c implements Pand
 
   public void hasMcaseFields(boolean hasMcaseFields) {
     this.hasMcaseFields = hasMcaseFields;
+  }
+
+  public boolean hasDynamicRecv() {
+    return (this.modeTypeVars().size() > 0 && 
+            this.modeTypeVars().get(0).isDynRecvr());
   }
 
   public boolean containsModeTypeVariable(ModeTypeVariable mt) {

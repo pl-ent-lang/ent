@@ -175,8 +175,6 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
       return this.isSubtype(l, ((ModeSubstType) u).baseType());
     }
 
-    // LAST : Compile batik to hit this
-
     if (this.isSpecialModeSubstCase(l, u)) {
       return this.isSubtype(l, ((ModeSubstType) u).baseType());
     }

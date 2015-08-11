@@ -68,6 +68,10 @@ public class PandaSubstClassType_c extends JL5SubstClassType_c implements PandaS
     ((PandaParsedClassType) this.base).hasMcaseFields(hasMcaseFields);
   } 
 
+  public boolean hasDynamicRecv() {
+    return ((PandaParsedClassType) this.base).hasDynamicRecv();
+  } 
+
   public boolean containsModeTypeVariable(ModeTypeVariable mt) {
     return ((PandaParsedClassType) this.base).containsModeTypeVariable(mt);
   }

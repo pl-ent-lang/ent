@@ -2,7 +2,7 @@ package simple_panda;
 
 modes { low <: mid; mid <: high; high <: veryHigh; }
 
-public class Dynamic@mode<X, Y <= X> {
+public class Dynamic@mode<? -> X <= veryHigh, Y <= X> {
   private boolean choice;
 
   attribute {
@@ -21,7 +21,7 @@ public class Dynamic@mode<X, Y <= X> {
     this.choice = choice;
   }
 
-  public void internal() {
+  public @mode<Z> void internal() {
     Dynamic@mode<X,Y> dc = new Dynamic@mode<X,Y>();
   }
 
@@ -43,5 +43,7 @@ public class Dynamic@mode<X, Y <= X> {
     // Uncomment to cause errors
     //Dynamic@mode<mid,high> e1 = new Dynamic@mode<mid,high>();
     //Dynamic@mode<veryHigh,high> e2 = new Dynamic@mode<veryHigh,high>();
+    //Dynamic@mode<?,veryHigh> e3 = new Dynamic@mode<?,veryHigh>(true);
+
   }
 }

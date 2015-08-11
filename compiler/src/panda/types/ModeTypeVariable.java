@@ -11,6 +11,9 @@ public interface ModeTypeVariable extends ModeType {
   String name();
   void name(String name);
 
+  boolean isDynRecvr();
+  void isDynRecvr(boolean isDynRecvr);
+
   List<Type> bounds();
   void bounds(List<Type> bounds);
 

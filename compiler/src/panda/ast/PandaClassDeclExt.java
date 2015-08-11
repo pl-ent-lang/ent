@@ -99,6 +99,40 @@ public class PandaClassDeclExt extends PandaExt {
   } 
 
   @Override
+  public Node typeCheck(TypeChecker tc) throws SemanticException {
+    ClassDecl n = (ClassDecl) superLang().typeCheck(this.node(), tc);
+    PandaClassDeclExt ext = (PandaClassDeclExt) PandaExt.ext(n);
+
+    for (int i = 1; i < ext.modeParams().size(); i++) {
+      ModeParamTypeNode m = ext.modeParams().get(i);
+      ModeTypeVariable mtVar = (ModeTypeVariable) m.type();
+      if (mtVar.isDynRecvr()) {
+        throw new 
+          SemanticException(
+            "Only the first mode type variable may be a dynamic reciever",
+            m.position() 
+            );
+      }
+    }
+
+    PandaParsedClassType ct = (PandaParsedClassType) n.type();
+    if (ct.hasDynamicRecv() && !ct.hasAttribute()) {
+      throw new SemanticException(
+          "Class must define an attributor to receive the dynamic mode type.");
+    }
+
+    if (!ct.hasDynamicRecv() && ct.hasAttribute()) {
+      throw new 
+        SemanticException(
+          "Class must declare a mode type variable with a dynamic mode receiver " +
+          "to implement an attributor."
+          );
+    }
+
+    return n;
+  }
+
+  @Override
   public Node extRewrite(ExtensionRewriter rw) throws SemanticException { 
     PandaRewriter prw = (PandaRewriter) rw;
     JL5NodeFactory nf = (JL5NodeFactory) prw.to_nf();

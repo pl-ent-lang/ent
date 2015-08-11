@@ -127,7 +127,7 @@ public class AmbModeTypeInstantiation_c extends ModeTypeNode_c implements AmbMod
       return true;
     }
 
-    return ct.attributeInstance() != null;
+    return ct.hasDynamicRecv();
   }
 
   @Override
@@ -149,12 +149,17 @@ public class AmbModeTypeInstantiation_c extends ModeTypeNode_c implements AmbMod
     }
 
     if (!this.validModeTypeArgs(mtArgs)) {
-      throw new SemanticException(this.base().type() + " cannot be instantiated with mode type arguments.");
+      throw new SemanticException(
+          this.base().type() + " cannot be instantiated with mode type arguments.");
     }
 
     // Dynamic mode type can only be used on classes that have an attributor
     if (mtArgs.get(0) == ts.DynamicModeType() && !this.validDynamicModeType()) {
-      throw new SemanticException(this.base().type() + " cannot be instantiated with a dynamic mode type. Implement an attributor.");
+      throw new 
+        SemanticException(
+            this.base().type() + " cannot be instantiated with a dynamic mode type." +
+            " Class must declare a mode type variable with a dynamic mode receiver."
+            );
     }
 
     Type st = ts.createModeSubst(this.base().type(), mtArgs);

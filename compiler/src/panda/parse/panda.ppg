@@ -32,6 +32,7 @@ terminal Token PARORD;
 terminal Token SNAPSHOT;
 terminal Token MODEBOUND;
 terminal Token MCASE;
+terminal Token RARROW;
 
 non terminal ModesDecl modes_declaration_opt;
 non terminal ModesDecl modes_declaration;
@@ -61,8 +62,8 @@ non terminal Lit mcase_lit;
 non terminal List mcase_fields;
 non terminal McaseFieldDecl mcase_field;
 
-//precedence left IDENTIFIER;
-//precedence left MODE;
+non terminal dynamic_mode_recvr_annon;
+non terminal Boolean dynamic_mode_recvr_annon_opt;
 
 start with goal;
 
@@ -299,14 +300,23 @@ mode_type_parameters ::=
   :}
 ;
 
+dynamic_mode_recvr_annon ::= QUESTION RARROW ;
+
+dynamic_mode_recvr_annon_opt ::=
+  /* epsilon */
+  {: RESULT = false; :}
+| dynamic_mode_recvr_annon
+  {: RESULT = true; :}
+;
+
 mode_type_parameter ::=
-  IDENTIFIER:id
+  dynamic_mode_recvr_annon_opt:recvr IDENTIFIER:id
   {: 
-    RESULT = parser.nf.ModeParamTypeNode(parser.pos(id), parser.nf.Id(parser.pos(id), id.getIdentifier()), null);
+    RESULT = parser.nf.ModeParamTypeNode(parser.pos(id), parser.nf.Id(parser.pos(id), id.getIdentifier()), recvr, null);
   :}
-| IDENTIFIER:id LTEQ mode_type_parameter_bounds:b
+| dynamic_mode_recvr_annon_opt:recvr IDENTIFIER:id LTEQ mode_type_parameter_bounds:b
   {:
-    RESULT = parser.nf.ModeParamTypeNode(parser.pos(id), parser.nf.Id(parser.pos(id), id.getIdentifier()), b);
+    RESULT = parser.nf.ModeParamTypeNode(parser.pos(id), parser.nf.Id(parser.pos(id), id.getIdentifier()), recvr, b);
   :}
 ;
 
@@ -528,8 +538,6 @@ mcase_field ::=
                                       e);
   :}
 ;
-
-// LAST : Fixing cast_expression for mode subst type
 
 override cast_expression ::=
   LPAREN:a primitive_type:b dims_opt:c RPAREN unary_expression:e

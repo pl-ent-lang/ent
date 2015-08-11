@@ -16,16 +16,26 @@ public class ModeParamTypeNode_c extends TypeNode_c implements ModeParamTypeNode
 
   protected Id id;
   protected List<ModeTypeNode> bounds;
+  protected boolean isDynRecvr;
 
-  public ModeParamTypeNode_c(Position pos, Id id, List<ModeTypeNode> bounds) {
+  public ModeParamTypeNode_c(
+      Position pos, 
+      Id id, 
+      boolean isDynRecvr,
+      List<ModeTypeNode> bounds) {
     super(pos);
     this.id = id;
+    this.isDynRecvr = isDynRecvr;
     this.bounds = CollectionUtil.nonNullList(bounds);
   }
 
   // Property Methods
   public Id id() {
     return this.id;
+  }
+
+  public boolean isDynRecvr() {
+    return this.isDynRecvr;
   }
 
   public List<ModeTypeNode> bounds() {
@@ -62,6 +72,7 @@ public class ModeParamTypeNode_c extends TypeNode_c implements ModeParamTypeNode
     return pnf.ModeParamTypeNode(
                 this.position(), 
                 this.id(), 
+                this.isDynRecvr(),
                 ListUtil.copy(this.bounds(), true)
                 );
   }
@@ -75,18 +86,37 @@ public class ModeParamTypeNode_c extends TypeNode_c implements ModeParamTypeNode
     return this.type(mtVar);
   }
 
+  // LAST 
+
+
+  // Possible params
+  // ? -> X <= high, Y <= ?
+
   @Override
   public Node disambiguate(AmbiguityRemover sc) throws SemanticException {
+    ModeTypeVariable mtVar = (ModeTypeVariable) this.type();
+    PandaTypeSystem ts = (PandaTypeSystem) sc.typeSystem();
+
+    if (this.isDynRecvr()) {
+      mtVar.isDynRecvr(true);
+    }
+
     List<Type> boundTypes = new ArrayList<Type>();
     for (ModeTypeNode tn : this.bounds()) {
       boundTypes.add(tn.type());
     }
-    ModeTypeVariable t = (ModeTypeVariable) this.type();
-    t.bounds(boundTypes);
+    mtVar.bounds(boundTypes);
 
-    if (!t.inferUpperBound()) {
-      throw new SemanticException("Unable to infer upper bound for mode type variable");
+    if (!mtVar.inferUpperBound()) {
+      throw new SemanticException(
+          "Unable to infer upper bound for mode type variable");
     }
+
+    if (mtVar.upperBound() == ts.DynamicModeType() && mtVar.isDynRecvr()) {
+      throw new SemanticException(
+          "Mode type variable cannot be a dynamic reciever with a dynamic mode upper bound.");
+    }
+
 
     return super.disambiguate(sc);
   }

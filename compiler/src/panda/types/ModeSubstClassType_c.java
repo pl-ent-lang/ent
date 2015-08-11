@@ -93,6 +93,10 @@ public abstract class ModeSubstClassType_c extends ModeSubstReferenceType_c impl
     ((PandaClassType) this.baseType()).hasMcaseFields(hasMcaseFields);
   } 
 
+  public boolean hasDynamicRecv() {
+    return ((PandaClassType) this.baseType()).hasDynamicRecv();
+  } 
+
   public boolean containsModeTypeVariable(ModeTypeVariable mt) {
     return ((PandaClassType) this.baseType()).containsModeTypeVariable(mt);
   }

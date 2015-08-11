@@ -77,7 +77,7 @@ public interface PandaNodeFactory extends JL7NodeFactory {
 
   ModesDecl ModesDecl(Position pos, List<ModeOrder> orders);
 
-  ModeParamTypeNode ModeParamTypeNode(Position pos, Id id, List<ModeTypeNode> bounds);
+  ModeParamTypeNode ModeParamTypeNode(Position pos, Id id, boolean isDynRecv, List<ModeTypeNode> bounds);
   
   ModeTypeNode ModeTypeNode(Position pos, String name);
 
