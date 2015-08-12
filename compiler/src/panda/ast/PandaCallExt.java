@@ -105,12 +105,9 @@ public class PandaCallExt extends PandaExt {
 
     // Disallow dynamic type seperately for better diagnostics
     ModeSubstType mt = (ModeSubstType) t;
-    // TODO : Disabling the requirement that a ? must be resolved. Part of case study.
-    /*
     if (mt.modeType() == ts.DynamicModeType()) {
       throw new SemanticException("Dynamic mode type cannot receive messages. Resolve using snapshot.");
     }
-    */
 
     if (ctx.inStaticContext()) {
       // Kick up to super lang for now

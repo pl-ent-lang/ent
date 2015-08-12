@@ -113,23 +113,6 @@ public class AmbModeTypeInstantiation_c extends ModeTypeNode_c implements AmbMod
     return ((PandaClassType) bt).modeTypeVars().size() == mtArgs.size();
   }
 
-  public boolean validDynamicModeType() {
-    Type bt = this.base().type();
-    if (!(bt instanceof PandaClassType)) {
-      return false;
-    }
-    PandaClassType ct = (PandaClassType) bt;
-
-    // If the class is an interface, flag that all who implement must
-    // have an attributor.
-    if (ct.flags().isInterface()) {
-      ct.needsAttribute(true);
-      return true;
-    }
-
-    return ct.hasDynamicRecv();
-  }
-
   @Override
   public Node disambiguate(AmbiguityRemover sc) throws SemanticException {
     if (!this.shouldDisambiguate()) {
@@ -148,24 +131,13 @@ public class AmbModeTypeInstantiation_c extends ModeTypeNode_c implements AmbMod
       mtArgs.add(n.type());
     }
 
+    // NOTE: We can check size here, but anything else needs to wait util
+    // the typecheck pass.
     if (!this.validModeTypeArgs(mtArgs)) {
-      throw new SemanticException(
-          this.base().type() + " cannot be instantiated with mode type arguments.");
-    }
-
-    // Dynamic mode type can only be used on classes that have an attributor
-    if (mtArgs.get(0) == ts.DynamicModeType() && !this.validDynamicModeType()) {
-      throw new 
-        SemanticException(
-            this.base().type() + " cannot be instantiated with a dynamic mode type." +
-            " Class must declare a mode type variable with a dynamic mode receiver."
-            );
+      throw new SemanticException(this.base().type() + " cannot be instantiated with mode type arguments");
     }
 
     Type st = ts.createModeSubst(this.base().type(), mtArgs);
-    if (st == null) {
-      throw new SemanticException("Unable to create mode substition due to constraints.");
-    }
     return sc.nodeFactory().CanonicalTypeNode(this.position(), st);
   }
 

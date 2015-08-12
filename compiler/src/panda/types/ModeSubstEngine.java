@@ -89,58 +89,8 @@ public class ModeSubstEngine {
       return this.createModeSubstType(t, mtArgs);
     } 
   } 
-
-  public boolean modeSubstSatisfiesConstraints(PandaClassType baseT, List<Type> mtArgs) {
-    Map<ModeTypeVariable, Type> mtMap = new HashMap<>();
-    List<ModeTypeVariable> baseMtVars = baseT.modeTypeVars();
-
-    if (baseMtVars.size() != mtArgs.size()) {
-      return false;
-    }
-
-    for (int i = 0; i < baseMtVars.size(); ++i) {
-      Type mtArg = mtArgs.get(i);
-
-      //System.out.format("Checking arg %s on var %s\n", mtArg, baseMtVars.get(i));
-
-      // All constraints must be satisfied (all upper bounds)
-      for (Type bound : baseMtVars.get(i).bounds()) {
-        if (bound instanceof ModeTypeVariable) {
-          bound = mtMap.get(bound);
-        }
-
-        // Strengthing this restriction, can not blindly dump a DynamicModeType, must be a subtype
-        // of constraints
-        //if (!this.typeSystem().isSubtype(mtArg, bound) && mtArg != this.typeSystem().DynamicModeType()) {
-
-        if (this.typeSystem().isSubtype(mtArg, bound)) {
-          continue;
-        }
-
-        if (this.typeSystem().DynamicModeType() == mtArg && baseMtVars.get(i).isDynRecvr()) {
-          continue;
-        }
-        
-        return false;
-      }
-
-      if (!baseMtVars.get(i).isDynRecvr()) {
-        mtMap.put(baseMtVars.get(i), mtArg);
-      } else {
-        mtMap.put(baseMtVars.get(i), baseMtVars.get(i).upperBound());
-      }
-    }
-    return true;
-  }
-  
+    
   public Type createModeSubstClass(Type t, List<Type> mtArgs) {
-    // Check that a subst satisfies the contraints on the mode type variables,
-    // otherwise flag an error
-    if (!this.modeSubstSatisfiesConstraints((PandaClassType) t, mtArgs)) {
-      return null;
-      //throw new SemanticException("Substitution unable to satisfy bounds for " + t);
-    }
-
     // Build the subst object for all class types
     if (t instanceof PandaParsedClassType) {
       return new ModeSubstParsedClassType_c((PandaParsedClassType) t, mtArgs);

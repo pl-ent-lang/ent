@@ -399,6 +399,41 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
     return subst; 
   }
 
+  public SemanticException checkModeSubst(PandaClassType baseT, List<Type> mtArgs) {
+    Map<ModeTypeVariable, Type> mtMap = new HashMap<>();
+    List<ModeTypeVariable> baseMtVars = baseT.modeTypeVars();
+
+    for (int i = 0; i < baseMtVars.size(); ++i) {
+      Type mtArg = mtArgs.get(i);
+
+      // 1. MtVar is a dynRecv with a supplied ? type.
+      if (baseMtVars.get(i).isDynRecvr() && this.typeEquals(this.DynamicModeType(), mtArg)) {
+        mtMap.put(baseMtVars.get(i), baseMtVars.get(i).upperBound());
+        continue;
+      }
+
+      // 2. If we are dynamic with no bounds, this will error.
+      if (baseMtVars.get(i).bounds().size() == 0 && this.DynamicModeType() == mtArg) {
+        return new SemanticException(baseMtVars.get(i) + " cannot receive the dynamic mode type.");
+      }
+
+      // 3. Otherwise, all bounds must be satisfied
+      for (Type bound : baseMtVars.get(i).bounds()) {
+        if (bound instanceof ModeTypeVariable) {
+          bound = mtMap.get(bound);
+        } 
+
+        if (!this.isSubtype(mtArg, bound)) {
+          return new SemanticException(mtArg + " cannot satisfy constraint " + bound);
+        }
+      }
+
+      mtMap.put(baseMtVars.get(i), mtArg);
+    }
+    return null;
+  }
+
+
   @Override
   public JL5ProcedureInstance callValid(JL5ProcedureInstance mi,
                                         List<? extends Type> argTypes,
@@ -648,7 +683,7 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
       if (this.typeEquals(pct, rt)) {
         continue;
       }
-      if (((PandaClassType) rt).needsAttribute() && pct.attributeInstance() == null) {
+      if (((PandaClassType) rt).hasDynamicRecv() && pct.attributeInstance() == null) {
         throw new SemanticException(rt + " requires an attributor. " + ct + " must implement an attributor.");
       }
     }

@@ -43,4 +43,6 @@ public interface PandaTypeSystem extends JL7TypeSystem {
   Type createModeSubst(Type bt, List<Type> modeTypes);
 
   ModeSubst inferModeTypeArgs(PandaProcedureInstance pi, List<? extends Type> argTypes, Type expectedReturnType);
+
+  SemanticException checkModeSubst(PandaClassType baseT, List<Type> mtArgs);
 }

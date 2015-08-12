@@ -116,7 +116,9 @@ public class PandaClassDeclExt extends PandaExt {
     }
 
     PandaParsedClassType ct = (PandaParsedClassType) n.type();
-    if (ct.hasDynamicRecv() && !ct.hasAttribute()) {
+
+    // NOTE : We force classes to implement
+    if (ct.hasDynamicRecv() && !ct.flags().isInterface() && !ct.hasAttribute()) {
       throw new SemanticException(
           "Class must define an attributor to receive the dynamic mode type.");
     }
@@ -157,7 +159,7 @@ public class PandaClassDeclExt extends PandaExt {
 
     // 1. Generate PANDA_Attributable interface
     List<TypeNode> interfaces = new ArrayList<>(decl.interfaces());
-    if (ct.hasAttribute() || ct.needsAttribute()) {
+    if (ct.hasAttribute() || ct.hasDynamicRecv()) {
       // 1.1. Generate PANDA_Attributable
       interfaces.add(qq.parseType("PANDA_Attributable")); 
       n = n.interfaces(interfaces);

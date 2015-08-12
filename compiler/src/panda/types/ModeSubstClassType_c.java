@@ -77,14 +77,6 @@ public abstract class ModeSubstClassType_c extends ModeSubstReferenceType_c impl
     return ((PandaClassType) this.baseType()).hasCopy();
   }
 
-  public boolean needsAttribute() {
-    return ((PandaClassType) this.baseType()).needsAttribute();
-  }
-
-  public void needsAttribute(boolean needsAttribute) {
-    ((PandaClassType) this.baseType()).needsAttribute(needsAttribute);
-  } 
-
   public boolean hasMcaseFields() {
     return ((PandaClassType) this.baseType()).hasMcaseFields();
   } 

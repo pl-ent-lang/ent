@@ -13,4 +13,5 @@
 17. Revist PandaLubType.c (grep TODO) and either perform a full erasue of mode types (for Set.retainAll)
     or implement a set that will use typeEquals for comparison and not equals.
 
+18. Need to strengthen the relationship between the dynamic mode recv and interfaces / subclasses.
 
