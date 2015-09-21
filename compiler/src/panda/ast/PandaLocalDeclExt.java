@@ -50,6 +50,7 @@ public class PandaLocalDeclExt extends PandaExt {
       // catch it
       return superLang().typeCheck(n, tc);
     }
+
     List<Type> newArgs = new ArrayList<>();
     for (int i = 0; i < mtArgs.size(); ++i) {
       if (mtArgs.get(i) == ts.WildcardModeType()) {
@@ -61,6 +62,10 @@ public class PandaLocalDeclExt extends PandaExt {
 
     st = st.deepCopy();
     st.modeTypeArgs(newArgs);
+
+    // Must reset type for local instance
+    LocalInstance li = n.localInstance();
+    li.setType(st); 
 
     return superLang().typeCheck(this.reconstruct(n, st), tc);
   }

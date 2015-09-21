@@ -45,7 +45,7 @@ public class PandaMethodDeclExt extends PandaProcedureDeclExt {
     MethodDecl n =
       nf.MethodDecl(
         decl.position(),
-        decl.flags(),
+        PandaFlags.clearModesafe(decl.flags()),
         ext.annotationElems(),
         decl.returnType(),
         decl.id(),

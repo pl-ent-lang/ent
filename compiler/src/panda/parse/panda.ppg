@@ -4,6 +4,7 @@ include "polyglot/ext/jl7/parse/jl7.ppg"
 package panda.parse;
 
 import panda.types.PandaTypeSystem;
+import panda.types.PandaFlags;
 import panda.ast.PandaNodeFactory;
 import panda.ast.*;
 import polyglot.parse.Name;
@@ -33,6 +34,7 @@ terminal Token SNAPSHOT;
 terminal Token MODEBOUND;
 terminal Token MCASE;
 terminal Token RARROW;
+terminal Token MODESAFE;
 
 non terminal ModesDecl modes_declaration_opt;
 non terminal ModesDecl modes_declaration;
@@ -53,6 +55,7 @@ non terminal List<ModeTypeNode> mode_type_parameter_bounds;
 non terminal List<ModeTypeNode> mode_type_args;
 
 non terminal ModeTypeNode mode_type_node;
+non terminal ModeTypeNode mode_type_node_annon;
 non terminal List<ModeTypeNode> mode_type_nodes;
 
 non terminal Expr snapshot_expr;
@@ -449,18 +452,29 @@ mode_type_args ::=
 ; 
 
 mode_type_nodes ::=
-  mode_type_node:n
+  mode_type_node_annon:n
   {:
     List<ModeTypeNode> nodes = new ArrayList<ModeTypeNode>();
     nodes.add(n);
     RESULT = nodes;
   :}
-| mode_type_nodes:nodes COMMA mode_type_node:n
+| mode_type_nodes:nodes COMMA mode_type_node_annon:n
   {:
     nodes.add(n);
     RESULT = nodes;
   :}
 ;
+
+mode_type_node_annon ::=
+  mode_type_node:m
+  {:
+    RESULT = m;
+  :}
+| mode_type_node:lb LTEQ MULT LTEQ mode_type_node:ub
+  {:
+    RESULT = parser.nf.ModeTypeNode(parser.pos(lb,ub), "_", lb, ub);
+  :}
+; 
 
 mode_type_node ::=
   IDENTIFIER:id
@@ -475,7 +489,7 @@ mode_type_node ::=
   {:
     RESULT = parser.nf.ModeTypeNode(parser.pos(q), "?");
   :}
-;
+; 
 
 extend primary ::=
   snapshot_expr:s
@@ -647,3 +661,9 @@ override class_instance_creation_expression ::=
 	:}
 ;
 
+extend modifier ::=
+  MODESAFE:a 
+  {:
+    RESULT = PandaFlags.MODESAFE.position(a.getPosition());
+  :}
+;

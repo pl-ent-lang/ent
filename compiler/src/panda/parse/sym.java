@@ -60,6 +60,7 @@ public class sym {
   public static final int DIV = 65;
   public static final int RARROW = 121;
   public static final int MODES = 116;
+  public static final int MODESAFE = 122;
   public static final int GTEQ = 73;
   public static final int EQEQ = 75;
   public static final int VOLATILE = 34;
@@ -252,7 +253,8 @@ public class sym {
   "SNAPSHOT",
   "MODEBOUND",
   "MCASE",
-  "RARROW"
+  "RARROW",
+  "MODESAFE"
   };
 }
 

@@ -97,15 +97,24 @@ public class ModeParamTypeNode_c extends TypeNode_c implements ModeParamTypeNode
     ModeTypeVariable mtVar = (ModeTypeVariable) this.type();
     PandaTypeSystem ts = (PandaTypeSystem) sc.typeSystem();
 
+    boolean ambiguous = false;
+    List<Type> boundTypes = new ArrayList<Type>();
+    for (ModeTypeNode tn : this.bounds()) {
+      if (!tn.isDisambiguated()) {
+        ambiguous = true;
+      }
+      boundTypes.add(tn.type());
+    }
+    
+    if (ambiguous) {
+      return this;
+    }
+
+    mtVar.bounds(boundTypes);
+
     if (this.isDynRecvr()) {
       mtVar.isDynRecvr(true);
     }
-
-    List<Type> boundTypes = new ArrayList<Type>();
-    for (ModeTypeNode tn : this.bounds()) {
-      boundTypes.add(tn.type());
-    }
-    mtVar.bounds(boundTypes);
 
     if (!mtVar.inferUpperBound()) {
       throw new SemanticException(
@@ -117,8 +126,7 @@ public class ModeParamTypeNode_c extends TypeNode_c implements ModeParamTypeNode
           "Mode type variable cannot be a dynamic reciever with a dynamic mode upper bound.");
     }
 
-
-    return super.disambiguate(sc);
+    return this;
   }
 
   @Override

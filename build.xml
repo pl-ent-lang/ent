@@ -80,6 +80,7 @@
         <delete dir="${compiler.classes}" />
         <delete dir="${runtime.classes}" />
         <delete dir="${dist}" />
+        <!--
         <delete includeemptydirs="true">
             <fileset dir="${basedir}/tests">
                 <include name="**/*.class" />
@@ -88,6 +89,7 @@
                 <include name="pthOutput*" />
             </fileset>
         </delete>
+        -->
     </target>
 
     <target name="clobber" depends="clean" description="removes all generated files">

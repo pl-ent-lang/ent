@@ -15,3 +15,10 @@
 
 18. Need to strengthen the relationship between the dynamic mode recv and interfaces / subclasses.
 
+19. Finalize the way modesafe should work and implement the rest.
+      - modesafe functions can only call other modesafe functions
+      - modesafe functions cannot touch 'this' mcases
+      - modesafe functions can not use snapshot (?)
+
+
+      

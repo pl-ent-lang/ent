@@ -61,7 +61,7 @@ public class ModeSubstPrimitiveType_c extends ModeSubstType_c implements ModeSub
 
     ModeSubstType st = (ModeSubstType) toT;
     return this.ts.isImplicitCastValid(this.baseType(), st.baseType()) &&
-           this.modeTypeArgsEquals(st);
+           this.modeTypeArgsImplicit(st);
   }
 
   @Override

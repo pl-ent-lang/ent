@@ -161,7 +161,11 @@ public class PandaNodeFactory_c extends JL7NodeFactory_c implements PandaNodeFac
     }
 
     public ModeTypeNode ModeTypeNode(Position pos, String name) {
-      ModeTypeNode n = new ModeTypeNode_c(pos, name);
+      return this.ModeTypeNode(pos, name, null, null);
+    }
+
+    public ModeTypeNode ModeTypeNode(Position pos, String name, ModeTypeNode lowerBound, ModeTypeNode upperBound) {
+      ModeTypeNode n = new ModeTypeNode_c(pos, name, lowerBound, upperBound);
       n = ext(n, extFactory().extModeTypeNode());
       return n;
     }

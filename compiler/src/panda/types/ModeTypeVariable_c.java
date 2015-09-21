@@ -31,6 +31,7 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
     this.name = name;
     this.uniqueId = this.genId();
     this.index = -1;
+    this.upperBound = ts.unknownType(pos);
   }
 
   // Property Methods
@@ -142,6 +143,9 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
   @Override
   public String toString() {
     String s = "(";
+    if (this.isDynRecvr()) {
+      s += "? -> ";
+    }
     if (this.hasLowerBound()) {
       s += this.lowerBound() + " <= ";
     }

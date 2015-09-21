@@ -90,7 +90,8 @@ public class AmbModeTypeInstantiation_c extends ModeTypeNode_c implements AmbMod
     return this.reconstruct(this, base, modeTypeArgs);
   }
 
-  private boolean shouldDisambiguate() {
+  @Override
+  protected boolean shouldDisambiguate() {
     if (!this.base().isDisambiguated()) {
       return false;
     }
@@ -102,7 +103,7 @@ public class AmbModeTypeInstantiation_c extends ModeTypeNode_c implements AmbMod
     return true;
   }
 
-  public boolean validModeTypeArgs(List<Type> mtArgs) {
+  public boolean validModeTypeArgs(List<Type> mtArgs, PandaTypeSystem ts) {
     Type bt = this.base().type();
 
     if (!(bt instanceof PandaClassType)) {
@@ -110,7 +111,15 @@ public class AmbModeTypeInstantiation_c extends ModeTypeNode_c implements AmbMod
       return mtArgs.size() == 1;
     }
 
-    return ((PandaClassType) bt).modeTypeVars().size() == mtArgs.size();
+    // NOTE : Expand a single wildcard to allow inference
+    PandaClassType ct = (PandaClassType) bt;
+    if (mtArgs.size() == 1 && ts.WildcardModeType() == mtArgs.get(0)) {
+      for (int i = 1; i < ct.modeTypeVars().size(); i++) {
+        mtArgs.add(ts.WildcardModeType());
+      }
+    }
+
+    return ct.modeTypeVars().size() == mtArgs.size();
   }
 
   @Override
@@ -133,7 +142,7 @@ public class AmbModeTypeInstantiation_c extends ModeTypeNode_c implements AmbMod
 
     // NOTE: We can check size here, but anything else needs to wait util
     // the typecheck pass.
-    if (!this.validModeTypeArgs(mtArgs)) {
+    if (!this.validModeTypeArgs(mtArgs, ts)) {
       throw new SemanticException(this.base().type() + " cannot be instantiated with mode type arguments");
     }
 

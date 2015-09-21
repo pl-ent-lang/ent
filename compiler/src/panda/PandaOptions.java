@@ -50,4 +50,10 @@ public class PandaOptions extends JL5Options {
     }
   }
 
+  @Override
+  protected void postApplyArgs() {
+    super.postApplyArgs();
+    this.fully_qualified_names = true;
+  }
+
 }

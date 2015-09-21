@@ -13,30 +13,32 @@ import polyglot.visit.*;
 public class PandaFieldExt extends PandaExt {
 
   public Node typeCheckCommon(TypeChecker tc) throws SemanticException {
-    Field n = (Field) this.node();
+    Field n = (Field) superLang().typeCheck(this.node(), tc);
     PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
     PandaContext ctx = (PandaContext) tc.context();
     PandaClassType ct = (PandaClassType) ctx.currentClassScope();
 
     // NOTE: No target means this is a static call, kick it up
     if (n.target() == null) {
-      return superLang().typeCheck(this.node(), tc);
+      return n;
     } 
 
     Type t = n.target().type();
     if (!(t instanceof ModeSubstType)) {
-      return superLang().typeCheck(n, tc);
+      return n;
     } 
 
     // Disallow dynamic type seperately for better diagnostics
     ModeSubstType mt = (ModeSubstType) t;
-    if (mt.modeType() == ts.DynamicModeType()) {
-      throw new SemanticException("Dynamic mode type cannot receive messages. Resolve using snapshot.");
+    if (mt.modeType() == ts.DynamicModeType() &&
+        !PandaFlags.isModesafe(n.fieldInstance().flags())) {
+      throw new SemanticException(
+        "Dynamic mode type cannot receive messages. Resolve using snapshot.");
     }
 
     if (ctx.inStaticContext()) {
       // Kick up to super lang for now
-      return superLang().typeCheck(this.node(), tc);
+      return n;
     }
 
     // Field is valid if the first mode type variable upper bound is greater
@@ -46,7 +48,7 @@ public class PandaFieldExt extends PandaExt {
       throw new SemanticException("Cannot send message to " + t + " from mode " + mtThis.upperBound() + ".");
     }
 
-    return superLang().typeCheck(n, tc);
+    return n;
   }
 
   @Override

@@ -252,16 +252,29 @@ public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements M
       return true;
     }
 
+    // HACK to get a compile, revisit
+    if (ansT.isNull()) {
+      return false;
+    }
+
     PandaTypeSystem ts = (PandaTypeSystem) this.ts;
 
     if (this.hasWildCardArg()) {
       Type captured;
       try {
+
+        // MODE-NODE: This needs to be fixed, is a simple hack to get around an infinite loop
         captured = ts.applyCaptureConversion(this, null);
-        // Note: we want descendsFrom, not isSubtype, since the direct ancestors of this class
-        // are the direct ancestors of captured, but not captured itself.
-        if (ts.descendsFrom(captured, ansT)) {
-          return true;
+        if (captured instanceof ModeSubstType) {
+          if (ts.descendsFrom(this.baseType(), ((ModeSubstType) captured).baseType())) {
+            return true;
+          }
+        } else {
+          // Note: we want descendsFrom, not isSubtype, since the direct ancestors of this class
+          // are the direct ancestors of captured, but not captured itself.
+          if (ts.descendsFrom(captured, ansT)) {
+            return true;
+          }
         }
       }
       catch (SemanticException e) {
@@ -289,6 +302,7 @@ public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements M
         for (TypeVariable tv : ts.classAndEnclosingTypeVariables(base())) {
           Type ti = this.subst().substType(tv);
           Type si = anc.subst().substType(tv);
+
           if (!ts.isContained(ti, si)) {
             allContained = false;
             break;

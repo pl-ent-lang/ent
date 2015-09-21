@@ -13,11 +13,19 @@ import java.util.Map;
 
 public class ModeTypeNode_c extends TypeNode_c implements ModeTypeNode {
 
-  private String name;
+  protected String name;
+  protected ModeTypeNode lowerBound;
+  protected ModeTypeNode upperBound;
 
   public ModeTypeNode_c(Position pos, String name) {
+    this(pos,name,null,null);
+  }
+
+  public ModeTypeNode_c(Position pos, String name, ModeTypeNode lb, ModeTypeNode ub) {
     super(pos);
     this.name = name;
+    this.lowerBound = lb;
+    this.upperBound = ub; 
   }
 
   // Property Methods
@@ -25,22 +33,83 @@ public class ModeTypeNode_c extends TypeNode_c implements ModeTypeNode {
     return this.name;
   }
 
+  public ModeTypeNode lowerBound() {
+    return this.lowerBound;
+  }
+
+  protected <N extends ModeTypeNode_c> N lowerBound(N n, ModeTypeNode lowerBound) {
+    if (this.lowerBound == lowerBound) return n;
+    n = this.copyIfNeeded(n);
+    n.lowerBound = lowerBound;
+    return n;
+  } 
+
+  public ModeTypeNode upperBound() {
+    return this.upperBound;
+  }
+
+  protected <N extends ModeTypeNode_c> N upperBound(N n, ModeTypeNode upperBound) {
+    if (this.upperBound == upperBound) return n;
+    n = this.copyIfNeeded(n);
+    n.upperBound = upperBound;
+    return n;
+  } 
+
+  protected <N extends ModeTypeNode_c> N reconstruct(N n, ModeTypeNode lowerBound, ModeTypeNode upperBound) {
+    n = this.lowerBound(n, lowerBound);
+    n = this.upperBound(n, upperBound);
+    return n;
+  }
+
+  @Override
+  public Node visitChildren(NodeVisitor v) {
+    ModeTypeNode lowerBound = null;
+    ModeTypeNode upperBound = null;
+    if (this.lowerBound() != null) {
+      lowerBound = visitChild(this.lowerBound(), v);
+    }
+    if (this.upperBound() != null) {
+      upperBound = visitChild(this.upperBound(), v);
+    }
+    return this.reconstruct(this, lowerBound, upperBound);
+  } 
+
   // Node Methods
   @Override
   public Node buildTypes(TypeBuilder tb) throws SemanticException {
     return this.type(tb.typeSystem().unknownType(this.position()));
   }
 
+  protected boolean shouldDisambiguate() {
+    if (this.lowerBound() != null && this.upperBound() != null) {
+      return this.lowerBound().isDisambiguated() && 
+             this.upperBound().isDisambiguated();
+    }
+    return true;
+  }
+
   @Override
   public Node disambiguate(AmbiguityRemover sc) throws SemanticException {
+    if (!this.shouldDisambiguate()) {
+      return this;
+    }
+
     PandaTypeSystem ts = (PandaTypeSystem) sc.typeSystem();
+
+    if (this.name().equals("_") && this.lowerBound() != null && this.upperBound() != null) {
+      ModeTypeVariable mtv = ts.createModeTypeVariable(this.position(), this.name());
+      mtv.upperBound(this.upperBound().type());
+      mtv.lowerBound(this.lowerBound().type());
+      return this.type(mtv);
+    } 
+
 
     if (ts.createdModeTypes().containsKey(this.name())) {
       // We have a mode type
       return this.type(ts.createModeType(this.name()));
-    }
-
-    // Check for mode type variables
+    } 
+    
+      // Check for mode type variables
     PandaContext c = (PandaContext) sc.context();
     ModeTypeVariable mtVar = c.findModeTypeVariableInThisScope(this.name());
     if (mtVar != null) {
@@ -54,7 +123,6 @@ public class ModeTypeNode_c extends TypeNode_c implements ModeTypeNode {
           throw new SemanticException("Invalid use of class mode type variable inside constructor!");
         }
       } 
-
       return this.type(mtVar);
     }
 

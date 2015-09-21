@@ -164,7 +164,7 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
     }
 
     if (((ModeSubstType) tt).modeType() != ts.DynamicModeType()) {
-      System.out.println("ERROR : Target type of dynamic mode type (not yet impl)");
+      System.out.println(this.position() + " ERROR : Target type of dynamic mode type (not yet impl)");
       System.exit(1);
     }
 
@@ -189,9 +189,12 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
     }
 
     ModeTypeVariable elm = ts.createModeTypeVariable(this.position(), "_");
+
+
     elm.upperBound(um);
     elm.lowerBound(lm);
 
+    System.err.format("Existential type %s\n", elm); 
 
     // We introduce a type variable bounded by the bounds supplied in snapshot
     ModeSubstType ct = ((ModeSubstType) tt).deepCopy();

@@ -46,10 +46,10 @@ public class McaseType_c extends Type_c implements McaseType {
   public boolean typeEqualsImpl(Type o) {
     PandaTypeSystem ts = (PandaTypeSystem) this.typeSystem();
     if (o instanceof McaseType) {
-      return false;
+      McaseType_c m = (McaseType_c) o;
+      return ts.typeEquals(this.base(), m.base());
     }
-    McaseType_c m = (McaseType_c) o;
-    return ts.typeEquals(this.base(), m.base());
+    return ts.typeEquals(this.base(), o);
   }
 
   @Override

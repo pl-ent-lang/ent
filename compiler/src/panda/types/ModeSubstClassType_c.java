@@ -425,6 +425,7 @@ public abstract class ModeSubstClassType_c extends ModeSubstReferenceType_c impl
 
     LinkedList<Type> chain = null;
     ModeSubstType st = (ModeSubstType) toT;
+
     if (ts.isSubtype(this.baseType(), st.baseType()) &&
         this.modeTypeArgsImplicit(st)) {
       chain = new LinkedList<>();

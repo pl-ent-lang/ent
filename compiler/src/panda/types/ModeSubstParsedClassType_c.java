@@ -380,6 +380,7 @@ public class ModeSubstParsedClassType_c extends ModeSubstClassType_c implements 
     return ((PandaParsedClassType) this.baseType()).memberClasses();
   }
 
+
   @Override
   public List<? extends MethodInstance> methods() {
     if (this.methods == null) {
@@ -471,6 +472,38 @@ public class ModeSubstParsedClassType_c extends ModeSubstClassType_c implements 
   public boolean needSerialization() {
     return ((PandaParsedClassType) this.baseType()).needSerialization();
   }
+
+  @Override
+  public LinkedList<Type> isImplicitCastValidChainImpl(Type toT) {
+    PandaTypeSystem ts = (PandaTypeSystem) this.ts;
+    // MODE-NOTE: FIXME Forwarding may not be the right solution here
+    // May skirt around a lot of potential bugs
+    if (!(toT instanceof ModeSubstType)) {
+      return ts.isImplicitCastValidChain(this.baseType(), toT);
+    } 
+
+    LinkedList<Type> chain = null;
+    if (ts.isSubtype(this, toT)) {
+      chain = new LinkedList<>();
+      chain.add(this);
+      chain.add(toT);
+    }
+    else if (toT.isPrimitive()) {
+      // see if unboxing will let us cast to the primitive
+      if (ts.primitiveTypeOfWrapper(this) != null) {
+        chain = 
+          ts.isImplicitCastValidChain(
+            ts.primitiveTypeOfWrapper(this), 
+            toT
+            );
+        if (chain != null) {
+          chain.addFirst(this);
+        }
+      }
+    }
+    return chain;
+  }
+
 
 }
 

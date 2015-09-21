@@ -119,11 +119,12 @@ import java.util.Set;
 
         // Panda Specific Keywords
         keywords.put("modes",         new Integer(sym.MODES));
-        keywords.put("attribute",     new Integer(sym.ATTRIBUTE));
-        keywords.put("copy",          new Integer(sym.COPY));
+        keywords.put("panda_attribute",     new Integer(sym.ATTRIBUTE));
+        keywords.put("panda_copy",          new Integer(sym.COPY));
         keywords.put("blammable",     new Integer(sym.BLAMMABLE));
         keywords.put("snapshot",      new Integer(sym.SNAPSHOT));
         keywords.put("mcase",         new Integer(sym.MCASE));
+        keywords.put("modesafe",      new Integer(sym.MODESAFE));
     }
 
     @Override
@@ -356,6 +357,8 @@ OctalEscape = \\ [0-7]
             | \\ [0-7][0-7]
             | \\ [0-3][0-7][0-7]
 
+UnicodeEscape = \\u[0-9a-fA-F]{4}
+
 %%
 
 <YYINITIAL> {
@@ -500,6 +503,18 @@ OctalEscape = \\ [0-7]
                                    }
                                  }
 
+    {UnicodeEscape}              { try {
+                                       int x = Integer.parseInt(chop(2,0), 16);
+                                       sb.append((char) x);
+                                   } catch (NumberFormatException e) {
+                                      eq.enqueue(ErrorInfo.LEXICAL_ERROR,
+                                                  "Illegal unicode escape \""
+                                                  + yytext() + "\"", pos());
+
+                                   }
+                                 }
+
+
     /* Illegal escape character */
     \\.                          { eq.enqueue(ErrorInfo.LEXICAL_ERROR,
                                               "Illegal escape character \"" +
@@ -539,6 +554,19 @@ OctalEscape = \\ [0-7]
                                                   + yytext() + "\"", pos());
                                    }
                                  }
+
+    {UnicodeEscape}              { try {
+                                       int x = Integer.parseInt(chop(2,0), 16);
+                                       sb.append((char) x);
+                                   } catch (NumberFormatException e) {
+                                      eq.enqueue(ErrorInfo.LEXICAL_ERROR,
+                                                  "Illegal unicode escape \""
+                                                  + yytext() + "\"", pos());
+
+                                   }
+                                 }
+
+
 
     /* Illegal escape character */
     \\.                          { eq.enqueue(ErrorInfo.LEXICAL_ERROR,

@@ -47,6 +47,36 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
   } 
 
   public abstract ModeSubstType deepCopy();
+
+  @SuppressWarnings("unused")
+  private static final long readObjectVersionUID = 1L;
+
+  private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException { 
+    in.defaultReadObject(); 
+
+    if (in instanceof TypeInputStream) {
+      TypeInputStream tin = (TypeInputStream) in;
+      PandaTypeSystem ts = (PandaTypeSystem) tin.getTypeSystem();
+
+      // TODO : This is a total deserialization hack, but needs to be used until
+      // there is time to site down and serialize / deserialize proplery.
+
+      List<Type> fixed = new ArrayList<>();
+      for (Type t : this.modeTypeArgs()) {
+        ModeType mt = (ModeType) t;
+        if (mt.name().equals("*")) {
+          fixed.add(ts.WildcardModeType());
+        } else if (mt.name().equals("?")) {
+          fixed.add(ts.DynamicModeType());
+        } else {
+          fixed.add(mt);
+        }
+      }
+
+      this.modeTypeArgs(fixed);
+    }
+
+  } 
   
   // Type Methods
   @Override
@@ -251,6 +281,18 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
     return true;
   } 
 
+  protected boolean modeTypeArgsDescends(ModeSubstType ot) {
+    if (this.modeTypeArgs().size() != ot.modeTypeArgs().size()) {
+      return false;
+    }
+    for (int i = 0; i < this.modeTypeArgs().size(); ++i) {
+      if (!this.ts.descendsFrom(this.modeTypeArgs().get(i), ot.modeTypeArgs().get(i))) {
+        return false;
+      }
+    }
+    return true;
+  } 
+
   protected boolean modeTypeArgsImplicit(ModeSubstType ot) {
     if (this.modeTypeArgs().size() != ot.modeTypeArgs().size()) {
       return false;
@@ -318,7 +360,7 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
 
     ModeSubstType st = (ModeSubstType) ansT;
     return this.ts.descendsFrom(this.baseType(), st.baseType()) &&
-           this.modeTypeArgsEquals(st);
+           this.modeTypeArgsDescends(st);
   }
 
   @Override

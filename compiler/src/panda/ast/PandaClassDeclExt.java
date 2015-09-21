@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.LinkedList;
 
 public class PandaClassDeclExt extends PandaExt {
 
@@ -134,6 +135,52 @@ public class PandaClassDeclExt extends PandaExt {
     return n;
   }
 
+  // Right from jl5/visit/RemoveEnums
+  private ClassBody fixClassBodyAsEnumBody(ClassBody body) {
+    List<ClassMember> members = new ArrayList<>();
+    for (ClassMember cm : body.members()) {
+      if (cm instanceof FieldDecl) {
+        FieldDecl fd = (FieldDecl) cm;
+        if (fd.name().equals("values")) {
+          continue;
+        }
+        members.add(cm);
+      } else if (cm instanceof ConstructorDecl) {
+        members.add(
+          fixConstructorDeclAsEnumConstructorDecl(((ConstructorDecl) cm)));
+      } else if (cm instanceof MethodDecl) {
+        MethodDecl md = (MethodDecl) cm;
+        if (md.name().equals("valueOf") || md.name().equals("values")) { 
+          continue;
+        }
+        members.add(cm);
+      } else {
+        members.add(cm);
+      }
+    }
+    return body.members(members);
+  }
+
+
+  private ConstructorDecl fixConstructorDeclAsEnumConstructorDecl(ConstructorDecl cd) {
+    // remove the two dummy arguments
+    List<Formal> newFormals = new LinkedList<>(cd.formals());
+
+    cd = (ConstructorDecl) cd.formals(newFormals);
+
+    // remove the call to super
+
+    List<Stmt> newStmts = new LinkedList<>(cd.body().statements());
+    if (!newStmts.isEmpty() && newStmts.get(0) instanceof ConstructorCall) {
+        newStmts.remove(0);
+    }
+
+    Block newBody = cd.body().statements(newStmts);
+    cd = (ConstructorDecl) cd.body(newBody);
+    return cd;
+  }
+
+
   @Override
   public Node extRewrite(ExtensionRewriter rw) throws SemanticException { 
     PandaRewriter prw = (PandaRewriter) rw;
@@ -143,6 +190,23 @@ public class PandaClassDeclExt extends PandaExt {
     ClassDecl decl = (ClassDecl) this.node();
     JL5ClassDeclExt ext = (JL5ClassDeclExt) JL5Ext.ext(decl);
     PandaParsedClassType ct = (PandaParsedClassType) decl.type();
+
+    // HACK : Fix enum, but not that bad of a hack, as this is just
+    // how polyglot handles things.
+    if (ext instanceof JL5EnumDeclExt) {
+      ClassDecl n = 
+        nf.EnumDecl(
+          decl.position(),
+          decl.flags(),
+          ext.annotationElems(),
+          decl.id(),
+          decl.superClass(),
+          decl.interfaces(),
+          fixClassBodyAsEnumBody(decl.body())
+          );
+
+      return n;
+    }
 
     // Manual translation to JL5
     ClassDecl n = 

@@ -30,6 +30,8 @@ import java.util.LinkedHashMap;
 public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSystem { 
   private Map<String, ModeType> createdModeTypes = new HashMap<>();
 
+  public static int ORIG = -1;
+
   private ModeType WildcardModeType;
   private ModeType DynamicModeType;
   private ModeType BottomModeType;
@@ -44,6 +46,9 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
     this.BottomModeType.uniqueId(PANDA_Modes.FREE_MODE);
     this.WildcardModeType = this.createModeType("*");
     this.WildcardModeType.uniqueId(PANDA_Modes.WILDCARD_MODE);
+
+    ORIG = System.identityHashCode(this.WildcardModeType);
+
     this.DynamicModeType = this.createModeType("?");
     this.DynamicModeType.uniqueId(PANDA_Modes.DYNAMIC_MODE);
   } 
@@ -97,6 +102,21 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
     return new PandaClassFileLazyClassInitializer(clazz, this);
   }
   */
+
+  @Override
+  public Flags legalFieldFlags() {
+    return PandaFlags.setModesafe(super.legalFieldFlags());
+  }
+
+  @Override
+  public Flags legalMethodFlags() {
+    return PandaFlags.setModesafe(super.legalMethodFlags());
+  }
+
+  @Override
+  public Flags legalAbstractMethodFlags() {
+    return PandaFlags.setModesafe(super.legalAbstractMethodFlags());
+  }
 
   @Override
   public JL5ConstructorInstance constructorInstance(Position pos,
@@ -313,6 +333,7 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
 
       JL5SubstClassType t3 = 
         this.findGenericSupertype((JL5ParsedClassType) t1, (ReferenceType) t2);
+
       Map<TypeVariable,TypeVariable> tvMap = new HashMap<>();
       if (t3 != null) {
         for (Map.Entry<TypeVariable,ReferenceType> e : t3.subst().substitutions().entrySet()) {
@@ -324,8 +345,10 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
         }
       }
 
+      // BUG18 : This is not a proper comparison (only need a castValid, not typeEquals),
+      // as such the type variables are not equal. Need to compare the type arguments of
+      // the two subst types linearly (i = 0, i = 1) etc.
       for (Map.Entry<TypeVariable,TypeVariable> e : tvMap.entrySet()) {
-
         if (!actTSubsts.containsKey(e.getValue())) {
           // We cannot infer, the subst are not equal
           return false;
@@ -346,7 +369,9 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
   public ModeSubst inferModeTypeArgs(PandaProcedureInstance pi,
                                       List <? extends Type> argTypes,
                                       Type expectedReturnType) {
+    // TODO : Need to handle variable args for inference (see how JL5 does it)
     // Infer the mode type variable first, error if not possible
+
     Map<ModeTypeVariable,Type> mtMap = new HashMap<>();
     for (int i = 0; i < pi.formalTypes().size(); ++i) {
       if (!this.inferModeTypeArg(pi.modeTypeVars(),
@@ -403,7 +428,15 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
     Map<ModeTypeVariable, Type> mtMap = new HashMap<>();
     List<ModeTypeVariable> baseMtVars = baseT.modeTypeVars();
 
+    //System.err.format("Checking %s with %s\n", baseT, mtArgs);
+    //System.err.format("Mode Type Variables: %s\n\n", baseT.modeTypeVars());
+
     for (int i = 0; i < baseMtVars.size(); ++i) {
+      if (!baseMtVars.get(i).upperBound().isCanonical()) {
+        // Need to disambig
+        throw new SchedulerException();
+      }
+
       Type mtArg = mtArgs.get(i);
 
       // 1. MtVar is a dynRecv with a supplied ? type.
@@ -453,23 +486,26 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
       if (!(mi.isVariableArity() && argTypes.size() >= mi.formalTypes()
               .size() - 1)) {
         return null;
+      } else {
+        return super.callValid(mi, argTypes, actualTypeArgs, expectedReturnType);
       }
     }
 
     PandaProcedureInstance pi = (PandaProcedureInstance) mi;
 
-    ModeSubst subst = this.inferModeTypeArgs(pi, argTypes, expectedReturnType);
-    if (subst == null) {
-      // No matter what we should be able to create a valid subst,
-      // null indicates error
-      return null;
+    if (!pi.modeTypeVars().isEmpty()) {
+      ModeSubst subst = this.inferModeTypeArgs(pi, argTypes, expectedReturnType);
+      if (subst == null) {
+        // No matter what we should be able to create a valid subst,
+        // null indicates error
+        return null;
+      }
+      pi = (PandaProcedureInstance) subst.substProcedure(pi);
     }
-
-    PandaProcedureInstance smi = (PandaProcedureInstance) subst.substProcedure(pi);
 
     // Let's perform a subst over modes, a hack for now, just prototyping
     // Can do a subst over the mi container type with a new type map
-    return super.callValid(smi, argTypes, actualTypeArgs);
+    return super.callValid(pi, argTypes, actualTypeArgs);
   }
 
   @Override
@@ -492,21 +528,26 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
       if (!(mi.isVariableArity() && argTypes.size() >= mi.formalTypes()
               .size() - 1)) {
         return null;
+      } else {
+        // Don't handle varagrs yet, 
+        return super.methodCallValid(mi, name, argTypes, actualTypeArgs, expectedReturnType);
       }
     } 
 
-    ModeSubst subst = this.inferModeTypeArgs((PandaProcedureInstance) mi, argTypes, expectedReturnType);
-    if (subst == null) {
-      // No matter what we should be able to create a valid subst,
-      // null indicates error
-      return null;
+    PandaProcedureInstance pi = (PandaProcedureInstance) mi;
+    if (!pi.modeTypeVars().isEmpty()) {
+      ModeSubst subst = this.inferModeTypeArgs(pi, argTypes, expectedReturnType);
+      if (subst == null) {
+        // No matter what we should be able to create a valid subst,
+        // null indicates error
+        return null;
+      }
+      pi = (PandaProcedureInstance) subst.substProcedure(pi);
     }
-
-    PandaMethodInstance smi = (PandaMethodInstance) subst.substMethod(mi);
 
     // Let's perform a subst over modes, a hack for now, just prototyping
     // Can do a subst over the mi container type with a new type map
-    return super.methodCallValid(smi, name, argTypes, actualTypeArgs, expectedReturnType);
+    return super.methodCallValid((JL5MethodInstance)pi, name, argTypes, actualTypeArgs, expectedReturnType);
   }
 
 
@@ -721,6 +762,52 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
     assert_(type);
     return new PandaFieldInstance_c(this, pos, container, flags, type, name);
   }
+
+  @Override
+  public boolean isValidAnnotationValueType(Type t) {
+    // must be one of primitive, String, Class, enum, annotation or
+    // array of one of these
+    if (t.isPrimitive()) return true;
+    if (t.isClass()) {
+        if (JL5Flags.isEnum(t.toClass().flags())
+                || JL5Flags.isAnnotation(t.toClass().flags())
+                || String().typeEquals(t) || Class().typeEquals(t)) {
+            return true;
+        }
+    }
+    // XXX More elegant way to check that t is a parameterized invocation of Class?
+    // See JLS 3rd ed. 9.6, clarified in JLS SE7 ed. 9.6.1
+    if (erasureType(Class()).equals(erasureType(t))) {
+        return true;
+    }
+    if (t.isArray()) {
+        return isValidAnnotationValueType(t.toArray().base());
+    }
+    return false;
+  } 
+
+  @Override
+  public AnnotationTypeElemInstance annotationElemInstance(
+      Position pos,
+      ClassType ct, 
+      Flags f, 
+      Type type, 
+      java.lang.String name, 
+      boolean hasDefault) {
+    assert_(ct);
+    assert_(type);
+    return 
+      new PandaAnnotationTypeElemInstance_c(
+        this, 
+        pos,
+        ct,
+        f,
+        type,
+        name,
+        hasDefault
+        );
+    }
+
 
     
   // Panda TypeSystem Methods

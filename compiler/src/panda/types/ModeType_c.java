@@ -1,5 +1,7 @@
 package panda.types;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import panda.runtime.*;
 
 import polyglot.ast.*;
@@ -8,6 +10,8 @@ import polyglot.util.*;
 import polyglot.visit.*;
 
 public class ModeType_c extends Type_c implements ModeType {
+  private static final long serialVersionUID = SerialVersionUID.generate();
+
   protected String name;
 
   private int uniqueId;
@@ -119,6 +123,9 @@ public class ModeType_c extends Type_c implements ModeType {
     }
 
     PandaTypeSystem ts = (PandaTypeSystem) this.typeSystem();
+
+    //System.err.format("ModeType: %s %s\n", this, o);
+    //System.err.format("ModeType: %s %s %s\n", this == o, this == ts.WildcardModeType(), o == ts.WildcardModeType());
 
     return (this == o ||
             this == ts.WildcardModeType() ||

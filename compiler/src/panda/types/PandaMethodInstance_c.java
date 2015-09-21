@@ -54,6 +54,11 @@ public class PandaMethodInstance_c extends JL5MethodInstance_c implements PandaM
     this.baseInstance = baseInstance;
   }
 
+  @Override
+  public boolean callValidImpl(List<? extends Type> argTypes) {
+    return super.callValidImpl(argTypes);
+  }
+
   // MODE-NOTE: Needed to do this here to switch...
   // if (!ts.equals( 
   // to

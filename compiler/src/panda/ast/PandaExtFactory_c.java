@@ -14,6 +14,11 @@ public final class PandaExtFactory_c extends PandaAbstractExtFactory_c {
   }
 
   @Override 
+  protected Ext extAnnotationElemDeclImpl() {
+    return new PandaAnnotationElemDeclExt();
+  } 
+
+  @Override 
   protected Ext extNormalAnnotationElemImpl() {
     return new PandaAnnotationElemExt();
   } 

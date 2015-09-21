@@ -4,11 +4,11 @@ import panda.types.*;
 import panda.visit.*;
 import panda.translate.*;
 
-
 import polyglot.ast.*;
 import polyglot.types.*;
 import polyglot.visit.*;
 import polyglot.util.*;
+import polyglot.translate.*;
 
 import polyglot.ext.jl5.ast.*;
 
@@ -87,31 +87,33 @@ public class PandaCallExt extends PandaExt {
 
   @Override
   public Node typeCheck(TypeChecker tc) throws SemanticException { 
-    Call n = (Call) this.node();
+    Call n = (Call) superLang().typeCheck(this.node(), tc);
 
     PandaTypeSystem ts = (PandaTypeSystem) tc.typeSystem();
     PandaContext ctx = (PandaContext) tc.context();
     PandaClassType ct = (PandaClassType) ctx.currentClassScope();
 
-    // NOTE: No target means this is a static call, kick it up
+    // NOTE: No target means this is a static call
     if (n.target() == null) {
-      return superLang().typeCheck(this.node(), tc);
+      return n;
     } 
 
     Type t = n.target().type();
     if (!(t instanceof ModeSubstType)) {
-      return superLang().typeCheck(n, tc);
+      return n;
     } 
 
     // Disallow dynamic type seperately for better diagnostics
     ModeSubstType mt = (ModeSubstType) t;
-    if (mt.modeType() == ts.DynamicModeType()) {
-      throw new SemanticException("Dynamic mode type cannot receive messages. Resolve using snapshot.");
+    if (mt.modeType() == ts.DynamicModeType() && 
+        !PandaFlags.isModesafe(n.methodInstance().flags())) {
+      throw new SemanticException(
+        "Dynamic mode type cannot receive messages. Resolve using snapshot.");
     }
 
     if (ctx.inStaticContext()) {
       // Kick up to super lang for now
-      return superLang().typeCheck(this.node(), tc);
+      return n;
     } 
 
     // Call is valid if the first mode type variable upper bound is greater
@@ -121,7 +123,6 @@ public class PandaCallExt extends PandaExt {
       throw new SemanticException("Cannot send message to " + t + " from mode " + mtThis.upperBound() + ".");
     }
 
-    n = (Call) superLang().typeCheck(this.node(), tc);
     PandaProcedureInstance pi = (PandaProcedureInstance) n.methodInstance();
     if (pi.modeTypeVars().isEmpty()) {
       return n;
@@ -162,6 +163,25 @@ public class PandaCallExt extends PandaExt {
       n = (Call) n.arguments(args);
     }
 
+    return n;
+  }
+
+  @Override
+  public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
+    PandaRewriter prw = (PandaRewriter) rw;
+    JL5NodeFactory nf = (JL5NodeFactory) prw.to_nf();
+
+    JL5CallExt ext = (JL5CallExt) JL5Ext.ext(this.node());
+    Call call = (Call) super.extRewrite(rw);
+
+    Call n =
+      nf.Call(
+        call.position(),
+        call.target(),
+        ext.typeArgs(),
+        call.id(),
+        call.arguments()
+        );
     return n;
   }
 

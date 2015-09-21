@@ -2,6 +2,7 @@ package panda.ast;
 
 import panda.types.*;
 import polyglot.ast.*;
+import polyglot.frontend.*;
 import polyglot.types.*;
 import polyglot.visit.*;
 
