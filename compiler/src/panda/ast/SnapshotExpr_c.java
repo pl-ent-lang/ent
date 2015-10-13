@@ -194,8 +194,6 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
     elm.upperBound(um);
     elm.lowerBound(lm);
 
-    System.err.format("Existential type %s\n", elm); 
-
     // We introduce a type variable bounded by the bounds supplied in snapshot
     ModeSubstType ct = ((ModeSubstType) tt).deepCopy();
     ct.modeType(elm);

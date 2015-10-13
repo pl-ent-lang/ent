@@ -281,6 +281,8 @@ public abstract class ModeSubstClassType_c extends ModeSubstReferenceType_c impl
   }
 
   // Type Methods
+
+  /*
   @Override
   public boolean descendsFromImpl(Type ansT) {
     PandaTypeSystem ts = (PandaTypeSystem) this.ts;
@@ -412,6 +414,7 @@ public abstract class ModeSubstClassType_c extends ModeSubstReferenceType_c impl
     return this.ts.isSubtype(this.baseType(), st.baseType()) &&
            this.modeTypeArgsImplicit(st);
   }
+  */
 
   @Override
   public LinkedList<Type> isImplicitCastValidChainImpl(Type toT) {
@@ -426,8 +429,7 @@ public abstract class ModeSubstClassType_c extends ModeSubstReferenceType_c impl
     LinkedList<Type> chain = null;
     ModeSubstType st = (ModeSubstType) toT;
 
-    if (ts.isSubtype(this.baseType(), st.baseType()) &&
-        this.modeTypeArgsImplicit(st)) {
+    if (ts.isSubtype(this, toT)) {
       chain = new LinkedList<>();
       chain.add(this);
       chain.add(toT);

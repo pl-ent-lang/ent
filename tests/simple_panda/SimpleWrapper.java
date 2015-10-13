@@ -3,8 +3,6 @@ package simple_panda;
 import java.util.ArrayList;
 import java.util.List;
 
-modes { low <: mid; mid <: high; high <: veryHigh; }
-
 public class SimpleWrapper@mode<X <= high, Y <= X> {
   private List<String@mode<Y> > wrap;
 

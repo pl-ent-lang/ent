@@ -1,7 +1,5 @@
 package simple_panda;
 
-modes {low <: mid; mid <: high;}
-
 public class Mcase@mode<X> {
 
   public mcase<int> f1 = mcase<int> {

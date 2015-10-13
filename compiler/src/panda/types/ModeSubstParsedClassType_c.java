@@ -473,6 +473,7 @@ public class ModeSubstParsedClassType_c extends ModeSubstClassType_c implements 
     return ((PandaParsedClassType) this.baseType()).needSerialization();
   }
 
+  /*
   @Override
   public LinkedList<Type> isImplicitCastValidChainImpl(Type toT) {
     PandaTypeSystem ts = (PandaTypeSystem) this.ts;
@@ -503,6 +504,7 @@ public class ModeSubstParsedClassType_c extends ModeSubstClassType_c implements 
     }
     return chain;
   }
+  */
 
 
 }

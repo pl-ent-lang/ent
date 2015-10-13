@@ -1,7 +1,5 @@
 package simple_panda;
 
-modes { low <: mid; mid <: high; }
-
 public class Modesafe@mode<?->X> {
   attribute {
     return @mode<high>;

@@ -7,6 +7,14 @@ import java.util.Map;
 public class PANDA_Runtime {
   private static Map<Object, Integer[]> objTab = new HashMap<>();
   private static Map<Integer, Integer> modeVarTab = new HashMap<>();
+  public static boolean NOEXIT_MODE = false;
+
+  static {
+    String panda_noexit_val = System.getenv("PANDA_NOEXIT");
+    if (panda_noexit_val != null && panda_noexit_val.equals("true")) {
+      NOEXIT_MODE = true;
+    }
+  }
 
   // For performance analysis
   private static int numGetObjModeCalls = 0;
@@ -43,32 +51,6 @@ public class PANDA_Runtime {
 
   public static void putModeVar(int uniqueId, int mode) {
     PANDA_Runtime.modeVarTab.put(uniqueId, mode);
-  }
-
-  public static String modeDBG(Object o) {
-    Integer[] m = PANDA_Runtime.getObjAll(o);
-    if (m == null) {
-      return o.getClass() + ": not in mode table";
-    } else {
-      String s = o.getClass() + " - Table \n";
-      for (int i = 0; i < m.length; ++i) {
-        s += Integer.toString(i) + " : " + Integer.toString(m[i]) + "\n";
-      }
-      return s;
-    }
-  }
-
-  public static void report() {
-    System.out.println("----- Calls -----");
-    System.out.println("putObj: " + PANDA_Runtime.numPutObjCalls);
-    System.out.println("getObjMode: " + PANDA_Runtime.numGetObjModeCalls);
-    System.out.println("-----------------\n");
-
-    System.out.println("----- Table -----");
-    System.out.println("Table Size: " + PANDA_Runtime.objTab.size());
-    System.out.println("-----------------\n");
-  }
-
-
+  } 
 }
 

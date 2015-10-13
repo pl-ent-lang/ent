@@ -119,9 +119,13 @@ public class PandaClassDeclExt extends PandaExt {
     PandaParsedClassType ct = (PandaParsedClassType) n.type();
 
     // NOTE : We force classes to implement
-    if (ct.hasDynamicRecv() && !ct.flags().isInterface() && !ct.hasAttribute()) {
+    if (ct.hasDynamicRecv() && !ct.flags().isInterface() && !ct.flags().isAbstract() && !ct.hasAttribute()) {
       throw new SemanticException(
           "Class must define an attributor to receive the dynamic mode type.");
+    }
+
+    if ((ct.flags().isInterface() || ct.flags().isAbstract()) && ct.hasAttribute()) {
+      throw new SemanticException( "Only a concrete class can implement an attributor.");
     }
 
     if (!ct.hasDynamicRecv() && ct.hasAttribute()) {

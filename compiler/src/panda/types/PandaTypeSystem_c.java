@@ -154,11 +154,6 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
 
   @Override
   public boolean typeEquals(Type l, Type u) {
-    if (panda.Main.PDEBUG) {
-      System.out.println("PandaTypeSystem::typeEquals(" + l + ", " + u + ")");
-      System.out.println("PandaTypeSystem::typeEquals-Class(" + l.getClass() + ", " + u.getClass() + ")");
-    }
-
     if (super.typeEquals(l, u)) {
       return true;
     }
@@ -175,12 +170,7 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
   }
 
   @Override
-  public boolean isSubtype(Type l, Type u) {
-    if (panda.Main.PDEBUG) {
-      System.out.println("PandaTypeSystem::isSubtype(" + l + ", " + u + ")");
-      System.out.println("PandaTypeSystem::isSubtype-Class(" + l.getClass() + ", " + u.getClass() + ")");
-    }
-
+  public boolean isSubtype(Type l, Type u) { 
     if (super.isSubtype(l, u)) {
       return true;
     }
@@ -205,16 +195,23 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
 
   @Override
   public boolean descendsFrom(Type l, Type u) {
-    if (panda.Main.PDEBUG) {
-      System.out.println("PandaTypeSystem::descendsFrom(" + l + ", " + u + ")");
-      System.out.println("PandaTypeSystem::descendsFrom-Class(" + l.getClass() + ", " + u.getClass() + ")");
-    }
     if (super.descendsFrom(l, u)) {
       return true;
     }
 
-    if (u instanceof ModeTypeVariable) {
-      return this.isSubtype(l, ((ModeTypeVariable) u).lowerBound());
+    if (!(l instanceof ModeTypeVariable) && u instanceof ModeTypeVariable) {
+      ModeTypeVariable utv = (ModeTypeVariable) u;
+      return 
+        this.isSubtype(utv.lowerBound(), l) && 
+        this.isSubtype(l, utv.upperBound());
+    }
+
+    if (l instanceof ModeTypeVariable && u instanceof ModeTypeVariable) {
+      ModeTypeVariable ltv = (ModeTypeVariable) l;
+      ModeTypeVariable utv = (ModeTypeVariable) u;
+      return
+        this.isSubtype(utv.lowerBound(), ltv.lowerBound()) && 
+        this.isSubtype(ltv.upperBound(), utv.upperBound());
     }
 
     return false;
@@ -222,31 +219,19 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
 
   @Override
   public boolean isCastValid(Type l, Type u) {
-    if (panda.Main.PDEBUG) {
-      System.out.println("PandaTypeSystem::isCastValid(" + l + ", " + u + ")");
-      System.out.println("PandaTypeSystem::isCastValid-Class(" + l.getClass() + ", " + u.getClass() + ")");
-    }
-
     if (super.isCastValid(l, u)) {
       return true;
     }
 
-    /*
     if (this.isSpecialModeSubstCase(l, u)) {
       return this.isCastValid(l, ((ModeSubstType) u).baseType());
     }
-    */
 
     return false;
   }
 
   @Override
   public boolean isImplicitCastValid(Type l, Type u) {
-    if (panda.Main.PDEBUG) {
-      System.out.println("PandaTypeSystem::isImplicitCastValid(" + l + ", " + u + ")");
-      System.out.println("PandaTypeSystem::isImplicitCastValid-Class(" + l.getClass() + ", " + u.getClass() + ")");
-    }
-
     if (super.isImplicitCastValid(l, u)) {
       return true;
     }
@@ -260,10 +245,6 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
 
   @Override
   public LinkedList<Type> isImplicitCastValidChain(Type l, Type u) {
-    if (panda.Main.PDEBUG) {
-      System.out.println("PandaTypeSystem::isImplicitCastValidChain(" + l + ", " + u + ")");
-      System.out.println("PandaTypeSystem::isImplicitCastValidChain-Class(" + l.getClass() + ", " + u.getClass() + ")");
-    }
     return super.isImplicitCastValidChain(l, u);
   }
 
@@ -724,7 +705,7 @@ public class PandaTypeSystem_c extends JL7TypeSystem_c implements PandaTypeSyste
       if (this.typeEquals(pct, rt)) {
         continue;
       }
-      if (((PandaClassType) rt).hasDynamicRecv() && pct.attributeInstance() == null) {
+      if (((PandaClassType) rt).hasDynamicRecv() && pct.attributeInstance() == null && !pct.flags().isAbstract()) {
         throw new SemanticException(rt + " requires an attributor. " + ct + " must implement an attributor.");
       }
     }

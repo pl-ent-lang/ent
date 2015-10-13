@@ -7,8 +7,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Iterator;
 
-modes {low <: mid; mid <: high; };
-
 public class Wrapper<T> implements Iterable<T> {
   private List<T> wrap;
 

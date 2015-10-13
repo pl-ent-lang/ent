@@ -246,6 +246,7 @@ public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements M
 
 
   // Type Methods
+  /*
   @Override
   public boolean descendsFromImpl(Type ansT) {
     if (super.descendsFromImpl(ansT)) {
@@ -315,5 +316,6 @@ public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements M
     }
     return false;
   }
+  */
 
 }

@@ -48,6 +48,7 @@ public class ModeSubstPrimitiveType_c extends ModeSubstType_c implements ModeSub
   }
 
   // Type Methods
+  /*
   @Override
   public boolean descendsFromImpl(Type ancestor) {
     return false;
@@ -74,5 +75,6 @@ public class ModeSubstPrimitiveType_c extends ModeSubstType_c implements ModeSub
     return this.ts.isCastValid(this.baseType(), st.baseType()) &&
            this.modeTypeArgsEquals(st);
   }
+  */
 
 }

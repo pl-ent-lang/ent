@@ -352,6 +352,51 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
   @Override
   public boolean descendsFromImpl(Type ansT) {
     if (!(ansT instanceof ModeSubstType)) {
+      return this.ts.descendsFrom(this.baseType(), ansT);
+    } 
+
+    ModeSubstType st = (ModeSubstType) ansT;
+
+    // 3 Cases for descends
+    //  1. Base descends, mode types are equal
+    //  2. Base descends, mode types descend
+    //  3. Base are equal, mode type descend
+    //  TODO : Refactor and then optimize this code
+    boolean descends = this.ts.descendsFrom(this.baseType(), st.baseType());
+    if ((descends && this.modeTypeArgsEquals(st)) ||
+        (descends && this.modeTypeArgsDescends(st))) {
+      return true;
+    }
+
+    return this.ts.typeEquals(this.baseType(), st.baseType()) && this.modeTypeArgsDescends(st);
+  }
+
+  @Override
+  public boolean isCastValidImpl(Type toT) {
+    if (!(toT instanceof ModeSubstType)) {
+      return this.ts.isCastValid(this.baseType(), toT);
+    } 
+
+    ModeSubstType st = (ModeSubstType) toT;
+    return this.ts.isCastValid(this.baseType(), st.baseType()) &&
+           this.modeTypeArgsEquals(st);
+  }
+
+  @Override
+  public boolean isImplicitCastValidImpl(Type toT) {
+    if (!(toT instanceof ModeSubstType)) {
+      return this.ts.isImplicitCastValid(this.baseType(), toT);
+    } 
+
+    ModeSubstType st = (ModeSubstType) toT;
+    return this.ts.isImplicitCastValid(this.baseType(), st.baseType()) &&
+           this.modeTypeArgsImplicit(st);
+  }
+
+  /*
+  @Override
+  public boolean descendsFromImpl(Type ansT) {
+    if (!(ansT instanceof ModeSubstType)) {
       System.out.println("Types: " + this + " " + ansT);
       System.out.println("Classes: " + this.getClass() + " " + ansT.getClass());
       throw new InternalCompilerError(
@@ -390,6 +435,7 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
     return this.ts.isImplicitCastValid(this.baseType(), st.baseType()) &&
            this.modeTypeArgsImplicit(st);
   }
+  */
 
   @Override
   public boolean numericConversionValidImpl(Object value) {
