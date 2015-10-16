@@ -6,9 +6,13 @@ import panda.runtime.temperature.TemperatureSupply;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 
+import com.google.common.base.Stopwatch;
+import java.util.concurrent.TimeUnit;
+
 public class PANDA_Util {
   public static BatterySupply Battery = new BatterySupply();
   public static TemperatureSupply Temperature = new TemperatureSupply();
+  private static Stopwatch stopwatch = Stopwatch.createUnstarted();
 
   public static String dumpMode(Object o) {
     Integer[] m = PANDA_Runtime.getObjAll(o);
@@ -55,6 +59,22 @@ public class PANDA_Util {
     } catch (Exception e) {
       System.err.println("Error: " + e.getMessage());
     }
+  }
+
+  public static void startStopwatch() {
+    stopwatch.start();
+  }
+
+  public static void stopStopwatch() {
+    stopwatch.stop();
+  }
+
+  public static void resetStopwatch() {
+    stopwatch.reset();
+  }
+
+  public static String elapsedTime() {
+    return String.format("%d ms", stopwatch.elapsed(TimeUnit.MILLISECONDS));
   }
 
 
