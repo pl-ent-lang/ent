@@ -11,6 +11,7 @@ public class BatterySupply {
 			case WINDOWS:
 				System.err.println("Windows not supported. Exiting.");
 				System.exit(1);
+        break;
 			case MACOS:
 				bareMetalBattery = new OSXBareMetalBattery();
         break;
@@ -24,6 +25,7 @@ public class BatterySupply {
 			case NONE:
 				System.err.println("Encountered unsupported operating system. Exiting.");
 				System.exit(1);
+        break;
 		}
 
 	}

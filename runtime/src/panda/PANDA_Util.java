@@ -1,12 +1,14 @@
 package panda.runtime;
 
 import panda.runtime.battery.BatterySupply;
+import panda.runtime.temperature.TemperatureSupply;
 
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 
 public class PANDA_Util {
   public static BatterySupply Battery = new BatterySupply();
+  public static TemperatureSupply Temperature = new TemperatureSupply();
 
   public static String dumpMode(Object o) {
     Integer[] m = PANDA_Runtime.getObjAll(o);
