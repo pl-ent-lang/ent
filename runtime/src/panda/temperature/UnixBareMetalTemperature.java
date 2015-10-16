@@ -1,4 +1,4 @@
-package panda.runtime.temperature
+package panda.runtime.temperature;
 
 import panda.runtime.temperature.BareMetalTemperature;
 

@@ -13,7 +13,7 @@ public class TemperatureSupply {
 				System.exit(1);
         break;
 			case MACOS:
-				bareMetalBattery = new OSXBareMetalBattery();
+				bareMetalTemperature = new OSXBareMetalTemperature();
         break;
 			case LINUX:
 				bareMetalTemperature = new UnixBareMetalTemperature();

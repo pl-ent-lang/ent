@@ -8,7 +8,7 @@ import java.io.BufferedReader;
 
 public class OSXBareMetalTemperature implements BareMetalTemperature {
 
-  public UnixBareMetalTemperature() {
+  public OSXBareMetalTemperature() {
   }
 	
   public int getCurrentTemperature() {
