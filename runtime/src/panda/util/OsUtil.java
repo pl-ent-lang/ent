@@ -4,7 +4,6 @@ public class OsUtil {
 	
 	public static OsType getOsType() {
 		String osName = System.getProperty("os.name");
-		System.out.println("os.name: " + osName);
 		
 		if (isWindowsVariant(osName)) {
 			return OsType.WINDOWS;
@@ -16,7 +15,6 @@ public class OsUtil {
       }
 
 			String vendor = System.getProperty("java.vendor");
-      System.out.println("Vendor: " + vendor);
 			
 			if (vendor.equals("The Android Project")) {
 				return OsType.ANDROID;

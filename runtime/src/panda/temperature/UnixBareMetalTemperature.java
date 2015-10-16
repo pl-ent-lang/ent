@@ -16,11 +16,11 @@ public class UnixBareMetalTemperature implements BareMetalTemperature {
   public UnixBareMetalTemperature() {
   }
 	
-  public int getCurrentTemperature() {
-    int currentTemperature = 0;
+  public float getTempC() {
+    float currentTemperature = 0;
     try {
       currentTemperature = 
-        this.getBareMetalZoneTemperature() / TEMPERATURE_ZONE0_CONVERSION;
+        ((float) this.getBareMetalZoneTemperature()) / ((float) TEMPERATURE_ZONE0_CONVERSION);
     } catch (IOException e) {
       // TODO: How to handle?
     }

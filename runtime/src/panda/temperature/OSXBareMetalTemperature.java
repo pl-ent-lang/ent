@@ -11,8 +11,8 @@ public class OSXBareMetalTemperature implements BareMetalTemperature {
   public OSXBareMetalTemperature() {
   }
 	
-  public int getCurrentTemperature() {
-    return 0;
+  public float getTempC() {
+    return 0.0f;
   }
 
 }

@@ -30,8 +30,12 @@ public class TemperatureSupply {
 
 	}
 	
-	public int getCurrentTemperature() {
-		return bareMetalTemperature.getCurrentTemperature();
+	public float getTempC() {
+		return bareMetalTemperature.getTempC();
 	}
+
+  public float getTempF() {
+    return ((float) this.getTempC()) * 1.80f + 32.0f;
+  }
 	
 }
