@@ -18,13 +18,15 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
   protected Expr lower;
   protected Expr upper;
   protected boolean saveMode;
+  protected boolean force;
 
-  SnapshotExpr_c(Position pos, Expr target, Expr lower, Expr upper, boolean saveMode) {
+  SnapshotExpr_c(Position pos, Expr target, Expr lower, Expr upper, boolean saveMode, boolean force) {
     super(pos);
     this.target = target;
     this.lower = lower;
     this.upper = upper;
     this.saveMode = saveMode;
+    this.force = force;
   }
 
   // Property Methods
@@ -65,6 +67,10 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
     return this.saveMode;
   }
 
+  protected boolean force() {
+    return this.force;
+  }
+
   protected SnapshotExpr saveMode(boolean saveMode) {
     return this.saveMode(this, saveMode);
   }
@@ -100,7 +106,8 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
              this.target(), 
              this.lower(), 
              this.upper(),
-             this.saveMode()
+             this.saveMode(),
+             this.force()
              );
   }
 
@@ -237,9 +244,14 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
       upper = (Expr) ((ModeValue) this.upper()).rewriteModeValue(rw);
     }
 
+    String snapshotStr = 
+      (this.force) ? 
+      "PANDA_Snapshot.forceSnapshot(%E, %E, %E, %E)" : 
+      "PANDA_Snapshot.snapshot(%E, %E, %E, %E)";
+
     Expr expr = 
       qq.parseExpr(
-        "PANDA_Snapshot.snapshot(%E, %E, %E, %E)", 
+        snapshotStr,
         target,
         lower,
         upper,

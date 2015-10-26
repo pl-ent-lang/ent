@@ -288,6 +288,7 @@ terminal Token MODE;
 terminal Token MODES;
 terminal Token PARORD;
 terminal Token SNAPSHOT;
+terminal Token SNAPSHOTFORCE;
 terminal Token MODEBOUND;
 terminal Token MCASE;
 terminal Token RARROW;
@@ -2758,9 +2759,14 @@ mode_type_node ::=
 snapshot_expr ::=
     SNAPSHOT:s expression:e MODEBOUND LBRACK expression:lb COMMA expression:ub RBRACK:r {:
                                                                                        
-    RESULT = parser.nf.SnapshotExpr(parser.pos(s,r), e, lb, ub);
+    RESULT = parser.nf.SnapshotExpr(parser.pos(s,r), e, lb, ub, false, false);
   
-                                                                                        :};
+                                                                                        :}
+ |  SNAPSHOTFORCE:s expression:e MODEBOUND LBRACK expression:lb COMMA expression:ub RBRACK:r {:
+                                                                                            
+    RESULT = parser.nf.SnapshotExpr(parser.pos(s,r), e, lb, ub, false, true);
+  
+                                                                                             :};
 
 mcase_type ::=
     MCASE:a LT type:t GT:b {:

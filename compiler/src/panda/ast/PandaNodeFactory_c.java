@@ -177,13 +177,13 @@ public class PandaNodeFactory_c extends JL7NodeFactory_c implements PandaNodeFac
     }
 
     public SnapshotExpr SnapshotExpr(Position pos, Expr target, Expr lower, Expr upper) {
-      SnapshotExpr n = new SnapshotExpr_c(pos, target, lower, upper, false);
+      SnapshotExpr n = new SnapshotExpr_c(pos, target, lower, upper, false, false);
       n = ext(n, extFactory().extSnapshotExpr());
       return n;
     }
 
-    public SnapshotExpr SnapshotExpr(Position pos, Expr target, Expr lower, Expr upper, boolean saveMode) {
-      SnapshotExpr n = new SnapshotExpr_c(pos, target, lower, upper, saveMode);
+    public SnapshotExpr SnapshotExpr(Position pos, Expr target, Expr lower, Expr upper, boolean saveMode, boolean force) {
+      SnapshotExpr n = new SnapshotExpr_c(pos, target, lower, upper, saveMode, force);
       n = ext(n, extFactory().extSnapshotExpr());
       return n;
     }

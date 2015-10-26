@@ -87,6 +87,6 @@ public interface PandaNodeFactory extends JL7NodeFactory {
 
   SnapshotExpr SnapshotExpr(Position pos, Expr target, Expr lower, Expr upper);
 
-  SnapshotExpr SnapshotExpr(Position pos, Expr target, Expr lower, Expr upper, boolean saveMode);
+  SnapshotExpr SnapshotExpr(Position pos, Expr target, Expr lower, Expr upper, boolean saveMode, boolean force);
 
 }

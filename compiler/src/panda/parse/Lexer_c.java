@@ -583,6 +583,7 @@ public class Lexer_c implements Lexer {
         keywords.put("panda_copy",          new Integer(sym.COPY));
         keywords.put("blammable",     new Integer(sym.BLAMMABLE));
         keywords.put("snapshot",      new Integer(sym.SNAPSHOT));
+        keywords.put("snapshotforce", new Integer(sym.SNAPSHOTFORCE));
         keywords.put("mcase",         new Integer(sym.MCASE));
         keywords.put("modesafe",      new Integer(sym.MODESAFE));
     }

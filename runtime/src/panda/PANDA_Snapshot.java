@@ -25,5 +25,22 @@ public class PANDA_Snapshot {
     return copy;
   }
 
+  public static <T extends PANDA_Attributable> T forceSnapshot(T o, int lb, int ub, boolean saveMode) {
+    int mode = o.PANDA_attribute();
+    if (mode < lb || mode > ub) {
+      mode = ub;
+    }
+
+    T copy = (T) o.PANDA_copy();
+    if (saveMode) {
+      Integer[] cmodes = PANDA_Runtime.getObjAll(o).clone();
+      cmodes[0] = mode;
+      PANDA_Runtime.putObj(copy, cmodes);
+    }
+
+    return copy;
+  }
+
+
 
 }

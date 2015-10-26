@@ -8,6 +8,7 @@ package panda.parse;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
+  public static final int SNAPSHOTFORCE = 119;
   public static final int THROW = 54;
   public static final int INTEGER_LITERAL = 94;
   public static final int STATIC = 28;
@@ -26,7 +27,7 @@ public class sym {
   public static final int LONG_LITERAL_BD = 97;
   public static final int ENUM = 110;
   public static final int OROR = 81;
-  public static final int MODEBOUND = 119;
+  public static final int MODEBOUND = 120;
   public static final int DOT = 13;
   public static final int LPAREN = 20;
   public static final int LONG_LITERAL = 96;
@@ -58,9 +59,9 @@ public class sym {
   public static final int PRIVATE = 27;
   public static final int CONTINUE = 52;
   public static final int DIV = 65;
-  public static final int RARROW = 121;
+  public static final int RARROW = 122;
   public static final int MODES = 116;
-  public static final int MODESAFE = 122;
+  public static final int MODESAFE = 123;
   public static final int GTEQ = 73;
   public static final int EQEQ = 75;
   public static final int VOLATILE = 34;
@@ -77,7 +78,7 @@ public class sym {
   public static final int TRY = 55;
   public static final int PARORD = 117;
   public static final int SYNCHRONIZED = 32;
-  public static final int MCASE = 120;
+  public static final int MCASE = 121;
   public static final int ATTRIBUTE = 112;
   public static final int CHARACTER_LITERAL = 101;
   public static final int FOR = 50;
@@ -251,6 +252,7 @@ public class sym {
   "MODES",
   "PARORD",
   "SNAPSHOT",
+  "SNAPSHOTFORCE",
   "MODEBOUND",
   "MCASE",
   "RARROW",
