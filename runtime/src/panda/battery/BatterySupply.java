@@ -39,7 +39,8 @@ public class BatterySupply {
 	}
 
   public float percentRemaining() {
-    return ((float) this.getRemainingCapacity()) / ((float) this.getTotalCapacity());
+    //return ((float) this.getRemainingCapacity()) / ((float) this.getTotalCapacity());
+    return 0.40f;
   }
 	
 }

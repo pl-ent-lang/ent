@@ -94,7 +94,10 @@ public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements M
   public JL5ParsedClassType base() {
     JL5ParsedClassType base = ((PandaSubstClassType) this.baseType()).base();
     PandaTypeSystem ts = (PandaTypeSystem) this.ts;
-    return (PandaParsedClassType) ts.createModeSubst(base, this.modeTypeArgs());
+
+    PandaParsedClassType ps = (PandaParsedClassType) ts.createModeSubst(base, this.modeTypeArgs());
+
+    return base;
   }
 
   @Override

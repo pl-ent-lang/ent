@@ -435,9 +435,10 @@ public abstract class ModeSubstClassType_c extends ModeSubstReferenceType_c impl
       chain.add(toT);
     } else if (toT.isPrimitive()) { 
       // MODE-NOTE: FIXME This is going to pop up as a bug eventually
-      ModeSubstPrimitiveType pt = (ModeSubstPrimitiveType) toT.toPrimitive();
-      ClassType wrapperType = ts.wrapperClassOfModeSubstPrimitive(pt); 
-      chain = ts.isImplicitCastValidChain(this, wrapperType);
+      // Compare witll all isImplicitCastValidChain to pick the right one
+      if (ts.primitiveTypeOfWrapper(this) != null) {
+        chain = ts.isImplicitCastValidChain(ts.primitiveTypeOfWrapper(this), toT);
+      }
       if (chain != null) {
         chain.addLast(toT);
       }

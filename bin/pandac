@@ -33,7 +33,7 @@ extra_cp=
 args=
 vmargs=
 classpath=$JAVA_PATH
-java=java
+java=/home/acanino/Src/jdk1.8.0_60/bin/java
 ext=panda
 
 polyglot() {
@@ -81,7 +81,8 @@ done
 #fi 
 joe_args=`$joe -l pan "$args"`
 
-classpath=$classpath:"$dir/compiler/classes:$dir/runtime/classes:$dir/lib/polyglot.jar:$dir/lib/java_cup.jar:$dir/lib/guava-18.0.jar"
+#classpath=$classpath:"$dir/compiler/classes:$dir/runtime/classes:$dir/lib/polyglot.jar:$dir/lib/java_cup.jar:$dir/lib/jsr305-1.3.9.jar:$dir/lib/guava-18.0.jar"
+classpath=$classpath:"$dir/compiler/classes:$dir/runtime/classes:$dir/lib/polyglot.jar:$dir/lib/java_cup.jar"
 if [ -n "$ext" ]; then
   classpath="$classpath:$dir/lib/$ext.jar"
 fi

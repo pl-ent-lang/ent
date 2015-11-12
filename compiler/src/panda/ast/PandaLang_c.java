@@ -6,6 +6,7 @@ import panda.visit.*;
 import polyglot.ast.*;
 import polyglot.util.InternalCompilerError;
 
+import polyglot.ext.jl5.ast.*;
 import polyglot.ext.jl7.ast.J7Lang_c;
 
 public class PandaLang_c extends J7Lang_c implements PandaLang {
@@ -38,6 +39,16 @@ public class PandaLang_c extends J7Lang_c implements PandaLang {
   protected NewOps NewOps(New n) {
     return (NewOps) pandaExt(n);
   } 
+
+  @Override
+  protected JL5CaseOps JL5CaseOps(Case n) {
+    return (JL5CaseOps) pandaExt(n);
+  }
+
+  @Override
+  protected JL5SwitchOps JL5SwitchOps(Switch n) {
+    return (JL5SwitchOps) pandaExt(n);
+  }
 
   protected PandaOps PandaOps(Node n) {
     return pandaExt(n);

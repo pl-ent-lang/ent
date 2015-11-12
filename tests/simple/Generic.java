@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
+
+import java.util.Properties;
 
 modes {low <: mid; mid <: high; }
 
@@ -23,5 +26,7 @@ public class Generic<X,Y> {
 
     Generic<String,String> g1 = new Generic<String,String>();
     Generic<String,String> g2 = new Generic<>();
+
+    Set<Map.Entry<Object,Object>> e1 = new Properties().entrySet();
   }
 }

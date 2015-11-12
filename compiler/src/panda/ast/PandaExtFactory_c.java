@@ -44,6 +44,11 @@ public final class PandaExtFactory_c extends PandaAbstractExtFactory_c {
   } 
 
   @Override 
+  protected Ext extCaseImpl() {
+    return new PandaCaseExt();
+  }
+
+  @Override 
   protected Ext extClassDeclImpl() {
     return new PandaClassDeclExt();
   }
@@ -126,6 +131,11 @@ public final class PandaExtFactory_c extends PandaAbstractExtFactory_c {
   @Override
   protected Ext extSourceFileImpl() {
     return new PandaSourceFileExt();
+  }
+
+  @Override
+  protected Ext extSwitchImpl() {
+    return new PandaSwitchExt();
   }
 
 }

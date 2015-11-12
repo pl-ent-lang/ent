@@ -1,15 +1,9 @@
 package panda.types;
 
-import polyglot.types.ClassType;
-import polyglot.types.Type;
-import polyglot.types.ReferenceType;
-import polyglot.util.InternalCompilerError;
-
-import polyglot.ext.param.types.ParamTypeSystem;
-
-import polyglot.ext.jl5.types.JL5ClassType;
-import polyglot.ext.jl5.types.JL5Subst_c;
-import polyglot.ext.jl5.types.TypeVariable;
+import polyglot.types.*;
+import polyglot.util.*;
+import polyglot.ext.param.types.*;
+import polyglot.ext.jl5.types.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +15,22 @@ public class PandaSubst_c extends JL5Subst_c implements PandaSubst {
                       Map<TypeVariable, ? extends ReferenceType> subst) {
     super(ts, subst);
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof Subst) {
+      Map<TypeVariable,ReferenceType> substitutions = ((Subst<TypeVariable, ReferenceType>) o).substitutions();
+      for (Map.Entry<TypeVariable,ReferenceType> e : substitutions.entrySet()) {
+        ReferenceType ot = this.subst.get(e.getKey());
+        if (ot == null || !ot.typeEquals(e.getValue())) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+
 
   // FIXME: (From Panda) Probably a bad equals issue with subst types. Bug
   // due to equals hack that allows ModeSubstType and Type to be equals if

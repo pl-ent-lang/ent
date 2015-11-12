@@ -6,6 +6,8 @@ public class Boxing {
 
   public static void main(String[] args) {
     Integer a = null;
-    Boxing b = new Boxing(a);
+    //Boxing b = new Boxing(a);
+
+    double d = a;
   }
 }

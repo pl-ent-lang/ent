@@ -283,7 +283,7 @@ public class PandaClassDeclExt extends PandaExt {
           continue;
         }
         FieldDecl fd = (FieldDecl) m;
-        if (fd.flags().isStatic()) {
+        if (fd.flags().isStatic() || fd.flags().isFinal()) {
           continue;
         }
         stmts.add(qq.parseStmt("PANDA_ld.%s = this.%s;", fd.name(), fd.name()));

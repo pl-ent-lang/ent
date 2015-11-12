@@ -1,6 +1,7 @@
 package simple;
 
 public class Switch {
+  /*
   public void foo(int dims) {
     switch (dims) {
       case 0:
@@ -16,4 +17,16 @@ public class Switch {
         break;
     }
   }
+  */
+
+  public void foo2(String name) {
+    switch (name) {
+      case "length":
+        break;
+
+      default:
+        break;
+    }
+  }
+
 }

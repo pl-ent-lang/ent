@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PANDA_Runtime {
-  private static Map<Object, Integer[]> objTab = new HashMap<>();
-  private static Map<Integer, Integer> modeVarTab = new HashMap<>();
+  private static Map<Object, Integer[]> objTab = new WeakHashMap<>();
+  private static Map<Integer, Integer> modeVarTab = new WeakHashMap<>();
   public static boolean NOEXIT_MODE = false;
 
   static {

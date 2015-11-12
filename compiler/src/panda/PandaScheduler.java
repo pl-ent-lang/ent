@@ -5,6 +5,7 @@ import panda.types.*;
 import panda.visit.*;
 
 import polyglot.ext.jl7.*;
+import polyglot.ext.jl5.visit.RemoveEnums;
 
 import polyglot.ast.*;
 import polyglot.frontend.*;

@@ -16,7 +16,7 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
   protected List<Type> modeTypeArgs;
 
   public ModeSubstType_c(Type baseType, List<Type> modeTypeArgs) {
-    super(baseType.typeSystem(), Position.COMPILER_GENERATED);
+    super(baseType.typeSystem(), baseType.position());
     this.baseType = baseType;
     this.modeTypeArgs = modeTypeArgs;
   }
