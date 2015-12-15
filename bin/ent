@@ -35,7 +35,7 @@ java=java
 ext=panda
 
 polyglot() {
-  eval "$java" "$vmargs" -classpath "'$classpath'" "$@"
+  eval "$java" "$vmargs" -Xmx2g -classpath "'$classpath'" "$@"
 }
 
 while true; do

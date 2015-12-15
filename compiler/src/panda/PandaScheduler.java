@@ -112,7 +112,7 @@ public class PandaScheduler extends JL7Scheduler {
       g.addPrerequisiteGoal(PreRemovePanda(job), this);
 
       PandaOptions pandaOpt = (PandaOptions) extInfo.getOptions();
-      if (pandaOpt.preserveTypes) {
+      if (pandaOpt.preserveTypes && pandaOpt.translatePanda) {
         g.addPrerequisiteGoal(TypePreserver(job), this);
       }
     } catch (CyclicDependencyException e) {

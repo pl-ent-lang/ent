@@ -220,6 +220,10 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
     NodeFactory nf = prw.nodeFactory();
     QQ qq = prw.qq();
 
+    if (!prw.translatePanda()) {
+      return this.target();
+    }
+
     Expr target = this.target();
 
     Expr lower;

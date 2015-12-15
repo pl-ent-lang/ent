@@ -3,7 +3,7 @@
 prg=`basename "$0"`
 dir=`dirname "$0"`/..
 
-joe="/home/acanino/Research/polyglot-personal/tools/joe/joe.rb"
+joe="$dir/joe/joe.rb"
 
 usage() {
   polyglot -h
@@ -99,3 +99,4 @@ if [ "$verbose" = 1 ]; then
 fi
 
 polyglot "-assert -simpleoutput $joe_args"
+#polyglot "-assert -simpleoutput -dontTranslatePanda $joe_args"
