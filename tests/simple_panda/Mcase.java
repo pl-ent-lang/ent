@@ -1,5 +1,7 @@
 package simple_panda;
 
+modes {low <: mid; mid <: high; }
+
 public class Mcase@mode<X> {
 
   public mcase<int> f1 = mcase<int> {
@@ -18,7 +20,7 @@ public class Mcase@mode<X> {
     return this.f1;
   }
 
-  attribute {
+  panda_attribute {
     return @mode<high>;
   }
 

@@ -1,8 +1,10 @@
 package simple_panda;
 
+modes { low <: mid; mid <: high; }
+
 public class Code@mode<?->X> {
 
-  attribute {
+  ent_attribute {
     return @mode<high>;
   }
 

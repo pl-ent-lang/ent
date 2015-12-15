@@ -1,6 +1,6 @@
-<project name="panda" default="compile-all" basedir=".">
+<project name="ent" default="compile-all" basedir=".">
     <description>
-      Panda build file
+      Ent build file
     </description>
 
 
@@ -9,10 +9,10 @@
        ****************************************  -->
 
     <!-- extension package name -->
-    <property name="package.dir" value="panda"/>
+    <property name="package.dir" value="ent"/>
 
     <!-- extension language name -->
-    <property name="name" value="panda"/>
+    <property name="name" value="ent"/>
 
     <!-- extension compiler script name -->
     <property name="compiler.name" value="${name}c"/>
