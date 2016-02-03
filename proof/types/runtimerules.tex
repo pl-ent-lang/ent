@@ -1,0 +1,31 @@
+\begin{figure}[ht]
+\footnotesize
+\hrule
+  \begin{mathpar}
+    \inferrule*[left=\stitle{Obj}]
+    { 
+      \Gamma;\cset \vdash \overline{e} : \overline{\t} \\
+      \Ffields(\classiota) = \overline{\t} \ \overline{\Fname} = \overline{e} \\
+    }
+    {\Gamma;\cset \vdash \closure{\alpha}{\classiota}{\overline{e}} : \classiota
+    }
+    \\ 
+
+    \inferrule*[left=\stitle{Check}]
+    { \Gamma;\cset \vdash e : \modevt \\
+    }
+    {\Gamma;\cset \vdash \check{e}{\moname_{1}}{\moname_{2}} : \modevt
+    }
+
+    \inferrule*[left=\stitle{Let}]
+    { \Gamma;\cset \vdash e_1 : \t_1 \\
+      \Gamma,\VAR:\t_1;\cset \vdash e_2 : \t \\
+    }
+    {\Gamma;\cset \vdash \letx{e_1}{e_2} : \t
+    }
+
+  \end{mathpar}
+
+\caption{Auxiliary Run-time Expression Typing}
+\label{fig:runtimerules}
+\end{figure}

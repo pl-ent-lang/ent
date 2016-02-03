@@ -1,0 +1,812 @@
+\usepackage{times}
+\usepackage{amsfonts}
+\usepackage{subfigure}
+\usepackage{amsmath} %xrightarrow
+\usepackage{amssymb} %leadsto rightsquigarrow rhd mathbb Join Subset
+\usepackage{array}
+\usepackage{color}
+\usepackage{pifont}
+%\usepackage{MnSymbol}
+
+%\usepackage{mathabx} % arrows
+% the following are from owl directory
+\usepackage{epsfig}
+\usepackage{alltt}
+\usepackage{latexsym}
+\usepackage{mathpartir}
+%\usepackage{mathrsfs} %mathscr
+%\usepackage{bbm}  %mathbbmss
+\usepackage{wasysym} %rhd, RHD
+\usepackage{textcomp}
+
+\usepackage{stackrel} % adds stack symbol below arrow option
+
+\usepackage{setspace}
+
+\usepackage{stmaryrd}
+\usepackage{amsthm} %proof // llncs is not happy
+\usepackage{amsbsy} % bold greek letter
+\usepackage{mathtools} % newtagform
+\usepackage{ifthen}
+\usepackage{boxedminipage} 
+
+\usepackage{bbold}
+\usepackage{turnstile}
+\usepackage{slashed}
+
+
+\usepackage{url,hyperref, graphicx,listings}
+
+
+%%%
+%%% variant
+\def\variant{\emph{v}}
+\def\vplus{\texttt{+}}
+\def\vminus{\texttt{-}}
+\def\vnone{\epsilon}
+\def\vbi{\texttt{*}}
+
+
+%%%%%%%%%%%%%%%%%%%%
+% general symbols
+
+\def\lb{\langle}
+\def\rb{\rangle}
+\def\bottom{\bot}
+
+\def\dot{.}
+\def\bangsign{!}
+
+\def\sp{\hspace*{6mm}}
+\def\smallp{\sp}
+\def\brs#1{\llbracket\, #1 \,\rrbracket}
+
+\def\context#1#2#3#4{\brs{#1}_{#2, #3}}
+\def\thiscontext{\Xi}
+
+
+\def\df{\ \stackrel{\rm def}{=}\ }
+\def\restrict#1#2{#1\mid_{#2}}
+
+
+
+%%%%%%%%%%%%%% Inference Language %%%%%%%%%%%%%%%%
+
+\def\ourlangi{$\langi{\ourlang}$}
+\def\langi#1{#1^{-}}
+\def\ti {\emph{t}}
+\def\ei {\emph{ep}}
+\def\fddeci{\langi{\mathit{F}}}
+\def\mddeci{\langi{\mathit{M}}}
+\newcommand{\fdlisti}{\overline{\fddeci}}
+\newcommand{\mdlisti}{\overline{\mddeci}}
+\newcommand{\constructormetai}{\langi{\mathit{K}}}
+\newcommand{\classesi}{\langi{\mathit{C}}}
+
+%\def\programcodei{\langi{\Psi}} 
+
+\def\programcode{\mathit{P}} 
+
+\newcommand{\kwthisp}{\texttt{\bf thisp}}
+\newcommand{\kwthism}{\texttt{\bf thism}}
+
+
+\def\plt{\mathtt{plt}}
+\def\mlt{\mathtt{mlt}}
+
+
+\def\delayset{\Upsilon}
+\def\flowset{\Pi}
+
+\def\open#1#2#3{#1 \Uparrow^{#2} #3}
+\def\close#1#2#3{#1 \Downarrow_{#2} #3}
+
+
+
+
+
+\def\concat{:}
+\def\defassign{\mathrel{\Coloneqq}}
+\def\assign{\mathrel{\coloneqq}}
+\def\consassign{\mathrel{\coloneqq_{\tt K}}}
+
+\def\fundef#1{\mathtt{#1}}
+
+\DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}
+
+\def\ovar{\mathcal{O}} % object context
+\def\mvar{\mathcal{K}} % messaging context
+\def\polycontext{\Lambda}
+
+%%%%%%%%%%%%%%%%%%%%
+% rule titles
+\def\rtitle#1{{\sf (\textrm{R-#1})}}
+\def\sbtitle#1{{\sf (\textrm{S-#1})}}
+\def\esbtitle#1{{\sf (\textrm{ES-#1})}}
+\def\eetitle#1{{\sf (\textrm{EE-#1})}}
+\def\stitle#1{{\sf (\textrm{T-#1})}}
+\def\eqtitle#1{{\sf (\textrm{EQ-#1})}}
+\def\ocltitle#1{{\sf (\textrm{C-#1})}}
+\def\deftitle#1{{\sf (\textrm{D-#1})}}
+\def\alphatitle#1{{\sf (\textrm{CEquiv-#1})}}
+\def\wftitle#1{{\sf (\textrm{WF-#1})}}
+\def\opentitle#1{{\sf (\textrm{OP-#1})}}
+\def\closetitle#1{{\sf (\textrm{CL-#1})}}
+\def\functitle#1{{\sf (\textrm{F-#1})}}
+
+\def\mttitle#1{{\sf (\textrm{MT-#1})}}
+\def\fdtitle#1{{\sf (\textrm{FD-#1})}}
+\def\mbtitle#1{{\sf (\textrm{MB-#1})}}
+
+\def\sititle#1{{\sf (\textrm{TI-#1})}}
+\def\sbititle#1{{\sf (\textrm{SI-#1})}}
+
+\def\ctitle#1{{\sf (\textrm{C-#1})}} 
+\def\sconjudge{\vdash_{\tt scon}}
+\def\wconjudge{\vdash_{\tt wcon}}
+
+\def\judgei{\vdash^{\tt i}}
+\def\evdash{\vdash_{\tt e}}
+
+\def\update#1#2{#1 \Leftarrow #2}
+
+\def\dmarkers{\mathbb{DELAY}}
+
+
+
+
+% math definitions
+
+\def\subst#1#2{\{#2/#1\}}
+\def\ssubst#1#2{\{#2\! \sslash \! #1\}}
+\def\substsingle#1{\{#1\}}
+
+\newcommand{\mapupdate}[1]{[ #1 ]}
+\def\mapmerge{\uplus}
+\def\emptymap{\emptyset_M}
+
+\def\dom{\fundef{dom}}
+\def\ran{\fundef{range}}
+\def\whole{\fundef{whole}}
+\def\emptyseq{\epsilon}
+
+\def\cuptrans{\cup_+}
+
+\def\mapmerge{\uplus}
+\def\maprightmerge{\rhd}
+\def\mapsub#1#2#3{#1 \mid^{#2}_{#3}}
+\def\mapminus{\backslash}
+\def\mapcompose{\circ}
+\def\mapindomainupdate{\unrhd} % used for field update
+
+\def\flowto{\twoheadrightarrow}
+
+\def\ocxt{\mathcal{L}} 
+\def\ccxt{\mathcal{Q}} 
+
+
+\def\oitem{\ell} 
+\def\citem{\mathit{q}} 
+\def\instlabel{\textsf{I}} 
+\def\declabel{\textsf{S}} 
+\def\invlabel{\textsf{Q}} 
+
+\def\rlabel{\textsf{r}} 
+
+
+
+\def\ocxtvar{\textsf{ov}} 
+%\def\ccxtvar{\textsf{qv}} 
+\def\invlabelvar{\textsf{qv}} 
+\def\modevar{\textsf{mv}} 
+\def\phasevar{\textsf{pv}} 
+\def\ptvar{\mathtt{pt}}
+\def\mtsvar{\mathtt{mts}}
+\def\mtdvar{\mathtt{mtd}}
+%\def\ocpair{\emph{kv}} 
+
+\def\phaseq{\cong}
+
+%\def\plist#1#2{\lb\overline{#1},\overline{#2}\rb}
+
+\def\pcmeta{\textit{T}}
+\def\pcstruct#1#2{#1#2}
+
+\def\inst#1#2#3{#1 \vdash_{\tt inst} #2 \downarrow #3}
+\def\insti#1#2#3{#1 \judgei_{\tt inst} #2 \downarrow #3}
+
+\def\mcases{\pi}
+\def\vmode{\rotatebox[origin=c]{30}{$\mode$}}
+\def\unvmode{\mathtt{mu}}
+\def\phase{\phi}
+\def\mppair{\pi}
+\def\phname{\mathtt{p}}
+\def\movar{\mathit{m}}
+\def\phvar{\mathit{p}}
+
+\def\phset{\Theta}
+\def\moset{\Omega}
+
+
+\def\modef{\mathit{MO}}
+\def\phdef{\mathit{PO}}
+\def\rodef{\mathit{R}}
+
+\def\tvar{\mathit{t}}
+\def\ocxtname{\mathtt{L}}
+
+\def\pt#1{\texttt{\bf pVar}(#1)}
+\def\mt#1{\texttt{\bf mVar}(#1)}
+
+\def\lazy#1{\circlearrowleft#1}
+
+\newcommand{\classes}{\mathit{C}}
+\def\ctlist{\mathcal{C}} 
+\def\CS{\mathit{Cs}} 
+\def\mtlist{\mathcal{M}} 
+\def\MS{\mathit{Ms}} 
+
+
+\newcommand{\superset}{\mathcal{U}}
+
+\newcommand{\constructormeta}{\mathit{K}}
+
+\def\fddec{\mathit{F}}
+\def\mddec{\mathit{M}}
+\newcommand{\fdlist}{\overline{\fddec}}
+\newcommand{\fdlistp}{\overline{\fddec'}}
+\newcommand{\mdlist}{\overline{\mddec}}
+
+\def\Fname{\mathtt{fd}}
+\def\Mname{\mathtt{md}}
+\def\Oname{\mathtt{op}}
+\def\attributor{\mathit{A}}
+\def\reconstructor{\mathit{R}}
+
+\def\VAR{\mathtt{x}}
+\def\YVAR{\mathtt{y}}
+\def\SVAR{\mathtt{s}}
+
+\def\Cname{\mathtt{c}}
+\def\Dname{\mathtt{c}'}
+
+% Ent Syntax
+
+\def\Fmodes{\fundef{modes}}
+\def\Feparam{\fundef{eparam}}
+\def\Fethis{\fundef{ethis}}
+
+\def\Fiparam{\fundef{iparam}}
+\def\Fithis{\fundef{ithis}}
+
+\def\Feargs{\fundef{eargs}}
+\def\Fiargs{\fundef{ithis}}
+
+\def\Fcons{\fundef{cons}}
+
+\def\modevt{\mathtt{modev}}
+
+\def\Fboot{\fundef{boot}}
+
+\def\programcode{\mathit{P}} 
+
+\def\listi{\iota}
+\def\vlisti{\rotatebox[origin=c]{30}{$\listi$}}
+\def\listd{\iota}
+
+\def\espec{\Omega}  % energy specification
+\def\tspec{\Delta}  % total energy specification
+
+\def\econs{\omega}
+
+
+\def\Checkname{\texttt{\bf check}}
+\def\Mcasename{\texttt{\bf mcase}}
+\def\Objname{\mathtt{obj}}
+
+\def\mode{\mu}
+\def\dynmode{\mathtt{?}}
+\def\basemode{\eta}
+
+\def\mtvar{\mathtt{mt}}
+\def\moname{\mathtt{m}}
+\def\fresh{\mathit{fresh}}
+\def\bt{\mathit{T}}
+
+\def\Cname{\mathtt{c}}
+\def\Kappa{\mathtt{K}}
+\def\cset{\Kappa}
+
+\newcommand{\kwsnapshot}{\texttt{\bf snapshot}}
+
+\def\classiota{\Cname\lb\listi\rb}
+\def\classdyn{\Cname\lb\dynmode,\listi\rb}
+\def\classargs#1{\Cname\lb#1\rb}
+\def\classargsp#1{\Cname'\lb#1\rb}
+
+\def\closure#1#2#3{\Objname(#1,#2,#3)}
+\def\letx#1#2{\kwlet\ \VAR = #1\ \kwin\ #2}
+
+\def\blame{\mathtt{p}}
+\def\blamable{\mathit{b}}
+\def\posblame{\blame}
+\def\negblame{\overline{\blame}}
+
+\def\snapshot#1#2#3{\kwsnapshot\ #1\ [#2,#3]}
+
+\def\check#1#2#3{\Checkname(#1,#2,#3)}
+
+\def\new#1{\kwnew \ #1}
+\def\mcase#1#2{\{\overline{\moname : #2}\}^{#1}}
+\def\mcasetag#1#2{#1 \ \triangleright \ #2}
+\def\mcaseenv{\mathbf{D}}
+
+\def\texist#1{\exists#1}
+\def\tmcase#1{\Mcasename\lb#1\rb}
+
+\def\cin{\in_{c}}
+
+\def\ftv#1{\texttt{FTV}(#1)}
+
+\def\judgewft{\vdash_{\tt wft}}
+\def\judgewfe{\vdash_{\tt wfe}}
+
+\def\msub{\leq}
+%\def\msub{\tsub}
+
+\def\mtitle#1{{\sf (\textrm{M-#1})}}
+
+\def\mosrc{\mathit{Ms}}
+\def\phsrc{\mathit{Ps}}
+\newcommand{\st}{\mathit{T}}
+
+
+\newcommand{\denergy}{\moname_0}
+
+
+
+\def\realt#1#2{#1[#2]}
+
+\def\Fmtype{\fundef{mtype}}
+\def\Fmbody{\fundef{mbody}}
+\def\Fconstructor{\fundef{constructorOK}}
+\def\Fsupers{\fundef{supers}} %EZGI DEFINED function supers
+\def\Fclass{\fundef{class}}
+\def\Fmode{\fundef{mode}}
+\def\Femode{\fundef{emode}}
+\def\Fattr{\fundef{attr}}
+\def\FCname{\fundef{name}}
+\def\Fphase{\fundef{phase}}
+\def\Fid{\fundef{ocxt}}
+\def\FCmode{\fundef{mode}}
+\def\FCphase{\fundef{phase}}
+\def\FCccxt{\fundef{ccxt}}
+\def\FCclass{\fundef{class}}
+\def\FCmethod{\fundef{method}}
+\def\Fupper{\fundef{upper}}
+\def\Flower{\fundef{lower}}
+\def\Fblamable{\fundef{blamable}}
+\def\Fblame{\fundef{blame}}
+\def\Finit{\fundef{init}}
+
+\def\nodecl{\epsilon}
+
+\newcommand{\kwany}{\texttt{\bf any}}
+\def\waterfall#1#2{#1 \searrow #2}
+\def\unify#1#2{#1 \leftrightarrow #2}
+
+
+\def\Fupdate{\texttt{updatetypes}}
+\def\Ffields{\fundef{fields}}
+\def\Foverride{\fundef{override}}
+\def\FconstructorOK{\fundef{constructorOK}}
+\def\FFTV{\texttt{FTV}}
+\def\Flabels{\texttt{labels}}
+\def\Flabelsin{\texttt{labelsin}}
+\def\Fvars{\texttt{vars}}
+\def\Fpoly{\texttt{poly}}
+\def\Fpolyset{\texttt{polyset}}
+\def\Fmpath{\texttt{mpath}}
+\def\Nobject{\texttt{Object}}
+\def\labelsubset{\omega}
+
+\def\kwwhere{\textrm{where}}
+\def\kwdistinct{\textrm{distinct}}
+\def\kwundef{\textrm{undefined}}
+\def\kwifin{\textbf{mswitch}}
+\def\kwphase{\textbf{phase}}
+\def\kwmode{\textbf{mode}}
+
+\def\Dpath{\underset{path}{\circlearrowleft}}
+\def\Dpaths{\underset{paths}{\circlearrowleft}} %for constraint set
+\def\Dpathc{\underset{pathc}{\circlearrowleft}} %for each constraint
+
+\def\Dclass{\underset{class}{\circlearrowleft}}
+\def\Dmode{\underset{mode}{\circlearrowleft}}
+\def\Dphase{\underset{phase}{\circlearrowleft}}
+
+\def\instmode{\mathsf{InstModes}}
+\def\instphase{\mathsf{InstPhases}}
+
+\def\labelobj#1#2{<{#1} ,{#2} >}
+
+%\def\Lname{\mathsf{L}}
+\def\Lname{\eta}
+\def\newvar{\rho}
+\def\msgvar{\varrho}
+
+
+
+
+\def\tenvname{\mathsf{t}}
+\def\invnote{\mathsf{*}}
+
+\def\calls{\Delta}
+\def\callsitem{\delta}
+
+\def\dcalls{\Delta}
+\def\dcallsitem{\delta}
+
+\def\zip{\longmapsto}
+
+%\newcommand{\program}{\mathit{P}}
+
+
+%Coqa type system syntax
+\newcommand{\kwmain} {{\bf main}}
+\def\tsub{\mathbin{<\vcentcolon}}
+
+\def\ntsub{\mathbin{\nless\vcentcolon}}
+
+\def\tswitch{\mathbin{\ll\vcentcolon}}
+\def\adaptto{\ll}
+\def\adaptcxt{\Upsilon}
+
+
+\def\cons{\kappa} 
+\def\t{\tau}
+\def\kwlobjt#1#2{{ #2@ #1}}
+
+
+\def\econtextletter{\mathcal{X}}
+
+% closure related
+\def\cvar{\beta}
+\def\cvarlist{\mathcal{B}}
+\def\cvarext{\Hat{\beta}}
+\def\ccons{\omega}
+
+\def\sigvar{\alpha}
+\def\sigvarlist{\mathcal{A}}
+\def\sigvarext{\Hat{\sigvar}}
+\def\sigvarsuperlist{\mathcal{S}}
+
+\def\pclosure#1#2#3{\ctlist \stackrel{#1}{\looparrowright}#3} 
+
+\def\porder{\mathrel{<_{cpu}}}
+\def\morder{\mathrel{<\vcentcolon}}
+
+
+\def\labelvar{\ell}
+
+
+
+\def\topclred{\hookrightarrow}
+
+\def\clred{\stackrel{\calls}{\hookrightarrow}}
+\def\clredp#1{\stackrel{#1}{\hookrightarrow}}
+
+\def\ocldash{\vdash_\mathrm{c}}
+\def\judgeprogram{\vdash_\mathrm{p}}
+\def\judgeclass{\vdash_\mathrm{cls}}
+\def\judgemethod{\vdash_\mathrm{m}}
+\def\judgefield{\vdash_\mathrm{f}}
+\def\judgeh{\vdash_\mathrm{h}}
+\def\judgecell{\vdash_\mathrm{hc}}
+\def\judger{\vdash_\mathrm{r}}
+\def\judgesubst{\vdash_\mathrm{WF}}
+
+\newcommand{\kwcxt}{\texttt{\bf cxt}} % current context
+\newcommand{\kwlmain}{\texttt{\bf main}}
+
+\newcommand{\kwtowner}{\mathtt{thost}}
+\newcommand{\kwtmain}{\mathtt{tmain}}
+\newcommand{\cconsboot}{\mathtt{boot}}
+\newcommand{\scale}[2]{ \looparrowright #2}
+
+\newcommand{\kwscale}{\texttt{\bf scale}}
+
+
+
+%%%%%%%%%%%%%%%%%%%%
+%Coqa dynamics syntax
+
+\def\dset{\Sigma}
+
+\def\sreduct{\Longrightarrow}
+\def\initreduct{\Longrightarrow_{\tt init}}
+\def\sreductp#1{\stackrel{#1}{\Longrightarrow}}
+
+
+\def\cloreduct#1{\stackrel{#1}{\Longrightarrow}}
+
+\def\effcloreduct#1#2{\stackrel{#1}{\Rrightarrow}_{#2}}
+
+%\def\cyclevar{\Xi}
+
+\def\nd{\updownarrow}
+
+\def\bleft{\Yleft}
+\def\bright{\Yright}
+
+
+
+\newcommand{\RID}{\mathit{o}}
+\newcommand{\val}{\mathit{v}}
+\newcommand{\obj}{\mathit{o}}
+\newcommand{\redreal}[2]{{\bf E}_{#2}[\, #1 \,]}
+
+\newcommand{\mcasered}[2]{{\bf D}_{#2}[\, #1 \,]}
+
+\newcommand{\sred}[1]{{\bf Es}[\, #1 \,]}
+\def\env{\mathbf{E}}
+\def\heap{\mathbf{H}}
+
+\def\renv{\mathbf{R}}
+\def\renvm{\mathbf{Rm}}
+\def\renvp{\mathbf{Rp}}
+\def\renvf{\mathbf{Rf}}
+
+
+\def\full{\mathcal{LF}}
+\def\partial{\mathcal{LU}}
+
+
+
+
+\def\inO#1#2{\lb #2 \rb^{#1}}
+\def\inT#1#2{\brs{#2}^{#1}}
+\def\accessop#1#2{\ndtstile{#1}{ #2}}
+
+%\def\env#1#2{\mathbf{E}_{#1}[\, #2 \,]}
+
+%\def\kwin#1#2#3{\texttt{\bf in}(#1, #2, #3)}
+
+\def\inv#1#2#3#4{#1\!:: \!#2 \!: \! #3(#4)}
+\def\hcell#1#2#3#4{ \lb    #3;  #4 \rb}
+
+\def\nocheckadd#1#2#3#4{ #1 +_{#4} \lb  #2;  #3 \rb}
+\def\checkadd#1#2#3#4{ #1 \uplus_{#4} \lb  #2;  #3 \rb}
+
+%\def\add#1#2#3{ #1 \uplus \lb  #2;  #3 \rb}
+
+
+\def\kwldirin#1#2#3{\texttt{\bf in}(#1,  #3)}
+\newcommand{\diverge}{\Uparrow}
+\newcommand{\kwwait}{\texttt{\bf wait}}
+\newcommand{\Fd}{\mathit{Fd}}
+
+\newcommand{\kwpost}{\texttt{\bf post}}
+
+\def\augG#1#2#{ #1 \lhd  #2}
+
+\def\induces{\xrightarrow{\textsc{induces}}} 
+
+
+\def\H{H}
+\def\Ht{\mathcal{H}}
+\def\A{\Sigma} 
+\def\T{e}
+\def\RIDT{p}
+\def\RIDE{q}
+\def\AnameT{\Aname_{\mathrm{u}}}
+\def\AnameE{\Aname_{\mathrm{e}}}
+\def\LnameT{\Lname_{\mathrm{u}}}
+\def\LnameE{\Lname_{\mathrm{e}}}
+\def\alphaT{\alpha_{\mathrm{u}}}
+
+\def\stackinfo{\mathit{Z}}
+\def\gammasub{<:}
+
+%\def\Ht{\Gamma} 
+\def\Tt{\mathcal{T}} 
+\newcommand{\unfold}[1]{\fundef{signature}_{\tt #1}}
+
+% llncs doesn't use these.
+%
+%\newtheorem{corollary}{Corollary}
+%\newtheorem{principle}{Main Principle}
+%\newtheorem{cprinciple}{Principle}
+
+%\newtheorem{mainlemma}{Main Lemma}
+%\renewcommand{\themainlemma}{M\arabic{mainlemma}}  
+%\numberwithin{equation}{lemma}
+%\renewcommand{\casename}{}
+%\renewcommand{\theequation}{\thelemma.\casename\arabic{equation}}
+%\newcommand{\consno}[3]{\mathbf{\thelemma.#1.(#2)#3}}
+
+\def\consimp#1{\ \xrightharpoonup{#1}\ }
+
+% subject reduction proof
+
+
+
+\newcommand{\kwlocal}{\texttt{\bf local}}
+\newcommand{\kwidle}{\texttt{\bf idle}}
+
+
+
+\newcommand{\kwobj}{\texttt{\bf obj}}
+
+
+%%%%%%%%%%%%%%%%%%%%
+%Java syntax
+%\newcommand{\kwattribute}{\texttt{\bf attribute}}
+\newcommand{\kwreconstruct}{\texttt{\bf reconstruct}}
+\newcommand{\kwusing}{\texttt{\bf using}}
+\newcommand{\kwblame}{\texttt{\bf blame}}
+%\newcommand{\kwas}{\texttt{\bf as}}
+%\newcommand{\kwin}{\texttt{\bf in}}
+%\newcommand{\kwadapt}{\texttt{\bf adapt}}
+%\newcommand{\kwdistinct}{\texttt{\bf distinct}}
+%\newcommand{\kwecontext}{\texttt{\bf econtext}}
+\newcommand{\kwclass}{\texttt{\bf class}}
+\newcommand{\kwinterface}{\texttt{\bf interface}}
+\newcommand{\kwint}{\texttt{\bf int}}
+\newcommand{\kwfloat}{\texttt{\bf double}}
+\newcommand{\kwextends}{\texttt{\bf extends}}
+\newcommand{\kwimplements}{\texttt{\bf implements}}
+\newcommand{\kwthis}{\texttt{\bf this}}
+\newcommand{\kwnew}{\texttt{\bf new}}
+\newcommand{\kwreturn}{\texttt{\bf return}}
+\newcommand{\kwswitch}{\texttt{\bf switch}}
+\newcommand{\kwvoid}{\texttt{\bf void}}
+\newcommand{\kwfinal}{\texttt{\bf final}}
+\newcommand{\kwabstract}{\texttt{\bf abstract}}
+\newcommand{\kwpublic}{\texttt{\bf public}}
+\newcommand{\kwprotected}{\texttt{\bf protected}}
+\newcommand{\kwprivate}{\texttt{\bf private}}
+\newcommand{\kwboolean}{\texttt{\bf boolean}}
+\newcommand{\kwsuper}{\texttt{\bf super}}
+\newcommand{\kwfor}{\texttt{\bf for}}
+\newcommand{\kwwhile}{\texttt{\bf while}}
+\newcommand{\kwchar}{\texttt{\bf char}}
+\newcommand{\kwinner}{\texttt{\bf inner}}
+\newcommand{\kwnull}{\texttt{\bf null}}
+\newcommand{\kwif}{\texttt{\bf if}}
+\newcommand{\kwand}{\texttt{\bf and}}
+\newcommand{\kwor}{\texttt{\bf or}}
+\newcommand{\kwelse}{\texttt{\bf else}}
+\newcommand{\kwbyte}{\texttt{\bf byte}}
+\newcommand{\kwword}{\texttt{\bf word}}
+\newcommand{\kwtrue}{\texttt{\bf true}}
+\newcommand{\kwfalse}{\texttt{\bf false}}
+\newcommand{\kwsynchronized} {\texttt{\bf synchronized}}
+\newcommand{\kwstatic}{\texttt{\bf static}}
+\newcommand{\kwthrow}{\texttt{\bf throw}}
+\newcommand{\kwexception}{\texttt{\bf exception}}
+\newcommand{\kwcase}{\texttt{\bf case}}
+
+\newcommand{\kwphases}{\texttt{\bf phases}}
+\newcommand{\kwmodes}{\texttt{\bf modes}}
+
+\newcommand{\kwin}{\texttt{\bf in}}
+\newcommand{\kwlet}{\texttt{\bf let}}
+
+%%%%%%%%%%%%%%%%%%%%
+% boxes 
+
+\def\nocaptionrule{\sp} % to make llncs happy
+
+
+\newcommand{\codebox}[1]{
+\begin{center}
+\noindent\begin{minipage}[c]{\columnwidth} 
+\begin{center}
+\vskip 2ex
+\begin{tabular*}{\columnwidth}{c}\end{tabular*}
+\vskip 1ex
+$
+\begin{array}{l}
+#1
+\end{array}
+$ 
+\vskip 1ex
+%\begin{tabular*}{\columnwidth}{c}\hline\end{tabular*}
+%\vskip 2ex
+\end{center}
+\end{minipage} 
+\end{center}
+\noindent
+}
+
+
+\newcommand{\figurebox}[1]{
+\begin{center}
+\noindent\begin{minipage}[c]{\columnwidth} 
+\begin{center}
+\vskip 0ex
+\begin{tabular*}{\columnwidth}{c}\end{tabular*}
+\begin{tabular*}{\columnwidth}{c}\hline\end{tabular*}
+\vskip 1ex
+#1
+\vskip 1ex
+\begin{tabular*}{\columnwidth}{c}\hline\end{tabular*}
+\vskip 2ex
+\end{center}
+\end{minipage} 
+\end{center}
+
+}
+
+\newcommand{\twofigurebox}[1]{
+\begin{center}
+\noindent\begin{minipage}[c]{\textwidth} 
+\begin{center}
+\vskip 2ex
+\begin{tabular*}{\textwidth}{c}\end{tabular*}
+\begin{tabular*}{\columnwidth}{c}\hline\end{tabular*}
+\vskip 1ex
+#1
+\vskip 1ex
+%\begin{tabular*}{\columnwidth}{c}\hline\end{tabular*}
+%\vskip 2ex
+\end{center}
+\end{minipage} 
+\end{center}
+
+}
+
+
+
+\newcommand{\figureboxtwocol}[1]{
+\begin{center}
+\noindent\begin{minipage}[c]{\textwidth} 
+\begin{center}
+\vskip 2ex
+\begin{tabular*}{\textwidth}{c}\end{tabular*}
+\vskip 1ex
+#1
+\vskip 1ex
+%\begin{tabular*}{\columnwidth}{c}\hline\end{tabular*}
+%\vskip 2ex
+\end{center}
+\end{minipage} 
+\end{center}
+
+}
+
+%%%%%%%%%%%%%%%%%%%%
+% comments
+
+
+
+%\long\def\snote#1{{\small \textbf{\textit{(#1 -- SS)}}}}
+%\long\def\dnote#1{{\small \ \ $\langle\langle\langle$\ \textbf{#1 -YL}\
+%    $\rangle\rangle\rangle$\ \ }}
+
+% non-silenceable notes
+%\long\def\newsnote#1{{\small \textbf{\textit{(#1 -- SS)}}}}
+%\long\def\newdnote#1{{\small \ \ $\langle\langle\langle$\ \textbf{#1 -YL}\
+%    $\rangle\rangle\rangle$\ \ }}
+
+
+\long\def\omitthis#1{}
+\long\def\infloat#1{#1}
+
+\def\nonotes{ % silence notes
+\long\def\snote{\omitthis}
+\long\def\dnote{\omitthis}
+}
+
+
+\long\def\inlong#1{#1}
+\long\def\inshort#1{}
+\long\def\inproof#1{}
+
+
+%\definecolor{mygray}{gray}{0.85}
+\definecolor{mygray}{cmyk}{0.1,0.3,0.1,0.50}
+
+
+

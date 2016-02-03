@@ -1,0 +1,53 @@
+\newcommand{\relop}{\operatorname{\mathtt{op}}}
+
+\begin{figure}[t]
+\scriptsize
+%\vspace{1ex}
+%\small
+
+\begin{tabularx}{1\linewidth}{>{$}l<{$} >{$}l<{$} >{$}l<{$} @{\extracolsep{\fill}} >{$}r<{$}}
+\hline
+
+\programcode  & \defassign & \rodef \ \overline{\classes} \ e
+& \textit{program}\\
+
+\rodef & \defassign & \overline{\moname \msub \moname'}
+& \textit{mode order}\\
+
+\classes & \defassign & \kwclass\ \Cname \ \tspec\ \kwextends\ \bt
+\{ \fdlist \ \mdlist \ \attributor \ \} & \textit{class}\\
+
+\fddec & \defassign & \bt \ \Fname = e & \textit{field}\\
+
+\mddec & \defassign &  \bt \ \Mname (\overline{\bt}\ \overline{\VAR})
+	\{e\} & \textit{method}\\
+
+\attributor & \defassign & e & \textit{attributor} \\
+
+e & \defassign &  \VAR \mid e.\Fname \mid \new{\classiota} \mid e.\Mname(\overline{e}) & \textit{expressions} \\
+  & \mid & (\bt)e \mid \snapshot{e}{\basemode}{\basemode} \mid \mcasetag{e}{\basemode} \\
+  & \mid & \mcase{\bt}{e}  \\ %\mid \val  \\
+  
+%\val & \defassign & \obj \mid \mcase{\bt}{\val} \mid \moname & \textit{value} \\
+
+%\obj & \defassign & \closure{\bt}{\overline{\val}} & \textit{object value} \\
+  
+%  & \mid & \check{e}{e}{e} \\
+
+
+%\moname & \in & \mathbb{MCONST}
+%& \textit{mode name} \\
+%
+%\Cname & \in & \mathbb{CN} \cup \{\Nobject\} & \textit{class name} \\
+%
+%\Mname & \in & \mathbb{MN} & \textit{method name} \\
+%
+%\Fname & & & \textit{field name} \\
+%
+%\VAR & \in & \mathbb{VAR} & \textit{variable name}  \\
+
+\end{tabularx}
+
+\caption{Syntax}
+\label{fig:syntax}
+\end{figure} 

@@ -1,0 +1,48 @@
+\begin{figure}[t]
+\footnotesize
+%\scriptsize
+\hrule
+\begin{mathpar}
+%			\inferrule*[left=\sbtitle{Refl}]
+%			{}
+%			{  \vdash \t \tsub \t
+%			}
+%			\\
+%			\inferrule*[left=\sbtitle{Trans}]
+%			{ \vdash \t \tsub \t'  \\
+%			 \vdash \t' \tsub \t''
+%			}
+%			{  \vdash \t \tsub \t''
+%			}
+%			\\
+			\inferrule*[left=\sbtitle{Dynamic}]
+			{
+			}
+			{\cset  \vdash \Cname\lb\mode;\overline{\basemode}\rb \tsub \Cname\lb?;\overline{\basemode}\rb }
+			\\
+			\inferrule*[left=\sbtitle{Mcase}]
+			{ \cset \vdash \t \tsub \t' 
+			}
+			{ \cset \vdash \tmcase{\t} \tsub \tmcase{\t'} }
+			\\
+			\inferrule*[left=\sbtitle{Exists}]
+			{\econs = \basemode_{1}\msub\mtvar\msub\basemode_{2} \\
+      \cset = \{\basemode_1 \msub \mtvar, \mtvar \msub \basemode_2\} \cup \cset' \\
+			\mtvar \textrm{ does not appear in } \cset'  
+			}
+			{ \cset \vdash \texist{\econs}.\t \tsub \t  }
+\\
+			 \inferrule*[left=\sbtitle{Class}]
+			{
+			  \kwclass\ \Cname\ \tspec \ \kwextends\ \bt \dots \in \programcode \\
+			  \Feparam(\tspec) = \listi' \\
+        \cset = \Fcons(\tspec) 
+			}
+			{ \cset \vdash \Cname \lb \listi \rb  \tsub \bt \subst{\listd'}{\listi} }
+			
+\end{mathpar}
+%\nocaptionrule 
+\caption{Subtyping (reflexivity and transitivity rules are omitted.)}
+\label{fig:subtyperules}
+\end{figure}
+
