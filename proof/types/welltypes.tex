@@ -5,27 +5,31 @@
 			\inferrule*[left=\wftitle{Class}]
 			{
 			 \kwclass\ \Cname\ \espec' \dots \in \programcode \\
-       \Feparam(\espec') = \listi' \\ \espec'\subst{\listi'}{\overline{\basemode}} \subseteq \tspec \\
+       \Feparam(\espec') = \listi' \\ 
+       \Fcons(\espec') = \cset' \\
+       \cset \models \cset'\subst{\listi'}{\basemode} \\
 			}
-			{\tspec \judgewft \Cname \lb \overline{\basemode} \rb} 
+			{\cset \judgewft \Cname\lb\overline{\basemode}\rb} 
       \\
 
       \inferrule*[left=\wftitle{ClassDyn}]
 			{
 			 \kwclass\ \Cname\ \dynmode\rightarrow\econs,\espec' \dots \in \programcode \\
-       \Feparam(\dynmode\rightarrow\econs,\espec') = \listi' \\ \espec'\subst{\listi'}{\overline{\basemode}} \subseteq \tspec \\
+       \Feparam(\dynmode\rightarrow\econs,\espec') = \listi' \\ 
+       \Fcons(\espec') = \cset' \\
+       \cset \models \cset'\subst{\listi'}{\basemode} \\
 			}
-			{ \tspec \judgewft \Cname \lb \dynmode,\overline{\basemode} \rb} 
+			{ \cset \judgewft \Cname\lb\dynmode,\overline{\basemode}\rb } 
       \\ 
 
 			\inferrule*[left=\wftitle{Top}]
 			{}
-			{\tspec \judgewft \Nobject \lb \basemode \rb} 
+			{\cset \judgewft \Nobject \lb \basemode \rb} 
       \\
 
       \inferrule*[left=\wftitle{MCase}]
-			{\tspec \vdash_{\tt wft} \classiota}
-			{\tspec \vdash_{\tt wft} \tmcase{\classiota} }
+			{\cset \vdash_{\tt wft} \classiota}
+			{\cset \vdash_{\tt wft} \tmcase{\classiota} }
 %      \\
 %
 %      \inferrule*[left=\wftitle{ModeBase}]

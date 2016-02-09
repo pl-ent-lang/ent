@@ -15,13 +15,15 @@
 
 \rtitle{Field} & \obj.\Fname_i & \cloreduct{\moname} & \val_i & \textrm{if} \ \mode \msub \moname \\
 
-\rtitle{Snapshot1} & \snapshot{\obj}{\moname'}{\moname''} & \cloreduct{\moname} & \kwlet \ \VAR = \check{ \attributor \subst{\kwthis}{o}}{\moname'}{\moname''} \  & \textrm {if}  \ \mode = \dynmode, \kwclass\ \Cname\ \cdots\ \{\ \cdots\ \attributor \ \} \in \programcode, \alpha' \ \textrm{is} \ fresh \\
+\rtitle{Snapshot1} & \snapshot{\obj}{\moname'}{\moname''} & \cloreduct{\moname} & \kwlet \ \VAR = \check{ e_a\subst{\kwthis}{o}}{\moname'}{\moname''} \  & \textrm {if}  \ \mode = \dynmode, \kwclass\ \Cname\ \cdots\ \{\ \cdots\ \attributor \ \} \in \programcode, \alpha' \ \textrm{is} \ fresh, \Fabody(\Cname\lb\dynmode,\listi\rb) = e_a \\
 
 & & & \kwin \  \closure{\alpha',\Cname\lb\VAR,\listi\rb}{\overline{\val}} &  \\
 
 %\rtitle{Snapshot2} & \snapshot{\obj}{\moname'}{\moname''} & \cloreduct{\moname} & \obj & \textrm {if}  \  \moname' \msub \mode \msub \moname'',  \mode \neq \dynmode  \\
 
 \rtitle{Snapshot2} & \snapshot{\obj}{\moname'}{\moname''} & \cloreduct{\moname} & \kwlet \ \VAR = \check{\mode}{\moname'}{\moname''} \  & \textrm {if}  \ \mode = \moname''', \kwclass\ \Cname\ \cdots\ \{\ \cdots\ \attributor \ \} \in \programcode, \alpha' \ \textrm{is} \ fresh \\
+
+& & & \kwin \  \closure{\alpha',\Cname\lb\VAR,\listi\rb}{\overline{\val}} &  \\
 
 \rtitle{Check} & \check{\val}{\moname'}{\moname''} & \cloreduct{\moname} & \val & \textrm {if} \ \moname' \msub \Femode(\val) \msub \moname'' \\
 

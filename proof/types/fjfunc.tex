@@ -8,11 +8,11 @@
     \\
 
     \inferrule*[left=\fdtitle{Class}]
-    {\kwclass\ \Cname\ \tspec\ \kwextends\ \bt \{ \fdlist \ \mdlist \ \attributor \} \\ 
+    {\kwclass\ \Cname\ \tspec\ \kwextends\ \bt_0 \{ \overline{\t}\ \overline{\Fname} \ \mdlist \ \attributor \} \\ 
     \Feparam(\tspec) = \iota' \\
-    \Ffields(\bt\subst{\iota'}{\iota}) = \fdlistp \\
+    \Ffields(\bt\subst{\iota'}{\iota}) = \overline{\t_0}\ \overline{\Fname_0} = \overline{e_0} \\
     }
-    { \Ffields(\classiota) = \fdlistp,\fdlist\subst{\iota'}{\iota}}
+    { \Ffields(\classiota) = \overline{\t_0}\ \overline{\Fname_0} = \overline{e_0}, \overline{\t\subst{\listi'}{\listi}}\ \overline{\Fname} = \overline{e\subst{\listi'}{\listi}} }
     \\
 
     \inferrule*[left=\mttitle{Class}]
@@ -48,12 +48,20 @@
 
     \inferrule*[left=\mbtitle{Super}]
     {
-      \kwclass\ \Cname\ \tspec\ \kwextends\ \c' \{ \fdlist \ \mdlist \ \attributor \} \\
+      \kwclass\ \Cname\ \tspec\ \kwextends\ \Cname' \{ \fdlist \ \mdlist \ \attributor \} \\
       \Feparam(\tspec) = \listi' \\
       \Mname \not\in \mdlist \\
     }
     { \Fmbody(\Mname,\classiota) = \Fmbody(\Mname, \Cname'\subst{\listi'}{\listi}) }
     \\
+
+    \inferrule*[left=\abtitle{Class}]
+    {
+      \kwclass\ \Cname\ \tspec\ \kwextends\ \Cname' \{ \fdlist \ \mdlist \ \attributor \} \\
+      \Feparam(\tspec) = \listi' \\
+      \attributor = e \\
+    }
+    { \Fabody(\classiota) = e\subst{\listi'}{\listi} }
 
   \end{mathpar} 
 \nocaptionrule \caption{FJ Functions}

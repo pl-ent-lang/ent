@@ -23,6 +23,9 @@
 \Feargs(\classiota) & \triangleq & \listi \\
 \Feargs(\texist{\econs}.\t) & \triangleq & \Feargs(\t) \\\\
 
+\Fcons(\basemode\msub\mtvar\msub\basemode') & \triangleq & \bigcup \{\basemode\msub\mtvar,\mtvar\msub\basemode'\} \\
+\Fcons(\dynmode\rightarrow\econs,\espec) & \triangleq & \{\basemode\msub\mtvar,\mtvar\msub\basemode'\} \cup \Fcons(\espec) & \textrm{if}\ \econs = \basemode\msub\mtvar\msub\basemode' \\\\
+
 \end{tabularx}
 
 We require $\overline{\moname}$ as a lattice. We use $\bot$ and $\top$ to represent the bottom and top of $\overline{\moname}$ respectively.

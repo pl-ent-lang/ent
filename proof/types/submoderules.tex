@@ -4,10 +4,10 @@
 \begin{mathpar}
   \inferrule*[left=\mtitle{Sub}]
 	{
-    \basemode\msub\mtvar\msub\basemode' \in \espec
+    \{\basemode\msub\mtvar,\mtvar\msub\basemode',\basemode\msub\basemode'\} \in \cset
   }
 	{
-    \espec \vdash \{\basemode\msub\mtvar,\mtvar\msub\basemode',\basemode\msub\basemode'\}
+    \cset \models \{\basemode\msub\mtvar,\mtvar\msub\basemode',\basemode\msub\basemode'\}
 	}
 \end{mathpar}
 

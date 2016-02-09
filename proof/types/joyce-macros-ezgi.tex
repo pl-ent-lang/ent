@@ -137,11 +137,25 @@
 \def\mttitle#1{{\sf (\textrm{MT-#1})}}
 \def\fdtitle#1{{\sf (\textrm{FD-#1})}}
 \def\mbtitle#1{{\sf (\textrm{MB-#1})}}
+\def\abtitle#1{{\sf (\textrm{AB-#1})}}
 
 \def\sititle#1{{\sf (\textrm{TI-#1})}}
 \def\sbititle#1{{\sf (\textrm{SI-#1})}}
 
 \def\ctitle#1{{\sf (\textrm{C-#1})}} 
+
+% Titles for inline-text (t)
+
+\def\stitlet#1{{\sf \textrm{T-#1}}}
+\def\sbtitlet#1{{\sf (\textrm{S-#1})}}
+\def\wftitlet#1{{\sf \textrm{WF-#1}}}
+\def\mttitlet#1{{\sf \textrm{MT-#1}}}
+\def\fdtitlet#1{{\sf \textrm{FD-#1}}}
+\def\mbtitlet#1{{\sf \textrm{MB-#1}}}
+\def\abtitlet#1{{\sf \textrm{AB-#1}}}
+\def\rtitlet#1{{\sf \textrm{R-#1}}}
+
+
 \def\sconjudge{\vdash_{\tt scon}}
 \def\wconjudge{\vdash_{\tt wcon}}
 
@@ -288,6 +302,8 @@
 
 \def\Fboot{\fundef{boot}}
 
+\def\Fabody{\fundef{abody}}
+
 \def\programcode{\mathit{P}} 
 
 \def\listi{\iota}
@@ -320,6 +336,7 @@
 \newcommand{\kwsnapshot}{\texttt{\bf snapshot}}
 
 \def\classiota{\Cname\lb\listi\rb}
+\def\classiotap{\Cname\lb\listi'\rb}
 \def\classdyn{\Cname\lb\dynmode,\listi\rb}
 \def\classargs#1{\Cname\lb#1\rb}
 \def\classargsp#1{\Cname'\lb#1\rb}
