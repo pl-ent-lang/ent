@@ -34,11 +34,11 @@
 \\
 			 \inferrule*[left=\sbtitle{Class}]
 			{
-			  \kwclass\ \Cname\ \tspec \ \kwextends\ \bt \dots \in \programcode \\
+			  \kwclass\ \Cname\ \tspec \ \kwextends\ \Dname \dots \in \programcode \\
 			  \Feparam(\tspec) = \listi' \\
         \cset = \Fcons(\tspec) 
 			}
-			{ \cset \vdash \Cname \lb \listi \rb  \tsub \bt \subst{\listd'}{\listi} }
+			{ \cset \vdash \Cname\lb\listi\rb \tsub \Dname\subst{\listi'}{\listi} }
 			
 \end{mathpar}
 %\nocaptionrule 

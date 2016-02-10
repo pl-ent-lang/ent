@@ -895,7 +895,7 @@ with
 $\cset\vdash\overline{\t''}\tsub\overline{\t'}\subst{\listi'}{\listi}$.\\ 
 \end{proofcenter}
 
-Now, from T-Object we have $\overline{\t'}\subst{\listi'}{\listi} = \overline{\t}$ and $\overline{e}\subst{\listi'}{\listi} = \overline{\val}$. Then, by S-Trans we have $\Gamma;\cset\vdash\overline{\val}:\overline{\t''}$ with $\cset\vdash\overline{\t''}\tsub\overline{\t}$. Choosing $\Gamma;\cset\vdash\val_i:\t_i''$ with $\cset\vdash\t_i''\tsub\t_i$ and letting $\t_i'$ be $\t_i''$ finishes the case.
+Now, from T-Object we have $\overline{\t_0'},\overline{\t'}\subst{\listi'}{\listi} = \overline{\t}$ and $\overline{e_0},\overline{e}\subst{\listi'}{\listi} = \overline{\val}$. Then, by S-Trans we have $\Gamma;\cset\vdash\overline{\val}:\overline{\t''}$ with $\cset\vdash\overline{\t''}\tsub\overline{\t}$. Choosing $\Gamma;\cset\vdash\val_i:\t_i''$ with $\cset\vdash\t_i''\tsub\t_i$ and letting $\t_i'$ be $\t_i''$ finishes the case.
 
 \end{case}
 
@@ -1045,19 +1045,18 @@ Easy.
 \end{subcase}
 
 \begin{subcase}[\rtitlet{Snapshot1}]
-\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
-\snapshot{o}{\basemode_1}{\basemode_2} \cloreduct{\moname} \letx{\check{ e_a\subst{\kwthis}{o}}{\moname'}{\moname''}}{\closure{\alpha'}{\Cname\lb\VAR,\listi\rb}{\overline{\val}}} & & \\
-\end{tabular}
-\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
-o = \closure{\alpha}{\classdyn}{\overline{\val}} & \kwclass\ \Cname\ \cdots\ \{\ \cdots\ \attributor \ \} \in \programcode & e_a = \Fabody(\classiota)\\
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$}}
+\snapshot{\obj}{\basemode_1}{\basemode_2} \cloreduct{\moname} \check{e_a\subst{\kwthis}{\obj}}{\moname_1}{\moname_2}{\obj} & \obj = \closure{\alpha}{\classdyn}{\overline{\val}} \\ 
+\kwclass\ \Cname\ \cdots\ \{\ \cdots\ \attributor \ \} \in \programcode & e_a = \Fabody(\classdyn) \\
 \end{tabular}\\
-By T-Attr, $e_a:\modevt$ which is preserved by Lemma \ref{pf:modesubstitution-preserves-typing} From T-Attr, we have $e_a:\modevt$
+From $\stitlet{Attributor}$ and $\stitlet{Class}$ we have $\Fcons(\attributor) = \cset'$ and $\kwthis:\classdyn;\cset'\vdash e_a:\modevt$. Since $\cset\judgewft\classdyn$, we have $\cset\models\cset'$. Using Lemma \ref{pf:termsubstitution-preserves-typing} gives us $\varnothing;\cset'\vdash e_a\subst{\kwthis}{\obj}$ from which we may use Lemma \ref{pf:weakening} to get $\Gamma;\cset'\vdash e_a\subst{\kwthis}{\obj}$.
+
+Then, by $\stitlet{Check}$, we have $\Gamma;\cset\vdash\check{e_a\subst{\kwthis}{\obj}}{\moname_1}{\moname_2}{\obj}:\Cname\lb\moname',\listi\rb$.
 \end{subcase}
 
 \begin{subcase}[\rtitlet{Snapshot2}]
 \begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
-\snapshot{o}{\basemode_1}{\basemode_2} \cloreduct{\moname} \letx{\check{\moname}{\moname'}{\moname''}}{\closure{\alpha'}{\Cname\lb\VAR,\listi\rb}{\overline{\val}}} & & \\
-o = \closure{\alpha}{\Cname\lb\moname,\listi\rb}{\overline{\val}} \\
+\snapshot{\obj}{\basemode_1}{\basemode_2} \cloreduct{\moname} \check{\moname'}{\moname_1}{\moname_2}{\obj} & \obj = \closure{\alpha}{\Cname\lb\moname',\listi\rb}{\overline{\val}} \\ 
 \end{tabular}\\
 Easy.
 \end{subcase}

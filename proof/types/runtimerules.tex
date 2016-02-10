@@ -4,25 +4,29 @@
   \begin{mathpar}
     \inferrule*[left=\stitle{Obj}]
     { 
-      \Gamma;\cset \vdash \overline{e} : \overline{\t} \\
-      \Ffields(\classiota) = \overline{\t} \ \overline{\Fname} = \overline{e} \\
+      \Gamma;\cset \vdash \overline{e} : \overline{\bt} \\
+      \Ffields(\classiota) = \overline{\bt}\ \overline{\Fname} = \overline{e} \\
     }
     {\Gamma;\cset \vdash \closure{\alpha}{\classiota}{\overline{e}} : \classiota
     }
     \\ 
 
     \inferrule*[left=\stitle{Check}]
-    { \Gamma;\cset \vdash e : \modevt \\
+    { 
+      \Gamma;\cset \vdash e_1 : \modevt \\ 
+      \moname = \Femode(e_1) \\ 
+      \Gamma;\cset\vdash e_2 : \Cname\lb\mode,\listi\rb \\
     }
-    {\Gamma;\cset \vdash \check{e}{\moname_{1}}{\moname_{2}} : \modevt
+    {
+      \Gamma;\cset \vdash \check{e_1}{\moname_1}{\moname_2}{e_2} : \Cname\lb\moname,\listi\rb
     }
 
-    \inferrule*[left=\stitle{Let}]
-    { \Gamma;\cset \vdash e_1 : \t_1 \\
-      \Gamma,\VAR:\t_1;\cset \vdash e_2 : \t \\
-    }
-    {\Gamma;\cset \vdash \letx{e_1}{e_2} : \t
-    }
+    %\inferrule*[left=\stitle{Let}]
+    %{ \Gamma;\cset \vdash e_1 : \t_1 \\
+    %  \Gamma,\VAR:\t_1;\cset \vdash e_2 : \t \\
+    %}
+    %{\Gamma;\cset \vdash \letx{e_1}{e_2} : \t
+    %}
 
   \end{mathpar}
 

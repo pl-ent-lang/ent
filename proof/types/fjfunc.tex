@@ -8,27 +8,36 @@
     \\
 
     \inferrule*[left=\fdtitle{Class}]
-    {\kwclass\ \Cname\ \tspec\ \kwextends\ \bt_0 \{ \overline{\t}\ \overline{\Fname} \ \mdlist \ \attributor \} \\ 
-    \Feparam(\tspec) = \iota' \\
-    \Ffields(\bt\subst{\iota'}{\iota}) = \overline{\t_0}\ \overline{\Fname_0} = \overline{e_0} \\
+    {
+      \kwclass\ \Cname\ \tspec\ \kwextends\ \Dname \{ \overline{\bt}\ \overline{\Fname} = \overline{e}\ \mdlist \ \attributor \} \\ 
+      \Feparam(\tspec) = \iota' \\
+      \Ffields(\Dname\subst{\iota'}{\iota}) = \overline{\bt_0}\ \overline{\Fname_0} = \overline{e_0} \\
     }
-    { \Ffields(\classiota) = \overline{\t_0}\ \overline{\Fname_0} = \overline{e_0}, \overline{\t\subst{\listi'}{\listi}}\ \overline{\Fname} = \overline{e\subst{\listi'}{\listi}} }
+    { 
+      \Ffields(\classiota) = \overline{\bt_0}\ \overline{\Fname_0} = \overline{e_0}, \overline{\bt\subst{\listi'}{\listi}}\ \overline{\Fname} = \overline{e\subst{\listi'}{\listi}} 
+    }
     \\
 
     \inferrule*[left=\mttitle{Class}]
-    {\kwclass\ \Cname\ \tspec\ \kwextends\ \bt \{ \fdlist \ \mdlist \ \attributor \} \\ 
-    \bt'\ \Mname(\overline{\bt}\ \overline{e})\ e \in \overline{\mddec}  \\ 
-    \Feparam(\tspec) = \iota' \\
+    {
+      \kwclass\ \Cname\ \tspec\ \kwextends\ \Dname \{ \fdlist \ \mdlist \ \attributor \} \\ 
+      \bt\ \Mname(\overline{\bt}\ \overline{\VAR})\ \{\ e\ \}\ \in \overline{\mddec}  \\ 
+      \Feparam(\tspec) = \iota' \\
     }
-    {\Fmtype(\Mname,\classiota) = (\overline{\bt}\rightarrow\bt')\subst{\iota'}{\iota}}
+    {
+      \Fmtype(\Mname,\classiota) = (\overline{\bt}\rightarrow\bt)\subst{\iota'}{\iota}
+    }
     \\
 
     \inferrule*[left=\mttitle{Super}]
-    {\kwclass\ \Cname\ \tspec\ \kwextends\ \bt \{ \fdlist \ \mdlist \ \attributor \} \\ 
-    \Mname \not\in \overline{\mddec}  \\ 
-    \Feparam(\tspec) = \iota' \\
+    {
+      \kwclass\ \Cname\ \tspec\ \kwextends\ \Dname \{ \fdlist \ \mdlist \ \attributor \} \\ 
+      \Mname \not\in \overline{\mddec}  \\ 
+      \Feparam(\tspec) = \iota' \\
     }
-    {\Fmtype(\Mname,\classiota) = \Fmtype(\Mname,\bt\subst{\iota'}{\iota})}
+    {
+      \Fmtype(\Mname,\classiota) = \Fmtype(\Mname,\Dname\subst{\iota'}{\iota})
+    }
     \\
 
     \inferrule*[left=\textrm{Override}]
@@ -39,9 +48,9 @@
 
     \inferrule*[left=\mbtitle{Class}]
     {
-      \kwclass\ \Cname\ \tspec\ \kwextends\ \bt \{ \fdlist \ \mdlist \ \attributor \} \\
+      \kwclass\ \Cname\ \tspec\ \kwextends\ \Dname \{ \fdlist \ \mdlist \ \attributor \} \\
       \Feparam(\tspec) = \listi' \\
-      \t\ \Mname(\overline{\t}\ \overline{\VAR}) \{ e \} \in \mdlist \\
+      \bt\ \Mname(\overline{\bt}\ \overline{\VAR}) \{ e \} \in \mdlist \\
     }
     { \Fmbody(\Mname,\classiota) = \overline{\VAR}.e\subst{\listi'}{\listi} }
     \\

@@ -15,21 +15,24 @@
 
 \rtitle{Field} & \obj.\Fname_i & \cloreduct{\moname} & \val_i & \textrm{if} \ \mode \msub \moname \\
 
-\rtitle{Snapshot1} & \snapshot{\obj}{\moname'}{\moname''} & \cloreduct{\moname} & \kwlet \ \VAR = \check{ e_a\subst{\kwthis}{o}}{\moname'}{\moname''} \  & \textrm {if}  \ \mode = \dynmode, \kwclass\ \Cname\ \cdots\ \{\ \cdots\ \attributor \ \} \in \programcode, \alpha' \ \textrm{is} \ fresh, \Fabody(\Cname\lb\dynmode,\listi\rb) = e_a \\
+%\rtitle{Snapshot1} & \snapshot{\obj}{\moname'}{\moname''} & \cloreduct{\moname} & \kwlet \ \VAR = \check{ e_a\subst{\kwthis}{\obj}}{\moname'}{\moname''} \  & \textrm {if}  \ \mode = \dynmode, \kwclass\ \Cname\ \cdots\ \{\ \cdots\ \attributor \ \} \in \programcode, \alpha' \ \textrm{is} \ fresh, \Fabody(\Cname\lb\dynmode,\listi\rb) = e_a \\
 
-& & & \kwin \  \closure{\alpha',\Cname\lb\VAR,\listi\rb}{\overline{\val}} &  \\
+%& & & \kwin \  \closure{\alpha',\Cname\lb\VAR,\listi\rb}{\overline{\val}} &  \\
+
+\rtitle{Snapshot1} & \snapshot{\obj}{\moname_1}{\moname_2} & \cloreduct{\moname} & \check{ e_a\subst{\kwthis}{\obj}}{\moname_1}{\moname_2}{\obj} \  & \textrm {if}  \ \mode = \dynmode, \kwclass\ \Cname\ \cdots\ \{\ \cdots\ \attributor \ \} \in \programcode, \Fabody(\Cname\lb\dynmode,\listi\rb) = e_a \\ 
 
 %\rtitle{Snapshot2} & \snapshot{\obj}{\moname'}{\moname''} & \cloreduct{\moname} & \obj & \textrm {if}  \  \moname' \msub \mode \msub \moname'',  \mode \neq \dynmode  \\
 
-\rtitle{Snapshot2} & \snapshot{\obj}{\moname'}{\moname''} & \cloreduct{\moname} & \kwlet \ \VAR = \check{\mode}{\moname'}{\moname''} \  & \textrm {if}  \ \mode = \moname''', \kwclass\ \Cname\ \cdots\ \{\ \cdots\ \attributor \ \} \in \programcode, \alpha' \ \textrm{is} \ fresh \\
+%& & & \kwin \  \closure{\alpha',\Cname\lb\VAR,\listi\rb}{\overline{\val}} &  \\
 
-& & & \kwin \  \closure{\alpha',\Cname\lb\VAR,\listi\rb}{\overline{\val}} &  \\
+\rtitle{Snapshot2} & \snapshot{\obj}{\moname_1}{\moname_2} & \cloreduct{\moname} & \check{\moname'}{\moname_1}{\moname_2}{\obj} \  & \textrm {if}  \ \mode = \moname', \kwclass\ \Cname\ \cdots\ \{\ \cdots\ \attributor \ \} \in \programcode \\
 
-\rtitle{Check} & \check{\val}{\moname'}{\moname''} & \cloreduct{\moname} & \val & \textrm {if} \ \moname' \msub \Femode(\val) \msub \moname'' \\
+
+\rtitle{Check} & \check{\val}{\moname_1}{\moname_2}{\obj} & \cloreduct{\moname} & \closure{\alpha'}{\Cname\lb\moname',\listi\rb}{\overline{\val}} & \textrm {if} \ \Femode(\val) = \moname', \moname_1\msub\moname'\msub\moname_2, \alpha'\ \textrm{is}\ fresh \\
 
 \rtitle{McaseProj} & \mcasetag{\mcase{\bt}{\val}}{\moname_{j}} & \cloreduct{\moname} & \val_{j} \\
 
-\rtitle{Let} & \letx{\val}{e} & \cloreduct{\moname} & e\subst{\VAR}{\val} \\
+%\rtitle{Let} & \letx{\val}{e} & \cloreduct{\moname} & e\subst{\VAR}{\val} \\
 
 \rtitle{Context} & \redreal{e_1}{\moname} & \cloreduct{\moname'} & \redreal{e_2}{\moname} & \textrm{if} \ e_1 \cloreduct{\moname'} e_2 \\
 \end{tabularx}

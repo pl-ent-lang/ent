@@ -6,7 +6,7 @@
 
 \begin{tabularx}{1\linewidth}{>{$}c<{$} >{$}c<{$} >{$}l<{$} @{\extracolsep{\fill}} >{$}r<{$}}
 
-e & \defassign & \dots  \mid \check{e}{\moname}{\moname'} 
+e & \defassign & \dots  \mid \check{e}{\moname}{\moname'}{e}
 & \textit{runtime expressions} \\
 & \mid & \kwlet\ \VAR = e\ \kwin \ e \\
 
@@ -15,7 +15,7 @@ e & \defassign & \dots  \mid \check{e}{\moname}{\moname'}
 & \mid & (\bt)\env \mid \env.\Fname \\
 & \mid & \snapshot{\env}{\moname}{\moname'}\\
 & \mid & \{\dots \moname: \val; \moname: \env; \moname: e \dots \} \mid \env \triangleright \mode \\
-& \mid & \check{\env}{\moname}{\moname'} \\
+& \mid & \check{\env}{\moname}{\moname'}{\env} \\
 & \mid & \closure{\alpha}{\classiota}{\dots\val,\env,e\dots}  \\
 & \mid & \kwlet\ \VAR = \env\ \kwin \ e \\
 

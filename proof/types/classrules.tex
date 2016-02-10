@@ -11,33 +11,38 @@
 			{ 
         \listi = \Fiparam(\tspec) \\
   			\cset = \Fcons(\tspec) \\
-						  \kwthis:\classiota; \cset \vdash \attributor: \modevt \\
-        \fundef{ithis}(\tspec) = \Fmode(\bt') \\
-        			  \overline{x}:\overline{\bt};\kwthis:\classiota;\cset \vdash e: \bt \textrm{ for each }  \bt \ \Mname (\overline{\bt}\ \overline{x})  \{\ e\ \} \in \mdlist \\
-         \kwclass\ \Cname\ \tspec\ \kwextends\ \bt' \{ \fdlist \ \mdlist \ \attributor \} \textrm{ FJ OK } 
+        \fundef{ithis}(\tspec) = \Fmode(\Dname) \\
+        %\overline{x}:\overline{\bt};\kwthis:\classiota;\cset \vdash e: \bt \textrm{ for each }  \bt \ \Mname (\overline{\bt}\ \overline{x})  \{\ e\ \} \in \mdlist \\
+        \mdlist\ \textrm{OK IN}\ \Cname, \tspec \\
+        \attributor\ \textrm{OK IN}\ \Cname, \tspec \\
+        \kwclass\ \Cname\ \tspec\ \kwextends\ \Dname \{ \fdlist \ \mdlist \ \attributor \} \textrm{ FJ OK } 
 			}
-			{  \kwclass\ \Cname\ \tspec\ \kwextends\ \bt' \{ \fdlist \ \mdlist \ \attributor \}\textrm{ OK }
+			{  
+        \kwclass\ \Cname\ \tspec\ \kwextends\ \Dname \{ \fdlist \ \mdlist \ \attributor \}\textrm{ OK }
 			}
       \\
 
       \inferrule*[left=\stitle{Attributor}]
 			{
+        \listi = \Fiparam(\tspec) \\
+  			\cset = \Fcons(\tspec) \\
         \attributor = e \\
 			  \tspec;\kwthis:\classiota \vdash e: \modevt \\
 			}
-			{ \attributor  \ \textrm{ OK IN } \Cname, \tspec
+			{ 
+        \attributor\ \textrm{OK IN}\ \Cname, \tspec
 			}
       \\
 
 			\inferrule*[left=\stitle{Method}]
 			{
-			  \kwclass\ \Cname\ \tspec\ \kwextends\ \bt \{ \dots \}\ \textrm{OK} \\
+			  %\kwclass\ \Cname\ \tspec\ \kwextends\ \bt \{ \dots \}\ \textrm{OK} \\
         \listi = \Fiparam(\tspec) \\
   			\cset = \Fcons(\tspec) \\
-			  \overline{x}:\overline{\t};\kwthis:\classiota;\cset\vdash e:\t \\
-			  \Foverride(\Mname, \classiota, \cset, \overline{\t}\rightarrow\t) \\
+			  \overline{x}:\overline{\bt};\kwthis:\classiota;\cset\vdash e:\bt \\
+			  \Foverride(\Mname, \classiota, \cset, \overline{\bt}\rightarrow\bt) \\
 			}
-			{ \t \ \Mname (\overline{\t}\ \overline{x})  \{\ e\ \}\ \textrm{OK IN}\ \Cname\ \tspec
+			{ \bt\ \Mname(\overline{\bt}\ \overline{x})  \{\ e\ \}\ \textrm{OK IN}\ \Cname\ \tspec
 			}
 			\end{mathpar} 
 \nocaptionrule \caption{Class Typing}
