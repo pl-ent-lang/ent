@@ -20,11 +20,14 @@ import polyglot.ext.jl7.types.*;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 
 public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem { 
@@ -452,17 +455,26 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
     return null;
   }
 
-
   @Override
   public JL5ProcedureInstance callValid(JL5ProcedureInstance mi,
-                                        List<? extends Type> argTypes,
-                                        List<? extends ReferenceType> actualTypeArgs,
-                                        Type expectedReturnType) {
+                                     List<? extends Type> argTypes,
+                                     List<? extends ReferenceType> actualTypeArgs,
+                                     Type expectedReturnType) {
+    return this.callValid((EntProcedureInstance) mi, argTypes, actualTypeArgs, expectedReturnType, null);
+  }
+
+
+  @Override
+  public EntProcedureInstance callValid(EntProcedureInstance mi,
+                                     List<? extends Type> argTypes,
+                                     List<? extends ReferenceType> actualTypeArgs,
+                                     Type expectedReturnType,
+                                     List<ModeType> actualModeTypeArgs) {
 
     if (!(mi.container() instanceof ModeSubstType)) {
       // MODE-NOTE : Need to return to address this. ModeSubstType/Type issue.
       // Should the container always be a ModeSubstType?
-      return super.callValid(mi, argTypes, actualTypeArgs, expectedReturnType);
+      return (EntProcedureInstance) super.callValid(mi, argTypes, actualTypeArgs, expectedReturnType);
     } 
 
     // Check from JL5TypeSystem::methodCallValid
@@ -473,26 +485,306 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
               .size() - 1)) {
         return null;
       } else {
-        return super.callValid(mi, argTypes, actualTypeArgs, expectedReturnType);
+        return (EntProcedureInstance) super.callValid(mi, argTypes, actualTypeArgs, expectedReturnType);
       }
     }
 
     EntProcedureInstance pi = (EntProcedureInstance) mi;
 
-    if (!pi.modeTypeVars().isEmpty()) {
-      ModeSubst subst = this.inferModeTypeArgs(pi, argTypes, expectedReturnType);
-      if (subst == null) {
-        // No matter what we should be able to create a valid subst,
-        // null indicates error
-        return null;
+    if (actualModeTypeArgs != null) {
+      // We should be checked from EntCallExt
+      Map<ModeTypeVariable,Type> mtMap = new HashMap<>();
+      List<ModeTypeVariable> modeTypeVars = pi.modeTypeVars();
+      for (int i = 0; i < pi.modeTypeVars().size(); i++) {
+        mtMap.put(pi.modeTypeVars().get(i),actualModeTypeArgs.get(i));
       }
+
+      ModeSubstClassType sct = (ModeSubstClassType) pi.container();
+      ModeSubst subst = sct.modeSubst().deepCopy();
+      subst.modeTypeMap().putAll(mtMap);
+
       pi = (EntProcedureInstance) subst.substProcedure(pi);
     }
 
     // Let's perform a subst over modes, a hack for now, just prototyping
     // Can do a subst over the mi container type with a new type map
-    return super.callValid(pi, argTypes, actualTypeArgs);
+    return (EntProcedureInstance) super.callValid(pi, argTypes, actualTypeArgs);
   }
+
+  @Override
+  public MethodInstance findMethod(ReferenceType container,
+                                   String name, 
+                                   List<? extends Type> argTypes, 
+                                   List<? extends ReferenceType> typeArgs, ClassType currClass, 
+                                   Type expectedReturnType, 
+                                   boolean fromClient) throws SemanticException {
+    return this.findMethod(container, name, argTypes, typeArgs, currClass, expectedReturnType, fromClient, null);
+  }
+
+  public MethodInstance findMethod(ReferenceType container,
+                                   String name, 
+                                   List<? extends Type> argTypes, 
+                                   List<? extends ReferenceType> typeArgs, ClassType currClass, 
+                                   Type expectedReturnType, 
+                                   boolean fromClient,
+                                   List<ModeType> actualModeTypeArgs) throws SemanticException {
+        assert_(container);
+        assert_(argTypes);
+
+        List<? extends MethodInstance> acceptable =
+                findAcceptableMethods(container,
+                                      name,
+                                      argTypes,
+                                      typeArgs,
+                                      currClass,
+                                      expectedReturnType,
+                                      fromClient,
+                                      actualModeTypeArgs);
+
+        if (acceptable.size() == 0) {
+            throw new NoMemberException(NoMemberException.METHOD,
+                                        "No valid method call found for "
+                                                + name + "("
+                                                + listToString(argTypes) + ")"
+                                                + " in " + container + ".");
+        }
+
+        Collection<? extends MethodInstance> maximal =
+                findMostSpecificProcedures(acceptable);
+
+        if (maximal.size() > 1) {
+            StringBuffer sb = new StringBuffer();
+            for (Iterator<? extends MethodInstance> i = maximal.iterator(); i.hasNext();) {
+                MethodInstance ma = i.next();
+                sb.append(ma.returnType());
+                sb.append(" ");
+                sb.append(ma.container());
+                sb.append(".");
+                sb.append(ma.signature());
+                if (i.hasNext()) {
+                    if (maximal.size() == 2) {
+                        sb.append(" and ");
+                    }
+                    else {
+                        sb.append(", ");
+                    }
+                }
+            }
+
+            throw new SemanticException("Reference to " + name
+                    + " is ambiguous, multiple methods match: " + sb.toString());
+        }
+
+        MethodInstance mi = maximal.iterator().next();
+
+        return mi;
+    }
+
+
+  @Override
+  protected List<? extends MethodInstance> findAcceptableMethods(ReferenceType container, 
+                                                                 String name,
+                                                                 List<? extends Type> argTypes,
+                                                                 List<? extends ReferenceType> actualTypeArgs, ClassType currClass,
+                                                                 Type expectedReturnType, 
+                                                                 boolean fromClient)
+                                                                 throws SemanticException {
+    return this.findAcceptableMethods(container, name, argTypes, actualTypeArgs, currClass, expectedReturnType, fromClient, null);
+  }
+
+  protected List<? extends MethodInstance> findAcceptableMethods(ReferenceType container, 
+                                                                 String name,
+                                                                 List<? extends Type> argTypes,
+                                                                 List<? extends ReferenceType> actualTypeArgs, ClassType currClass,
+                                                                 Type expectedReturnType, 
+                                                                 boolean fromClient,
+                                                                 List<ModeType> actualModeTypeArgs)
+                                                                 throws SemanticException {
+        assert_(container);
+        assert_(argTypes);
+
+        // apply capture conversion to container
+        container =
+                (ReferenceType) applyCaptureConversion(container,
+                                                       container.position());
+
+        SemanticException error = null;
+
+        // List of methods accessible from curClass that have valid method
+        // calls without boxing/unboxing conversion or variable arity and
+        // are not overridden by an unaccessible method
+        List<MethodInstance> phase1methods = new ArrayList<>();
+        // List of methods accessible from curClass that have a valid method
+        // call relying on boxing/unboxing conversion
+        List<MethodInstance> phase2methods = new ArrayList<>();
+        // List of methods accessible from curClass that have a valid method
+        // call relying on boxing/unboxing conversion and variable arity
+        List<MethodInstance> phase3methods = new ArrayList<>();
+
+        // A list of unacceptable methods, where the method call is valid, but
+        // the method is not accessible. This list is needed to make sure that
+        // the acceptable methods are not overridden by an unacceptable method.
+        List<MethodInstance> inaccessible = new ArrayList<>();
+
+        // A set of all the methods that methods in phase[123]methods override.
+        // Used to make sure we don't mistakenly add in overridden methods
+        // (since overridden methods aren't inherited from superclasses).
+        Set<MethodInstance> phase1overridden = new HashSet<>();
+        Set<MethodInstance> phase2overridden = new HashSet<>();
+        Set<MethodInstance> phase3overridden = new HashSet<>();
+
+        Set<Type> visitedTypes = new HashSet<>();
+
+        LinkedList<Type> typeQueue = new LinkedList<>();
+        typeQueue.addLast(container);
+
+//        System.err.println("JL5TS: findAcceptableMethods for " + name + " in " + container);
+        while (!typeQueue.isEmpty()) {
+            Type type = typeQueue.remove();
+
+//            System.err.println("   looking at type " + type + " " + type.getClass());
+            // Make sure each type is considered only once
+            if (visitedTypes.contains(type)) continue;
+            visitedTypes.add(type);
+
+            if (!type.isReference()) {
+                throw new SemanticException("Cannot call method in "
+                        + " non-reference type " + type + ".");
+            }
+
+            @SuppressWarnings("unchecked")
+            List<JL5MethodInstance> methods =
+                    (List<JL5MethodInstance>) type.toReference().methods();
+            for (JL5MethodInstance mi : methods) {
+                // Method name must match
+                if (!mi.name().equals(name)) continue;
+//                System.err.println("      checking " + mi);
+
+                JL5MethodInstance substMi =
+                        methodCallValid((EntMethodInstance)mi,
+                                        name,
+                                        argTypes,
+                                        actualTypeArgs,
+                                        expectedReturnType,
+                                        actualModeTypeArgs);
+                JL5MethodInstance origMi = mi;
+
+                if (substMi != null) {
+                    mi = substMi;
+                    if (isMember(mi, container.toReference())
+                            && isAccessible(mi,
+                                            container,
+                                            currClass,
+                                            fromClient)) {
+                        if (varArgsRequired(mi)) {
+                            if (!phase3overridden.contains(mi)
+                                    && !phase3overridden.contains(origMi)) {
+                                phase3overridden.addAll(mi.implemented());
+                                phase3overridden.addAll(origMi.implemented());
+                                phase3methods.removeAll(mi.implemented());
+                                phase3methods.removeAll(origMi.implemented());
+                                phase3methods.add(mi);
+                            }
+                        }
+                        else if (boxingRequired(mi, argTypes)) {
+                            if (!phase2overridden.contains(mi)
+                                    && !phase2overridden.contains(origMi)) {
+                                phase2overridden.addAll(mi.implemented());
+                                phase2overridden.addAll(origMi.implemented());
+                                phase2methods.removeAll(mi.implemented());
+                                phase2methods.removeAll(origMi.implemented());
+                                phase2methods.add(mi);
+                            }
+                        }
+                        else {
+                            if (!phase1overridden.contains(mi)
+                                    && !phase1overridden.contains(origMi)) {
+                                phase1overridden.addAll(mi.implemented());
+                                phase1overridden.addAll(origMi.implemented());
+                                phase1methods.removeAll(mi.implemented());
+                                phase1methods.removeAll(origMi.implemented());
+                                phase1methods.add(mi);
+                            }
+                        }
+                    }
+                    else {
+                        // method call is valid but the method is unaccessible
+                        inaccessible.add(mi);
+                        if (error == null) {
+                            error =
+                                    new NoMemberException(NoMemberException.METHOD,
+                                                          "Method "
+                                                                  + mi.signature()
+                                                                  + " in "
+                                                                  + container
+                                                                  + " is inaccessible.");
+                        }
+                    }
+                }
+                else {
+                    if (error == null) {
+                        error =
+                                new NoMemberException(NoMemberException.METHOD,
+                                                      "Method "
+                                                              + mi.signature()
+                                                              + " in "
+                                                              + container
+                                                              + " cannot be called with arguments "
+                                                              + "("
+                                                              + listToString(argTypes)
+                                                              + ").");
+                    }
+                }
+            }
+
+            if (type instanceof JL5ClassType) {
+                for (Type superT : ((JL5ClassType) type).superclasses()) {
+                    if (superT != null && superT.isReference()) {
+                        typeQueue.addLast(superT.toReference());
+                    }
+                }
+            }
+            else {
+                Type superT = type.toReference().superType();
+                if (superT != null && superT.isReference()) {
+                    typeQueue.addLast(superT.toReference());
+                }
+
+            }
+
+            typeQueue.addAll(type.toReference().interfaces());
+        }
+
+        if (error == null) {
+            error =
+                    new NoMemberException(NoMemberException.METHOD,
+                                          "No valid method call found for "
+                                                  + name + "("
+                                                  + listToString(argTypes)
+                                                  + ")" + " in " + container
+                                                  + ".");
+        }
+
+        // remove any methods that are overridden by an inaccessible method
+        for (MethodInstance mi : inaccessible) {
+            phase1methods.removeAll(mi.overrides());
+            phase2methods.removeAll(mi.overrides());
+            phase3methods.removeAll(mi.overrides());
+        }
+          
+//        System.err.println("        phase1overridden is    " + phase1overridden);
+//        System.err.println("        phase2overridden is    " + phase2overridden);
+//        System.err.println("        phase3overridden is    " + phase3overridden);
+
+        if (!phase1methods.isEmpty()) return phase1methods;
+        if (!phase2methods.isEmpty()) return phase2methods;
+        if (!phase3methods.isEmpty()) return phase3methods;
+
+        // No acceptable accessible methods were found
+        throw error;
+
+  }
+
 
   @Override
   public JL5MethodInstance methodCallValid(JL5MethodInstance mi, 
@@ -500,11 +792,21 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
                                            List<? extends Type> argTypes,
                                            List<? extends ReferenceType> actualTypeArgs,
                                            Type expectedReturnType) { 
+    return this.methodCallValid((EntMethodInstance) mi, name, argTypes, actualTypeArgs, expectedReturnType, null);
+  }
+
+  @Override
+  public EntMethodInstance methodCallValid(EntMethodInstance mi, 
+                                           String name,
+                                           List<? extends Type> argTypes,
+                                           List<? extends ReferenceType> actualTypeArgs,
+                                           Type expectedReturnType,
+                                           List<ModeType> actualModeTypeArgs) { 
 
     if (!(mi.container() instanceof ModeSubstType)) {
       // MODE-NOTE : Need to return to address this. ModeSubstType/Type issue.
       // Should the container always be a ModeSubstType?
-      return super.methodCallValid(mi, name, argTypes, actualTypeArgs, expectedReturnType);
+      return (EntMethodInstance) super.methodCallValid(mi, name, argTypes, actualTypeArgs, expectedReturnType);
     }
 
     // Check from JL5TypeSystem::methodCallValid
@@ -516,24 +818,45 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
         return null;
       } else {
         // Don't handle varagrs yet, 
-        return super.methodCallValid(mi, name, argTypes, actualTypeArgs, expectedReturnType);
+        return (EntMethodInstance) super.methodCallValid(mi, name, argTypes, actualTypeArgs, expectedReturnType);
       }
     } 
 
     EntProcedureInstance pi = (EntProcedureInstance) mi;
-    if (!pi.modeTypeVars().isEmpty()) {
-      ModeSubst subst = this.inferModeTypeArgs(pi, argTypes, expectedReturnType);
-      if (subst == null) {
-        // No matter what we should be able to create a valid subst,
-        // null indicates error
-        return null;
+    if (actualModeTypeArgs != null) {
+      Map<ModeTypeVariable,Type> mtMap = new HashMap<>();
+      List<ModeTypeVariable> modeTypeVars = pi.modeTypeVars();
+      for (int i = 0; i < pi.modeTypeVars().size(); i++) {
+        mtMap.put(pi.modeTypeVars().get(i),actualModeTypeArgs.get(i));
       }
+
+      ModeSubstClassType sct = (ModeSubstClassType) pi.container();
+      ModeSubst subst = sct.modeSubst().deepCopy();
+      subst.modeTypeMap().putAll(mtMap);
+
+      // Check that constraints are handled
+      mtMap = subst.modeTypeMap();
+      for (ModeTypeVariable mtv : pi.modeTypeVars()) {
+        Type sm = mtMap.get(mtv);
+
+        // Check that all bounds are satisfied
+        for (Type m : mtv.bounds()) {
+          if (m instanceof ModeTypeVariable) {
+            m = mtMap.get(m);
+          }
+
+          if (!this.isSubtype(sm, m)) {
+            return null;
+          }
+        }
+      } 
+
       pi = (EntProcedureInstance) subst.substProcedure(pi);
     }
 
     // Let's perform a subst over modes, a hack for now, just prototyping
     // Can do a subst over the mi container type with a new type map
-    return super.methodCallValid((JL5MethodInstance)pi, name, argTypes, actualTypeArgs, expectedReturnType);
+    return (EntMethodInstance) super.methodCallValid((JL5MethodInstance)pi, name, argTypes, actualTypeArgs, expectedReturnType);
   }
 
 

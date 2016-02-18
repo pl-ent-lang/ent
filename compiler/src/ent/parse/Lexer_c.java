@@ -579,13 +579,14 @@ public class Lexer_c implements Lexer {
 
         // Ent Specific Keywords
         keywords.put("modes",         new Integer(sym.MODES));
-        keywords.put("ent_attribute",     new Integer(sym.ATTRIBUTE));
-        keywords.put("ent_copy",          new Integer(sym.COPY));
-        keywords.put("blammable",     new Integer(sym.BLAMMABLE));
+        keywords.put("attributor",    new Integer(sym.ATTRIBUTOR));
+        keywords.put("ent_copy",      new Integer(sym.COPY));
         keywords.put("snapshot",      new Integer(sym.SNAPSHOT));
         keywords.put("snapshotforce", new Integer(sym.SNAPSHOTFORCE));
         keywords.put("mcase",         new Integer(sym.MCASE));
         keywords.put("modesafe",      new Integer(sym.MODESAFE));
+        keywords.put("overmode",      new Integer(sym.OVERMODE));
+        
     }
 
     @Override

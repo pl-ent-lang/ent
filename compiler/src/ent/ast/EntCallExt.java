@@ -11,8 +11,10 @@ import polyglot.util.*;
 import polyglot.translate.*;
 
 import polyglot.ext.jl5.ast.*;
+import polyglot.ext.jl5.types.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -21,6 +23,7 @@ public class EntCallExt extends EntExt {
 
   protected Type expectedReturnType;
   protected Map<ModeTypeVariable, Type> infModeTypes;
+  protected List<ModeTypeNode> modeTypeArgs;
 
   protected Map<ModeTypeVariable, Type> infModeTypes() {
     return this.infModeTypes;
@@ -30,7 +33,7 @@ public class EntCallExt extends EntExt {
     return this.infModeTypes((Call)this.node(), infModeTypes);
   }
 
-  protected <N extends Call> N infModeTypes(N n, Map<ModeTypeVariable, Type> infModeTypes) {
+  protected <N extends Node> N infModeTypes(N n, Map<ModeTypeVariable, Type> infModeTypes) {
     EntCallExt ext = (EntCallExt) EntExt.ext(n);
     if (ext.infModeTypes == infModeTypes) return n;
     if (this.node() == n) {
@@ -39,6 +42,38 @@ public class EntCallExt extends EntExt {
     }
     ext.infModeTypes = infModeTypes;
     return n;
+  }
+
+  protected List<ModeTypeNode> modeTypeArgs() {
+    return this.modeTypeArgs;
+  }
+
+  protected Call modeTypeArgs(List<ModeTypeNode> modeTypeArgs) {
+    return this.modeTypeArgs((Call)this.node(), modeTypeArgs);
+  }
+
+  protected <N extends Node> N modeTypeArgs(N n, List<ModeTypeNode> modeTypeArgs) {
+    EntCallExt ext = (EntCallExt) EntExt.ext(n);
+    if (CollectionUtil.equals(ext.modeTypeArgs,modeTypeArgs)) return n;
+    if (this.node() == n) {
+      n = Copy.Util.copy(n);
+      ext = (EntCallExt) EntExt.ext(n);
+    }
+    ext.modeTypeArgs = ListUtil.copy(modeTypeArgs, true);
+    return n;
+  } 
+
+  // Node Methods
+  protected <N extends Node> N reconstruct(N n, List<ModeTypeNode> modeTypeArgs) {
+    n = this.modeTypeArgs(n, modeTypeArgs);
+    return n;
+  }
+
+  @Override
+  public Node visitChildren(NodeVisitor v) {
+    Node n = superLang().visitChildren(this.node(), v);
+    List<ModeTypeNode> modeTypeArgs = visitList(this.modeTypeArgs(), v);
+    return this.reconstruct(n, modeTypeArgs);
   }
 
   @Override
@@ -84,11 +119,126 @@ public class EntCallExt extends EntExt {
       return superLang().typeCheckOverride(this.node(), parent, tc);
   }
 
+  protected Type computeReturnType(EntMethodInstance mi) throws SemanticException {
+        // See JLS 3rd ed 15.12.2.6
+        EntTypeSystem ts = (EntTypeSystem) mi.typeSystem();
+        // If the method being invoked is declared with a return type of void, then the result is void.
+        if (mi.returnType().isVoid()) {
+            return ts.Void();
+        }
+
+        // Otherwise, if unchecked conversion was necessary for the method to be applicable then the result type is the erasure (�4.6) of the method�s declared return type.
+        // XXX how to check this? We need to implement it properly.
+
+        // Otherwise, if the method being invoked is generic, then for 1 � i � n , 
+        // let Fi be the formal type parameters of the method, let Ai be the actual type arguments inferred for the method invocation, and 
+        // let R be the declared return type of the method being invoked. The result type is obtained by applying capture conversion (�5.1.10) to R[F1 := A1, ..., Fn := An].
+        // --- mi has already had substitution applied, so it is covered by the following case.
+
+        // Otherwise, the result type is obtained by applying capture conversion (�5.1.10) to the type given in the method declaration.
+        return ts.applyCaptureConversion(mi.returnType(), this.node().position());
+    }
+
+
+  public Node jl5TypeCheck(TypeChecker tc) throws SemanticException {
+    EntTypeSystem ts = (EntTypeSystem) tc.typeSystem();
+    Context c = tc.context();
+
+    Call n = (Call) this.node();
+
+    JL5CallExt ext = (JL5CallExt) JL5Ext.ext(n);
+
+    List<Type> argTypes = new ArrayList<>(n.arguments().size());
+
+    for (Expr e : n.arguments()) {
+        if (!e.type().isCanonical()) {
+            return n;
+        }
+        argTypes.add(e.type());
+    }
+
+    if (n.target() == null) {
+        return tc.lang().typeCheckNullTarget(n, tc, argTypes);
+    }
+
+    if (!n.target().type().isCanonical()) {
+        return n;
+    }
+
+    List<ReferenceType> actualTypeArgs = new ArrayList<>();
+    for (TypeNode tn : ext.typeArgs()) {
+      actualTypeArgs.add((ReferenceType) tn.type());
+    }
+
+    ReferenceType targetType = tc.lang().findTargetType(n);
+
+    /* This call is in a static context if and only if
+     * the target (possibly implicit) is a type node.
+     */
+    boolean staticContext = (n.target() instanceof TypeNode);
+
+    if (staticContext && targetType instanceof RawClass) {
+        targetType = ((RawClass) targetType).base();
+    }
+
+    List<ModeType> actualModeTypes = null;
+    if (this.modeTypeArgs() != null) {
+      actualModeTypes = new ArrayList<>();
+      for (ModeTypeNode mn : this.modeTypeArgs()) {
+        actualModeTypes.add((ModeType)mn.type());
+      }
+    }
+
+    EntMethodInstance mi =
+            (EntMethodInstance) ts.findMethod(targetType,
+                                              n.name(),
+                                              argTypes,
+                                              actualTypeArgs,
+                                              c.currentClass(),
+                                              ext.expectedReturnType(),
+                                              !(n.target() instanceof Special),
+                                              actualModeTypes);
+
+    if (staticContext && !mi.flags().isStatic()) {
+        throw new SemanticException("Cannot call non-static method "
+                + n.name() + " of " + n.target().type() + " in static "
+                + "context.", n.position());
+    }
+
+    // If the target is super, but the method is abstract, then complain.
+    if (n.target() instanceof Special
+            && ((Special) n.target()).kind() == Special.SUPER
+            && mi.flags().isAbstract()) {
+        throw new SemanticException("Cannot call an abstract method "
+                + "of the super class", n.position());
+    }
+
+    Type returnType = computeReturnType(mi);
+
+    n = (Call) n.methodInstance(mi).type(returnType);
+    ext = (JL5CallExt) JL5Ext.ext(n);
+
+    // Need to deal with Object.getClass() specially. See JLS 3rd ed., section 4.3.2
+    if (mi.name().equals("getClass") && mi.formalTypes().isEmpty()) {
+        // the return type of the call is "Class<? extends |T|>" where T is the static type of
+        // the receiver.
+        Type t = n.target().type();
+        ReferenceType et = (ReferenceType) ts.erasureType(t);
+        ReferenceType wt = ts.wildCardType(n.position(), et, null);
+        Type instClass =
+                ts.instantiate(n.position(),
+                               (JL5ParsedClassType) ts.Class(),
+                               Collections.singletonList(wt));
+        n = (Call) n.type(instClass);
+    }
+
+    return n;
+  } 
 
   @Override
   public Node typeCheck(TypeChecker tc) throws SemanticException { 
-    Call n = (Call) superLang().typeCheck(this.node(), tc);
-
+    Call n =  (Call) this.jl5TypeCheck(tc);
+    EntProcedureInstance pi = (EntProcedureInstance) n.methodInstance(); 
     EntTypeSystem ts = (EntTypeSystem) tc.typeSystem();
     EntContext ctx = (EntContext) tc.context();
     EntClassType ct = (EntClassType) ctx.currentClassScope();
@@ -118,12 +268,25 @@ public class EntCallExt extends EntExt {
 
     // Call is valid if the first mode type variable upper bound is greater
     // than the recievers mode type.
+    //
+    // Overmoded methods take precedence
     ModeTypeVariable mtThis = ct.modeTypeVars().get(0);
-    if (!ts.isSubtype(mt.modeType(), mtThis)) {
-      throw new SemanticException("Cannot send message to " + t + " from mode " + mtThis.upperBound() + ".");
+    if (pi.overmode() == null) {
+      if (!ts.isSubtype(mt.modeType(), mtThis)) {
+        throw new SemanticException("Cannot send message to " + t + " from mode " + mtThis.upperBound() + ".");
+      }
+    } else {
+      EntProcedureInstance pi2 = pi;
+      if (mt instanceof ModeSubstClassType) {
+        ModeSubstClassType mct = (ModeSubstClassType) mt;
+        ModeSubst ms = mct.modeSubst();
+        pi2 = ms.substProcedure(pi);
+      }
+      if (!ts.isSubtype(pi2.overmode(), mtThis)) {
+        throw new SemanticException("Cannot send message to overmode<" + pi.overmode() + "> from mode " + mtThis.upperBound() + ".");
+      }
     }
 
-    EntProcedureInstance pi = (EntProcedureInstance) n.methodInstance();
     if (pi.modeTypeVars().isEmpty()) {
       return n;
     }
@@ -149,6 +312,7 @@ public class EntCallExt extends EntExt {
   public Node typePreserve(TypePreserver tp) {
     Call n = (Call) this.node();
 
+    /*
     if (this.needsEntClosure()) {
       List<Expr> args = new ArrayList<>(n.arguments());
       args.add(
@@ -162,6 +326,7 @@ public class EntCallExt extends EntExt {
         ); 
       n = (Call) n.arguments(args);
     }
+    */
 
     return n;
   }

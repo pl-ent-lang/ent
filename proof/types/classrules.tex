@@ -15,7 +15,8 @@
         %\overline{x}:\overline{\bt};\kwthis:\classiota;\cset \vdash e: \bt \textrm{ for each }  \bt \ \Mname (\overline{\bt}\ \overline{x})  \{\ e\ \} \in \mdlist \\
         \mdlist\ \textrm{OK IN}\ \Cname, \tspec \\
         \attributor\ \textrm{OK IN}\ \Cname, \tspec \\
-        \kwclass\ \Cname\ \tspec\ \kwextends\ \Dname \{ \fdlist \ \mdlist \ \attributor \} \textrm{ FJ OK } 
+        \fdlist = \overline{\bt}\ \overline{\Fname} = \overline{e} \\ \varnothing;\cset \vdash \overline{e}:\overline{\bt} \\
+        %\kwclass\ \Cname\ \tspec\ \kwextends\ \Dname \{ \fdlist \ \mdlist \ \attributor \} \textrm{ FJ OK } 
 			}
 			{  
         \kwclass\ \Cname\ \tspec\ \kwextends\ \Dname \{ \fdlist \ \mdlist \ \attributor \}\textrm{ OK }
@@ -27,7 +28,8 @@
         \listi = \Fiparam(\tspec) \\
   			\cset = \Fcons(\tspec) \\
         \attributor = e \\
-			  \tspec;\kwthis:\classiota \vdash e: \modevt \\
+        \cset\judgewfti\classiota \\
+			  \cset;\kwthis:\classiota \vdash e: \modevt \\
 			}
 			{ 
         \attributor\ \textrm{OK IN}\ \Cname, \tspec
@@ -39,8 +41,9 @@
 			  %\kwclass\ \Cname\ \tspec\ \kwextends\ \bt \{ \dots \}\ \textrm{OK} \\
         \listi = \Fiparam(\tspec) \\
   			\cset = \Fcons(\tspec) \\
+        \cset\judgewfti\classiota \\
 			  \overline{x}:\overline{\bt};\kwthis:\classiota;\cset\vdash e:\bt \\
-			  \Foverride(\Mname, \classiota, \cset, \overline{\bt}\rightarrow\bt) \\
+			  %\Foverride(\Mname, \classiota, \cset, \overline{\bt}\rightarrow\bt) \\
 			}
 			{ \bt\ \Mname(\overline{\bt}\ \overline{x})  \{\ e\ \}\ \textrm{OK IN}\ \Cname\ \tspec
 			}

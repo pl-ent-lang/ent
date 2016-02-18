@@ -18,7 +18,14 @@ import polyglot.ext.jl7.ast.JL7NodeFactory;
 public interface EntNodeFactory extends JL7NodeFactory {
 
   // Factory Methods for Ext Nodes
-  
+  Call Call(Position pos,  
+            Receiver target, 
+            List<TypeNode> typeArgs, 
+            Id name, 
+            List<Expr> args,
+            List<ModeTypeNode> modeTypeArgs);
+
+
   ClassDecl ClassDecl(Position pos,  
                       Flags flags, 
                       List<AnnotationElem> annotations, 
@@ -37,7 +44,8 @@ public interface EntNodeFactory extends JL7NodeFactory {
                                   List<TypeNode> throwTypes, 
                                   Block body, 
                                   List<ParamTypeNode> typeParams,
-                                  List<ModeParamTypeNode> modeParamTypes);
+                                  List<ModeParamTypeNode> modeParamTypes,
+                                  ModeTypeNode overmode); 
 
   MethodDecl MethodDecl(Position pos, 
                         Flags flags, 
@@ -48,7 +56,8 @@ public interface EntNodeFactory extends JL7NodeFactory {
                         List<TypeNode> throwTypes, 
                         Block body, 
                         List<ParamTypeNode> typeParams,
-                        List<ModeParamTypeNode> modeParams); 
+                        List<ModeParamTypeNode> modeParams,
+                        ModeTypeNode overmode); 
 
   SourceFile SourceFile(Position pos, 
                         PackageNode packageName, 

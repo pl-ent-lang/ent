@@ -18,6 +18,7 @@ public class EntMethodInstance_c extends JL5MethodInstance_c implements EntMetho
 
   private List<ModeTypeVariable> modeTypeVars;
   private EntProcedureInstance baseInstance;
+  private ModeType overmode;
 
   public EntMethodInstance_c(EntTypeSystem ts, 
                                Position pos, 
@@ -31,6 +32,7 @@ public class EntMethodInstance_c extends JL5MethodInstance_c implements EntMetho
                                List<ModeTypeVariable> modeTypeVars) {
     super(ts, pos, container, flags, returnType, name, argTypes, excTypes, typeParams);
     this.modeTypeVars(modeTypeVars);
+    this.overmode(overmode);
     this.baseInstance = null;
   }
 
@@ -46,6 +48,14 @@ public class EntMethodInstance_c extends JL5MethodInstance_c implements EntMetho
     }
   } 
 
+  public ModeType overmode() {
+    return this.overmode;
+  }
+
+  public void overmode(ModeType overmode) {
+    this.overmode = overmode;
+  } 
+
   public EntProcedureInstance baseInstance() {
     return this.baseInstance;
   }
@@ -53,6 +63,21 @@ public class EntMethodInstance_c extends JL5MethodInstance_c implements EntMetho
   public void baseInstance(EntProcedureInstance baseInstance) {
     this.baseInstance = baseInstance;
   }
+
+  private List<List<ModeType>> actualModeArgStack = new ArrayList<List<ModeType>>();
+
+  public List<ModeType> actualModeArgsTop() {
+    return actualModeArgStack.get(actualModeArgStack.size()-1);
+  }
+
+  public void actualModeArgsPop() {
+    actualModeArgStack.remove(actualModeArgStack.size()-1);
+  }
+
+  public void actualModeArgsPush(List<ModeType> actualModeArgs) {
+    actualModeArgStack.add(actualModeArgs);
+  }
+
 
   @Override
   public boolean callValidImpl(List<? extends Type> argTypes) {

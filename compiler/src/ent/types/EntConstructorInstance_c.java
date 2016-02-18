@@ -22,6 +22,7 @@ public class EntConstructorInstance_c extends JL5ConstructorInstance_c implement
 
   private List<ModeTypeVariable> modeTypeVars;
   private EntProcedureInstance baseInstance;
+  private ModeType overmode;
 
   public EntConstructorInstance_c(EntTypeSystem ts, 
                                     Position pos, 
@@ -33,6 +34,7 @@ public class EntConstructorInstance_c extends JL5ConstructorInstance_c implement
                                     List<ModeTypeVariable> modeTypeVars) {
     super((JL5TypeSystem_c) ts, pos, container, flags, argTypes, excTypes, typeParams);
     this.modeTypeVars(modeTypeVars);
+    this.overmode(overmode);
   }
 
   public List<ModeTypeVariable> modeTypeVars() {
@@ -47,12 +49,34 @@ public class EntConstructorInstance_c extends JL5ConstructorInstance_c implement
     }
   } 
 
+  public ModeType overmode() {
+    return this.overmode;
+  }
+
+  public void overmode(ModeType overmode) {
+    this.overmode = overmode;
+  } 
+
   public EntProcedureInstance baseInstance() {
     return this.baseInstance;
   }
 
   public void baseInstance(EntProcedureInstance baseInstance) {
     this.baseInstance = baseInstance;
+  }
+
+  private List<List<ModeType>> actualModeArgStack = new ArrayList<List<ModeType>>();
+
+  public List<ModeType> actualModeArgsTop() {
+    return actualModeArgStack.get(actualModeArgStack.size()-1);
+  }
+
+  public void actualModeArgsPop() {
+    actualModeArgStack.remove(actualModeArgStack.size()-1);
+  }
+
+  public void actualModeArgsPush(List<ModeType> actualModeArgs) {
+    actualModeArgStack.add(actualModeArgs);
   }
 
   @Override

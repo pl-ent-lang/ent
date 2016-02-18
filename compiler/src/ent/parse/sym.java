@@ -8,7 +8,7 @@ package ent.parse;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int SNAPSHOTFORCE = 119;
+  public static final int SNAPSHOTFORCE = 118;
   public static final int THROW = 54;
   public static final int INTEGER_LITERAL = 94;
   public static final int STATIC = 28;
@@ -27,7 +27,7 @@ public class sym {
   public static final int LONG_LITERAL_BD = 97;
   public static final int ENUM = 110;
   public static final int OROR = 81;
-  public static final int MODEBOUND = 120;
+  public static final int MODEBOUND = 119;
   public static final int DOT = 13;
   public static final int LPAREN = 20;
   public static final int LONG_LITERAL = 96;
@@ -42,9 +42,9 @@ public class sym {
   public static final int DIVEQ = 84;
   public static final int LBRACE = 17;
   public static final int GOTO = 106;
-  public static final int BLAMMABLE = 113;
   public static final int LSHIFTEQ = 88;
   public static final int CHAR = 7;
+  public static final int OVERMODE = 123;
   public static final int PLUSPLUS = 59;
   public static final int IMPORT = 24;
   public static final int CATCH = 56;
@@ -52,23 +52,23 @@ public class sym {
   public static final int PROTECTED = 26;
   public static final int LONG = 6;
   public static final int COMMA = 16;
-  public static final int SNAPSHOT = 118;
+  public static final int SNAPSHOT = 117;
   public static final int INTEGER_LITERAL_BD = 95;
-  public static final int COPY = 114;
+  public static final int COPY = 113;
   public static final int MODEQ = 85;
   public static final int PRIVATE = 27;
   public static final int CONTINUE = 52;
   public static final int DIV = 65;
-  public static final int RARROW = 122;
-  public static final int MODES = 116;
-  public static final int MODESAFE = 123;
+  public static final int RARROW = 121;
+  public static final int MODES = 115;
+  public static final int MODESAFE = 122;
   public static final int GTEQ = 73;
   public static final int EQEQ = 75;
   public static final int VOLATILE = 34;
   public static final int EXTENDS = 36;
   public static final int NEW = 58;
   public static final int INSTANCEOF = 74;
-  public static final int MODE = 115;
+  public static final int MODE = 114;
   public static final int LT = 70;
   public static final int CLASS = 35;
   public static final int DO = 48;
@@ -76,10 +76,10 @@ public class sym {
   public static final int PACKAGE = 23;
   public static final int CONST = 105;
   public static final int TRY = 55;
-  public static final int PARORD = 117;
+  public static final int ATTRIBUTOR = 112;
+  public static final int PARORD = 116;
   public static final int SYNCHRONIZED = 32;
-  public static final int MCASE = 121;
-  public static final int ATTRIBUTE = 112;
+  public static final int MCASE = 120;
   public static final int CHARACTER_LITERAL = 101;
   public static final int FOR = 50;
   public static final int MINUSMINUS = 60;
@@ -245,8 +245,7 @@ public class sym {
   "ELLIPSIS",
   "ENUM",
   "AT",
-  "ATTRIBUTE",
-  "BLAMMABLE",
+  "ATTRIBUTOR",
   "COPY",
   "MODE",
   "MODES",
@@ -256,7 +255,8 @@ public class sym {
   "MODEBOUND",
   "MCASE",
   "RARROW",
-  "MODESAFE"
+  "MODESAFE",
+  "OVERMODE"
   };
 }
 

@@ -17,6 +17,7 @@ import java.util.Set;
 public abstract class EntProcedureDeclExt extends EntExt {
 
   protected List<ModeParamTypeNode> modeParams = Collections.emptyList();
+  protected ModeTypeNode overmode = null;
 
   public List<ModeParamTypeNode> modeParams() {
     return this.modeParams;
@@ -37,9 +38,29 @@ public abstract class EntProcedureDeclExt extends EntExt {
     return n;
   }
 
+  public ModeTypeNode overmode() {
+    return this.overmode;
+  }
+
+  public Node overmode(ModeTypeNode overmode) {
+    return this.overmode(this.node(), overmode);
+  }
+
+  public <N extends Node> N overmode(N n, ModeTypeNode overmode) {
+    EntProcedureDeclExt ext = (EntProcedureDeclExt) EntExt.ext(n);
+    if (ext.overmode == overmode) return n;
+    if (this.node() == n) {
+      n = Copy.Util.copy(n);
+      ext = (EntProcedureDeclExt) EntExt.ext(n);
+    }
+    ext.overmode = overmode;
+    return n;
+  }
+
   // Node Methods
-  protected Node reconstruct(Node n, List<ModeParamTypeNode> modeParams) {
+  protected Node reconstruct(Node n, List<ModeParamTypeNode> modeParams, ModeTypeNode overmode) {
     n = this.modeParams(n, modeParams);
+    n = this.overmode(n, overmode);
     return n;
   }
 
@@ -47,7 +68,8 @@ public abstract class EntProcedureDeclExt extends EntExt {
   public Node visitChildren(NodeVisitor v) {
     Node n = superLang().visitChildren(this.node(), v);
     List<ModeParamTypeNode> modeParams = visitList(this.modeParams(), v);
-    return this.reconstruct(n, modeParams);
+    ModeTypeNode overmode = visitChild(this.overmode(), v);
+    return this.reconstruct(n, modeParams, overmode);
   }
 
   @Override
@@ -92,6 +114,28 @@ public abstract class EntProcedureDeclExt extends EntExt {
     return pd;
   }
 
+  public boolean shouldDisambiguate() {
+    if (this.overmode() != null && !this.overmode().isDisambiguated()) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public Node disambiguate(AmbiguityRemover tr) throws SemanticException {
+    if (!this.shouldDisambiguate()) {
+      return this.node();
+    }
+
+    ProcedureDecl pd = (ProcedureDecl) superLang().disambiguate(this.node(), tr);
+    EntProcedureInstance pi = (EntProcedureInstance) pd.procedureInstance();
+    if (this.overmode() != null) {
+      pi.overmode((ModeType)this.overmode().type());
+    }
+    
+    return pd;
+  }
+
   @Override
   public Node typeCheck(TypeChecker tc) throws SemanticException {
     ProcedureDecl n = (ProcedureDecl) superLang().typeCheck(this.node(), tc);
@@ -117,11 +161,14 @@ public abstract class EntProcedureDeclExt extends EntExt {
     EntNodeFactory nf = (EntNodeFactory) tp.nodeFactory();
     EntTypeSystem ts = (EntTypeSystem) tp.typeSystem();
 
-    if (!this.preserveTypes()) {
+    //if (!this.preserveTypes()) {
       return n;
-    }
+    //}
+    //
+    // NOTE: I need to come back to fix this...
 
     // To preserve the context of the mode type vars, we simply accept ENT_Closure
+    /*
     List<Formal> formals = new ArrayList<>(n.formals());
     Formal f =
       nf.Formal(
@@ -153,6 +200,7 @@ public abstract class EntProcedureDeclExt extends EntExt {
     formals.add(f);
      
     return n.formals(formals);
+    */
   }
 
 }

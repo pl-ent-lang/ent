@@ -29,8 +29,11 @@ public class EntNodeFactory_c extends JL7NodeFactory_c implements EntNodeFactory
                      Receiver target, 
                      List<TypeNode> typeArgs, 
                      Id name, 
-                     List<Expr> args) {
+                     List<Expr> args,
+                     List<ModeTypeNode> modeTypeArgs) {
       Call n = super.Call(pos, target, typeArgs, name, args);
+      EntCallExt ext = (EntCallExt) EntExt.ext(n);
+      ext.modeTypeArgs = modeTypeArgs;
       return n;
     } 
     
@@ -59,11 +62,13 @@ public class EntNodeFactory_c extends JL7NodeFactory_c implements EntNodeFactory
                                            List<TypeNode> throwTypes, 
                                            Block body, 
                                            List<ParamTypeNode> typeParams,
-                                           List<ModeParamTypeNode> modeParams) {
+                                           List<ModeParamTypeNode> modeParams,
+                                           ModeTypeNode overmode) {
       ConstructorDecl n = 
         super.ConstructorDecl(pos, flags, annotations, name, formals, throwTypes, body, typeParams);
       EntConstructorDeclExt ext = (EntConstructorDeclExt) EntExt.ext(n);
       ext.modeParams = CollectionUtil.nonNullList(modeParams);
+      ext.overmode = overmode;
       return n;
     } 
 
@@ -77,11 +82,13 @@ public class EntNodeFactory_c extends JL7NodeFactory_c implements EntNodeFactory
                                  List<TypeNode> throwTypes, 
                                  Block body, 
                                  List<ParamTypeNode> typeParams,
-                                 List<ModeParamTypeNode> modeParams) {
+                                 List<ModeParamTypeNode> modeParams,
+                                 ModeTypeNode overmode) {
       MethodDecl n = 
         super.MethodDecl(pos, flags, annotations, returnType, name, formals, throwTypes, body, typeParams);
       EntMethodDeclExt ext = (EntMethodDeclExt) EntExt.ext(n);
       ext.modeParams = CollectionUtil.nonNullList(modeParams);
+      ext.overmode = overmode;
       return n;
     } 
 

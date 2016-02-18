@@ -4,28 +4,44 @@
 \begin{mathpar}
 			\inferrule*[left=\wftitle{Class}]
 			{
-			 \kwclass\ \Cname\ \espec' \dots \in \programcode \\
-       \Feparam(\espec') = \listi' \\ 
-       \Fcons(\espec') = \cset' \\
-       \cset \models \cset'\subst{\listi'}{\basemode} \\
+			  \kwclass\ \Cname\ \espec\ \kwextends\ \Dname\ \dots \in \programcode \\
+        \Feparam(\espec) = \listi' \\ \Fcons(\espec) = \cset' \\
+        \cset \models \cset'\subst{\listi'}{\overline{\basemode}} \\
+        \cset \judgewft \Dname\lb\overline{\basemode}\rb \\
 			}
-			{\cset \judgewft \Cname\lb\overline{\basemode}\rb} 
+			{
+        \cset \judgewft \Cname\lb\overline{\basemode}\rb
+      } 
       \\
 
       \inferrule*[left=\wftitle{ClassDyn}]
 			{
-			 \kwclass\ \Cname\ \dynmode\rightarrow\econs,\espec' \dots \in \programcode \\
-       \Feparam(\dynmode\rightarrow\econs,\espec') = \listi' \\ 
-       \Fcons(\espec') = \cset' \\
-       \cset \models \cset'\subst{\listi'}{\basemode} \\
+			  \kwclass\ \Cname\ \dynmode\rightarrow\econs,\espec\ \kwextends\ \Dname \dots \in \programcode \\
+        \Feparam(\dynmode\rightarrow\econs,\espec) = \dynmode,\listi' \\ 
+        \Fcons(\espec) = \cset' \\
+        \cset \models \cset'\subst{\listi'}{\overline{\basemode}} \\
+        \cset \judgewft \Dname\lb\dynmode,\overline{\basemode}\rb \\
 			}
-			{ \cset \judgewft \Cname\lb\dynmode,\overline{\basemode}\rb } 
+			{ 
+        \cset \judgewft \Cname\lb\dynmode,\overline{\basemode}\rb 
+      }
       \\ 
 
 			\inferrule*[left=\wftitle{Top}]
 			{}
 			{\cset \judgewft \Nobject \lb \basemode \rb} 
       \\
+
+      \inferrule*[left=\wftitle{Exist}]
+			{
+        \econs = \basemode_1\msub\mtvar\msub\basemode_2 \\
+        \cset = \cset'\cup\{\basemode_1\msub\mtvar,\mtvar\msub\basemode_2\} \\ \mtvar \not\in\cset' \\
+        \cset' \judgewft \classdyn \\
+        \cset \judgewfti \Cname\lb\mtvar,\listi\rb \\
+      }
+			{
+        \cset \judgewft \texist{\econs}.\classdyn
+      }
 
       \inferrule*[left=\wftitle{MCase}]
 			{\cset \judgewft \bt}
@@ -38,6 +54,6 @@
 
 \end{mathpar}
 
-\caption{Type Well-Formedness}
+\caption{External Type Well-Formedness}
 \label{fig:welltypes}
 \end{figure}

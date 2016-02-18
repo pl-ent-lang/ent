@@ -133,7 +133,15 @@ public class ModeSubst {
     subst.setFormalTypes(formalTypes);
     subst.setThrowTypes(throwTypes);
     subst.setContainer((ReferenceType) this.baseType());
-    ((EntMethodInstance) subst).baseInstance((EntMethodInstance) mi);
+
+    if (subst instanceof EntMethodInstance) {
+      EntMethodInstance esubst = (EntMethodInstance) subst;
+      esubst.baseInstance((EntMethodInstance) mi);
+      if (esubst.overmode() != null) {
+        esubst.overmode((ModeType)this.substType(esubst.overmode()));
+      }
+    }
+
     return subst;
   }
 
@@ -145,7 +153,15 @@ public class ModeSubst {
     subst.setFormalTypes(formalTypes);
     subst.setThrowTypes(throwTypes);
     subst.setContainer((ReferenceType) this.baseType());
-    ((EntConstructorInstance) subst).baseInstance((EntConstructorInstance) ci);
+
+    if (subst instanceof EntConstructorInstance) {
+      EntConstructorInstance esubst = (EntConstructorInstance) subst;
+      esubst.baseInstance((EntConstructorInstance) ci);
+      if (esubst.overmode() != null) {
+        esubst.overmode((ModeType)this.substType(esubst.overmode()));
+      }
+    }
+
     return subst;
   }
 

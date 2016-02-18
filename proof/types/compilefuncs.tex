@@ -8,12 +8,16 @@
 
 \Fmodes(\programcode)  & \triangleq & \overline{\moname \msub \moname'} \\\\
 
-\Fmode(\Cname\lb\overline{\listi}\rb)  & \triangleq  & \mode & \textrm{if} \ \listi = \mode,\overline{\basemode} \\\\
+\Fmode(\Cname\lb\listi\rb)  & \triangleq  & \mode & \textrm{if} \ \listi = \mode,\overline{\basemode} \\
+\Fmode(\texist{\econs}.\classdyn) & \triangleq & \mtvar & \textrm{if}\ \econs = \basemode_1\msub\mtvar\msub\basemode_2 \\\\
 
 \Fattr(\Cname\lb\listi\rb) & \triangleq  & \attributor\subst{\Feparam(\tspec)}{\listi} & \textrm{if} \ \kwclass \ \Cname \ \tspec \ \kwextends \ \t \ \{ \ \fdlist \ \mdlist \ \attributor \} \ \in \ \programcode \\\\
 
 \Feparam(\overline{\basemode \msub \mtvar \msub \basemode'})  & \triangleq  & \overline{\mtvar} \\
-\Feparam(\dynmode\rightarrow\econs,\espec)  & \triangleq  & \mtvar\cup\Feparam(\espec) & \textrm{if} \ \econs = \basemode\msub\mtvar\msub\basemode' \\\\
+\Feparam(\dynmode\rightarrow\econs,\espec)  & \triangleq  & \dynmode,\Feparam(\espec) & \\\\
+
+\Fiparam(\overline{\basemode \msub \mtvar \msub \basemode'})  & \triangleq  & \overline{\mtvar} \\
+\Fiparam(\dynmode\rightarrow\econs,\espec)  & \triangleq  & \mtvar,\Fiparam(\espec) & \textrm{if} \ \econs = \basemode\msub\mtvar\msub\basemode' \\\\
 
 \Fethis(\espec) & \triangleq  & \mtvar & \textrm{if} \ \Feparam(\espec) = \mtvar \\\\
 
@@ -27,6 +31,8 @@
 \Fcons(\dynmode\rightarrow\econs,\espec) & \triangleq & \{\basemode\msub\mtvar,\mtvar\msub\basemode'\} \cup \Fcons(\espec) & \textrm{if}\ \econs = \basemode\msub\mtvar\msub\basemode' \\\\
 
 \end{tabularx}
+
+We write $\texist{\moname}.\classdyn$ as shorthand for $\texist{\econs}.\classdyn$ if $\econs = \moname\msub\mtvar\msub\moname$.
 
 We require $\overline{\moname}$ as a lattice. We use $\bot$ and $\top$ to represent the bottom and top of $\overline{\moname}$ respectively.
 

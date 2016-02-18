@@ -11,35 +11,35 @@
 
 			\inferrule*[left=\stitle{New}]
 			{
-%				\Gamma;\cset \vdash_{\tt wft} \ \classiota \\
-\listi = \dynmode, \listi'  \textrm{ iff } \textbf{class}\ \Cname\ \tspec' \dots \in \programcode \textrm{ and } \fundef{ethis}(\tspec') = \dynmode \\
-\listi \neq \dynmode, \listi'  \textrm{ iff } \textbf{class}\ \Cname\ \tspec' \dots \in \programcode \textrm{ and } \fundef{ethis}(\tspec') \neq \dynmode \\
-\cset \models \fundef{cons}(\tspec')
+        \listi = \dynmode, \listi'\ \textrm{iff}\ \kwclass\ \Cname\ \tspec \dots \in \programcode\ \textrm{and}\ \Fethis(\tspec) = \dynmode \\
+        \listi \neq \dynmode, \listi'\ \textrm{iff}\ \kwclass\ \Cname\ \tspec \dots \in \programcode\ \textrm{and}\ \Fethis(\tspec) \neq \dynmode \\
+        \cset \models \fundef{cons}(\tspec)
 			}
-			{ \Gamma;\cset \vdash\ \new{\classiota} : \classiota			
+			{ 
+        \Gamma;\cset \vdash\ \new{\classiota} : \classiota			
 			}
       \\
 			\inferrule*[left=\stitle{Cast}]
-			{ \Gamma;\cset \vdash e : \classiota   \\
-		%	  \cset \vdash_{\tt wft} \t \\
+			{ 
+        \Gamma;\cset \vdash e : \bt'   \\
 			}
 			{ \Gamma;\cset \vdash (\bt)e: \bt  }
 			\\
 		  \inferrule*[left=\stitle{Msg}]
 			{
-			  \Gamma; \cset \vdash\ e: \bt   \\
-			  \Fmtype(\Mname, \bt) = \overline{\bt}\rightarrow\bt' \\
+			  \Gamma; \cset \vdash\ e: \objt   \\
+			  \Fmtype(\Mname, \objt) = \overline{\bt}\rightarrow\bt \\
 				\Gamma; \cset \vdash \overline{e}: \overline{\bt} \\
 			  \Gamma; \cset \vdash\ \kwthis: \bt_{this}   \\
-        \cset \models \{\Fmode(\bt)\msub\Fmode(\bt_{this})\} \\ \Fmode(\bt) \neq \ ?
+        \cset \models \{\Fmode(\objt)\msub\Fmode(\bt_{this})\} \\ \Fmode(\objt) \neq \ ?
 		  }
-			{\Gamma; \cset \vdash e.\Mname(\overline{e}): \bt' }
+			{\Gamma; \cset \vdash e.\Mname(\overline{e}): \bt }
 			\\
 			\inferrule*[left=\stitle{Field}]
 			{
-        \Gamma;\cset \vdash e : \bt  \\ \Gamma;\cset \vdash \kwthis : \bt_{this} \\
-			  \Ffields(\bt) = \overline{\bt}\ \overline{\Fname} \\
-        \cset \models \{\Fmode(\bt)\msub\Fmode(\bt_{this})\} \\ \Fmode(\bt) \neq \ ? 
+        \Gamma;\cset \vdash e : \objt  \\ \Gamma;\cset \vdash \kwthis : \bt_{this} \\
+			  \Ffields(\objt) = \overline{\bt}\ \overline{\Fname} \\
+        \cset \models \{\Fmode(\objt)\msub\Fmode(\bt_{this})\} \\ \Fmode(\classiota) \neq \ ? 
 			}
 			{\Gamma;\cset \vdash e.\Fname_i :\bt_i   }
 			\\
@@ -52,15 +52,29 @@
 %      { \Gamma;\cset \vdash e : \t }
 %      \\
 %      
-			\inferrule*[left=\stitle{Snapshot}]
+			\inferrule*[left=\stitle{Snapshot1}]
 			{ 
-        \Gamma;\cset \vdash e : \Cname \lb ?,\listi \rb \\ 
-        %\Gamma;\cset \vdash e_{i} : \t_{i}, \textsubscript{i = 1,2}  \\
-        \econs = \basemode_1 \msub \mtvar \msub \basemode_2 \\ %\mtvar \ \fresh \\
+        \Gamma;\cset' \vdash e : \classdyn \\ 
+        \econs = \basemode_1 \msub \mtvar \msub \basemode_2 \\ 
+        \cset = \cset'\cup\{\basemode_1\msub\mtvar,\mtvar\msub\basemode_2\} \\
       }
-			{\Gamma;\cset \vdash \snapshot{e}{\basemode_{1}}{\basemode_{2}} : \texist{\econs}. \Cname\lb\mtvar,\listi\rb
+			{
+        \Gamma;\cset \vdash \snapshot{e}{\basemode_{1}}{\basemode_{2}} : \texist{\econs}.\classdyn
       }
       \\
+
+      %\inferrule*[left=\stitle{Snapshot3}]
+      %{ 
+      %  \Gamma;\cset' \vdash e : \Cname \lb ?,\listi \rb \\ 
+      %  \mtvar\ fresh \\
+      %  \cset = \cset'\cup\{\basemode_1\msub\mtvar,\mtvar\msub\basemode_2\} \\
+      %  \cset \judgewft \Cname\lb\mtvar,\listi\rb \\
+      %}
+      %{
+      %  \Gamma;\cset \vdash \snapshot{e}{\basemode_{1}}{\basemode_{2}} : \Cname\lb\mtvar,\listi\rb
+      %}
+      %\\
+
       \inferrule*[left=\stitle{MCase}]
 			{
 %        \cset \judgewft \classiota \\
@@ -82,7 +96,7 @@
       \inferrule*[left=\stitle{ModeValue}]
       { \moname \in \Fmodes(\programcode) 
       }
-      {\Gamma;\tspec \vdash \moname : \modevt
+      {\Gamma;\cset \vdash \moname : \modevt
       }
       \\ 
 

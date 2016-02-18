@@ -45,4 +45,26 @@ public interface EntTypeSystem extends JL7TypeSystem {
   ModeSubst inferModeTypeArgs(EntProcedureInstance pi, List<? extends Type> argTypes, Type expectedReturnType);
 
   SemanticException checkModeSubst(EntClassType baseT, List<Type> mtArgs);
+
+  EntProcedureInstance callValid(EntProcedureInstance mi,
+                              List<? extends Type> argTypes,
+                              List<? extends ReferenceType> actualTypeArgs,
+                              Type expectedReturnType,
+                              List<ModeType> actualModeTypeArgs); 
+
+  MethodInstance findMethod(ReferenceType container,
+                            String name, 
+                            List<? extends Type> argTypes, 
+                            List<? extends ReferenceType> typeArgs, ClassType currClass, 
+                            Type expectedReturnType, 
+                            boolean fromClient,
+                            List<ModeType> actualModeTypeArgs) throws SemanticException;
+
+  EntMethodInstance methodCallValid(EntMethodInstance mi, 
+                                    String name,
+                                    List<? extends Type> argTypes,
+                                    List<? extends ReferenceType> actualTypeArgs,
+                                    Type expectedReturnType,
+                                    List<ModeType> actualModeTypeArgs);
+
 }

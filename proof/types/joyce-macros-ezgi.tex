@@ -319,6 +319,7 @@
 \def\Checkname{\texttt{\bf check}}
 \def\Mcasename{\texttt{\bf mcase}}
 \def\Objname{\mathtt{obj}}
+\def\Clname{\mathtt{cl}}
 
 \def\mode{\mu}
 \def\dynmode{\mathtt{?}}
@@ -328,6 +329,7 @@
 \def\moname{\mathtt{m}}
 \def\fresh{\mathit{fresh}}
 \def\bt{\mathit{T}}
+\def\objt{\upsilon}
 
 \def\Cname{\mathtt{c}}
 \def\Kappa{\mathtt{K}}
@@ -342,6 +344,8 @@
 \def\classargsp#1{\Cname'\lb#1\rb}
 
 \def\closure#1#2#3{\Objname(#1,#2,#3)}
+\def\cl#1#2{\Clname(#1,#2)}
+
 \def\letx#1#2{\kwlet\ \VAR = #1\ \kwin\ #2}
 
 \def\blame{\mathtt{p}}
@@ -351,7 +355,8 @@
 
 \def\snapshot#1#2#3{\kwsnapshot\ #1\ [#2,#3]}
 
-\def\check#1#2#3#4{\Checkname(#1,#2,#3,#4)}
+\def\check#1#2#3{\Checkname(#1,#2,#3)}
+\def\checkp#1#2#3#4{\Checkname(#1,#2,#3,#4)}
 
 \def\new#1{\kwnew \ #1}
 \def\mcase#1#2{\{\overline{\moname : #2}\}^{#1}}
@@ -366,6 +371,8 @@
 \def\ftv#1{\texttt{FTV}(#1)}
 
 \def\judgewft{\vdash_{\tt wft}}
+\def\judgewfti{\succ_{\tt wft}}
+
 \def\judgewfe{\vdash_{\tt wfe}}
 
 \def\msub{\leq}

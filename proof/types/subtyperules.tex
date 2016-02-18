@@ -16,29 +16,60 @@
 %			}
 %			\\
 			\inferrule*[left=\sbtitle{Dynamic}]
+			{}
 			{
-			}
-			{\cset  \vdash \Cname\lb\mode;\overline{\basemode}\rb \tsub \Cname\lb?;\overline{\basemode}\rb }
+        \cset  \vdash \Cname\lb\mode;\overline{\basemode}\rb \tsub \Cname\lb?;\overline{\basemode}\rb 
+      }
 			\\
+
 			\inferrule*[left=\sbtitle{Mcase}]
-			{ \cset \vdash \t \tsub \t' 
+			{ 
+        \cset \vdash \t \tsub \t' 
 			}
-			{ \cset \vdash \tmcase{\t} \tsub \tmcase{\t'} }
+			{ 
+        \cset \vdash \tmcase{\t} \tsub \tmcase{\t'} 
+      }
 			\\
-			\inferrule*[left=\sbtitle{Exists}]
-			{\econs = \basemode_{1}\msub\mtvar\msub\basemode_{2} \\
-      \cset = \{\basemode_1 \msub \mtvar, \mtvar \msub \basemode_2\} \cup \cset' \\
-			\mtvar \textrm{ does not appear in } \cset'  
-			}
-			{ \cset \vdash \texist{\econs}.\t \tsub \t  }
-\\
-			 \inferrule*[left=\sbtitle{Class}]
+
+			%\inferrule*[left=\sbtitle{Exists}]
+			%{
+      %  \econs = \basemode_{1}\msub\mtvar\msub\basemode_{2} \\
+      %  \cset = \{\basemode_1 \msub \mtvar, \mtvar \msub \basemode_2\} \cup \cset' \\
+			%  \mtvar \textrm{ does not appear in } \cset'  
+			%}
+			%{ 
+      %  \cset \vdash \texist{\econs}.\t \tsub \t  
+      %}
+      %\\
+
+      %\inferrule*[left=\sbtitle{ExistsL}]
+			%{
+      %  \econs = \basemode_1\msub\mtvar\msub\basemode_2 \\
+      %  \cset \models \{\basemode_1\msub\basemode,\basemode\msub\basemode_2\} \\
+			%}
+			%{ 
+      %  \cset \vdash \Cname\lb\basemode,\listi\rb \tsub \texist{\econs}.\classdyn
+      %}
+      %\\
+
+      %\inferrule*[left=\sbtitle{ExistsR}]
+			%{
+      %  \econs = \basemode_{1}\msub\mtvar\msub\basemode_{2} \\
+      %  \cset = \{\basemode_1 \msub \mtvar, \mtvar \msub \basemode_2\} \cup \cset' \\
+			%  \mtvar \textrm{ does not appear in } \cset'  
+			%}
+			%{ 
+      %  \cset \vdash \texist{\econs}.\t \tsub \t  
+      %}
+      %\\
+
+			\inferrule*[left=\sbtitle{Class}]
 			{
-			  \kwclass\ \Cname\ \tspec \ \kwextends\ \Dname \dots \in \programcode \\
-			  \Feparam(\tspec) = \listi' \\
-        \cset = \Fcons(\tspec) 
+			  \kwclass\ \Cname\ \tspec \ \kwextends\ \Dname \dots \in \programcode \\ \cset \models \Fcons(\tspec) 
 			}
-			{ \cset \vdash \Cname\lb\listi\rb \tsub \Dname\subst{\listi'}{\listi} }
+			{ 
+        \cset \vdash \Cname\lb\listi\rb \tsub \Dname\lb\listi\rb
+      }
 			
 \end{mathpar}
 %\nocaptionrule 

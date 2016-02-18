@@ -33,8 +33,9 @@ extra_cp=
 args=
 vmargs=
 classpath=$JAVA_PATH
-java=/home/acanino/Src/jdk1.8.0_60/bin/java
-ext=panda
+#java=/home/acanino/Src/jdk1.8.0_60/bin/java
+java=java
+ext=ent
 
 polyglot() {
   #eval "$java" "$vmargs" -classpath "'$classpath'" -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y panda.Main "$@"

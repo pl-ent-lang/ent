@@ -26,19 +26,35 @@
 #      CmdLineArgs  :   additional command line args for the Polyglot 
 #                       compiler; is always enclosed in quotes.
 
-panda.ExtensionInfo "-d out" {
-    Hello.pan;
-    modesDeclTest/ModesDecl.pan;
-    modesDeclTest/ModesDeclBad.pan 
-      (Semantic, "defined multiple times as a lower bound");
-    modesDeclTest/ModesDeclBad2.pan 
-      (Semantic, "Modes do not form a partial ordering");
-    modeDeclTest/ModeLocalDecl.pan;
-    modeDeclTest/ModeLocalDeclBad.pan (Syntax), (Syntax);
-    modeDeclTest/ModeFieldDecl.pan;
-    modeDeclTest/ModeFieldDeclBad.pan (Syntax);
-    modeDeclTest/ModeFormal.pan;
-    modeDeclTest/ModeFormalBad.pan (Syntax), (Syntax);
-    modeParamTypeTest/ModeParamTypes.pan;
-    modeParamTypeTest/ModeParamTypesBad.pan (Syntax);
+ent.EntExtensionInfo "-d out" {
+  waterfall_good1/A.java ;
+  waterfall_good2/A.java ;
+  waterfall_good3/A.java ;
+
+  waterfall_bad1/A.java (Semantic, "Cannot send message") ;
+  waterfall_bad2/A.java (Semantic, "Cannot send message") ;
+  waterfall_bad3/A.java 
+    (Semantic, "Cannot send message") ,
+    (Semantic, "Cannot send message") ;
+    
+  constraint_check1/A.java 
+    (Semantic, "cannot satisfy constraint") ,
+    (Semantic, "cannot satisfy constraint") ; 
+
+  constraint_check2/A.java 
+    (Semantic, "cannot be called") , 
+    (Semantic, "cannot be called") ; 
+
+  overmode_good1/A.java overmode_good1/B.java ;
+  overmode_good2/A.java overmode_good2/B.java ;
+  overmode_good3/A.java overmode_good3/B.java ;
+
+  overmode_bad1/A.java overmode_bad1/B.java (Semantic, "Cannot send message") ;
+  overmode_bad2/A.java overmode_bad2/B.java 
+    (Semantic, "Cannot send message") ,
+    (Semantic, "Cannot send message") ;
+
+  overmode_bad3/A.java overmode_bad3/B.java 
+    (Semantic, "Cannot send message") ,
+    (Semantic, "Cannot send message") ;
 }
