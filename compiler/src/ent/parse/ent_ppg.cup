@@ -293,6 +293,7 @@ terminal Token MCASE;
 terminal Token RARROW;
 terminal Token MODESAFE;
 terminal Token OVERMODE;
+terminal Token LBOUND;
 non terminal ModesDecl modes_declaration_opt;
 non terminal ModesDecl modes_declaration;
 non terminal ModeOrder mode_ordering;
@@ -307,6 +308,8 @@ non terminal List mode_type_parameters_decl;
 non terminal List mode_type_parameters;
 non terminal ModeParamTypeNode mode_type_parameter;
 non terminal List<ModeTypeNode> mode_type_parameter_bounds;
+non terminal List<ModeTypeNode> mode_type_parameter_lower_bounds;
+non terminal List<ModeTypeNode> mode_type_parameter_upper_bounds;
 non terminal List<ModeTypeNode> mode_type_args;
 non terminal ModeTypeNode mode_type_node;
 non terminal ModeTypeNode mode_type_node_annon;
@@ -318,6 +321,7 @@ non terminal List mcase_fields;
 non terminal McaseFieldDecl mcase_field;
 non terminal dynamic_mode_recvr_annon;
 non terminal Boolean dynamic_mode_recvr_annon_opt;
+non terminal rparen_opt;
 
 
 start with goal;
@@ -2704,16 +2708,23 @@ dynamic_mode_recvr_annon_opt ::=
  |  dynamic_mode_recvr_annon {:  RESULT = true;  :};
 
 mode_type_parameter ::=
-    dynamic_mode_recvr_annon_opt:recvr IDENTIFIER:id {:
-                                                     
-    RESULT = parser.nf.ModeParamTypeNode(parser.pos(id), parser.nf.Id(parser.pos(id), id.getIdentifier()), recvr, null);
+    dynamic_mode_recvr_annon_opt:recvr mode_type_parameter_lower_bounds:lb IDENTIFIER:id mode_type_parameter_upper_bounds:ub {:
+                                                                                                                            
+    RESULT = parser.nf.ModeParamTypeNode(parser.pos(id), parser.nf.Id(parser.pos(id), id.getIdentifier()), recvr, lb, ub);
   
-                                                     :}
- |  dynamic_mode_recvr_annon_opt:recvr IDENTIFIER:id LTEQ mode_type_parameter_bounds:b {:
-                                                                                      
-    RESULT = parser.nf.ModeParamTypeNode(parser.pos(id), parser.nf.Id(parser.pos(id), id.getIdentifier()), recvr, b);
-  
-                                                                                       :};
+                                                                                                                             :};
+
+mode_type_parameter_lower_bounds ::=
+    {:  RESULT = null;  :}
+ |  LPAREN mode_type_parameter_bounds:lb LTEQ {:  RESULT = lb;  :};
+
+mode_type_parameter_upper_bounds ::=
+    {:  RESULT = null;  :}
+ |  LTEQ mode_type_parameter_bounds:ub rparen_opt {:  RESULT = ub;  :};
+
+rparen_opt ::=
+   
+ |  RPAREN;
 
 mode_type_parameter_bounds ::=
     mode_type_node:n {:

@@ -103,7 +103,6 @@ public class ModeTypeNode_c extends TypeNode_c implements ModeTypeNode {
       return this.type(mtv);
     } 
 
-
     if (ts.createdModeTypes().containsKey(this.name())) {
       // We have a mode type
       return this.type(ts.createModeType(this.name()));

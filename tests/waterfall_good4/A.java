@@ -1,4 +1,4 @@
-package waterfall_bad4;
+package waterfall_good4;
 
 modes {low <: mid; mid <: high; };
 

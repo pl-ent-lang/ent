@@ -4,6 +4,7 @@ import ent.ast.*;
 import ent.visit.*;
 
 import polyglot.ast.*;
+import polyglot.types.*;
 import polyglot.util.InternalCompilerError;
 
 import polyglot.ext.jl5.ast.*;
@@ -62,4 +63,11 @@ public class EntLang_c extends J7Lang_c implements EntLang {
     return this.EntOps(n).typePreserve(tp);
   }
 
+  public final ModeBuilder buildModesEnter(Node n, ModeBuilder tp) throws SemanticException {
+    return this.EntOps(n).buildModesEnter(tp);
+  }
+
+  public final Node buildModes(Node n, ModeBuilder tp) throws SemanticException {
+    return this.EntOps(n).buildModes(tp);
+  } 
 }

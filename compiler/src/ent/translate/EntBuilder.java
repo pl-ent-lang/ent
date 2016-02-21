@@ -171,8 +171,7 @@ public class EntBuilder {
       List<ModeTypeVariable> capturedMtArgs, 
       Map<ModeTypeVariable, Type> mtEnv, 
       Context ctx) {
-    return 
-      this.buildEntClosure(
+    return this.buildEntClosure(
         extInfo.nodeFactory(), 
         outInfo.typeSystem(), 
         capturedMtArgs, 

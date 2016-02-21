@@ -22,8 +22,30 @@ import java.util.HashMap;
 public class EntCallExt extends EntExt {
 
   protected Type expectedReturnType;
-  protected Map<ModeTypeVariable, Type> infModeTypes;
   protected List<ModeTypeNode> modeTypeArgs;
+
+  protected List<ModeType> actualModeTypes;
+
+  protected Map<ModeTypeVariable, Type> infModeTypes;
+
+  protected List<ModeType> actualModeTypes() {
+    return this.actualModeTypes;
+  }
+
+  protected Call actualModeTypes(List<ModeType> actualModeTypes) {
+    return this.actualModeTypes((Call)this.node(), actualModeTypes);
+  }
+
+  protected <N extends Node> N actualModeTypes(N n, List<ModeType> actualModeTypes) {
+    EntCallExt ext = (EntCallExt) EntExt.ext(n);
+    if (ext.actualModeTypes == actualModeTypes) return n;
+    if (this.node() == n) {
+      n = Copy.Util.copy(n);
+      ext = (EntCallExt) EntExt.ext(n);
+    }
+    ext.actualModeTypes = actualModeTypes;
+    return n;
+  } 
 
   protected Map<ModeTypeVariable, Type> infModeTypes() {
     return this.infModeTypes;
@@ -188,6 +210,8 @@ public class EntCallExt extends EntExt {
         actualModeTypes.add((ModeType)mn.type());
       }
     }
+    // Save for closure
+    n = this.actualModeTypes(actualModeTypes);
 
     EntMethodInstance mi =
             (EntMethodInstance) ts.findMethod(targetType,
@@ -271,7 +295,7 @@ public class EntCallExt extends EntExt {
     //
     // Overmoded methods take precedence
     ModeTypeVariable mtThis = ct.modeTypeVars().get(0);
-    if (pi.overmode() == null) {
+    if (pi.modeTypeVars().isEmpty()) {
       if (!ts.isSubtype(mt.modeType(), mtThis)) {
         throw new SemanticException("Cannot send message to " + t + " from mode " + mtThis.upperBound() + ".");
       }
@@ -282,8 +306,9 @@ public class EntCallExt extends EntExt {
         ModeSubst ms = mct.modeSubst();
         pi2 = ms.substProcedure(pi);
       }
-      if (!ts.isSubtype(pi2.overmode(), mtThis)) {
-        throw new SemanticException("Cannot send message to overmode<" + pi.overmode() + "> from mode " + mtThis.upperBound() + ".");
+
+      if (!ts.isSubtype(pi2.modeTypeVars().get(0), mtThis)) {
+        throw new SemanticException("Cannot send message to overmode<" + pi2.modeTypeVars().get(0) + "> from mode " + mtThis.upperBound() + ".");
       }
     }
 
@@ -305,14 +330,13 @@ public class EntCallExt extends EntExt {
   }
 
   public boolean needsEntClosure() {
-    return this.infModeTypes() != null;
+    return this.actualModeTypes() != null;
   }
 
   @Override
   public Node typePreserve(TypePreserver tp) {
     Call n = (Call) this.node();
 
-    /*
     if (this.needsEntClosure()) {
       List<Expr> args = new ArrayList<>(n.arguments());
       args.add(
@@ -326,7 +350,6 @@ public class EntCallExt extends EntExt {
         ); 
       n = (Call) n.arguments(args);
     }
-    */
 
     return n;
   }

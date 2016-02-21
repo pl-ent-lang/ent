@@ -36,6 +36,21 @@ ent.EntExtensionInfo "-d out" {
   waterfall_bad3/A.java 
     (Semantic, "Cannot send message") ,
     (Semantic, "Cannot send message") ;
+
+  snapshot_good1/A.java snapshot_good1/B.java ;
+  snapshot_good2/A.java snapshot_good2/B.java ;
+  snapshot_good3/A.java snapshot_good3/B.java ;
+
+  snapshot_bad1/A.java snapshot_bad1/B.java 
+    (Semantic, "Cannot send message") ,
+    (Semantic, "Cannot send message") ;
+
+  snapshot_bad2/A.java snapshot_bad2/B.java 
+    (Semantic, "Cannot send message") ;
+
+  snapshot_bad3/A.java snapshot_bad3/B.java 
+    (Semantic, "Cannot send message") ,
+    (Semantic, "Cannot send message") ;
     
   constraint_check1/A.java 
     (Semantic, "cannot satisfy constraint") ,
@@ -44,6 +59,10 @@ ent.EntExtensionInfo "-d out" {
   constraint_check2/A.java 
     (Semantic, "cannot be called") , 
     (Semantic, "cannot be called") ; 
+
+  constraint_check3/A.java (Semantic, "cannot satisfy constraint") ; 
+
+  constraint_check4/A.java constraint_check4/B.java (Semantic, "cannot satisfy constraint") ; 
 
   overmode_good1/A.java overmode_good1/B.java ;
   overmode_good2/A.java overmode_good2/B.java ;
@@ -57,4 +76,8 @@ ent.EntExtensionInfo "-d out" {
   overmode_bad3/A.java overmode_bad3/B.java 
     (Semantic, "Cannot send message") ,
     (Semantic, "Cannot send message") ;
+
+  snapshot_pass1/A.java snapshot_pass1/B.java ;
+  snapshot_pass2/A.java snapshot_pass2/B.java ;
+  snapshot_fail1/A.java snapshot_fail1/B.java ;
 }

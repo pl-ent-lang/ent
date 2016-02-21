@@ -81,6 +81,8 @@ public class EntClassDeclExt extends EntExt {
     List<ModeTypeVariable> mtVars = new ArrayList<>(this.modeParams().size());
     Set<String> mtVarCheck = new HashSet<>();
     for (ModeParamTypeNode m : this.modeParams()) {
+      // If we are a declared mode type variable, say high, it is syntactic sugar for high <= _ <= high.
+
       // Check and catch duplicate error as early as possible
       if (mtVarCheck.contains(m.name())) {
         throw new SemanticException("Duplicate mode type variable declaration.",
@@ -94,6 +96,7 @@ public class EntClassDeclExt extends EntExt {
       mtVars.add(mtVar);
       ++dbInd;
     }
+
     ct.modeTypeVars(mtVars);
 
     return n;

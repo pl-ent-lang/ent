@@ -103,6 +103,11 @@ public final class EntExtFactory_c extends EntAbstractExtFactory_c {
     return new EntLocalDeclExt();
   }
 
+  @Override 
+  protected Ext extModesDeclImpl() {
+    return new EntModesDeclExt();
+  } 
+
   @Override
   protected Ext extMethodDeclImpl() {
     return new EntMethodDeclExt();

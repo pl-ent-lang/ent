@@ -161,8 +161,8 @@ public class EntNodeFactory_c extends JL7NodeFactory_c implements EntNodeFactory
       return n;
     }
 
-    public ModeParamTypeNode ModeParamTypeNode(Position pos, Id id, boolean isDynRecvr, List<ModeTypeNode> bounds) {
-      ModeParamTypeNode n = new ModeParamTypeNode_c(pos, id, isDynRecvr, bounds);
+    public ModeParamTypeNode ModeParamTypeNode(Position pos, Id id, boolean isDynRecvr, List<ModeTypeNode> lowerBounds, List<ModeTypeNode> upperBounds) {
+      ModeParamTypeNode n = new ModeParamTypeNode_c(pos, id, isDynRecvr, lowerBounds, upperBounds);
       n = ext(n, extFactory().extModeParamTypeNode());
       return n;
     }

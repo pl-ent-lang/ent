@@ -10,8 +10,9 @@ import java.util.List;
 
 public interface ModesDecl extends ClassDecl {
 
-  public List<ModeOrder> orders();
+  List<ModeOrder> orders();
 
-  public ModeOrderingInstance modeOrderingInstance();
+  ModeOrderingInstance modeOrderingInstance();
+  ModesDecl modeOrderingInstance(ModeOrderingInstance oi);
    
 }

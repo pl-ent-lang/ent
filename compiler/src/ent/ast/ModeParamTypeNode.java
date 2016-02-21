@@ -9,6 +9,8 @@ public interface ModeParamTypeNode extends TypeNode {
 
   public Id id();
   public boolean isDynRecvr();
-  public List<ModeTypeNode> bounds();
+
+  public List<ModeTypeNode> lowerBounds();
+  public List<ModeTypeNode> upperBounds();
 
 }

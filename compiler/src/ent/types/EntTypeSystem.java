@@ -15,6 +15,7 @@ public interface EntTypeSystem extends JL7TypeSystem {
 
   ModeType WildcardModeType();
   ModeType BottomModeType();
+  ModeType BottomUserModeType();
   ModeType DynamicModeType();
 
   ClassType ModeSubstObject();

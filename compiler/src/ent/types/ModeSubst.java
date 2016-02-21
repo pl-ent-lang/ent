@@ -140,6 +140,7 @@ public class ModeSubst {
       if (esubst.overmode() != null) {
         esubst.overmode((ModeType)this.substType(esubst.overmode()));
       }
+      esubst.modeTypeVars(this.substTypeList(esubst.modeTypeVars()));
     }
 
     return subst;

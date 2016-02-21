@@ -30,6 +30,17 @@ public class EntExt extends Ext_c implements EntOps {
   }
 
   @Override
+  public ModeBuilder buildModesEnter(ModeBuilder mb) throws SemanticException {
+    return mb;
+  }
+
+  @Override
+  public Node buildModes(ModeBuilder mb) throws SemanticException {
+    return this.node();
+  }
+
+
+  @Override
   public TypePreserver typePreserveEnter(TypePreserver tp) {
     return tp;
   }

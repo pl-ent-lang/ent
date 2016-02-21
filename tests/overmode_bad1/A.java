@@ -4,5 +4,5 @@ modes {low <: mid; mid <: high; }
 
 public class A@mode<X <= mid> {
   public void m1() { }
-  public void m2() overmode<high> { }
+  public @mode<high> void m2() { }
 }

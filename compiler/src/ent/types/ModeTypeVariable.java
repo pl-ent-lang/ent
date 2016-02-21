@@ -14,8 +14,11 @@ public interface ModeTypeVariable extends ModeType {
   boolean isDynRecvr();
   void isDynRecvr(boolean isDynRecvr);
 
-  List<Type> bounds();
-  void bounds(List<Type> bounds);
+  List<Type> lowerBounds();
+  void lowerBounds(List<Type> lowerBounds);
+
+  List<Type> upperBounds();
+  void upperBounds(List<Type> upperBounds);
 
   Type lowerBound();
   void lowerBound(Type lowerBound);
@@ -32,7 +35,7 @@ public interface ModeTypeVariable extends ModeType {
 
   int uniqueId();
 
-  public boolean inferUpperBound();
+  public boolean inferBounds();
 
   int index();
   void index(int index);

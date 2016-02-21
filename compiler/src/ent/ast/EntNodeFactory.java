@@ -86,7 +86,7 @@ public interface EntNodeFactory extends JL7NodeFactory {
 
   ModesDecl ModesDecl(Position pos, List<ModeOrder> orders);
 
-  ModeParamTypeNode ModeParamTypeNode(Position pos, Id id, boolean isDynRecv, List<ModeTypeNode> bounds);
+  ModeParamTypeNode ModeParamTypeNode(Position pos, Id id, boolean isDynRecv, List<ModeTypeNode> lowerBounds, List<ModeTypeNode> upperBounds);
   
   ModeTypeNode ModeTypeNode(Position pos, String name);
 

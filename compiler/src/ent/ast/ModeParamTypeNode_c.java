@@ -15,18 +15,20 @@ import java.util.List;
 public class ModeParamTypeNode_c extends TypeNode_c implements ModeParamTypeNode {
 
   protected Id id;
-  protected List<ModeTypeNode> bounds;
+  protected List<ModeTypeNode> lowerBounds;
+  protected List<ModeTypeNode> upperBounds;
   protected boolean isDynRecvr;
 
-  public ModeParamTypeNode_c(
-      Position pos, 
-      Id id, 
-      boolean isDynRecvr,
-      List<ModeTypeNode> bounds) {
+  public ModeParamTypeNode_c(Position pos, 
+                             Id id, 
+                             boolean isDynRecvr,
+                             List<ModeTypeNode> lowerBounds,
+                             List<ModeTypeNode> upperBounds) {
     super(pos);
     this.id = id;
     this.isDynRecvr = isDynRecvr;
-    this.bounds = CollectionUtil.nonNullList(bounds);
+    this.lowerBounds = CollectionUtil.nonNullList(lowerBounds);
+    this.upperBounds = CollectionUtil.nonNullList(upperBounds);
   }
 
   // Property Methods
@@ -38,14 +40,25 @@ public class ModeParamTypeNode_c extends TypeNode_c implements ModeParamTypeNode
     return this.isDynRecvr;
   }
 
-  public List<ModeTypeNode> bounds() {
-    return this.bounds;
+  public List<ModeTypeNode> lowerBounds() {
+    return this.lowerBounds;
   }
 
-  protected <N extends ModeParamTypeNode_c> N bounds(N n, List<ModeTypeNode> bounds) {
-    if (CollectionUtil.equals(this.bounds(),bounds)) return n;
+  protected <N extends ModeParamTypeNode_c> N lowerBounds(N n, List<ModeTypeNode> lb) {
+    if (CollectionUtil.equals(this.lowerBounds(),lb)) return n;
     n = this.copyIfNeeded(n);
-    n.bounds = ListUtil.copy(bounds, true);
+    n.lowerBounds = ListUtil.copy(lb, true);
+    return n;
+  } 
+
+  public List<ModeTypeNode> upperBounds() {
+    return this.upperBounds;
+  }
+
+  protected <N extends ModeParamTypeNode_c> N upperBounds(N n, List<ModeTypeNode> ub) {
+    if (CollectionUtil.equals(this.upperBounds(),ub)) return n;
+    n = this.copyIfNeeded(n);
+    n.upperBounds = ListUtil.copy(ub, true);
     return n;
   }
 
@@ -54,16 +67,19 @@ public class ModeParamTypeNode_c extends TypeNode_c implements ModeParamTypeNode
     return this.id().id();
   }
 
-  protected <N extends ModeParamTypeNode_c> N reconstruct(N n, List<ModeTypeNode> bounds) {
-    n = this.bounds(n, bounds);
+  protected <N extends ModeParamTypeNode_c> N reconstruct(N n, List<ModeTypeNode> lb, List<ModeTypeNode> ub) {
+    n = this.lowerBounds(n, lb);
+    n = this.upperBounds(n, ub);
     return n;
   }
 
   // Node Methods
   @Override
   public Node visitChildren(NodeVisitor v) {
-    List<ModeTypeNode> bounds = visitList(this.bounds(), v);
-    return this.reconstruct(this, bounds);
+    List<ModeTypeNode> lb = visitList(this.lowerBounds(), v);
+    List<ModeTypeNode> ub = visitList(this.upperBounds(), v);
+    Node n = this.reconstruct(this, lb, ub);
+    return n;
   } 
 
   @Override
@@ -73,7 +89,8 @@ public class ModeParamTypeNode_c extends TypeNode_c implements ModeParamTypeNode
                 this.position(), 
                 this.id(), 
                 this.isDynRecvr(),
-                ListUtil.copy(this.bounds(), true)
+                ListUtil.copy(this.lowerBounds(), true),
+                ListUtil.copy(this.upperBounds(), true)
                 );
   }
 
@@ -81,16 +98,21 @@ public class ModeParamTypeNode_c extends TypeNode_c implements ModeParamTypeNode
   @Override
   public Node buildTypes(TypeBuilder tb) throws SemanticException {
     EntTypeSystem ts = (EntTypeSystem) tb.typeSystem();
-    ModeTypeVariable mtVar = 
-      ts.createModeTypeVariable(this.position(), this.id().id());
+
+    ModeTypeVariable mtVar = null;
+    if (ts.createdModeTypes().containsKey(this.name())) {
+      ModeType mt = ts.createdModeTypes().get(this.name());
+      List<Type> bounds = new ArrayList<>();
+      bounds.add(mt);
+
+      mtVar = ts.createModeTypeVariable(this.position(), "_");
+      mtVar.upperBounds(bounds);
+      mtVar.lowerBounds(bounds);
+    } else {
+      mtVar = ts.createModeTypeVariable(this.position(), this.id().id());
+    }
     return this.type(mtVar);
   }
-
-  // LAST 
-
-
-  // Possible params
-  // ? -> X <= high, Y <= ?
 
   @Override
   public Node disambiguate(AmbiguityRemover sc) throws SemanticException {
@@ -98,27 +120,38 @@ public class ModeParamTypeNode_c extends TypeNode_c implements ModeParamTypeNode
     EntTypeSystem ts = (EntTypeSystem) sc.typeSystem();
 
     boolean ambiguous = false;
-    List<Type> boundTypes = new ArrayList<Type>();
-    for (ModeTypeNode tn : this.bounds()) {
+    List<Type> upperBoundTypes = new ArrayList<Type>();
+    for (ModeTypeNode tn : this.upperBounds()) {
       if (!tn.isDisambiguated()) {
         ambiguous = true;
       }
-      boundTypes.add(tn.type());
+      upperBoundTypes.add(tn.type());
     }
+
+    List<Type> lowerBoundTypes = new ArrayList<Type>();
+    for (ModeTypeNode tn : this.lowerBounds()) {
+      if (!tn.isDisambiguated()) {
+        ambiguous = true;
+      }
+      lowerBoundTypes.add(tn.type());
+    } 
     
     if (ambiguous) {
       return this;
     }
 
-    mtVar.bounds(boundTypes);
+    if (!this.lowerBounds().isEmpty() || !this.upperBounds().isEmpty()) {
+      mtVar.upperBounds(upperBoundTypes);
+      mtVar.lowerBounds(lowerBoundTypes);
+    }
 
     if (this.isDynRecvr()) {
       mtVar.isDynRecvr(true);
     }
 
-    if (!mtVar.inferUpperBound()) {
+    if (!mtVar.inferBounds()) {
       throw new SemanticException(
-          "Unable to infer upper bound for mode type variable");
+          "Unable to infer bounds for mode type variable");
     }
 
     if (mtVar.upperBound() == ts.DynamicModeType() && mtVar.isDynRecvr()) {

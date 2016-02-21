@@ -65,6 +65,10 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
     return this.BottomModeType;
   }
 
+  public ModeType BottomUserModeType() {
+    return (ModeType) this.BottomModeType.superType();
+  } 
+
   public ModeType WildcardModeType() {
     return this.WildcardModeType;
   }
@@ -208,17 +212,18 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
 
     if (!(l instanceof ModeTypeVariable) && u instanceof ModeTypeVariable) {
       ModeTypeVariable utv = (ModeTypeVariable) u;
-      return 
-        this.isSubtype(utv.lowerBound(), l) && 
-        this.isSubtype(l, utv.upperBound());
+      return this.isSubtype(l, utv.lowerBound());
+      
+        //this.isSubtype(utv.lowerBound(), l) && 
+        //this.isSubtype(l, utv.upperBound());
     }
 
     if (l instanceof ModeTypeVariable && u instanceof ModeTypeVariable) {
       ModeTypeVariable ltv = (ModeTypeVariable) l;
       ModeTypeVariable utv = (ModeTypeVariable) u;
-      return
-        this.isSubtype(utv.lowerBound(), ltv.lowerBound()) && 
-        this.isSubtype(ltv.upperBound(), utv.upperBound());
+      return this.isSubtype(ltv.upperBound(), utv.lowerBound());
+        //this.isSubtype(utv.lowerBound(), ltv.lowerBound()) && 
+        //this.isSubtype(ltv.upperBound(), utv.upperBound());
     }
 
     return false;
@@ -383,7 +388,6 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
       return null;
     }
 
-
     ModeSubstClassType sct = (ModeSubstClassType) pi.container();
     ModeSubst subst = sct.modeSubst().deepCopy();
     subst.modeTypeMap().putAll(mtMap);
@@ -401,7 +405,7 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
       Type sm = mtMap.get(mtv);
 
       // Check that all bounds are satisfied
-      for (Type m : mtv.bounds()) {
+      for (Type m : mtv.upperBounds()) {
         if (m instanceof ModeTypeVariable) {
           m = mtMap.get(m);
         }
@@ -435,19 +439,28 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
       }
 
       // 2. If we are dynamic with no bounds, this will error.
-      if (baseMtVars.get(i).bounds().size() == 0 && this.DynamicModeType() == mtArg) {
+      if (baseMtVars.get(i).upperBounds().size() == 0 && this.DynamicModeType() == mtArg) {
         return new SemanticException(baseMtVars.get(i) + " cannot receive the dynamic mode type.");
       }
 
       // 3. Otherwise, all bounds must be satisfied
-      for (Type bound : baseMtVars.get(i).bounds()) {
+      for (Type bound : baseMtVars.get(i).upperBounds()) {
         if (bound instanceof ModeTypeVariable) {
           bound = mtMap.get(bound);
         } 
 
         if (!this.isSubtype(mtArg, bound)) {
-          return new SemanticException(mtArg + " cannot satisfy constraint " + bound);
+          return new SemanticException("cannot satisfy constraint: " + mtArg + "<=" + bound);
         }
+      }
+
+      // 4. Check lower bound
+      Type lb = baseMtVars.get(i).lowerBound();
+      if (lb instanceof ModeTypeVariable) {
+        lb = mtMap.get(lb);
+      }
+      if (!this.isSubtype(lb, mtArg)) {
+        return new SemanticException("cannot satisfy constraint: " + lb + "<=" + mtArg);
       }
 
       mtMap.put(baseMtVars.get(i), mtArg);
@@ -840,7 +853,7 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
         Type sm = mtMap.get(mtv);
 
         // Check that all bounds are satisfied
-        for (Type m : mtv.bounds()) {
+        for (Type m : mtv.upperBounds()) {
           if (m instanceof ModeTypeVariable) {
             m = mtMap.get(m);
           }

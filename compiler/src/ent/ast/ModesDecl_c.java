@@ -3,13 +3,12 @@ package ent.ast;
 import ent.ast.*;
 import ent.translate.*;
 import ent.types.*;
+import ent.visit.*;
 
 import polyglot.ast.*;
 import polyglot.types.*;
 import polyglot.util.*;
 import polyglot.translate.*;
-import polyglot.types.*;
-import polyglot.util.*;
 import polyglot.visit.*;
 import polyglot.qq.*;
 
@@ -77,8 +76,12 @@ public class ModesDecl_c extends ClassDecl_c implements ModesDecl {
   @Override
   public Context enterChildScope(Node child, Context c) {
     return c;
-  }
+  } 
 
+  //Done is EntModesDeclExt
+  //public Node buildModes(ModeBuilder tb) throws SemanticException {
+  //}
+  
   @Override
   public NodeVisitor buildTypesEnter(TypeBuilder tb) throws SemanticException {
     return tb;
@@ -86,30 +89,18 @@ public class ModesDecl_c extends ClassDecl_c implements ModesDecl {
 
   @Override
   public Node buildTypes(TypeBuilder tb) throws SemanticException {
-    // Save the package we are defined in
     EntTypeSystem ts = (EntTypeSystem) tb.typeSystem();
     if (ts.modesDeclPackage() != null) {
       throw new SemanticException("redeclaration of modes!");
     }
     ts.modesDeclPackage(tb.currentPackage());
 
-    ModeOrderingInstance oi = ts.createModeOrderingInstance();
-
-    for (ModeOrder modeOrder : this.orders()) {
-      ModeType l = ts.createModeType(modeOrder.lower());
-      ModeType u = ts.createModeType(modeOrder.upper());
-      oi.insertModeTypeOrdering(l, u);
-    }
-
-    oi.buildModeTypeOrdering();
-    ModesDecl n = this.modeOrderingInstance(oi);
-
     // Give it a dummy class type so the rst of the passes work, side effect
     // of inheriting from ClassDecl_c for the rewrite
     ParsedClassType ct = ts.createClassType();
     ct.setMembersAdded(true);
     ct.setSupertypesResolved(true);
-    return n.type(ct);
+    return this.type(ct);
   }
 
   @Override

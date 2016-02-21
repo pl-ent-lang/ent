@@ -1,8 +1,8 @@
-package waterfall_bad3;
+package waterfall_good3;
 
 modes {low <: mid; mid <: high; };
 
-public class A@mode<X <= high, Y <= high, Z <= mid, W <= low> {
+public class A@mode<(high <= X <= high), Y <= high, Z <= mid, W <= low> {
   public void m1(String@mode<low> s) {
     s.charAt(0);  // Good!
   }

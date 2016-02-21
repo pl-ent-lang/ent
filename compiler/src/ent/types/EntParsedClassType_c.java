@@ -31,7 +31,7 @@ public class EntParsedClassType_c extends JL5ParsedClassType_c implements EntPar
       // as possible.
       EntTypeSystem ts = (EntTypeSystem) this.typeSystem();
       ModeTypeVariable mtv = ts.createModeTypeVariable(this.position(), "_LM");
-      if (!mtv.inferUpperBound()) {
+      if (!mtv.inferBounds()) {
         // TODO: Problem
       }
       this.modeTypeVars = Arrays.asList(mtv);

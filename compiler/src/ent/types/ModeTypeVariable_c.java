@@ -15,7 +15,8 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
 
   protected String name;
   protected boolean isDynRecvr;
-  protected List<Type> bounds;
+  protected List<Type> upperBounds;
+  protected List<Type> lowerBounds;
   protected Type upperBound;
   protected Type lowerBound;
   protected ClassType declaringClass;
@@ -27,11 +28,13 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
                             Position pos,
                             String name) {
     super(ts, name);
-    this.bounds = Collections.emptyList();
+    this.upperBounds = Collections.emptyList();
+    this.lowerBounds = Collections.emptyList();
     this.name = name;
     this.uniqueId = this.genId();
     this.index = -1;
     this.upperBound = ts.unknownType(pos);
+    this.lowerBound = ts.unknownType(pos);
   }
 
   // Property Methods
@@ -51,27 +54,36 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
     this.isDynRecvr = isDynRecvr;
   }
 
-  public List<Type> bounds() {
-    return this.bounds;
+  public List<Type> upperBounds() {
+    return this.upperBounds;
   }
 
-  public void bounds(List<Type> bounds) {
-    if (bounds == null) {
-      this.bounds = Collections.emptyList();
+  public void upperBounds(List<Type> upperBounds) {
+    if (upperBounds == null) {
+      this.upperBounds = Collections.emptyList();
     } else {
-      this.bounds = bounds;
+      this.upperBounds = upperBounds;
     }
   }
+
+  public List<Type> lowerBounds() {
+    return this.lowerBounds;
+  }
+
+  public void lowerBounds(List<Type> lowerBounds) {
+    if (lowerBounds == null) {
+      this.lowerBounds = Collections.emptyList();
+    } else {
+      this.lowerBounds = lowerBounds;
+    }
+  }
+
 
   public boolean hasLowerBound() {
     return this.lowerBound != null;
   }
 
   public Type lowerBound() {
-    if (this.lowerBound == null) {
-      // Our only bound is high
-      return this.upperBound();
-    }
     return this.lowerBound;
   }
 
@@ -115,17 +127,48 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
     this.index = index;
   }
 
+  public boolean inferBounds() {
+    boolean r1 = this.inferLowerBound();
+    boolean r2 = this.inferUpperBound();
+    return (r1 && r2);
+  }
+
+  public boolean inferLowerBound() {
+    EntTypeSystem ts = (EntTypeSystem) this.ts;
+
+    if (this.lowerBounds().isEmpty()) {
+      // What does this mean exactly?
+      this.lowerBound(ts.BottomUserModeType());
+      return true;
+    }
+
+    Type glb = null;
+    for (Type m : this.lowerBounds()) {
+      if (glb == null) {
+        glb = m;
+        continue;
+      }
+
+      if (ts.isSubtype(glb, m)) {
+        glb = m;
+      }
+    }
+
+    this.lowerBound(glb);
+    return true;
+  } 
+
   public boolean inferUpperBound() {
     EntTypeSystem ts = (EntTypeSystem) this.ts;
 
-    if (this.bounds().isEmpty()) {
+    if (this.upperBounds().isEmpty()) {
       // What does this mean exactly?
       this.upperBound(ts.WildcardModeType());
       return true;
     }
 
     Type lub = null;
-    for (Type m : this.bounds()) {
+    for (Type m : this.upperBounds()) {
       if (lub == null) {
         lub = m;
         continue;

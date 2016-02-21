@@ -161,14 +161,13 @@ public abstract class EntProcedureDeclExt extends EntExt {
     EntNodeFactory nf = (EntNodeFactory) tp.nodeFactory();
     EntTypeSystem ts = (EntTypeSystem) tp.typeSystem();
 
-    //if (!this.preserveTypes()) {
+    if (!this.preserveTypes()) {
       return n;
-    //}
-    //
+    }
+    
     // NOTE: I need to come back to fix this...
 
     // To preserve the context of the mode type vars, we simply accept ENT_Closure
-    /*
     List<Formal> formals = new ArrayList<>(n.formals());
     Formal f =
       nf.Formal(
@@ -200,7 +199,6 @@ public abstract class EntProcedureDeclExt extends EntExt {
     formals.add(f);
      
     return n.formals(formals);
-    */
   }
 
 }

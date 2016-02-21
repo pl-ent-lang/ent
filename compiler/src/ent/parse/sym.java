@@ -117,6 +117,7 @@ public class sym {
   public static final int DOUBLE_LITERAL = 98;
   public static final int JAVADOC = 104;
   public static final int ASSERT = 108;
+  public static final int LBOUND = 124;
   public static final int COLON = 22;
   public static final int IMPLEMENTS = 37;
   public static final int MULTEQ = 83;
@@ -256,7 +257,8 @@ public class sym {
   "MCASE",
   "RARROW",
   "MODESAFE",
-  "OVERMODE"
+  "OVERMODE",
+  "LBOUND"
   };
 }
 

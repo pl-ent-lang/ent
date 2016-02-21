@@ -147,6 +147,34 @@ public class EntScheduler extends JL7Scheduler {
     return internGoal(g);
   }
 
+  @Override
+  public Goal TypesInitialized(Job job) {
+    TypeSystem ts = extInfo.typeSystem();
+    NodeFactory nf = extInfo.nodeFactory();
+    Goal g = TypesInitialized.create(this, job, ts, nf);
+    try {
+      g.addPrerequisiteGoal(ModesBuilt(job), this);
+    } catch (CyclicDependencyException e) {
+      throw new InternalCompilerError(e);
+    }
+    return g;
+  }
+
+
+  public Goal ModesBuilt(Job job) {
+    TypeSystem ts = extInfo.typeSystem();
+    NodeFactory nf = extInfo.nodeFactory();
+    Goal g = 
+      new VisitorGoal(job, new ModeBuilder(job, ts, nf));
+    try {
+      g.addPrerequisiteGoal(Parsed(job), this);
+    } catch (CyclicDependencyException e) {
+      throw new InternalCompilerError(e);
+    }
+    return this.internGoal(g);
+  }
+
+
   public Goal AttributeExitChecked(Job job) {
     TypeSystem ts = extInfo.typeSystem();
     NodeFactory nf = extInfo.nodeFactory();
