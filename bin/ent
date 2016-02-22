@@ -32,7 +32,7 @@ args=
 vmargs=
 classpath=
 java=java
-ext=panda
+ext=ent
 
 polyglot() {
   eval "$java" "$vmargs" -Xmx2g -classpath "'$classpath'" "$@"

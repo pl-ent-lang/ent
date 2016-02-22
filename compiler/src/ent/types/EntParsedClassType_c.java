@@ -30,9 +30,10 @@ public class EntParsedClassType_c extends JL5ParsedClassType_c implements EntPar
       // Inject a mode type variable here, done this way to catch as many classes
       // as possible.
       EntTypeSystem ts = (EntTypeSystem) this.typeSystem();
-      ModeTypeVariable mtv = ts.createModeTypeVariable(this.position(), "_LM");
-      if (!mtv.inferBounds()) {
-        // TODO: Problem
+      ModeTypeVariable mtv = ts.createWildcardModeTypeVariable(this.position(), "_LM");
+      if (mtv.lowerBound() == null) {
+        System.err.format("Lowerbound not set from %s!\n", this);
+        System.exit(1);
       }
       this.modeTypeVars = Arrays.asList(mtv);
       this.isImplicitModeTypeVar = true;

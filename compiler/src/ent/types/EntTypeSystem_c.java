@@ -1275,6 +1275,16 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
     return new ModeTypeVariable_c(this, pos, name);
   }
 
+  public ModeTypeVariable createWildcardModeTypeVariable(Position pos, String name) {
+    ModeTypeVariable mtv = new ModeTypeVariable_c(this, pos, name);
+    List<Type> bounds = new ArrayList<>(); 
+    bounds.add(this.WildcardModeType());
+    mtv.lowerBounds(bounds);
+    mtv.upperBounds(bounds);
+    mtv.inferBounds();
+    return mtv;
+  }
+
   public ModeValueType createModeValueType(Type mode) {
     return new ModeValueType_c(this, mode);
   }

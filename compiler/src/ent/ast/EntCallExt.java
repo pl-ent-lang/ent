@@ -281,8 +281,7 @@ public class EntCallExt extends EntExt {
     ModeSubstType mt = (ModeSubstType) t;
     if (mt.modeType() == ts.DynamicModeType() && 
         !EntFlags.isModesafe(n.methodInstance().flags())) {
-      throw new SemanticException(
-        "Dynamic mode type cannot receive messages. Resolve using snapshot.");
+      throw new SemanticException("Dynamic mode type cannot receive messages. Resolve using snapshot.");
     }
 
     if (ctx.inStaticContext()) {
@@ -294,21 +293,23 @@ public class EntCallExt extends EntExt {
     // than the recievers mode type.
     //
     // Overmoded methods take precedence
-    ModeTypeVariable mtThis = ct.modeTypeVars().get(0);
-    if (pi.modeTypeVars().isEmpty()) {
-      if (!ts.isSubtype(mt.modeType(), mtThis)) {
-        throw new SemanticException("Cannot send message to " + t + " from mode " + mtThis.upperBound() + ".");
-      }
-    } else {
-      EntProcedureInstance pi2 = pi;
-      if (mt instanceof ModeSubstClassType) {
-        ModeSubstClassType mct = (ModeSubstClassType) mt;
-        ModeSubst ms = mct.modeSubst();
-        pi2 = ms.substProcedure(pi);
-      }
+    if (mt.modeType() != ts.DynamicModeType()) {
+      ModeTypeVariable mtThis = ct.modeTypeVars().get(0);
+      if (pi.modeTypeVars().isEmpty()) {
+        if (!ts.isSubtype(mt.modeType(), mtThis)) {
+          throw new SemanticException("Cannot send message to " + t + " from mode " + mtThis.upperBound() + ".");
+        }
+      } else {
+        EntProcedureInstance pi2 = pi;
+        if (mt instanceof ModeSubstClassType) {
+          ModeSubstClassType mct = (ModeSubstClassType) mt;
+          ModeSubst ms = mct.modeSubst();
+          pi2 = ms.substProcedure(pi);
+        }
 
-      if (!ts.isSubtype(pi2.modeTypeVars().get(0), mtThis)) {
-        throw new SemanticException("Cannot send message to overmode<" + pi2.modeTypeVars().get(0) + "> from mode " + mtThis.upperBound() + ".");
+        if (!ts.isSubtype(pi2.modeTypeVars().get(0), mtThis)) {
+          throw new SemanticException("Cannot send message to overmode<" + pi2.modeTypeVars().get(0) + "> from mode " + mtThis.upperBound() + ".");
+        }
       }
     }
 
