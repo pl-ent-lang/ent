@@ -31,7 +31,6 @@ ent.EntExtensionInfo "-d out" {
   waterfall_good2/A.java ;
   waterfall_good3/A.java ;
   waterfall_good4/A.java ;
-  waterfall_good5/A.java ;
 
   waterfall_bad1/A.java (Semantic, "Cannot send message") ;
   waterfall_bad2/A.java (Semantic, "Cannot send message") ;
