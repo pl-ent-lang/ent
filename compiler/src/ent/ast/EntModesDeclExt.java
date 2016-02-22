@@ -27,6 +27,7 @@ public class EntModesDeclExt extends EntExt {
 
     oi.buildModeTypeOrdering();
     md = md.modeOrderingInstance(oi);
+
     return md;
   }
 
