@@ -339,13 +339,18 @@ public class EntCallExt extends EntExt {
     Call n = (Call) this.node();
 
     if (this.needsEntClosure()) {
+      Map<ModeTypeVariable, Type> mtMap = new HashMap<>();
+      EntProcedureInstance pi = ((EntProcedureInstance) n.procedureInstance()).baseInstance();
+      for (int i = 0; i < pi.modeTypeVars().size(); i++) {
+        mtMap.put(pi.modeTypeVars().get(i), this.actualModeTypes().get(i));
+      }
       List<Expr> args = new ArrayList<>(n.arguments());
       args.add(
         EntBuilder.instance().buildEntClosure(
           tp.nodeFactory(),
           tp.toTypeSystem(),
-          ((EntProcedureInstance) n.procedureInstance()).modeTypeVars(),
-          this.infModeTypes(),
+          pi.modeTypeVars(),
+          mtMap,
           tp.context()
           )
         ); 

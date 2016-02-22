@@ -89,6 +89,7 @@ public abstract class EntProcedureDeclExt extends EntExt {
     EntProcedureInstance pi = (EntProcedureInstance) pd.procedureInstance();
 
     int dbInd = this.modeTypeVarStartIndex(pi);
+
     if (this.modeParams() != null && !this.modeParams().isEmpty()) {
       List<ModeTypeVariable> mtVars = 
         new ArrayList<ModeTypeVariable>(this.modeParams().size());

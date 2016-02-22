@@ -815,12 +815,14 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
                                            List<? extends ReferenceType> actualTypeArgs,
                                            Type expectedReturnType,
                                            List<ModeType> actualModeTypeArgs) { 
-
+    /*
     if (!(mi.container() instanceof ModeSubstType)) {
+      System.err.format("Container not subst!\n");
       // MODE-NOTE : Need to return to address this. ModeSubstType/Type issue.
       // Should the container always be a ModeSubstType?
       return (EntMethodInstance) super.methodCallValid(mi, name, argTypes, actualTypeArgs, expectedReturnType);
     }
+    */
 
     // Check from JL5TypeSystem::methodCallValid
     // Repeat it here to avoid some of the calls that could crash
@@ -843,8 +845,18 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
         mtMap.put(pi.modeTypeVars().get(i),actualModeTypeArgs.get(i));
       }
 
-      ModeSubstClassType sct = (ModeSubstClassType) pi.container();
-      ModeSubst subst = sct.modeSubst().deepCopy();
+      ModeSubst subst = null;
+      if (pi.container() instanceof ModeSubstClassType) {
+        ModeSubstClassType sct = (ModeSubstClassType) pi.container();
+        subst = sct.modeSubst().deepCopy();
+      } else {
+        List<Type> newActualModeTypeArgs = new ArrayList<>();
+        for (ModeType mt : actualModeTypeArgs) {
+          newActualModeTypeArgs.add((Type)mt);
+        }
+        ModeSubstClassType mst = (ModeSubstClassType) this.createModeSubst(pi.container(), newActualModeTypeArgs);
+        subst = mst.modeSubst();
+      }
       subst.modeTypeMap().putAll(mtMap);
 
       // Check that constraints are handled

@@ -80,5 +80,9 @@ ent.EntExtensionInfo "-d out" {
 
   snapshot_pass1/A.java snapshot_pass1/B.java ;
   snapshot_pass2/A.java snapshot_pass2/B.java ;
+  snapshot_pass3/A.java snapshot_pass3/B.java ;
+  snapshot_pass4/A.java snapshot_pass4/B.java ;
+  snapshot_pass5/A.java snapshot_pass5/B.java ;
+
   snapshot_fail1/A.java snapshot_fail1/B.java ;
 }
