@@ -1,0 +1,76 @@
+\begin{figure}[ht]
+\scriptsize
+\hrule
+  \begin{mathpar}
+    \inferrule*[left=\fdtitle{Object}]
+    {}
+    { \Ffields(\Nobject\lb\basemode\rb) = \bullet }
+    \\
+
+    \inferrule*[left=\fdtitle{Class}]
+    {
+      \kwclass\ \Cname\ \tspec\ \kwextends\ \Dname \{ \overline{\bt}\ \overline{\Fname} = \overline{e}\ \mdlist \ \attributor \} \\ 
+      \Feparam(\tspec) = \iota' \\
+      \Ffields(\Dname\lb\listi\rb) = \overline{\bt_0}\ \overline{\Fname_0} = \overline{e_0} \\
+    }
+    { 
+      \Ffields(\classiota) = \overline{\bt_0}\ \overline{\Fname_0} = \overline{e_0}, \overline{\bt\subst{\listi'}{\listi}}\ \overline{\Fname} = \overline{e\subst{\listi'}{\listi}} 
+    }
+    \\
+
+    \inferrule*[left=\mttitle{Class}]
+    {
+      \kwclass\ \Cname\ \tspec\ \kwextends\ \Dname \{ \fdlist \ \mdlist \ \attributor \} \\ 
+      \bt\ \Mname(\overline{\bt}\ \overline{\VAR})\ \{\ e\ \}\ \in \overline{\mddec}  \\ 
+      \Feparam(\tspec) = \iota' \\
+    }
+    {
+      \Fmtype(\Mname,\classiota) = (\overline{\bt}\rightarrow\bt)\subst{\iota'}{\iota}
+    }
+    \\
+
+    \inferrule*[left=\mttitle{Super}]
+    {
+      \kwclass\ \Cname\ \tspec\ \kwextends\ \Dname \{ \fdlist \ \mdlist \ \attributor \} \\ 
+      \Mname \not\in \overline{\mddec}  \\ 
+    }
+    {
+      \Fmtype(\Mname,\classiota) = \Fmtype(\Mname,\Dname\lb\listi\rb)
+    }
+    \\
+
+    \inferrule*[left=\textrm{Override}]
+    {\Fmtype(\Mname,\bt) = \overline{\bt'}\rightarrow\bt_0' \\ \cset\vdash\bt_0\tsub\bt_0' \\
+    }
+    {\Foverride(\Mname,\bt,\cset,\overline{\bt}\rightarrow\bt_0)}
+    \\
+
+    \inferrule*[left=\mbtitle{Class}]
+    {
+      \kwclass\ \Cname\ \tspec\ \kwextends\ \Dname \{ \fdlist \ \mdlist \ \attributor \} \\
+      \Feparam(\tspec) = \listi' \\
+      \bt\ \Mname(\overline{\bt}\ \overline{\VAR}) \{ e \} \in \mdlist \\
+    }
+    { \Fmbody(\Mname,\classiota) = \overline{\VAR}.e\subst{\listi'}{\listi} }
+    \\
+
+    \inferrule*[left=\mbtitle{Super}]
+    {
+      \kwclass\ \Cname\ \tspec\ \kwextends\ \Cname' \{ \fdlist \ \mdlist \ \attributor \} \\
+      \Mname \not\in \mdlist \\
+    }
+    { \Fmbody(\Mname,\classiota) = \Fmbody(\Mname, \Dname\lb\listi\rb) }
+    \\
+
+    \inferrule*[left=\abtitle{Class}]
+    {
+      \kwclass\ \Cname\ \tspec\ \kwextends\ \Cname' \{ \fdlist \ \mdlist \ \attributor \} \\
+      \Feparam(\tspec) = \listi' \\
+      \attributor = e \\
+    }
+    { \Fabody(\classiota) = e\subst{\listi'}{\listi} }
+
+  \end{mathpar} 
+\nocaptionrule \caption{FJ Functions}
+\label{fig:fjfunc}
+\end{figure}

@@ -1,0 +1,120 @@
+\documentclass[10pt]{sigplanconf}
+
+\usepackage{fixltx2e}
+\usepackage{verbatim}
+\usepackage{balance}
+\usepackage{tabularx}
+
+\long\def\dnote#1{{\small \ \ $\langle\langle\langle$\ \textcolor{britishracinggreen}{\textbf{#1 -David}}\
+    $\rangle\rangle\rangle$\ \ }}
+\long\def\anote#1{{\small \ \ $\langle\langle\langle$\ \textcolor{coolblack}{\textbf{#1 -Anthony}}\
+    $\rangle\rangle\rangle$\ \ }}
+
+
+\input{types/joyce-macros-ezgi}
+\usepackage{times}
+
+  \newtheoremstyle{lessintrusive}% name
+     {6pt}%      Space above
+     {6pt}%      Space below
+     {}%         Body font
+     {}%         Indent amount (empty = no indent, \parindent = para indent)
+     {\scshape}% Thm head font
+     {.}%        Punctuation after thm head
+     {.5em}%     Space after thm head: " " = normal interword space;
+           %       \newline = linebreak
+     {}%         Thm head spec (can be left empty, meaning `normal')
+
+
+\newtheorem{theorem}{Theorem} %[section]
+\newtheorem{lemma}{Lemma}
+\newtheorem{definition}{Definition}
+\theoremstyle{lessintrusive}
+\newtheorem{benefit}{Energy Management Benefit}
+\theoremstyle{plain}
+
+\conferenceinfo{OOPSLA'12,} {October 19--26, 2012, Tucson, Arizona, USA.}
+\CopyrightYear{2012}
+\copyrightdata{978-1-4503-1561-6/12/10}
+\clubpenalty=10000
+\widowpenalty = 10000
+\displaywidowpenalty = 10000
+
+\makeatletter
+\def \mpr@lineskip  {\lineskiplimit=0.6em\lineskip=0.6em plus 0.2em}
+\let \MathparLineskip \mpr@lineskip
+\makeatother
+
+
+\newcommand{\ourts}{Energy Types}
+\newcommand{\ourlang}{\textsf{ET}}
+
+
+% short version
+\long\def\inlong#1{}
+\long\def\inshort#1{#1}
+
+% long version
+% \long\def\inlong#1{#1}
+% \long\def\inshort#1{}
+
+
+\nonotes
+
+\lstset{language=java, keywordstyle=\color{black}\bfseries, numbers=left, numberstyle=\tiny, stepnumber=1, numbersep=5pt,stringstyle=\ttfamily} 
+
+\lstset{classoffset=1, 
+morekeywords={phases,modes,adapt,mswitch,@mode,@phase,modev},keywordstyle=\color{red}\bfseries, 
+classoffset=0}
+
+
+
+\lstset{moredelim=*[is][\color{red}]{(((}{)))}} 
+
+
+\lstset{escapeinside={(*@}{@*)}}
+
+
+\bibliographystyle{plain}
+
+\pagestyle{plain}
+
+
+\def\footnotesize{\scriptsize}
+
+\title{Energy Types} % \thanks{This work is supported by NSF CAREER Award CCF-1054515 and a Google Faculty Award.}}
+%\subtitle{draft}
+\authorinfo{Michael Cohen  \sp Haitao Steve Zhu \sp Senem Ezgi Emgin \sp Yu David Liu}
+           {Department of Computer Science \\ SUNY Binghamton \\ Binghamton NY 13902, USA}
+           {\{mcohen3,hzhu1,semgin1,davidL\}@binghamton.edu}
+
+
+%\authorinfo{}
+
+
+\begin{document}
+
+
+\renewcommand{\mathbb}{\textsf} % with this, Type 3 font is gone
+
+\input{types/syntax}
+\input{types/types}
+\input{types/welltypes}
+\input{types/wellenv}
+\input{types/fjfunc}
+\input{types/classrules}
+\input{types/exprrules}
+\input{types/subtyperules}
+\input{types/submoderules}
+\input{types/runtimeelems}
+\input{types/runtimerules}
+\input{types/reductionrules}
+\input{types/compilefuncs}
+\input{types/runtimefuncs}
+%\input{meta}
+
+\end{document}
+
+\input{backup}
+
+

@@ -1,0 +1,83 @@
+\begin{figure}[ht]
+\footnotesize
+\hrule
+  \begin{mathpar}
+    \inferrule*[left=\stitle{Obj1}]
+    { 
+      \Gamma;\cset \vdash e:\modevt \\
+      \Gamma;\cset \vdash \overline{e}:\overline{\bt} \\
+      \Ffields(\Cname\lb e,\listi\rb) = \overline{\bt}\ \overline{\Fname} = \overline{e} \\
+    }
+    {
+      \Gamma;\cset \vdash \closure{\alpha}{\Cname\lb e,\listi\rb}{\overline{e}} : \classiota
+    }
+    \\ 
+    
+    \inferrule*[left=\stitle{Check1}]
+    { 
+      \Gamma;\cset \vdash e : \modevt \\ 
+      \cset\models\{\moname_1\msub\mtvar,\mtvar\msub\moname_2\} \\
+    }
+    {
+      \Gamma;\cset \vdash \check{e}{\moname_1}{\moname_2} : \mtvar
+    }
+    \\
+
+    \inferrule*[left=\stitle{Obj2}]
+    { 
+      \Gamma;\cset \vdash \overline{e}:\overline{\bt} \\
+      \Ffields(\classiota) = \overline{\bt}\ \overline{\Fname} = \overline{e} \\
+    }
+    {
+      \Gamma;\cset \vdash \closure{\alpha}{\classiota}{\overline{e}} : \classiota
+    }
+    \\ 
+
+    \inferrule*[left=\stitle{Check2}]
+    { 
+      \Gamma;\cset' \vdash e_1 : \modevt \\ 
+      \Gamma;\cset' \vdash e_2 : \texist{\econs}.\Cname\lb\mtvar,\listi\rb \\ 
+      \cset = \cset'\cup\{\basemode_1\msub\mtvar,\mtvar\msub\basemode_2\} \\
+      \cset\models\{\basemode_1\msub\moname_1,\moname_2\msub\basemode_2\} \\
+    }
+    {
+      \Gamma;\cset \vdash \checkp{e_1}{\moname_1}{\moname_2}{e_2} : \Cname\lb\mtvar,\listi\rb
+    }
+    \\
+
+    \inferrule*[left=\stitle{Obj3}]
+    { 
+      \Gamma;\cset \vdash \overline{e}:\overline{\bt} \\
+      \Ffields(\classiota) = \overline{\bt}\ \overline{\Fname} = \overline{e} \\
+    }
+    {
+      \Gamma;\cset \vdash \closure{\alpha}{\classiota}{\overline{e}} : \classiota
+    }
+    \\ 
+
+    \inferrule*[left=\stitle{Check3}]
+    { 
+      \Gamma;\cset \vdash e_1 : \modevt \\ 
+      \Gamma;\cset \vdash e_2 : \Cname\lb\dynmode,\listi\rb \\ 
+      \cset\models\{\basemode_1\msub\mtvar,\mtvar\msub\basemode_2\} \\
+      \cset\models\{\basemode_1\msub\moname_1,\moname_2\msub\basemode_2\} \\
+    }
+    {
+      \Gamma;\cset \vdash \checkp{e_1}{\moname_1}{\moname_2}{e_2} : \Cname\lb\mtvar,\listi\rb
+    }
+    \\
+
+    \inferrule*[left=\stitle{Closure}]
+    { 
+      \Gamma;\cset \vdash e:\t \\ 
+    }
+    { 
+      \Gamma;\cset \vdash \cl{\moname}{e} : \t 
+    }
+    \\ 
+
+  \end{mathpar}
+
+\caption{Auxiliary Run-time Expression Typing}
+\label{fig:runtimerules}
+\end{figure}

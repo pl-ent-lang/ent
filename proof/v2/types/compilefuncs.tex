@@ -1,0 +1,37 @@
+\begin{figure*}[ht]
+\scriptsize
+
+\begin{tabularx}{1\linewidth}{>{$}l<{$} >{$}c<{$} >{$}l<{$} >{$}l<{$}}
+\hline
+
+& & & \\\\
+
+\Fmodes(\programcode)  & \triangleq & \overline{\moname \msub \moname'} \\\\
+
+\Fmode(\Cname\lb\overline{\listi}\rb)  & \triangleq  & \mode & \textrm{if} \ \listi = \mode,\overline{\basemode} \\\\
+
+\Fattr(\Cname\lb\listi\rb) & \triangleq  & \attributor\subst{\Feparam(\tspec)}{\listi} & \textrm{if} \ \kwclass \ \Cname \ \tspec \ \kwextends \ \t \ \{ \ \fdlist \ \mdlist \ \attributor \} \ \in \ \programcode \\\\
+
+\Feparam(\overline{\basemode \msub \mtvar \msub \basemode'})  & \triangleq  & \overline{\mtvar} \\
+\Feparam(\dynmode\rightarrow\econs,\espec)  & \triangleq  & \mtvar\cup\Feparam(\espec) & \textrm{if} \ \econs = \basemode\msub\mtvar\msub\basemode' \\\\
+
+\Fethis(\espec) & \triangleq  & \mtvar & \textrm{if} \ \Feparam(\espec) = \mtvar \\\\
+
+\Finit(\programcode,\Cname) & \triangleq & \Finit(\Cname') \cup \overline{e\subst{\Feparam(\tspec)}{\listi}} & \textrm{if} \ \kwclass \ \tspec \ \Cname \ \kwextends \ \Cname' \ \overline{\t \ \Fname = e} \in \programcode \\
+\Finit(\programcode,\Cname) & \triangleq & \epsilon & \textrm{if} \ \Cname = \Nobject \\\\
+
+\Feargs(\classiota) & \triangleq & \listi \\
+\Feargs(\texist{\econs}.\t) & \triangleq & \Feargs(\t) \\\\
+
+\Fcons(\basemode\msub\mtvar\msub\basemode') & \triangleq & \bigcup \{\basemode\msub\mtvar,\mtvar\msub\basemode'\} \\
+\Fcons(\dynmode\rightarrow\econs,\espec) & \triangleq & \{\basemode\msub\mtvar,\mtvar\msub\basemode'\} \cup \Fcons(\espec) & \textrm{if}\ \econs = \basemode\msub\mtvar\msub\basemode' \\\\
+
+\end{tabularx}
+
+We require $\overline{\moname}$ as a lattice. We use $\bot$ and $\top$ to represent the bottom and top of $\overline{\moname}$ respectively.
+
+We define $\Finit(\programcode,\Cname)$ as $\Finit(\programcode,\Cname') \cup \overline{e}$ if $\kwclass \ \Cname \ \kwextends \ \Cname' \ \overline{\t \ \Fname = e} \in \programcode$ or $\epsilon$ if $\Cname = \Nobject$.
+
+\nocaptionrule\caption{Compile Functions}
+\label{fig:compilefuncs}
+\end{figure*}

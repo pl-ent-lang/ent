@@ -1,0 +1,57 @@
+\begin{figure}[h]
+\scriptsize
+\hrule
+\begin{mathpar}
+			\inferrule*[left=\wftitle{Class}]
+			{
+			 \kwclass\ \Cname\ \tspec\ \kwextends\ \Dname\ \dots \in \programcode \\
+       \Feparam(\tspec) = \listi' \\ \Fcons(\tspec) = \cset' \\
+       \cset \models \cset'\subst{\listi'}{\overline{\basemode}} \\
+       \cset \judgewft \Dname\lb\overline{\basemode}\rb \\
+			}
+			{
+        \cset \judgewft \Cname\lb\overline{\basemode}\rb
+      } 
+      \\
+
+      \inferrule*[left=\wftitle{ClassDyn}]
+			{
+			 \kwclass\ \Cname\ \dynmode\rightarrow\econs,\espec\ \kwextends\ \Dname \dots \in \programcode \\
+       \Feparam(\dynmode\rightarrow\econs,\espec) = \listi' \\ 
+       \Fcons(\espec) = \cset' \\
+       \cset \models \cset'\subst{\listi'}{\overline{\basemode}} \\
+       \cset \judgewft \Dname\lb\overline{\basemode}\rb \\
+			}
+			{ 
+        \cset \judgewft \Cname\lb\dynmode,\overline{\basemode}\rb 
+      }
+      \\ 
+
+			\inferrule*[left=\wftitle{Top}]
+			{}
+			{\cset \judgewft \Nobject \lb \basemode \rb} 
+      \\
+
+      \inferrule*[left=\wftitle{Exist}]
+			{
+        \econs = \basemode\msub\mtvar\msub\basemode' \\ \cset = \cset'\cup\{\basemode\msub\mtvar,\mtvar\msub\basemode'\} \\ \mtvar\not\in\cset' \\ 
+        \cset \judgewft \t \\
+      }
+			{
+        \cset \judgewft \texist{\econs}.\t 
+      }
+
+      \inferrule*[left=\wftitle{MCase}]
+			{\cset \judgewft \bt}
+			{\cset \judgewft \tmcase{\bt} }
+%      \\
+%
+%      \inferrule*[left=\wftitle{ModeBase}]
+%      {}
+%      {\tspec \judgewft \bot \msub \basemode \msub \top}
+
+\end{mathpar}
+
+\caption{Type Well-Formedness}
+\label{fig:welltypes}
+\end{figure}

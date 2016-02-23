@@ -1,0 +1,31 @@
+\begin{figure}[ht]
+\footnotesize
+\hrule
+\vspace{1ex}
+
+
+\begin{tabularx}{1\linewidth}{>{$}c<{$} >{$}c<{$} >{$}l<{$} @{\extracolsep{\fill}} >{$}r<{$}}
+e & \defassign & \dots & \textit{runtime expressions} \\ 
+%& \mid & \check{e}{\moname}{\moname'} & \\
+& \mid & \checkp{e}{\moname}{\moname'}{e} & \\
+& \mid & \closure{\alpha}{\classiota}{\overline{e}} & \\
+& \mid & \cl{\moname}{e} & \\ 
+& & & \\
+\env & \defassign & \odot \mid \ \env.\Mname(\overline{e}) \mid \obj.\Mname(\dots, \obj, \env, e, \dots) & \textit{evaluation context} \\
+& \mid & (\bt)\env \mid \env.\Fname \\
+& \mid & \snapshot{\env}{\moname_1}{\moname_2}\\
+& \mid & \{\dots \moname: \val; \moname: \env; \moname: e \dots \} \mid \env \triangleright \mode \\
+%& \mid & \check{\env}{\moname}{\moname'} \\
+& \mid & \checkp{\env}{\moname}{\moname'}{\env} \\
+%& \mid & \closure{\alpha}{\Cname\lb\env,\listi\rb}{\overline{e}}  \\
+& \mid & \closure{\alpha}{\classiota}{\dots\val,\env,e\dots}  \\
+& \mid & \cl{\moname}{\env} \\
+& \mid & \kwlet\ \VAR = \env\ \kwin \ e \\
+
+\end{tabularx}
+
+\vspace{1ex}
+
+\caption{Run-Time Elements}
+\label{fig:runtimeelems}
+\end{figure}

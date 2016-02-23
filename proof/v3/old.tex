@@ -1,0 +1,306 @@
+\begin{comment}
+% LEMMA : Subset weakens
+\begin{lemma}
+\label{pf:subsetweakens}
+If $\programcode \judgewfe \espec$, $\programcode \judgewfe \tspec,\basemode\msub\mtvar\msub\basemode'$, $\espec \subseteq \tspec$, and $\mtvar$ does not occur in $\tspec$, then $\espec \subseteq \tspec,\basemode\msub\mtvar\msub\basemode'$.
+\end{lemma}
+\begin{proof}
+Trivial. 
+\end{proof}
+
+% LEMMA : Weakening
+\begin{lemma}[Weakening]
+\label{pf:weakening}
+\leavevmode
+\begin{enumerate}[(\arabic*)] 
+\item If $\tspec \vdash \basemode_{1}\msub\basemode_{1}'$, $\programcode \judgewfe \tspec,\econsexp{\basemode}{\mtvar}{\basemode'}$, and $\mtvar$ does not occur in $\tspec$, then $\tspec,\econsexp{\basemode}{\mtvar}{\basemode'} \vdash \basemode_{1}\msub\basemode_{1}'$.
+
+\item If $\tspec \judgewft \bt$, $\programcode \judgewfe \tspec,\econsexp{\basemode}{\mtvar}{\basemode'}$, and $\mtvar$ does not occur in $\tspec$, then $\tspec,\econsexp{\basemode}{\mtvar}{\basemode'} \judgewft \bt$.
+
+\item If $\Gamma;\cset \vdash e : \t$, and $\Gamma \vdash \YVAR:\t'$, then $\Gamma,\YVAR:\t' \vdash e : \t$.
+
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Straightforward induction on the derivation of $\tspec \vdash \basemode\msub\basemode'$, $\cset \vdash \t \tsub \t'$, $\tspec \judgewft \bt$, and $\Gamma;\cset \vdash e : \t$. We present each in turn.
+\leavevmode
+\begin{enumerate}[(\arabic*)]
+% Submode Weakening
+\item Trivial.
+
+% Well-formedness Weakening
+\item Induction on the derivation $\tspec \judgewft \bt$.
+\begin{case}[\wftitlet{Class}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\bt = \Cname\lb\overline{\basemode}\rb & & \\
+\end{tabular}\\ 
+Trivial by Lemma \ref{pf:subsetweakens}.
+\end{case}
+
+\begin{case}[\wftitlet{ClassDyn}]
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\bt = \Cname\lb\dynmode,\overline{\basemode}\rb \\
+\end{tabular}\\
+Trivial by Lemma \ref{pf:subsetweakens}. 
+\end{case}
+
+\begin{case}[\wftitlet{Top}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\bt = \Nobject\lb\basemode\rb \\
+\end{tabular}\\
+Trivial.
+\end{case}
+
+\begin{case}[\wftitlet{MCase}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\bt = \tmcase{\classiota} \\
+\end{tabular}\\
+$\tspec,\econsexp{\basemode}{\mtvar}{\basemode'} \judgewft \classiota$ by the induction hypothesis. $\tspec,\econsexp{\basemode}{\mtvar}{\basemode'} \judgewft \tmcase{\classiota}$ by WF-Mcase, but $\tspec,\econsexp{\basemode}{\mtvar}{\basemode'} \judgewft \tmcase{\classiota}$ is $\tspec,\econsexp{\basemode}{\mtvar}{\basemode'} \judgewft \bt$.
+\end{case}
+
+% Type Weakening Typing
+\item Induction on the derivation $\Gamma;\cset \vdash e : \t$.  
+\begin{case}[\stitlet{Var}]
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \VAR & \t = \Gamma(\VAR) & \\
+\end{tabular}\\
+Trivial.
+\end{case}
+
+\begin{case}[\stitlet{New}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \new{\classiota} & \t = \classiota & \\
+\end{tabular}\\
+Trivial.
+\end{case}
+
+\begin{case}[\stitlet{Cast}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = (\bt)e_{1} & \t = \bt & \\
+\Gamma;\cset \vdash e_{1} : \bt' & & \\
+\end{tabular}\\ \\
+By the induction hypothesis, $\Gamma;\YVAR:\t';\cset \vdash e_{1}:\bt'$. Then by T-Cast, $\Gamma;\YVAR:\t';\cset \vdash e_{1} : \bt$.
+\end{case}
+
+\begin{case}[\stitlet{Msg}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = e_{1}.(\overline{e_{1}}) & \t = \bt' & \\
+\Gamma;\cset \vdash e_{1}:\bt & \Gamma;\cset \vdash \overline{e_{1}}:\overline{\bt} & \Fmtype(\Mname,\bt) = \overline{\bt}\rightarrow\bt' \\ 
+\Gamma;\cset \vdash \kwthis:\bt_{this} & \cset \models \{\Fmode(\bt)\msub\Fmode(\bt_{this})\} & \Fmode(\bt) \neq \ ? \\
+\end{tabular}\\ \\
+By the induction hypothesis,
+\begin{proofcenter}
+$\Gamma,\YVAR:\t'; \cset \vdash e_{1}: \bt$ \\
+$\Gamma,\YVAR:\t'; \cset \vdash \overline{e_{1}} : \overline{\bt}$ \\
+$\Gamma,\YVAR:\t'; \cset \vdash \kwthis: \bt_{this}$.\\ 
+\end{proofcenter}
+Then by T-Msg, $\Gamma,\YVAR:\t'; \cset \vdash e_{1}.(\overline{e_{1}}) : \bt'$.
+\end{case}
+
+\begin{case}[\stitlet{Field}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = e_{1}.\Fname_{i} & \t = \bt_{i} & \\
+\Gamma;\cset \vdash e_{1}:\bt & \Ffields(\bt) = \overline{\bt} \ \overline{\Fname} & \\
+\Gamma;\cset \vdash \kwthis:\bt_{this} & \cset \models \{\Fmode(\bt)\msub\Fmode(\bt_{this})\} & \Fmode(\bt) \neq \ ? \\
+\end{tabular}\\ \\
+By the induction hypothesis,
+\begin{proofcenter}
+$\Gamma,\YVAR:\t'; \cset \vdash e_{1} : \bt$ \\ 
+$\Gamma,\YVAR:\t'; \cset \vdash \kwthis: \bt_{this}$. \\
+\end{proofcenter}
+Then by T-Field $\Gamma,\YVAR:\t'; \cset \vdash e_{1}.\Fname_{i} : \bt_{i}$.
+\end{case}
+
+\begin{case}[\stitlet{Snapshot}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \snapshot{e_{1}}{\basemode_{1}}{\basemode_{2}} & \t = \texist{\econs}. \Cname\lb\mtvar,\listi\rb &  \\
+\Gamma;\cset \vdash e_{1} : \Cname\lb?,\listi\rb & \econs = \basemode_1 \msub \mtvar \msub \basemode_2 & \\
+\end{tabular}\\ \\
+By the induction hypothesis, $\Gamma,\YVAR:\t';\cset \vdash e_{1} : \Cname\lb?,\listi\rb$. Then, by T-Snapshot $\Gamma,\YVAR:\t';\cset \vdash \snapshot{e_{1}}{\basemode_{1}}{\basemode_{2}} : \texist{\econs}. \Cname\lb\mtvar,\listi\rb$.
+\end{case}
+
+\begin{case}[\stitlet{MCase}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \mcase{\bt}{e_{1}} & \t = \tmcase{\bt} & \\
+\Gamma;\cset \vdash e_{1_{i}}:\bt \text{ for all} \ i & \overline{\moname} = \Fmodes(\programcode) & \\
+\end{tabular}\\ \\
+By the induction hypothesis, $\Gamma,\YVAR:\t';\cset \vdash e_{1_{i}} : \bt \text{ for all} \ i$. Then by T-MCase, $\Gamma,\YVAR:\t';\cset \vdash \mcase{\bt}{e_{1}} : \tmcase{\bt}$.
+\end{case}
+
+\begin{case}[\stitlet{ElimCase}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \mcasetag{e_{1}}{\basemode} & \t = \bt & \\
+\Gamma;\cset \vdash e_{1} : \tmcase{\bt} & \basemode \in \fundef{modes}(\programcode) \textrm{ or } \basemode \textrm{ appears in } \cset &  \\
+\end{tabular}\\ \\
+By the induction hyothesis, $\Gamma,\YVAR:\t';\cset \vdash e_{1} : \tmcase{\bt}$. Then by T-ElimCase, $\Gamma,\YVAR:\t';\cset \vdash \mcasetag{e_{1}}{\basemode} : \bt$.
+\end{case}
+
+\begin{case}[\stitlet{Mode}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \moname & \t = \modevt \\
+\end{tabular}\\
+Trivial.
+\end{case}
+
+\begin{case}[\stitlet{Sub}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = e_{1} & \t = \t_{1}' \\
+\Gamma,\YVAR:\t_{0};\cset \vdash e_{1}:\t_{1} & \cset\vdash \t_{1}\tsub\t_{1}' & \\
+\end{tabular}\\ \\
+By the induction hypothesis, $\Gamma,\YVAR:\t';\cset \vdash e_{1} : \t_{1}$. Then, by T-Sub, $\Gamma,\YVAR:\t';\cset \vdash e_{1} : \t_{1}'$.
+\end{case}
+
+\end{enumerate}
+
+\end{proof} 
+\end{comment}
+
+\begin{comment}
+
+\begin{case}[\stitlet{Var}] 
+\begin{tabular}[t]{>{$}c<{$} >{$}c<{$}}
+e = \VAR & \t = \Gamma(\VAR) \\
+\end{tabular}\\
+Trivial.
+\end{case}
+
+\begin{case}[\stitlet{New}] 
+\begin{tabular}[t]{>{$}c<{$} >{$}c<{$}}
+e = \new{\classiota} & \t = \classiota \\
+\end{tabular}\\
+Trivial.
+\end{case}
+
+\begin{case}[\stitlet{Cast}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = (\bt)e_{1} & \t = \bt & \\
+\Gamma,\YVAR:\t_{0};\cset \vdash e_{1} : \bt' & & \\
+\end{tabular}\\ \\
+Easy.
+\end{case}
+
+\begin{case}[\stitlet{Msg}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = e_{1}.\Mname(\overline{e_{1}}) & \t = \bt & \\ 
+\Gamma,\YVAR:\t_{0};\cset \vdash e_{1}:\bt & \Gamma,\YVAR:\t_{0};\cset \vdash \overline{e_{1}}:\overline{\bt} & \Fmtype(\Mname,\bt) = \overline{\bt}\rightarrow\bt' \\ 
+\Gamma,\YVAR:\t_{0};\cset \vdash \kwthis:\bt_{this} & \cset \models \{\Fmode(\bt)\msub\Fmode(\bt_{this})\} & \Fmode(\bt) \neq \ ? \\
+\end{tabular}\\ \\
+By the induction hypothesis, 
+\begin{proofcenter}
+$\Gamma\subst{\YVAR}{\SVAR};\cset\vdash e_{1}\subst{\YVAR}{\SVAR}:\t_{1}$ \\
+$\Gamma\subst{\YVAR}{\SVAR};\cset\vdash\overline{e_{1}}\subst{\YVAR}{\SVAR}:\overline{\t_{1}}$ \\
+\end{proofcenter}
+with 
+\begin{proofcenter}
+$\cset\vdash\t_{1}\tsub\bt$ \\
+$\cset\vdash\overline{\t_{1}}\tsub\overline{\bt}$. \\
+\end{proofcenter}
+Lemma \ref{pf:this-fixed} gives $\Gamma\subst{\YVAR}{\SVAR};\cset \vdash \kwthis:\bt_{this}$. Now, $\Fmtype(\Mname,\t_{1}) = \overline{\bt}\rightarrow\bt'$ by Lemma \ref{pf:fmtype-subtypes}, but $\cset\vdash\overline{\t_{1}}\tsub\overline{\bt}$; therefore, our method types and arguments are still satisfied.
+
+Now, by Lemma \ref{pf:fmode-subtypes}, $\Fmode(\t_{1})\msub\Fmode(\bt)$; hence, $\cset\models\{\Fmode(\t_{1})\msub\Fmode(\bt_{this})\}$ and $\Fmode(\t_{1}) \neq \ ?$. Then, by T-Msg, $\Gamma\subst{\YVAR}{\SVAR};\cset \vdash e_{1}\subst{\YVAR}{\SVAR}.\Mname(\overline{e_{1}}\subst{\YVAR}{\SVAR}) : \t_{1}$ with $\cset\vdash\t_{1}\tsub\bt$.
+
+\end{case}
+
+\anote{Use mode substitution preseves typing on mtype.} 
+
+\begin{case}[\stitlet{Field}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = e_{1}.\Fname_{i} & \t = \bt &   \\
+\Gamma,\YVAR:\t_{0};\cset \vdash e_{1}:\bt & \Ffields(\bt) = \overline{\bt} \ \overline{\Fname} & \\
+\Gamma,\YVAR:\t_{0};\cset \vdash \kwthis:\bt_{this} & \cset \models \{\Fmode(\bt)\msub\Fmode(\bt_{this})\} & \Fmode(\bt) \neq \ ? \\
+\end{tabular}\\ \\
+By the induction hypothesis, 
+\begin{proofcenter}
+$\Gamma\subst{\YVAR}{\SVAR};\cset\vdash e_{1}\subst{\YVAR}{\SVAR}:\t_{1}$ \\
+\end{proofcenter}
+with 
+\begin{proofcenter}
+$\cset\vdash\t_{1}\tsub\bt$.\\
+\end{proofcenter}
+Lemma \ref{pf:this-fixed} gives $\Gamma\subst{\YVAR}{\SVAR};\cset\vdash\kwthis:\bt_{this}$. Lemma \ref{pf:ffields-subtypes} gives $\Ffields(\t_{1}) = \overline{\t_{1}} \ \overline{\Fname}$ with $\overline{\t_{1}}\tsub\overline{\bt}$.
+
+Now, by Lemma \ref{pf:fmode-subtypes}, $\Fmode(\t_{1})\msub\Fmode(\bt)$; hence, $\cset\models\{\Fmode(\t_{1})\msub\Fmode(\bt_{this})\}$ and $\Fmode(\t_{1}) \neq \ ?$. Then, by T-Field, $\Gamma\subst{\YVAR}{\SVAR};\cset\vdash e_{1}\subst{\YVAR}{\SVAR}.\Fname_{i} :\t_{1_{i}}$ with $\t_{1_{i}}\tsub\bt_{i}$.
+\end{case}
+
+\anote{Use mode substitution preseves typing on fields.}
+
+\begin{case}[\stitlet{Snapshot}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \snapshot{e_{1}}{\basemode_{1}}{\basemode_{2}} & \t = \texist{\econs}. \Cname\lb\mtvar,\listi\rb & \\
+\Gamma,\YVAR:\t_{0};\cset \vdash e_{1} : \Cname\lb?,\listi\rb & \econs = \basemode_1 \msub \mtvar \msub \basemode_2 & \\
+\end{tabular}\\ \\
+By the induction hypothesis, 
+\begin{proofcenter}
+$\Gamma\subst{\YVAR}{\SVAR} \vdash e_{1}\subst{\YVAR}{\SVAR}:\t_{1}'$ \\
+\end{proofcenter}
+with 
+\begin{proofcenter}
+$\t_{1}'\tsub\Cname\lb?,\listi\rb$. \\
+\end{proofcenter}
+We may now use T-Sub to get $\Gamma\subst{\YVAR}{\SVAR} \vdash e_{1}\subst{\YVAR}{\SVAR}:\Cname\lb?,\listi\rb$. Then, by T-Snapshot, $\Gamma\subst{\YVAR}{\SVAR} \vdash \snapshot{e_{1}\subst{\YVAR}{\SVAR}}{\basemode_{1}}{\basemode_{2}} : \texist{\econs}. \Cname\lb\mtvar,\listi\rb$. Letting $\t' = \texist{\econs}. \Cname\lb\mtvar,\listi\rb$ finishes the case.
+\end{case}
+
+\begin{case}[\stitlet{MCase}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \mcase{\bt}{e_{1}} & \t = \tmcase{\bt} & \\
+\Gamma,\YVAR:\t_{0};\cset \vdash e_{1_{i}}:\bt \text{ for all} \ i & \overline{\moname} = \Fmodes(\programcode) & \\
+\end{tabular}\\ \\
+By the induction hypothesis, 
+\begin{proofcenter}
+$\Gamma\subst{\YVAR}{\SVAR} \vdash e_{1_{i}}\subst{\YVAR}{\SVAR}:\t_{1}'$ \\
+\end{proofcenter}
+with 
+\begin{proofcenter}
+$\cset\vdash\t_{1}\tsub\bt$. \\
+\end{proofcenter}
+By the inversion of the subtype relation, $\t_{1} = \bt'$ with $\cset\vdash\bt'\tsub\bt$. Then, by T-Mcase, $\Gamma\subst{\YVAR}{\SVAR} \vdash \mcase{\bt'}{e_{1}\subst{\YVAR}{\SVAR}} : \tmcase{\bt'}$ with $\cset\vdash\tmcase{\bt'}\tsub\tmcase{\bt}$ by S-MCase. 
+
+\anote{Check subtype relation}
+
+\end{case}
+
+\begin{case}[\stitlet{ElimCase}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \mcasetag{e_{1}}{\basemode} & \t = \bt & \\
+\Gamma,\YVAR:\t_{0};\cset \vdash e_{1} : \tmcase{\bt} & \basemode \in \fundef{modes}(\programcode) \textrm{ or } \basemode \textrm{ appears in } \cset &  \\
+\end{tabular}\\ \\
+By the induction hypothesis, 
+\begin{proofcenter}
+$\Gamma\subst{\YVAR}{\SVAR}\cset\vdash e_{1}\subst{\YVAR}{\SVAR} : \t_{1}$ \\
+\end{proofcenter}
+with 
+\begin{proofcenter}
+$\cset\vdash\t_{1}\tsub\tmcase{\bt}$. 
+\end{proofcenter}
+By the inversion of the subtype relation, $\t_{1} = \tmcase{\bt'}$ with $\cset\vdash\bt'\tsub\bt$. Then, by T-ElimCase, $\Gamma\subst{\YVAR}{\SVAR};\cset\vdash \mcasetag{e_{1}\subst{\YVAR}{\SVAR}}{\basemode'}:\bt$, with $\cset\vdash\bt'\tsub\bt$. 
+
+\anote{Check subtype relation}
+
+\end{case}
+
+\begin{case}[\stitlet{Mode}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \moname & \t = \modevt & \\
+\end{tabular}\\ \\
+Trivial.
+\end{case}
+
+\begin{case}[\stitlet{Sub}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = e_{1} & \t = \t_{1}' & \\
+\Gamma,\YVAR:\t_{0};\cset \vdash e_{1}:\t_{1} & \cset\vdash \t_{1}\tsub\t_{1}' & \\
+\end{tabular}\\ \\
+By the induction hypothesis, 
+\begin{proofcenter}
+$\Gamma\subst{\YVAR}{\SVAR};\cset\vdash e_{1}\subst{\YVAR}{\SVAR}:\t_{2}$ \\
+\end{proofcenter}
+with 
+\begin{proofcenter}
+$\cset\vdash\t_{2}\tsub\t_{1}$. \\
+\end{proofcenter}
+By S-Trans, we have $\cset\vdash\t_{2}\tsub\t_{1}'$. Then, by T-Sub, $\Gamma\subst{\YVAR}{\SVAR};\cset\vdash e_{1}\subst{\YVAR}{\SVAR}:\t_{1}'$. Letting $\t' = \t_{1}'$ finishes the case.
+\end{case}
+
+\end{comment}
+

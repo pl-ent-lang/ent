@@ -1,0 +1,1510 @@
+%-----------------------------------------------------------------------------
+%
+%               Template for sigplanconf LaTeX Class
+%
+% Name:         
+%
+% Purpose:      A template for sigplanconf.cls, which is a LaTeX 2e class
+%               file for SIGPLAN conference proceedings.
+%
+% Guide:        Refer to "Author's Guide to the ACM SIGPLAN Class,"
+%               sigplanconf-guide.pdf
+%
+% Author:       Anthony Canino
+%               SUNY Binghamton
+%               acanino1@binghamton.edu
+%
+% Created:      24 August 2015
+%-----------------------------------------------------------------------------
+
+
+\documentclass[onecolumn,nocopyrightspace]{sigplanconf}
+
+\usepackage{color}
+\usepackage{comment}
+\usepackage{quoting}
+\usepackage{ragged2e}
+\usepackage{changepage}
+
+% The following \documentclass options may be useful:
+
+% preprint      Remove this option only once the paper is in final form.
+% 10pt          To set in 10-point type instead of 9-point.
+% 11pt          To set in 11-point type instead of 9-point.
+% authoryear    To obtain author/year citation style instead of numeric.
+
+\newenvironment{proofcenter}[1][2em]
+  {\begin{quoting}[leftmargin=#1,rightmargin=#1]\RaggedRight}
+    {\end{quoting}}
+
+\newcommand{\hmmax}{0}
+\newcommand{\bmmax}{0} 
+
+\definecolor{coralred}{rgb}{1.0, 0.25, 0.25}
+\definecolor{bostonuniversityred}{rgb}{0.8, 0.0, 0.0}
+\definecolor{cadmiumred}{rgb}{0.89, 0.0, 0.13}
+\definecolor{darkcandyapplered}{rgb}{0.64, 0.0, 0.0}
+\definecolor{britishracinggreen}{rgb}{0.0, 0.26, 0.15}
+\definecolor{coolblack}{rgb}{0.0, 0.18, 0.39}
+\definecolor{bittersweet}{rgb}{1.0, 0.44, 0.37}
+\definecolor{bubblegum}{rgb}{0.99, 0.76, 0.8}
+\definecolor{persianred}{rgb}{0.8, 0.2, 0.2}
+
+\def\entcolor{darkcandyapplered}
+\def\etcolor{persianred}
+
+\long\def\dnote#1{{\small \ \ $\langle\langle\langle$\ \textcolor{britishracinggreen}{\textbf{#1 -David}}\
+    $\rangle\rangle\rangle$\ \ }}
+\long\def\anote#1{{\small \ \ $\langle\langle\langle$\ \textcolor{coolblack}{\textbf{#1 -Anthony}}\
+    $\rangle\rangle\rangle$\ \ }}
+
+
+\input{types/joyce-macros-ezgi}
+
+\usepackage{listings}
+\usepackage{fixltx2e}
+\usepackage{tikz}
+\usepackage{titlesec}
+\usepackage{tabularx}
+\usepackage{balance}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{moresize}
+\usepackage[inline,shortlabels]{enumitem}
+\usepackage[font={normalsize},skip=1pt]{caption}
+
+\renewcommand{\figurename}{Fig.}
+
+
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+
+\newtheorem{theorem}{Theorem} %[section]
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{definition}{Definition}
+\theoremstyle{lessintrusive} 
+\newtheorem{question}{Research Question}
+\theoremstyle{plain}
+
+\newtheoremstyle{custom}
+{\topsep}   % Space above
+{\topsep}   % Space below
+{}          % Body font
+{0pt}       % Indent amount (empty value is the same as 0pt)
+{\itshape}  % Theorem head font
+{}          % Punctuation after theorem head
+{5pt plus 1pt minus 1pt} % Space after theorem head
+{\thmname{#1} \thmnote{#3}} % Theorem head spec
+
+\theoremstyle{custom}
+\newtheorem*{case}{Case}
+
+\newtheoremstyle{subcase-custom}
+{\topsep}   % Space above
+{\topsep}   % Space below
+{}          % Body font
+{0pt}       % Indent amount (empty value is the same as 0pt)
+{\itshape}  % Theorem head font
+{}          % Punctuation after theorem head
+{5pt plus 1pt minus 1pt} % Space after theorem head
+{\thmname{#1} \thmnote{#3}} % Theorem head spec
+
+\theoremstyle{subcase-custom}
+\newtheorem*{subcase}{Subcase}
+
+\clubpenalty = 10000
+\widowpenalty = 10000
+\displaywidowpenalty = 10000 
+
+\newenvironment{subcase-env}
+{
+  \begin{adjustwidth}{2em}{2em}
+}
+{
+  \end{adjustwidth}
+}
+
+\newcommand{\ourlang}{\textsc{Ent}}
+
+\def\econsexp#1#2#3{#1\msub#2\msub#3}
+\def\econsset#1#2#3{\{#1\msub#2,#2\msub#3,#1\msub#3\}}
+
+\begin{document}
+
+\title{Proactive and Adaptive Energy-Aware Programming with Hybrid Typing --- Proofs \vspace{-2em}}
+
+\authorinfo{}{}{}
+
+\maketitle
+
+\anote{init: Don't think it works properly right now (we have to subst over supertype expressions). }
+
+\anote{cast: Do we need to strengthen casting for preservation?). }
+
+\anote{bad cast and bad check: We get stuck during progress right now. How to handle.}
+
+\anote{Need a way to translate from $\moname : \modevt$ to the actual mode. I used emode -- poorly -- for now.}
+
+\anote{We may still have some trouble with $\classiota$, $\bt$, and $\t$.}
+
+\anote{We would get stuck with the old Snapshot2 rule (optimization). }
+
+\anote{Check adjustment to reduction context and lemma relating static and dynamic this mode.}
+
+\anote{I think $\kwthis$ needs a type rule....}
+
+\anote{Need to add weaking for subtype...}
+
+
+\section{Proofs} 
+
+% LEMMA : Weakening
+\begin{lemma}[Weakening]
+\label{pf:weakening}
+\leavevmode
+\begin{enumerate}[(\arabic*)] 
+
+\item If $\cset\judgewft\t$ and $\cset \models \{\basemode\msub\basemode\}$ then $\cset,\basemode\msub\basemode'\judgewft\t$.
+
+\item If $\cset\vdash\t\tsub\t'$ and $\cset \models \{\basemode\msub\basemode\}$ then $\Gamma;\cset,\basemode\msub\basemode'\vdash\t\tsub\t'$.
+
+\item If $\Gamma;\cset\vdash e:\t$, and $\cset \models \{\basemode\msub\basemode'\}$, then $\Gamma;\cset,\basemode\msub\basemode' \vdash e:\t$.
+
+\item If $\Gamma;\cset\vdash e:\t$, and $\Gamma \vdash \YVAR:\t'$, then $\Gamma,\YVAR:\t';\cset \vdash e:\t$.
+
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Each is proved by straightforward induction on the derivations of $\cset\judgewft\t$, $\cset\vdash\t\tsub\t'$, and $\Gamma;\cset\vdash e:\t$.
+\end{proof} 
+
+% LEMMA : Mode substitution preserves submoding
+\begin{lemma}[Mode Substitution Perserves Submoding]
+\label{pf:modesubstitution-preserves-submoding}
+If $\espec_{1},\econsexp{\basemode}{\mtvar}{\basemode'},\espec_{2} \vdash \econsset{\basemode_{1}}{\mtvar_{1}}{\basemode_{1}'}$, $\espec_{1} \vdash \{\basemode\msub\basemode'',\basemode''\msub\basemode'\}$, and $\mtvar_{1} \notin \espec_{1}$ if $\basemode'' = \mtvar_{1}$, then $\espec_{1},\espec_{2}\subst{\mtvar}{\basemode''} \vdash \econsset{\basemode_{1}}{\mtvar_{1}}{\basemode_{1}'}\subst{\mtvar}{\basemode''}$.
+\end{lemma} 
+
+\begin{proof}
+
+Case analysis on the derivation $\espec_{1},\econsexp{\basemode}{\mtvar}{\basemode'},\espec_{2} \vdash \econsset{\basemode_{1}}{\mtvar_{1}}{\basemode_{1}'}$.
+\begin{case} 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\basemode_{1}, \mtvar_{1}, and \ \basemode_{1}' \neq \mtvar & \econsexp{\basemode_{1}}{\mtvar_{1}}{\basemode_{1}'} \in \espec_{1},\econsexp{\basemode}{\mtvar}{\basemode'},\espec_{2} & \\
+\end{tabular}\\
+$\econsexp{\basemode_{1}}{\mtvar_{1}}{\basemode_{1}'} \in \espec_{1},\espec_{2}\subst{\mtvar}{\basemode''}$ is immediately apparent, since $\basemode'' \neq \basemode_{1},\mtvar_{1}$ and $\basemode_{1}'$. Then, by M-Sub, $\espec_{1},\espec_{2}\subst{\mtvar}{\basemode''}\vdash \econsset{\basemode_{1}}{\mtvar_{1}}{\basemode_{1}'}$.
+\end{case}
+
+\begin{case} 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\basemode_{1} = \mtvar & \mtvar_{1} and \ \basemode_{1}' \neq \mtvar & \econsexp{\basemode_{1}}{\mtvar_{1}}{\basemode_{1}'} \in \espec_{1},\econsexp{\basemode}{\mtvar}{\basemode'},\espec_{2} \\
+\end{tabular}\\ 
+$\econsexp{\basemode''}{\mtvar_{1}}{\basemode_{1}'} \in \espec_{1},\espec_{2}\subst{\mtvar}{\basemode''}$ is immediately apparent. Then, by M-Sub, $\espec_{1},\espec_{2}\subst{\mtvar}{\basemode''}\vdash \econsset{\basemode''}{\mtvar_{1}}{\basemode_{1}'}$ by M-Sub.
+\end{case}
+The remaining cases are similar.
+\end{proof}
+
+% COROLLARY : Mode substitution preserves constraints
+\begin{corollary}
+\label{pf:modesubstitution-preserves-constraints}
+If $\cset_{1},\basemode\msub\mtvar,\mtvar\msub\basemode',\cset_{2}\models\{\basemode_{1}\msub\basemode_{1}'\}$ and $\cset_{1}\models\{\basemode\msub\basemode'',\basemode''\msub\basemode'\}$, then $\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\models\{\basemode_{1}\subst{\mtvar}{\basemode''}\msub\basemode_{1}'\subst{\mtvar}{\basemode''}\}$.
+\end{corollary}
+
+\begin{proof}
+\anote{Come back to prove.}
+\end{proof}
+
+% LEMMA : Mode substitution preserves mode
+\begin{lemma}
+\label{pf:modesubstitution-preserves-mode}
+If $\Fmode(\bt) = \mode$ and $\judgewft \bt\subst{\basemode'}{\basemode}$, then $\Fmode(\bt\subst{\basemode'}{\basemode}) = \mode\subst{\basemode'}{\basemode}$.
+\end{lemma}
+
+\begin{proof}
+\anote{Come back to prove.}
+\end{proof}
+
+
+% LEMMA : Mode substitution preserves eparam
+\begin{lemma}
+\label{pf:modesubstitution-preserves-eparam}
+If $\Feparam(\espec_{1},\econsexp{\basemode}{\mtvar}{\basemode'},\espec_{2}) = \iota$, $\espec_{1} \vdash \{\basemode\msub\basemode'',\basemode''\msub\basemode'\}$, and $\mtvar_{1} \notin \espec_{1}$ if $\basemode'' = \mtvar_{1}$, then $\Feparam(\espec_{1},\subst{\mtvar}{\basemode''}\espec_{2}) = \iota\subst{\mtvar}{\basemode''}$.
+\end{lemma}
+
+\begin{proof}
+Trivial.
+\end{proof}
+
+% LEMMA : Mode substitution preserves subsets
+\begin{lemma}
+\label{pf:modesubstitution-preserves-subset}
+If $\espec\subst{\listi}{\overline{\basemode}}\subseteq\espec_{1},\econsexp{\basemode}{\mtvar}{\basemode'},\espec_{2}$, $\espec_{1} \vdash \{\basemode\msub\basemode'',\basemode''\msub\basemode'\}$, and $\mtvar_{1} \notin \espec_{1}$ if $\basemode'' = \mtvar_{1}$, then $\espec\subst{\listi}{\overline{\basemode}}\subst{\mtvar}{\basemode''}\subseteq\espec_{1},\espec_{2}\subst{\mtvar}{\basemode''}$.
+\end{lemma}
+
+\begin{proof}
+\anote{Come back to prove.}
+\end{proof} 
+
+% LEMMA : Mode substitution preserves type well-formedness
+\begin{lemma}[Mode Substitution Perserves Type Well-Formedness]
+\label{pf:modesubstitution-preserves-wellformedness}
+If $\espec_{1},\econsexp{\basemode}{\mtvar}{\basemode'},\espec_{2} \judgewft \bt$, $\espec_{1} \vdash \{\basemode\msub\basemode'',\basemode''\msub\basemode'\}$, and $\mtvar_{1} \notin \espec_{1}$ if $\basemode'' = \mtvar_{1}$, then $\espec_{1},\espec_{2}\subst{\mtvar}{\basemode''} \vdash \bt\subst{\mtvar}{\basemode''}$.
+\end{lemma}
+
+\begin{proof}
+By induction on the derivation of $\espec_{1},\basemode\msub\mtvar\msub\basemode',\espec_{2} \judgewft \bt$.
+\begin{case}[\wftitlet{Top}]
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\bt = \Nobject\lb\basemode\rb & & \\
+\end{tabular}\\ 
+Trivial.
+\end{case}
+
+\begin{case}[\wftitlet{MCase}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\bt = \tmcase{\classiota} & & \\
+\espec_{1},\econsexp{\basemode}{\mtvar}{\basemode'},\espec_{2} \judgewft \classiota & & \\
+\end{tabular}\\ 
+By the induction hypothesis, $\espec_{1},\espec_{2}\subst{\mtvar}{\basemode''} \judgewft \classiota\subst{\mtvar}{\basemode''}$. Then, by WF-MCase, $\espec_{1},\espec_{2}\subst{\mtvar}{\basemode''} \judgewft \tmcase{\classiota\subst{\mtvar}{\basemode''}}$.
+\end{case}
+
+\begin{case}[\wftitlet{Class}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\bt = \Cname\lb\overline{\basemode}\rb & & \\
+\kwclass\ \Cname\ \espec\ \dots\ \in \programcode & \Feparam(\espec) = \listi & \espec\subst{\listi}{\overline{\basemode}} \subseteq \espec_{1},\econsexp{\basemode}{\mtvar}{\basemode'},\espec_{2} \\
+\end{tabular}\\
+Trivial by Lemma \ref{pf:modesubstitution-preserves-subset}.
+\end{case} 
+
+\begin{case}[\wftitlet{ClassDyn}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\bt = \Cname\lb\dynmode,\overline{\basemode}\rb & & \\
+\kwclass\ \Cname\ \dynmode\rightarrow\econs,\espec\ \dots\ \in \programcode & \Feparam(\dynmode\rightarrow\econs,\espec) = \listi & \espec\subst{\listi}{\overline{\basemode}} \subseteq \espec_{1},\econsexp{\basemode}{\mtvar}{\basemode'},\espec_{2} \\
+\end{tabular}\\
+Trivial by Lemma \ref{pf:modesubstitution-preserves-subset}.
+\end{case} 
+
+\end{proof}
+
+% LEMMA : Mode substitution preserves cons
+\begin{lemma}
+\label{pf:modesubstitution-preserves-cons}
+If $\cset_{1},\basemode\msub\mtvar,\mtvar\msub\basemode',\cset_{2} = \Fcons(\tspec_{1},\basemode\msub\mtvar\msub\basemode',\espec_{2})$, $\cset_{1}\models\{\basemode\msub\basemode'',\basemode''\msub\basemode'\}$, and $\mtvar' \not\in \cset_{1}$ and $\mtvar' \not\in \tspec_{1}$ if $\basemode'' = \mtvar'$, then $\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''} = \Fcons(\tspec_{1},\espec_{2}\subst{\mtvar}{\basemode''})$.
+\end{lemma}
+
+\begin{proof}
+\anote{Come back to prove.}
+\end{proof}
+
+% LEMMA : Mode substituion preserves existential constraint equals
+\begin{lemma}
+\label{pf:modesubstitution-preserves-existential-constraint-equals}
+If $\cset_{1},\basemode\msub\mtvar,\mtvar\msub\basemode',\cset_{2} = \{\basemode_{1}\msub\mtvar_{1},\mtvar_{1}\msub\basemode_{2}\}\cup\cset'$ and $\mtvar_{1} \not\in \cset'$, with the constraints that $\cset_{1}\models\{\basemode\msub\basemode'',\basemode''\msub\basemode'\}$, $\mtvar' \not\in \cset_{1}$ if $\basemode'' = \mtvar'$, and $\mtvar_{1}\ \textrm{does not appear in}\ \cset_{1},\basemode\msub\mtvar,\mtvar\msub\basemode',\cset_{2}$, then $\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''} = \{\basemode_{1}\subst{\mtvar}{\basemode''}\msub\mtvar_{1},\mtvar_{1}\msub\basemode_{2}\subst{\mtvar}{\basemode''}\}\cup\cset'\subst{\mtvar}{\basemode''}$.
+\end{lemma}
+
+\begin{proof}
+\anote{Come back to prove.}
+\end{proof}
+
+% LEMMA : Mode substitution preserves subtyping
+\begin{lemma}[Mode Substitution Perserves Subtyping]
+\label{pf:modesubstitution-preserves-subtyping}
+If $\cset_{1},\basemode\msub\mtvar,\mtvar\msub\basemode',\cset_{2}\vdash\t\tsub\t'$, $\cset_{1}\models\{\basemode\msub\basemode'',\basemode''\msub\basemode'\}$, and $\mtvar' \not\in \cset_{1}$ if $\basemode'' = \mtvar'$, then $\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash\t\subst{\mtvar}{\basemode''}\tsub\t'\subst{\mtvar}{\basemode''}$.
+\end{lemma}
+
+\begin{proof}
+Induction on the derivation of $\cset_{1},\basemode\msub\mtvar,\mtvar\msub\basemode',\cset_{2}\vdash\t\tsub\t'$.
+
+\begin{case}[\sbtitlet{Dynamic}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\t = \Cname\lb\mode,\overline{\basemode}\rb & \t' = \Cname\lb\dynmode,\overline{\basemode}\rb & \\
+\end{tabular}\\
+If $\mode = \mtvar$, then we have $\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash\Cname\lb\basemode'',\overline{\basemode}\subst{\mtvar}{\basemode''}\rb\tsub\Cname\lb\dynmode,\overline{\basemode}\subst{\mtvar}{\basemode''}\rb$. If $\mode \neq \mtvar$, then we have $\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash\Cname\lb\mode,\overline{\basemode}\subst{\mtvar}{\basemode''}\rb\tsub\Cname\lb\dynmode,\overline{\basemode}\subst{\mtvar}{\basemode''}\rb$. Both cases are exactly what is needed.
+\end{case} 
+
+\begin{case}[\sbtitlet{Mcase}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\t = \tmcase{\t_{1}} & \t' = \tmcase{\t_{1}} & \\
+\cset_{1},\basemode\msub\mtvar,\mtvar\msub\basemode',\cset_{2}\vdash\t_{1}\tsub\t_{1}' & & \\
+\end{tabular}\\ \\
+By the induction hypothesis, $\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash\t_{1}\subst{\mtvar}{\basemode''}\tsub\t_{1}'\subst{\mtvar}{\basemode''}$ Then, by S-MCase, $\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash\tmcase{\t_{1}\subst{\mtvar}{\basemode''}}\tsub\tmcase{\t_{1}'\subst{\mtvar}{\basemode''}}$.
+\end{case} 
+
+\begin{case}[\sbtitlet{Exists}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\t = \texist{\econs}.\t_{1} & \t' = \t_{1} & \\  
+\econs = \econsexp{\basemode_{1}}{\mtvar_{1}}{\basemode_{2}} & \cset_{1},\basemode\msub\mtvar,\mtvar\msub\basemode',\cset_{2} \models \{\basemode_{1}\msub\mtvar_{1},\mtvar_{1}\msub\basemode_{2}\}\cup\cset' & \mtvar_{1} \not\in \cset' \\
+\end{tabular}\\ \\ 
+Since $\mtvar_{1}$ cannot appear in $\cset_{1}\basemode\msub\mtvar,\mtvar\msub\basemode',\cset_{2}$, Lemma \ref{pf:modesubstitution-preserves-existential-constraint-equals} applies, giving us $\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''} = \{\basemode_{1}\subst{\mtvar}{\basemode''}\msub\mtvar_{1},\mtvar_{1}\msub\basemode_{2}\subst{\mtvar}{\basemode''}\}\cup\cset'\subst{\mtvar}{\basemode''}$. We may then take $\econsexp{\basemode_{1}\subst{\mtvar}{\basemode''}}{\mtvar_{1}}{\basemode_{2}\subst{\mtvar}{\basemode''}}$ as our $\econs$, and $\judgewft\t_{1}\subst{\mtvar}{\basemode''}$ by Lemma \ref{pf:modesubstitution-preserves-wellformedness}. 
+
+We may now apply S-Exist to get:
+\begin{proofcenter}
+$\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash\texist{\econsexp{\basemode_{1}\subst{\mtvar}{\basemode''}}{\mtvar_{1}}{\basemode_{2}\subst{\mtvar}{\basemode''}}}.\t_{1}\subst{\mtvar}{\basemode''}\tsub\t_{1}\subst{\mtvar}{\basemode''}$.
+\end{proofcenter}
+Which is exactly what we need.
+
+\anote{Come back to double check my treatment of substitution. I may also have to subst over $\Cname$ in the well-formed type substitution.}
+
+\end{case}
+
+\begin{case}[\sbtitlet{Class}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\t = \classiota & \t' = \bt\subst{\listi'}{\listi} & \\
+\kwclass\ \Cname\ \tspec_{1},\econsexp{\basemode}{\mtvar}{\basemode'},\espec_{2}\ \kwextends\ \bt\ \dots\ \in \programcode & \Feparam(\tspec_{1},\econsexp{\basemode}{\mtvar}{\basemode'},\espec_{2}) = \listi' & \\ 
+\cset_{1},\basemode\msub\mtvar,\mtvar\msub\basemode',\cset_{2} = \Fcons(\tspec_{1},\econsexp{\basemode}{\mtvar}{\basemode'},\espec_{2}) & & \\
+\tspec_{1},\econsexp{\basemode}{\mtvar}{\basemode'},\espec_{2}\judgewft\classiota & \tspec_{1},\econsexp{\basemode}{\mtvar}{\basemode'},\espec_{2}\judgewft\bt\subst{\listi'}{\listi} & \\
+\end{tabular}\\ \\
+By Lemma \ref{pf:modesubstitution-preserves-wellformedness},
+\begin{proofcenter}
+$\tspec_{1},\espec_{2}\subst{\mtvar}{\basemode''}\judgewft\Cname\lb\listi\rb\subst{\mtvar}{\basemode''}$  \\
+$\tspec_{1},\espec_{2}\subst{\mtvar}{\basemode''}\judgewft\bt\subst{\listi'}{\listi}\subst{\mtvar}{\basemode''}$, \\ 
+\end{proofcenter}
+which, by Lemma \ref{pf:} are,
+\begin{proofcenter}
+$\tspec_{1},\espec_{2}\subst{\mtvar}{\basemode''}\judgewft\Cname\lb\listi\subst{\mtvar}{\basemode''}\rb$ \\ 
+$\tspec_{1},\espec_{2}\subst{\mtvar}{\basemode''}\judgewft\bt\subst{\listi'\subst{\mtvar}{\basemode''}}{\listi\subst{\mtvar}{\basemode''}}$. \\
+\end{proofcenter}
+
+Lemma \ref{pf:modesubstitution-preserves-eparam} gives $\Feparam(\tspec_{1},\espec_{2}\subst{\mtvar}{\basemode''}) = \listi'\subst{\mtvar}{\basemode''}$, and Lemma \ref{pf:modesubstitution-preserves-cons} gives $\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''} = \Fcons(\tspec_{1},\espec_{2}\subst{\mtvar}{\basemode''})$. Lastly, $\kwclass\ \Cname\ \tspec_{1},\espec_{2}\subst{\mtvar}{\basemode''}\ \kwextends\ \bt\ \dots\ \in \programcode$ by Lemma \ref{pf:modesubstitution-preserves-ok}.
+
+We may now apply S-Class to get: 
+\begin{proofcenter}
+$\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash\Cname\lb\listi\subst{\mtvar}{\basemode''}\rb\tsub\bt\subst{\listi'\subst{\mtvar}{\basemode''}}{\listi\subst{\mtvar}{\basemode''}}$. 
+\end{proofcenter}
+Which is exactly what we need.
+
+\anote{Come back to double check my treatment of substitution. I may also have to subst over $\Cname$ in the well-formed type substitution.}
+
+\end{case}
+
+\end{proof}
+
+% LEMMA : a substitution on mtype of type t gives a substiution over the resultant types of mtype
+\begin{lemma}
+\label{pf:fmtype-substitutes}
+If $\Fmtype(\Mname,\bt) = \overline{\bt}\rightarrow\bt'$ and $\judgewft\bt\subst{\mtvar}{\basemode''}$, then $\Fmtype(\Mname,\bt\subst{\mtvar}{\basemode''}) = \overline{\bt\subst{\mtvar}{\basemode''}}\rightarrow\bt'\subst{\mtvar}{\basemode''}$. 
+\end{lemma} 
+
+\begin{proof}
+Come back to prove.
+\end{proof}
+
+% LEMMA : a substitution on fields of type t gives a substiution over the resultant types of fields
+\begin{lemma}
+\label{pf:ffields-substitutes}
+If $\Ffields(\bt) = \overline{\bt}\ \overline{\Fname}$ and $\judgewft\bt\subst{\mtvar}{\basemode''}$, then $\Ffields(\bt\subst{\mtvar}{\basemode''}) = \overline{\bt\subst{\mtvar}{\basemode''}}\ \overline{\Fname}$.
+\end{lemma} 
+
+\begin{proof}
+Come back to prove.
+\end{proof}
+
+
+% LEMMA : mtype of type t works on any subtype of type t.
+\begin{lemma}
+\label{pf:fmtype-subtypes}
+If $\Fmtype(\Mname,\bt) = \overline{\bt}\rightarrow\bt'$ and $\cset\vdash\t'\tsub\bt$, then $\Fmtype(\Mname,\t') = \overline{\bt}\rightarrow\bt'$. 
+\end{lemma}
+
+\begin{proof}
+By induction on the derivation of $\cset\vdash\t\tsub\bt$.
+\begin{case}[\sbtitlet{Dynamic}]
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\t = \Cname\lb\mode;\overline{\basemode}\rb & \bt = \Cname\lb ?;\overline{\basemode}\rb & \\
+\end{tabular}\\
+\anote{Come back.}
+\end{case}
+
+\begin{case}[\sbtitlet{Mcase}]
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\t = \tmcase{\t_{1}} &  & \\
+\end{tabular}\\
+Cannot occur; $\bt$ cannot be $\tmcase{\t_{1}'}$ by the subtype relation.
+\end{case}
+
+\begin{case}[\sbtitlet{Exists}]
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\t = \texist{\econs}.\t_{1} & \bt = \t_{1} & \\
+\end{tabular}\\
+\anote{Come back.}
+\end{case}
+
+\begin{case}[\sbtitlet{Class}]
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\t = \classiota & \bt = \bt_{1}\subst{\iota'}{\iota} & \\
+\kwclass\ \Cname\ \tspec \ \kwextends\ \bt_{1} \dots \in \programcode & \Feparam(\tspec) = \listi' & \cset = \fundef{cons}(\tspec) \\
+\end{tabular}\\
+\anote{Come back.}
+\end{case}
+
+\end{proof}
+
+% LEMMA : Fields of type t' are subtypes of fields of type t if t' is a subtype of t. 
+\begin{lemma}
+\label{pf:ffields-subtypes}
+If $\Ffields(\bt) = \overline{\bt} \ \overline{\Fname}$ and $\cset\vdash\t'\tsub\bt$, then $\Ffields(\t') = \overline{\t'} \ \overline{\Fname}$ with $\cset\vdash\overline{\t'}\tsub\overline{\bt}$.
+\end{lemma}
+
+\begin{proof}
+\anote{Come back to prove.}
+\end{proof} 
+
+% LEMMA : Mode of type t' is a submode of type t if t' is a subtype of t.
+\begin{lemma}
+\label{pf:fmode-subtypes}
+If $\Fmode(\bt) = \mode$ and $\cset\vdash\t'\tsub\bt$, then $\Fmode(\t') = \mode'$ with $\mode'\msub\mode$.
+\end{lemma}
+
+\begin{proof}
+\anote{Come back to prove.}
+\end{proof} 
+
+% LEMMA : Type of this remains fixed if a term is substituted
+\begin{lemma}
+\label{pf:this-fixed}
+If $\Gamma,\YVAR:\t;\cset \vdash \kwthis:\bt$ and $\Gamma;\cset \vdash \SVAR:\t'$ with $\cset \vdash \t' \tsub \t$, then $\Gamma\subst{\YVAR}{\SVAR};\cset \vdash \kwthis:\bt$.
+\end{lemma}
+
+\begin{proof}
+\anote{Is this true?}
+\end{proof}
+
+% LEMMA : Mode substitution preserves typing
+\begin{lemma}[Mode Substitution Perserves Typing]
+\label{pf:modesubstitution-preserves-typing}
+If $\Gamma;\cset_{1},\basemode\msub\mtvar,\mtvar\msub\basemode',\cset_{2};\vdash e:\t$, $\cset_{1}\models\{\basemode\msub\basemode'',\basemode''\msub\basemode'\}$, and $\mtvar_{1} \not\in \cset_{1}$ if $\basemode'' = \mtvar_{1}$, then $\Gamma\subst{\mtvar}{\basemode''};\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash e\subst{\mtvar}{\basemode''}:\t'$, with $\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash\t'\tsub\t\subst{\mtvar}{\basemode''}$.
+\end{lemma}
+
+\begin{proof}
+Induction on the derivation of $\Gamma;\cset_{1},\basemode\msub\mtvar,\mtvar\msub\basemode',\cset_{2}\vdash e:\t$.
+
+\begin{case}[\stitlet{Var}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \VAR & \t = \Gamma(\VAR) & \\
+\end{tabular}\\
+\anote{Our substitution does not effect types directly; it acts on thier parameteres. I think I need a subcase analysis here.}
+\end{case}
+
+\begin{case}[\stitlet{New}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \new{\classiota} & \t = \classiota \\
+\listi = \dynmode,\listi' \textrm{ iff } \kwclass\ \Cname\ \tspec_{1},\econsexp{\basemode}{\mtvar}{\basemode'},\espec_{2} \dots \in \programcode \textrm{ and } \fundef{ethis}(\tspec') = \dynmode & & \\
+\listi \neq \dynmode, \listi'  \textrm{ iff } \kwclass\ \Cname\ \tspec_{1},\econsexp{\basemode}{\mtvar}{\basemode'},\espec_{2} \dots \in \programcode \textrm{ and } \fundef{ethis}(\tspec') \neq \dynmode & & \\
+\cset_{1},\basemode\msub\mtvar,\mtvar\msub\basemode',\cset_{2} \models \Fcons(\tspec_{1},\econsexp{\basemode}{\mtvar}{\basemode'},\espec_{2}) & & \\
+\end{tabular}\\
+By Lemma \ref{pf:modesubstitution-preserves-ok}, we have $\kwclass\ \Cname\ \tspec_{1},\espec_{2}\subst{\mtvar}{\basemode''} \dots \in \programcode$ with $\tspec_{1},\espec_{2}\subst{\mtvar}{\basemode''}\judgewft\classiota\subst{\mtvar}{\basemode''}$ by Lemma \ref{pf:modesubstitution-preserves-wellformedness}. By Lemma \ref{pf:modesubstitution-preserves-cons}, $\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''} = \Fcons(\tspec_{1},\espec_{2}\subst{\mtvar}{\basemode''})$. 
+
+Then, by T-New, $\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash\new{\classiota\subst{\mtvar}{\basemode''}}:\classiota\subst{\mtvar}{\basemode''}$. Letting $\t'$ be $\classiota\subst{\mtvar}{\basemode''}$ finishes the case.
+
+\anote{Double check}
+
+\end{case}
+
+\begin{case}[\stitlet{Cast}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = (\bt)e_{1} & \t = \bt & \\
+\Gamma;\cset_{1},\basemode\msub\mtvar,\mtvar\msub\basemode',\cset_{2} \vdash e_{1} : \bt' & & \\
+\end{tabular}\\ \\
+By the induction hypothesis, 
+\begin{proofcenter}
+$\Gamma\subst{\mtvar}{\basemode''};\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash e_{1}\subst{\mtvar}{\basemode''} : \t_{1}'$ \\
+\end{proofcenter}
+with 
+\begin{proofcenter}
+$\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash\t_{1}'\tsub\bt'\subst{\mtvar}{\basemode''}.$
+\end{proofcenter}
+T-Sub gives us $\Gamma\subst{\mtvar}{\basemode''};\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash e_{1}\subst{\mtvar}{\basemode''}:\bt'\subst{\mtvar}{\basemode''}$. Then, by T-Cast, $\Gamma\subst{\mtvar}{\basemode''};\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash(\bt\subst{\mtvar}{\basemode''})e_{1}\subst{\mtvar}{\basemode''}:\bt\subst{\mtvar}{\basemode''}$. Letting $\t'$ be $\bt\subst{\mtvar}{\basemode''}$ finishes the case.
+
+\anote{Double check}
+
+\end{case} 
+
+\begin{case}[\stitlet{Msg}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = e_{1}.\Mname(\overline{e_{1}}) & \t = \bt' & \\ 
+\Gamma;\cset_{1},\basemode\msub\mtvar\msub\basemode',\cset_{2} \vdash e_{1}:\bt & \Gamma;\cset_{1},\basemode\msub\mtvar\msub\basemode',\cset_{2} \vdash \overline{e_{1}}:\overline{\bt} & \\
+\Fmtype(\Mname,\bt) = \overline{\bt}\rightarrow\bt' & \Gamma;\cset_{1},\basemode\msub\mtvar\msub\basemode',\cset_{2} \vdash \kwthis:\bt_{this} & \\
+\cset_{1},\basemode\msub\mtvar\msub\basemode',\cset_{2} \models \{\Fmode(\bt)\msub\Fmode(\bt_{this})\} & \Fmode(\bt) \neq \ ? & \\
+\end{tabular}\\ \\
+By the induction hypothesis, 
+\begin{proofcenter}
+$\Gamma\subst{\mtvar}{\basemode''};\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash e_{1}\subst{\mtvar}{\basemode''}:\t_{1}'$ \\
+$\Gamma\subst{\mtvar}{\basemode''};\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash\overline{e_{1}\subst{\mtvar}{\basemode''}}:\overline{\t_{1}'}$ \\
+$\Gamma\subst{\mtvar}{\basemode''};\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash\kwthis\subst{\mtvar}{\basemode''}:\t_{this}'$ \\
+\end{proofcenter}
+with 
+\begin{proofcenter}
+$\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash\t_{1}'\tsub\bt$ \\
+$\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash\overline{\t_{1}'}\tsub\overline{\bt\subst{\mtvar}{\basemode''}}$ \\
+$\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash\t_{this}'\tsub\bt_{this}\subst{\mtvar}{\basemode''}$.\\
+\end{proofcenter}
+Now, by Lemma \ref{pf:fmtype-substitutes} and Lemma \ref{pf:fmtype-subtypes} we have $\Fmtype(\Mname,\t_{1}') = \overline{\bt\subst{\mtvar}{\basemode''}}\rightarrow\bt'\subst{\mtvar}{\basemode''}$. By T-Sub we have $\Gamma\subst{\mtvar}{\basemode''};\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash\overline{e_{1}\subst{\mtvar}{\basemode''}}:\overline{\bt\subst{\mtvar}{\basemode''}}$; hence, $\Fmtype$ is taken care of.
+
+We must now show that $\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\models\{\Fmode(\bt\subst{\mtvar}{\basemode''})\msub\Fmode(\bt\subst{\mtvar}{\basemode''})\}$. Corollary \ref{pf:modesubstitution-preserves-constraints} gives us $\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\models\{\Fmode(\bt)\subst{\mtvar}{\basemode''}\msub\Fmode(\bt_{this})\subst{\mtvar}{\basemode''}\}$, but $\Fmode(\bt)\subst{\mtvar}{\basemode''}\msub\Fmode(\bt_{this})\subst{\mtvar}{\basemode''} = \Fmode(\bt\subst{\mtvar}{\basemode''})\msub\Fmode(\bt_{this}\subst{\mtvar}{\basemode''})$ by Lemma \ref{pf:modesubstitution-preserves-mode}; hence, our constraint is handled.
+
+Thus we may now apply T-Msg to get $\Gamma\subst{\mtvar}{\basemode''};\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash e_{1}\subst{\mtvar}{\basemode''}.\Mname(\overline{e_{1}\subst{\mtvar}{\basemode''}}):\bt'\subst{\mtvar}{\basemode''}$. Letting $\t'$ be $\bt'\subst{\mtvar}{\basemode''}$ finishes the case, since $e_{1}\subst{\mtvar}{\basemode''}.\Mname(\overline{e_{1}\subst{\mtvar}{\basemode''}}):\bt'\subst{\mtvar}{\basemode''}$ is $e\subst{\mtvar}{\basemode''}:\t'$.
+
+\end{case}
+
+\begin{case}[\stitlet{Field}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = e_{1}.\Fname_{i} & \t = \bt_{i} &   \\
+\Gamma;\cset_{1},\basemode\msub\mtvar\msub\basemode',\cset_{2} \vdash e_{1}:\bt & \Ffields(\bt) = \overline{\bt} \ \overline{\Fname} & \\
+\Gamma;\cset_{1},\basemode\msub\mtvar\msub\basemode',\cset_{2} \vdash \kwthis:\bt_{this} & \cset_{1},\basemode\msub\mtvar\msub\basemode',\cset_{2} \models \{\Fmode(\bt)\msub\Fmode(\bt_{this})\} & \Fmode(\bt) \neq \ ? \\
+\end{tabular}\\ \\
+By the induction hypothesis,
+\begin{proofcenter}
+$\Gamma\subst{\mtvar}{\basemode''};\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash e_{1}\subst{\mtvar}{\basemode}:\t_{1}'$ \\
+$\Gamma\subst{\mtvar}{\basemode''};\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash \kwthis:\t_{this}'$\\
+\end{proofcenter}
+with
+\begin{proofcenter}
+$\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash\t_{1}'\tsub\bt\subst{\mtvar}{\basemode''}$ \\
+$\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash\t_{this}'\tsub\bt_{this}\subst{\mtvar}{\basemode''}$.\\
+\end{proofcenter}
+
+Now by Lemma \ref{pf:ffields-substitutes} and Lemma \ref{pf:ffields-subtypes} we have $\Ffields(\t_{1}') = \overline{\t_{1}'}\ \overline{\Fname}$ with $\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash\overline{\t_{1}'}\tsub\overline{\bt\subst{\mtvar}{\basemode''}}$.
+
+\end{case}
+
+\anote{T-MSG and T-Fields are wrong. The "this" subtype issue still remains.}
+
+\begin{case}[\stitlet{Snapshot}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \snapshot{e_{1}}{\basemode_{1}}{\basemode_{2}} & \t = \texist{\econs}. \Cname\lb\mtvar_{1},\listi\rb & \\
+\Gamma;\cset_{1},\basemode\msub\mtvar\msub\basemode',\cset_{2} \vdash e_{1} : \Cname\lb?,\listi\rb & \econs = \basemode_{1} \msub \mtvar_{1} \msub \basemode_{2} & \\
+\end{tabular}\\ \\
+By the induction hypothesis,
+\begin{proofcenter}
+$\Gamma\subst{\mtvar}{\basemode''};\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''} \vdash e_{1}\subst{\mtvar}{\basemode''} : \t_{1}'$ \\
+\end{proofcenter}
+with
+\begin{proofcenter}
+$\Gamma\subst{\mtvar}{\basemode''};\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''} \vdash \t_{1}'\tsub\Cname\lb?,\listi\rb\subst{\mtvar}{\basemode''}$. \\
+\end{proofcenter}
+Since $\Cname\lb?,\listi\rb\subst{\mtvar}{\basemode''}$ is $\Cname\lb?,\listi\subst{\mtvar}{\basemode''}\rb$, by T-Sub we have $\Gamma\subst{\mtvar}{\basemode''};\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''} \vdash e_{1}:\Cname\lb?,\listi\subst{\mtvar}{\basemode''}\rb$. Now, consider $\econs = \econsexp{\basemode_{1}}{\mtvar_{1}}{\basemode_{2}}$: $\mtvar_{1}$ must be unique; hence, $(\econsexp{\basemode_{1}}{\mtvar_{1}}{\basemode_{2}}\subst{\mtvar}{\basemode''})$ is $\econsexp{\basemode_{1}\subst{\mtvar}{\basemode''}}{\mtvar_{1}}{\basemode_{2}\subst{\mtvar}{\basemode''}}$ by Lemma \ref{pf:modesubstitution-preserves-submoding}.
+
+Thus we may now apply T-Snapshot to get 
+\begin{proofcenter}
+$\Gamma\subst{\mtvar}{\basemode''};\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash \snapshot{e_{1}\subst{\mtvar}{\basemode''}}{\basemode_{1}\subst{\mtvar}{\basemode''}}{\basemode_{2}\subst{\mtvar}{\basemode''}}:\texist{\econs\subst{\mtvar}{\basemode''}}.\Cname\lb\mtvar_{1},\listi\subst{\mtvar}{\basemode''}\rb$ \\
+\end{proofcenter}
+Letting $\t'$ be $\texist{\econs\subst{\mtvar}{\basemode''}}.\Cname\lb\mtvar_{1},\listi\subst{\mtvar}{\basemode''}\rb$ finishes the case.
+
+\end{case}
+
+\begin{case}[\stitlet{MCase}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \mcase{\bt}{e_{1}} & \t = \tmcase{\bt} & \\
+\Gamma;\cset_{1},\basemode\msub\mtvar\msub\basemode',\cset_{2} \vdash e_{1_{i}}:\bt\ \text{for all}\ i & \overline{\moname} = \Fmodes(\programcode) & \\
+\end{tabular}\\ \\
+By the induction hypothesis,
+\begin{proofcenter}
+$\Gamma\subst{\mtvar}{\basemode''};\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''} \vdash e_{1_{i}}\subst{\mtvar}{\basemode''}:\t_{1}'\ \text{for all}\ i$ \\
+\end{proofcenter}
+with
+\begin{proofcenter}
+$\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''} \vdash \t_{1}'\tsub\bt\subst{\mtvar}{\basemode''}$.
+\end{proofcenter}
+Then, by T-MCase, $\Gamma\subst{\mtvar}{\basemode''};\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''} \vdash \mcase{\t_{1}'}{e_{1}\subst{\mtvar}{\basemode''}}:\tmcase{\t_{1}'}$ with $\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''} \vdash \tmcase{\t_{1}'}\tsub\tmcase{\bt\subst{\mtvar}{\basemode''}}$.
+
+\end{case}
+
+\begin{case}[\stitlet{ElimCase}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \mcasetag{e_{1}}{\basemode_{1}} & \t = \bt & \\
+\Gamma;\cset_{1},\basemode\msub\mtvar\msub\basemode',\cset_{2} \vdash e_{1} : \tmcase{\bt} & \basemode_{1} \in \Fmodes(\programcode)\ \textrm{or}\ \basemode_{1}\ \textrm{appears in}\ \cset_{1},\basemode\msub\mtvar\msub\basemode',\cset_{2} &  \\
+\end{tabular}\\ \\
+By the induction hypothesis,
+\begin{proofcenter}
+$\Gamma\subst{\mtvar}{\basemode''};\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''} \vdash e_{1}\subst{\mtvar}{\basemode''} : \t_{1}'$ \\
+\end{proofcenter}
+with
+\begin{proofcenter}
+$\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}\vdash \t_{1}'\tsub\tmcase{\bt}\subst{\mtvar}{\basemode''}$. \\
+\end{proofcenter}
+$\tmcase{\bt}\subst{\mtvar}{\basemode''}$ is $\tmcase{\bt\subst{\mtvar}{\basemode''}}$; hence, by T-Sub we have $\Gamma\subst{\mtvar}{\basemode''};\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''} \vdash e_{1}\subst{\mtvar}{\basemode''}:\tmcase{\bt\subst{\mtvar}{\basemode''}}$. Both cases of the remaining constraint are trivial: If $\basemode_{1}\in\Fmodes(\programcode)$, then $\basemode_{1}\subst{\mtvar}{\basemode''}\in\Fmodes(\programcode)$, and if $\basemode_{1} \in \cset_{1},\basemode\msub\mtvar\msub\basemode',\cset_{2}$, then $\basemode_{1}\subst{\mtvar}{\basemode''} \in \cset_{1},\cset_{2}\subst{\mtvar}{\basemode''}$.
+
+Then, by T-ElimCase, $\Gamma\subst{\mtvar}{\basemode''};\cset_{1},\cset_{2}\vdash\mcasetag{e_{1}\subst{\mtvar}{\basemode''}}{\basemode_{1}\subst{\mtvar}{\basemode''}}:\bt\subst{\mtvar}{\basemode''}$ Letting $\t'$ be $\bt\subst{\mtvar}{\basemode''}$ finishes the case.
+
+\end{case}
+
+\begin{case}[\stitlet{Mode}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \moname & \t = \modevt & \\
+\end{tabular}\\
+Trivial.
+\end{case}
+
+\begin{case}[\stitlet{Sub}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = e_{1} & \t = \t_{1}' & \\
+\Gamma;\cset_{1},\basemode\msub\mtvar\msub\basemode',\cset_{2} \vdash e_{1}:\t_{1} & \cset_{1},\basemode\msub\mtvar\msub\basemode',\cset_{2} \vdash \t_{1}\tsub\t_{1}' & \\
+\end{tabular}\\ \\
+By the induction hypothesis,
+\begin{proofcenter}
+$\Gamma\subst{\mtvar}{\basemode''};\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''} \vdash e_{1}\subst{\mtvar}{\basemode''}:\t_{1}''$ \\
+\end{proofcenter}
+with
+\begin{proofcenter}
+$\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''} \vdash \t_{1}''\tsub\t_{1}\subst{\mtvar}{\basemode''}$. \\
+\end{proofcenter}
+Lemma \ref{pf:modesubstitution-preserves-subtyping} gives $\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''} \vdash \t_{1}\subst{\mtvar}{\basemode''}\tsub\t_{1}'\subst{\mtvar}{\basemode''}$; therefore, by S-Trans, $\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''} \vdash \t_{1}''\tsub\t_{1}'\subst{\mtvar}{\basemode''}$. Then, by T-Sub we have $\Gamma\subst{\mtvar}{\basemode''};\cset_{1},\cset_{2}\subst{\mtvar}{\basemode''} \vdash e_{1}\subst{\mtvar}{\basemode''}:\t_{1}'\subst{\mtvar}{\basemode''}$. Letting $\t'$ be $\t_{1}'\subst{\mtvar}{\basemode''}$ finishes the case.
+
+\end{case} 
+
+\anote{Finish the proof.}
+
+\end{proof} 
+
+% LEMMA : Term substitution preserves typing
+\begin{lemma}[Term Substitution Perserves Typing]
+\label{pf:termsubstitution-preserves-typing}
+If $\Gamma,\YVAR:\t_{0};\cset \vdash e : \t$ and $\Gamma;\cset \vdash \SVAR:\t_{0}'$ with $\cset \vdash \t_{0}' \tsub \t_{0}$, then $\Gamma\subst{\YVAR}{\SVAR};\cset \vdash e : \t'$ with $\cset \vdash \t' \tsub \t$.
+\end{lemma} 
+
+\begin{proof}
+By induction on the derivation of $\Gamma,\YVAR:\t_{0};\cset \vdash e : \t$.
+
+\begin{case}[\stitlet{Var}] 
+\begin{tabular}[t]{>{$}c<{$} >{$}c<{$}}
+e = \VAR & \t = \Gamma(\VAR) \\
+\end{tabular}\\
+If $\VAR \neq \YVAR$ then we have $\Gamma\subst{\YVAR}{\SVAR};\cset \vdash \VAR : \Gamma(\VAR)$, with $\Gamma(\VAR) \tsub \Gamma(\VAR)$ which is exactly what we need, since $\VAR : \Gamma(\VAR)$ is $e\subst{\YVAR}{\SVAR} : \t$. If $\VAR = \YVAR$, then we have $\Gamma\subst{\YVAR}{\SVAR};\cset \vdash \SVAR : \Gamma(\SVAR)$ with $\Gamma(\SVAR) \tsub \Gamma(\SVAR)$ which is exactly what we need, since $\SVAR : \Gamma(\SVAR)$ is $e\subst{\YVAR}{\SVAR} : \t$.
+\end{case}
+\anote{Come back to check $\Gamma(\VAR)$ definition}.
+
+\begin{case}[\stitlet{New}] 
+\begin{tabular}[t]{>{$}c<{$} >{$}c<{$}}
+e = \new{\classiota} & \t = \classiota \\
+\end{tabular}\\
+Trivial.
+\end{case}
+
+\begin{case}[\stitlet{Cast}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = (\bt)e_{1} & \t = \bt & \\
+\Gamma,\YVAR:\t_{0};\cset \vdash e_{1} : \bt' & & \\
+\end{tabular}\\ \\
+By the induction hypothesis, 
+\begin{proofcenter}
+$\Gamma\subst{\YVAR}{\SVAR};\cset \vdash e_{1}\subst{\YVAR}{\SVAR}:\t_{1}$
+\end{proofcenter}
+with 
+\begin{proofcenter}
+$\cset\vdash\t_{1}\tsub\bt'$.
+\end{proofcenter}
+T-Sub gives $\Gamma\subst{\YVAR}{\SVAR};\cset \vdash e_{1}\subst{\YVAR}{\SVAR}:\bt'$. Then, by T-Cast, $\Gamma\subst{\YVAR}{\SVAR};\cset \vdash (\bt)e_{1}\subst{\YVAR}{\SVAR}:\bt$. Now, letting $\t'$ be $\bt$.
+\end{case}
+
+\begin{case}[\stitlet{Msg}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = e_{1}.\Mname(\overline{e_{1}}) & \t = \bt & \\ 
+\Gamma,\YVAR:\t_{0};\cset \vdash e_{1}:\bt & \Gamma,\YVAR:\t_{0};\cset \vdash \overline{e_{1}}:\overline{\bt} & \Fmtype(\Mname,\bt) = \overline{\bt}\rightarrow\bt' \\ 
+\Gamma,\YVAR:\t_{0};\cset \vdash \kwthis:\bt_{this} & \cset \models \{\Fmode(\bt)\msub\Fmode(\bt_{this})\} & \Fmode(\bt) \neq \ ? \\
+\end{tabular}\\ \\
+By the induction hypothesis, 
+\begin{proofcenter}
+$\Gamma\subst{\YVAR}{\SVAR};\cset\vdash e_{1}\subst{\YVAR}{\SVAR}:\t_{1}$ \\
+$\Gamma\subst{\YVAR}{\SVAR};\cset\vdash\overline{e_{1}}\subst{\YVAR}{\SVAR}:\overline{\t_{1}}$ \\
+\end{proofcenter}
+with 
+\begin{proofcenter}
+$\cset\vdash\t_{1}\tsub\bt$ \\
+$\cset\vdash\overline{\t_{1}}\tsub\overline{\bt}$. \\
+\end{proofcenter}
+Lemma \ref{pf:this-fixed} gives $\Gamma\subst{\YVAR}{\SVAR};\cset \vdash \kwthis:\bt_{this}$. Now, $\Fmtype(\Mname,\t_{1}) = \overline{\bt}\rightarrow\bt'$ by Lemma \ref{pf:fmtype-subtypes}, but $\cset\vdash\overline{\t_{1}}\tsub\overline{\bt}$; therefore, our method types and arguments are still satisfied.
+
+Now, by Lemma \ref{pf:fmode-subtypes}, $\Fmode(\t_{1})\msub\Fmode(\bt)$; hence, $\cset\models\{\Fmode(\t_{1})\msub\Fmode(\bt_{this})\}$ and $\Fmode(\t_{1}) \neq \ ?$. Then, by T-Msg, $\Gamma\subst{\YVAR}{\SVAR};\cset \vdash e_{1}\subst{\YVAR}{\SVAR}.\Mname(\overline{e_{1}}\subst{\YVAR}{\SVAR}) : \t_{1}$ with $\cset\vdash\t_{1}\tsub\bt$.
+
+\end{case}
+
+\anote{Use mode substitution preseves typing on mtype.} 
+
+\begin{case}[\stitlet{Field}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = e_{1}.\Fname_{i} & \t = \bt &   \\
+\Gamma,\YVAR:\t_{0};\cset \vdash e_{1}:\bt & \Ffields(\bt) = \overline{\bt} \ \overline{\Fname} & \\
+\Gamma,\YVAR:\t_{0};\cset \vdash \kwthis:\bt_{this} & \cset \models \{\Fmode(\bt)\msub\Fmode(\bt_{this})\} & \Fmode(\bt) \neq \ ? \\
+\end{tabular}\\ \\
+By the induction hypothesis, 
+\begin{proofcenter}
+$\Gamma\subst{\YVAR}{\SVAR};\cset\vdash e_{1}\subst{\YVAR}{\SVAR}:\t_{1}$ \\
+\end{proofcenter}
+with 
+\begin{proofcenter}
+$\cset\vdash\t_{1}\tsub\bt$.\\
+\end{proofcenter}
+Lemma \ref{pf:this-fixed} gives $\Gamma\subst{\YVAR}{\SVAR};\cset\vdash\kwthis:\bt_{this}$. Lemma \ref{pf:ffields-subtypes} gives $\Ffields(\t_{1}) = \overline{\t_{1}} \ \overline{\Fname}$ with $\overline{\t_{1}}\tsub\overline{\bt}$.
+
+Now, by Lemma \ref{pf:fmode-subtypes}, $\Fmode(\t_{1})\msub\Fmode(\bt)$; hence, $\cset\models\{\Fmode(\t_{1})\msub\Fmode(\bt_{this})\}$ and $\Fmode(\t_{1}) \neq \ ?$. Then, by T-Field, $\Gamma\subst{\YVAR}{\SVAR};\cset\vdash e_{1}\subst{\YVAR}{\SVAR}.\Fname_{i} :\t_{1_{i}}$ with $\t_{1_{i}}\tsub\bt_{i}$.
+\end{case}
+
+\anote{Use mode substitution preseves typing on fields.}
+
+\begin{case}[\stitlet{Snapshot}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \snapshot{e_{1}}{\basemode_{1}}{\basemode_{2}} & \t = \texist{\econs}. \Cname\lb\mtvar,\listi\rb & \\
+\Gamma,\YVAR:\t_{0};\cset \vdash e_{1} : \Cname\lb?,\listi\rb & \econs = \basemode_1 \msub \mtvar \msub \basemode_2 & \\
+\end{tabular}\\ \\
+By the induction hypothesis, 
+\begin{proofcenter}
+$\Gamma\subst{\YVAR}{\SVAR} \vdash e_{1}\subst{\YVAR}{\SVAR}:\t_{1}'$ \\
+\end{proofcenter}
+with 
+\begin{proofcenter}
+$\t_{1}'\tsub\Cname\lb?,\listi\rb$. \\
+\end{proofcenter}
+We may now use T-Sub to get $\Gamma\subst{\YVAR}{\SVAR} \vdash e_{1}\subst{\YVAR}{\SVAR}:\Cname\lb?,\listi\rb$. Then, by T-Snapshot, $\Gamma\subst{\YVAR}{\SVAR} \vdash \snapshot{e_{1}\subst{\YVAR}{\SVAR}}{\basemode_{1}}{\basemode_{2}} : \texist{\econs}. \Cname\lb\mtvar,\listi\rb$. Letting $\t' = \texist{\econs}. \Cname\lb\mtvar,\listi\rb$ finishes the case.
+\end{case}
+
+\begin{case}[\stitlet{MCase}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \mcase{\bt}{e_{1}} & \t = \tmcase{\bt} & \\
+\Gamma,\YVAR:\t_{0};\cset \vdash e_{1_{i}}:\bt \text{ for all} \ i & \overline{\moname} = \Fmodes(\programcode) & \\
+\end{tabular}\\ \\
+By the induction hypothesis, 
+\begin{proofcenter}
+$\Gamma\subst{\YVAR}{\SVAR} \vdash e_{1_{i}}\subst{\YVAR}{\SVAR}:\t_{1}'$ \\
+\end{proofcenter}
+with 
+\begin{proofcenter}
+$\cset\vdash\t_{1}\tsub\bt$. \\
+\end{proofcenter}
+By the inversion of the subtype relation, $\t_{1} = \bt'$ with $\cset\vdash\bt'\tsub\bt$. Then, by T-Mcase, $\Gamma\subst{\YVAR}{\SVAR} \vdash \mcase{\bt'}{e_{1}\subst{\YVAR}{\SVAR}} : \tmcase{\bt'}$ with $\cset\vdash\tmcase{\bt'}\tsub\tmcase{\bt}$ by S-MCase. 
+
+\anote{Check subtype relation}
+
+\end{case}
+
+\begin{case}[\stitlet{ElimCase}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \mcasetag{e_{1}}{\basemode} & \t = \bt & \\
+\Gamma,\YVAR:\t_{0};\cset \vdash e_{1} : \tmcase{\bt} & \basemode \in \fundef{modes}(\programcode) \textrm{ or } \basemode \textrm{ appears in } \cset &  \\
+\end{tabular}\\ \\
+By the induction hypothesis, 
+\begin{proofcenter}
+$\Gamma\subst{\YVAR}{\SVAR}\cset\vdash e_{1}\subst{\YVAR}{\SVAR} : \t_{1}$ \\
+\end{proofcenter}
+with 
+\begin{proofcenter}
+$\cset\vdash\t_{1}\tsub\tmcase{\bt}$. 
+\end{proofcenter}
+By the inversion of the subtype relation, $\t_{1} = \tmcase{\bt'}$ with $\cset\vdash\bt'\tsub\bt$. Then, by T-ElimCase, $\Gamma\subst{\YVAR}{\SVAR};\cset\vdash \mcasetag{e_{1}\subst{\YVAR}{\SVAR}}{\basemode'}:\bt$, with $\cset\vdash\bt'\tsub\bt$. 
+
+\anote{Check subtype relation}
+
+\end{case}
+
+\begin{case}[\stitlet{Mode}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \moname & \t = \modevt & \\
+\end{tabular}\\ \\
+Trivial.
+\end{case}
+
+\begin{case}[\stitlet{Sub}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = e_{1} & \t = \t_{1}' & \\
+\Gamma,\YVAR:\t_{0};\cset \vdash e_{1}:\t_{1} & \cset\vdash \t_{1}\tsub\t_{1}' & \\
+\end{tabular}\\ \\
+By the induction hypothesis, 
+\begin{proofcenter}
+$\Gamma\subst{\YVAR}{\SVAR};\cset\vdash e_{1}\subst{\YVAR}{\SVAR}:\t_{2}$ \\
+\end{proofcenter}
+with 
+\begin{proofcenter}
+$\cset\vdash\t_{2}\tsub\t_{1}$. \\
+\end{proofcenter}
+By S-Trans, we have $\cset\vdash\t_{2}\tsub\t_{1}'$. Then, by T-Sub, $\Gamma\subst{\YVAR}{\SVAR};\cset\vdash e_{1}\subst{\YVAR}{\SVAR}:\t_{1}'$. Letting $\t' = \t_{1}'$ finishes the case.
+\end{case}
+
+\end{proof}
+
+% LEMMA : Relate mtype and mbody
+\begin{lemma}
+\label{pf:mtype-relates-mbody}
+If $\cset\judgewft\classiota$, $\Fmtype(\Mname,\classiota) = \overline{\bt}\rightarrow\bt$ and $\Fmbody(\Mname,\classiota)$ then $\overline{\VAR}:\overline{\bt};\kwthis:\bt_0;\cset\vdash e:\bt'$ with $\cset\judgewft\bt_0$, $\cset\vdash\classiota\tsub\bt_0$, and $\cset\vdash\bt'\tsub\bt$.
+\end{lemma}
+
+\begin{proof}
+Induction on the derivation of $\Fmtype(\Mname,\classiota) = \overline{\VAR}.e$ using Lemmas \ref{pf:modesubstitution-preserves-subtyping} and \ref{pf:modesubstitution-preserves-typing}.
+
+\begin{case}[\mbtitlet{Class}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\kwclass\ \Cname\ \tspec\ \kwextends\ \bt_0 \{ \fdlist \ \mdlist \ \attributor \} & \Feparam(\tspec) = \listi' & \\
+\t\ \Mname(\overline{\t}\ \overline{\VAR}) \{ e \} \in \mdlist & & \\
+\end{tabular}\\ \\
+Let $\Gamma = \overline{\VAR}:\overline{\bt};\kwthis:\classiota$. From \stitlet{Class} and \stitlet{Method} we have $\Gamma;\cset'\vdash e:\t'$ with $\cset'\vdash\t'\tsub\t$. Since $\cset\judgewft\classiota$ we have $\cset\models\cset'\subst{\listi'}{\listi}$ and $\cset' = \Fcons(\tspec)$ from \wftitlet{Class}. Using Lemmas \ref{pf:weakening}, \ref{pf:modesubstitution-preserves-subtyping} and $\ref{pf:modesubstitution-preserves-typing}$ we have
+\begin{proofcenter}
+$\cset\vdash\t'\subst{\listi'}{\listi}\tsub\t\subst{\listi'}{\listi}$\\
+\end{proofcenter}
+and
+\begin{proofcenter}
+$\overline{\VAR}:\overline{\t}\subst{\listi'}{\listi};\kwthis:\classiota;\cset\vdash e\subst{\listi'}{\listi}:\t''$\\
+\end{proofcenter}
+with
+\begin{proofcenter}
+$\cset\vdash\t''\tsub\t'\subst{\listi'}{\listi}$.\\
+\end{proofcenter}
+From $\mttitlet{Class}$ we have
+\begin{proofcenter}
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\overline{\t}\subst{\listi'}{\listi} = \overline{\bt} & \t\subst{\listi'}{\listi} = \bt & \\
+\end{tabular}
+\end{proofcenter} 
+S-Trans gives us $\cset\vdash\t''\tsub\t\subst{\listi'}{\listi}$ from which we have $\overline{\VAR}:\overline{\bt},\kwthis:\classiota;\cset\vdash e:\t''$ with $\cset\vdash\t''\tsub\bt$. Letting $\bt_0$ be $\classiota$ finishes the case.
+
+\end{case}
+
+\begin{case}[\mbtitlet{Super}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\kwclass\ \Cname\ \tspec\ \kwextends\ \bt_0 \{ \fdlist \ \mdlist \ \attributor \} & \Feparam(\tspec) = \listi' & \\
+\Mname \not\in \mdlist & & \\
+\end{tabular}\\ \\
+Immediate from the inductive hypothesis and the fact that $\cset\vdash\classiota\tsub\bt_0\subst{\listi'}{\listi}$.
+\end{case} 
+
+\end{proof}
+
+% LEMMA : Relate object and fields
+\begin{lemma}
+\label{pf:object-fields}
+If $\Gamma;\cset\vdash\closure{\alpha}{\classiota}{\overline{\val}}$ and $\Ffields(\classiota) = \overline{\t}\ \overline{\Fname} = \overline{e}$ then $\Gamma;\cset\vdash\val_i : \t_i'$ with $\cset\vdash\t_i'\tsub\t_i$.
+\end{lemma}
+
+\begin{proof}
+Induction on the derivation of $\Ffields(\classiota) = \overline{\t}\ \overline{\Fname}$.
+
+\begin{case}[\fdtitlet{Class}]
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\kwclass\ \Cname\ \tspec\ \kwextends\ \bt_0 \{ \overline{\t}\ \overline{\Fname} = \overline{e}\ \dots \} & \Feparam(\tspec) = \listi' & \\ 
+\Ffields(\bt_0\subst{\listi'}{\listi}) = \overline{\t_0}\ \overline{\Fname_0} = \overline{e_0} & & \\
+\end{tabular}\\ \\
+From $\stitlet{Class}$ we have $\varnothing;\cset'\vdash \overline{e}:\overline{\t'}$ with $\cset'\vdash\overline{\t'}\tsub\overline{\t}$. Since $\cset\judgewft\classiota$ we have $\cset\models\cset'\subst{\listi'}{\listi}$ and $\cset' = \Fcons(\tspec)$ from \wftitlet{Class}.
+
+Using Lemmas \ref{pf:weakening}, \ref{pf:modesubstitution-preserves-subtyping}, and \ref{pf:modesubstitution-preserves-typing} we have
+\begin{proofcenter}
+$\cset\vdash\overline{\t'}\subst{\listi'}{\listi}\tsub\overline{\t}\subst{\listi'}{\listi}$\\
+\end{proofcenter}
+and
+\begin{proofcenter}
+$\Gamma;\cset\vdash\overline{e}\subst{\listi'}{\listi}:\overline{\t''}$\\
+\end{proofcenter}
+with
+\begin{proofcenter}
+$\cset\vdash\overline{\t''}\tsub\overline{\t'}\subst{\listi'}{\listi}$.\\ 
+\end{proofcenter}
+
+Now, from T-Object we have $\overline{\t_0'},\overline{\t'}\subst{\listi'}{\listi} = \overline{\t}$ and $\overline{e_0},\overline{e}\subst{\listi'}{\listi} = \overline{\val}$. Then, by S-Trans we have $\Gamma;\cset\vdash\overline{\val}:\overline{\t''}$ with $\cset\vdash\overline{\t''}\tsub\overline{\t}$. Choosing $\Gamma;\cset\vdash\val_i:\t_i''$ with $\cset\vdash\t_i''\tsub\t_i$ and letting $\t_i'$ be $\t_i''$ finishes the case.
+
+\end{case}
+
+\begin{case}[\fdtitlet{Object}]
+Trivial.
+\end{case}
+
+\end{proof} 
+
+
+% LEMMA : Preservation (Subject Reduction)
+\begin{lemma}[Preservation]
+\label{pf:typepreservation}
+If $\Gamma;\cset \vdash e : \t, e \cloreduct{\moname} e'$, then $\Gamma;\cset \vdash e' : \t'$ with $\cset\vdash\t'\tsub\t$.
+\end{lemma} 
+
+\begin{proof}
+By induction on the derivation of $\Gamma,\cset \vdash e : \t$, with a case analysis on the last rule used.
+
+\begin{case}[\stitlet{Var}]
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \VAR & \t = \Gamma(\VAR) & \\
+\end{tabular}\\
+Trival: Cannot occur.
+\end{case}
+
+\begin{case}[\stitlet{New}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \new{\classiota} & \t = \classiota & \\
+\listi = \dynmode,\listi' \textrm{ iff } \kwclass\ \Cname\ \tspec \dots \in \programcode \textrm{ and } \fundef{ethis}(\tspec) = \dynmode & & \\
+\listi \neq \dynmode, \listi'  \textrm{ iff } \kwclass\ \Cname\ \tspec \dots \in \programcode \textrm{ and } \fundef{ethis}(\tspec) \neq \dynmode & & \\
+\cset \models \Fcons(\tspec) & & \\
+\end{tabular}\\
+Trivial.
+\end{case}
+
+\begin{case}[\stitlet{Cast}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = (\bt)e_{1} & \t = \bt & \\
+\Gamma;\cset \vdash e_1 : \bt_1 & & \\
+\end{tabular}\\
+
+\begin{subcase-env}
+
+\begin{subcase}
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e_1 \cloreduct{\moname} e_1' & e' = (\bt)e_1' & \\
+\end{tabular}\\ \\
+By the induction hypothesis, $\Gamma;\cset\vdash e_1' : \bt_1'$ with $\cset\vdash\bt_1'\tsub\bt_1$. T-Sub gives $\Gamma;\cset\vdash e_1':\bt_1$. Then, by T-Cast, $\Gamma;\cset\vdash (\bt)e_1':\bt$. Letting $\t'$ be $\bt$ finishes the subcase.
+
+\end{subcase}
+
+\begin{subcase}
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e_1 = \closure{\alpha}{\bt_1'}{\overline{\val}} & & \\
+(\bt)\closure{\alpha}{\bt_1'}{\overline{\val}}\cloreduct{\moname}\closure{\alpha}{\bt_1'}{\overline{\val}} & \bt_1'\tsub\bt' & \\
+e' = \closure{\alpha}{\bt_1'}{\overline{\val}} & & \\ 
+\end{tabular}\\
+Trivial. We have $\Gamma;\cset\vdash\closure{\alpha}{\bt_1'}{\overline{\val}}:\bt_1'$ from T-Cast and T-Obj, and $\bt_1'\tsub\bt$ from R-Cast.
+\end{subcase}
+
+\end{subcase-env}
+
+\end{case}
+
+\begin{case}[\stitlet{Msg}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = e_1.\Mname(\overline{e_1}) & \t = \bt' & \\
+\Gamma;\cset \vdash e_{1}:\bt & \Gamma;\cset \vdash \overline{e_{1}}:\overline{\bt} & \Fmtype(\Mname,\bt) = \overline{\bt}\rightarrow\bt' \\ 
+\Gamma;\cset \vdash \kwthis:\bt_{this} & \cset \models \{\Fmode(\bt)\msub\Fmode(\bt_{this})\} & \Fmode(\bt) \neq \ ? \\
+\end{tabular}\\
+
+\begin{subcase-env}
+\begin{subcase}
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e_1 \cloreduct{\moname} e_1' & e' = e_1'.(\overline{e_1}) & \\
+\end{tabular}\\
+Easy.
+\end{subcase}
+
+\begin{subcase}
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e_1 = o & e_{1_i} \cloreduct{\moname} e_{1_i}' & e' = o.(\val_{1_i},\dots,e_{1_i}',\dots,e_n) \\
+\end{tabular}\\
+Easy.
+\end{subcase}
+
+\begin{subcase}[\rtitlet{Msg}]
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e_1 = o & o = \closure{\alpha}{\Cname\lb\mode,\listi\rb}{\overline{\val}} & \\ 
+o.\Mname(\overline{\val'}) \cloreduct{\moname} \redreal{e_b\subst{\overline{\VAR}}{\overline{\val}'}\subst{\kwthis}{\obj}}{\moname'} & \Fmbody(\Mname,\Cname\lb\mode,\listi\rb) = \overline{\VAR}.e_b & \mode\msub\moname \\
+\moname' = \Femode(o) & & \\
+e' = \redreal{e_b\subst{\overline{\VAR}}{\overline{\val}'}\subst{\kwthis}{\obj}}{\moname'} & & \\
+\end{tabular}\\ \\
+From Lemma \ref{pf:mtype-relates-mbody} we have $\overline{\VAR}:\overline{\t},\kwthis:\Cname\lb\mode,\listi\rb;\cset\vdash\overline{\VAR}.e_b:\t_b$ with $\cset\vdash\t_b\tsub\bt'$. Using Lemma \ref{pf:termsubstitution-preserves-typing} twice and S-Trans we get $\varnothing;\cset'\vdash e_b\subst{\overline{\VAR}}{\overline{\val}'}\subst{\kwthis}{o}:\t_b$.
+
+Now, we may weaken $\varnothing$ to $\Gamma$ by Lemma $\ref{pf:weakening}$ which gives us $\Gamma;\cset\vdash e_b\subst{\overline{\VAR}}{\overline{\val}'}\subst{\kwthis}{o}:\t_b$. Letting $\t'$ be $\t_b$ finishes the case.
+
+\end{subcase}
+
+\end{subcase-env}
+
+\end{case}
+
+\begin{case}[\stitlet{Field}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = e_1.\Fname_i & \t = \bt_i & \\
+\Gamma;\cset \vdash e_{1}:\bt & \Ffields(\bt) = \overline{\bt} \ \overline{\Fname} & \\
+\Gamma;\cset \vdash \kwthis:\bt_{this} & \cset \models \{\Fmode(\bt)\msub\Fmode(\bt_{this})\} & \Fmode(\bt) \neq \ ? \\
+\end{tabular}\\
+
+\begin{subcase-env}
+
+\begin{subcase}
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e_1 \cloreduct{\moname} e_1' & e' = e_1'.\Fname_i & \\
+\end{tabular}\\
+Easy.
+\end{subcase}
+
+\begin{subcase}[\rtitlet{Field}]
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e_1 = \closure{\alpha}{\Cname\lb\mode,\listi\rb}{\overline{\val}} & & \\
+\closure{\alpha}{\Cname\lb\mode,\listi\rb}{\overline{\val}}.\Fname_i \cloreduct{\moname} \val_i & \mode\msub\moname & \\
+e' = \val_i & & \\ 
+\end{tabular}\\
+Lemma \ref{pf:object-fields} gives $\Gamma;\cset\vdash\val_i : \t_i$ with $\cset\vdash\t_i\tsub\bt_i$ which is exactly what we need.
+\end{subcase}
+
+\end{subcase-env}
+
+\end{case} 
+
+\begin{case}[\stitlet{Snapshot}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \snapshot{e_{1}}{\basemode_{1}}{\basemode_{2}} & \t = \texist{\econs}. \Cname\lb\mtvar,\listi\rb &  \\
+\Gamma;\cset \vdash e_{1} : \Cname\lb?,\listi\rb & \econs = \basemode_1 \msub \mtvar \msub \basemode_2 & \\
+\end{tabular}\\
+
+\begin{subcase-env}
+
+\begin{subcase}
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e_1 \cloreduct{\moname} e_1' & e' = \snapshot{e_1'}{\basemode_1}{\basemode_2} & \\
+\end{tabular}\\
+Easy.
+\end{subcase}
+
+\begin{subcase}[\rtitlet{Snapshot1}]
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$}}
+\snapshot{\obj}{\basemode_1}{\basemode_2} \cloreduct{\moname} \check{e_a\subst{\kwthis}{\obj}}{\moname_1}{\moname_2}{\obj} & \obj = \closure{\alpha}{\classdyn}{\overline{\val}} \\ 
+\kwclass\ \Cname\ \cdots\ \{\ \cdots\ \attributor \ \} \in \programcode & e_a = \Fabody(\classdyn) \\
+\end{tabular}\\
+From $\stitlet{Attributor}$ and $\stitlet{Class}$ we have $\Fcons(\attributor) = \cset'$ and $\kwthis:\classdyn;\cset'\vdash e_a:\modevt$. Since $\cset\judgewft\classdyn$, we have $\cset\models\cset'$. Using Lemma \ref{pf:termsubstitution-preserves-typing} gives us $\varnothing;\cset'\vdash e_a\subst{\kwthis}{\obj}$ from which we may use Lemma \ref{pf:weakening} to get $\Gamma;\cset'\vdash e_a\subst{\kwthis}{\obj}$.
+
+Then, by $\stitlet{Check}$, we have $\Gamma;\cset\vdash\check{e_a\subst{\kwthis}{\obj}}{\moname_1}{\moname_2}{\obj}:\Cname\lb\moname',\listi\rb$.
+\end{subcase}
+
+\begin{subcase}[\rtitlet{Snapshot2}]
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\snapshot{\obj}{\basemode_1}{\basemode_2} \cloreduct{\moname} \check{\moname'}{\moname_1}{\moname_2}{\obj} & \obj = \closure{\alpha}{\Cname\lb\moname',\listi\rb}{\overline{\val}} \\ 
+\end{tabular}\\
+Easy.
+\end{subcase}
+
+\end{subcase-env}
+
+\end{case}
+
+\begin{case}[\stitlet{MCase}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \mcase{\bt}{e_1} & \t = \tmcase{\bt} & \\
+\Gamma;\cset \vdash e_{1_{i}}:\bt \text{ for all} \ i & \overline{\moname} = \Fmodes(\programcode) & \\
+\end{tabular}\\
+
+\begin{subcase-env}
+
+\begin{subcase}
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e_{1_i} \cloreduct{\moname} e_{1_i}' & e' = \{\moname: \val_{1_i}; \dots; \moname: e_{1_i}'; \dots; \moname: e_{1_n} \} & \\
+\end{tabular}\\
+Easy.
+\end{subcase}
+
+\end{subcase-env}
+
+\end{case}
+
+\begin{case}[\stitlet{ElimCase}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \mcasetag{e_1}{\basemode} & \t = \bt & \\
+\Gamma;\cset \vdash e_{1} : \tmcase{\bt} & \basemode \in \fundef{modes}(\programcode) \textrm{ or } \basemode \textrm{ appears in } \cset &  \\
+\end{tabular}\\
+
+\begin{subcase-env}
+
+\begin{subcase}
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e_1 \cloreduct{\moname} e_1' & e' = \mcasetag{e_1'}{\basemode} & \\
+\end{tabular}\\
+Easy.
+\end{subcase}
+
+\begin{subcase}[\rtitlet{McaseProj}]
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e_1 = \mcase{\bt}{\val} & \basemode = \moname_j & \\
+\mcasetag{\mcase{\bt}{\val}}{\moname_j} \cloreduct{\moname} \val_j & & \\
+e' = \val_j & & \\
+\end{tabular}\\
+From T-Mcase,
+\begin{proofcenter}
+$\overline{\moname} = \Fmodes(\programcode)$ \\
+$\Gamma;\cset\vdash \val_i : \bt\ \text{for all}\ i$. \\
+\end{proofcenter}
+$\Gamma;\cset\vdash \val_j : \bt$ gives us what we need. Letting $\t'$ be $\bt$ finishes the case.
+\end{subcase}
+
+\end{subcase-env} 
+
+\end{case}
+
+\begin{case}[\stitlet{Mode}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \moname & \t = \modevt \\
+\end{tabular}\\
+Trival: Cannot occur.
+\end{case}
+
+\begin{case}[\stitlet{Sub}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = e_{1} & \t = \t_{1}' \\
+\Gamma;\cset \vdash e_{1}:\t_{1} & \cset\vdash \t_{1}\tsub\t_{1}' & \\
+\end{tabular}\\ \\
+Trivial.
+\end{case}
+
+\begin{case}[\stitlet{Object}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \closure{\alpha}{\classiota}{\overline{e}} & \t = \classiota \\
+\Gamma;\cset \vdash \overline{e}:\overline{\t} & \Ffields(\classiota) = \overline{\t} \ \overline{\Fname} = \overline{e} & \\
+\end{tabular}\\ \\
+Trival: Cannot occur.
+\end{case}
+
+\begin{case}[\stitlet{Check}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \check{e_1}{\moname_1}{\moname_2} & \t = \modevt & \\
+\Gamma;\cset \vdash e_1 : \modevt \\
+\end{tabular}\\
+
+\begin{subcase-env}
+
+\begin{subcase}
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e_1 \cloreduct{\moname} e_1' & e' = \check{e_1'}{\moname_1}{\moname_2} & \\
+\end{tabular}\\
+Easy.
+\end{subcase}
+
+\begin{subcase}[\rtitlet{Check}]
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e_1 = \moname' & & \\
+\check{\moname'}{\moname_1}{\moname_2} \cloreduct{\moname} \moname' & \moname_1\msub\moname'\msub\moname_2 & \\
+e' = \moname' & & \\
+\end{tabular}\\
+Trivial: From T-Check we have $\Gamma;\cset\vdash\moname':\modevt$ which is exactly what we need. Letting $\t'$ be $\modevt$ finishes the subcase.
+\end{subcase} 
+
+\end{subcase-env}
+
+\end{case}
+
+\begin{case}[\stitlet{Let}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \letx{e_1}{e_2} & \t = \bt & \\
+\Gamma;\cset\vdash e_1:\t_1 & \Gamma,\VAR:\t_1;\cset\vdash e_2:\bt & \\
+\end{tabular}\\ \\
+Trivial.
+\end{case}
+
+\anote{Finish the proof.}
+
+\end{proof}
+
+% LEMMA : Value subtype inversion
+\begin{lemma}
+\label{pf:value-subtype-inversion}
+\leavevmode
+\begin{enumerate}[(\arabic*)] 
+
+\item If $\Gamma;\cset\vdash\val:\t$ and $\cset\vdash\t\tsub\classargs{\mode,\overline{\basemode}}$, then $\t = \classargsp{\mode',\overline{\basemode}}$ with $\cset\vdash\classargsp{\mode',\overline{\basemode}}\tsub\classargs{\mode,\overline{\basemode}}$.
+
+\item If $\Gamma;\cset\vdash\val:\t$ and $\cset\vdash\t\tsub\tmcase{\bt}$, then $\t = \tmcase{\bt'}$ with $\cset\vdash\bt'\tsub\bt$.
+
+\end{enumerate}
+
+\end{lemma}
+
+\begin{proof}
+\leavevmode
+
+\begin{enumerate}[(\arabic*)] 
+
+\item Case analysis on the induction of the derivation of $\cset\vdash\t\tsub\classargs{\mode,\overline{\basemode}}$: Only S-Dynamic and S-Class apply, we present S-Exists to clarify.
+
+\begin{case}[\sbtitlet{Dynamic}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\t = \classargs{\mode',\overline{\basemode}} & & \\
+\end{tabular}\\ 
+Letting $\Cname'$ be $\Cname$ and $\mode$ be $\dynmode$ finishes the case.
+\end{case} 
+
+\begin{case}[\sbtitlet{Class}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\t = \classargsp{\listi} & & \\
+%\kwclass\ \Cname'\ \espec\ \kwextends\ \Cname \dots\ \in \programcode & \Feparam(\espec') = \listi' & \cset = \Fcons(\espec) \\
+\end{tabular}\\ 
+Trivial. Exactly what we need.
+\end{case} 
+
+\begin{case}[\sbtitlet{Exists}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\t = \texist{\econs}.\classargs{\mode,\overline{\basemode}} & & \\ 
+\end{tabular}\\ 
+If $\t = \texist{\econs}.\classargs{\mode,\overline{\basemode}}$ then we need to have a value with type $\texist{\econs}.\classargs{\mode,\overline{\basemode}}$, but by the structure of our terms and typing rules this cannot occur; hence, S-Exists contradicts our hypothesis and cannot occur.
+\end{case} 
+
+\item Induction on the derivation of $\cset\vdash\t\tsub\tmcase{\bt}$: Only S-Mcase applies.
+
+\begin{case}[\sbtitlet{Mcase}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\t = \tmcase{\bt'} & & \\
+\cset\vdash\bt'\tsub\bt & & \\
+\end{tabular}\\ 
+Trivial. Exactly what we need.
+\end{case} 
+
+\end{enumerate}
+
+\end{proof}
+
+
+% LEMMA : Canonical forms.
+\begin{lemma}[Canonical Forms]
+\label{pf:canonical-forms}
+Given $\Gamma;\cset\vdash\val:\t$,
+\leavevmode
+\begin{enumerate}[(\arabic*)] 
+
+\item If $\t = \classiota$ then $\val$ has the shape $\closure{\alpha}{\t'}{\overline{\val}}$ with $\cset\vdash\t'\tsub\classiota$.
+
+\item If $\t = \tmcase{\bt}$ then $\val$ has the shape $\mcase{\bt'}{\val}$ with $\cset\vdash\bt'\tsub\bt$.
+
+\item If $\t = \modevt$ then $\val$ has the shape $\moname$ with $\moname \in \Fmodes(\programcode)$.
+
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+\leavevmode
+
+\begin{enumerate}[(\arabic*)] 
+
+\item Induction on the derivation $\Gamma;\cset\vdash\val:\classdyn$. Two rules may apply: T-Obj and T-Sub.
+
+\begin{case}[\stitlet{Obj}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\val = \closure{\alpha}{\classiota}{\overline{\val}} & & \\ 
+\end{tabular}\\ 
+Letting $\t'$ be $\classiota$ finishes the case.
+\end{case}
+
+\begin{case}[\stitlet{Sub}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\val = \val_1 & & \\
+\Gamma;\cset\vdash\val_1 : \t_1 & \cset\vdash\t_1\tsub\classiota & \\
+\end{tabular}\\ 
+By Lemma \ref{pf:value-subtype-inversion} $\t_1 = \Cname'\lb\listi\rb$. Then, by the induction hypothesis, $\val_1 = \closure{\alpha}{\t_1'}{\overline{\val}}$ with $\cset\vdash\t_1'\tsub\Cname'\lb\listi\rb$. By S-Trans, $\cset\vdash\t_1'\tsub\classiota$. We may now apply T-Sub to get $\Gamma;\cset\vdash\closure{\alpha}{\t_1'}{\overline{\val}}:\classiota$.
+\end{case} 
+
+\item Induction on the derivation $\Gamma;\cset\vdash\val:\tmcase{\bt}$. Two rules may apply: T-Mcase and T-Sub.
+
+\begin{case}[\stitlet{Mcase}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\val = \mcase{\bt}{\val} & & \\ 
+\end{tabular}\\ 
+Letting $\bt'$ be $\bt$ finishes the case.
+\end{case}
+
+\begin{case}[\stitlet{Sub}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+\val = \val_1 & & \\
+\Gamma;\cset\vdash\val_1 : \t_1 & \cset\vdash\t_1\tsub\tmcase{\bt} & \\
+\end{tabular}\\ 
+\end{case}
+By Lemma \ref{pf:value-subtype-inversion} $\t_1 = \tmcase{\bt_1}$ with $\cset\vdash\bt_1\tsub\bt$. Then, by the induction hypothesis, $\val_1 = \mcase{\bt_1'}{\val}$ with $\cset\vdash\bt_1'\tsub\bt_1$. By S-Trans, $\cset\vdash\bt_1'\tsub\bt$. We may now apply T-Sub to get $\Gamma;\cset\vdash\mcase{\bt_1}{\val}:\tmcase{\bt}$.
+
+\item Only T-ModeValue may apply from which $\moname \in \Fmodes(\programcode)$ is immediate.
+
+\end{enumerate} 
+
+\end{proof}
+
+% DEFINITION : Bad Cast
+\begin{definition}[Bad Cast]
+Expression $(\bt') \closure{\alpha}{\bt}{\overline{\val}}$ is a bad cast iff $\emptyset \vdash \bt \tsub \bt'$ does not hold.
+\label{pf:badcast}
+\end{definition}
+
+% DEFINITION : Bad Check
+\begin{definition}[Bad Check]
+Expression $\check{\moname}{\moname'}{\moname''}$ is a bad check iff $\moname' \msub \moname \msub \moname''$ does not hold.
+\label{pf:badcheck}
+\end{definition} 
+
+% LEMMA : Relate this and the mode of the evaluation context
+\begin{lemma}
+\label{pf:this-equals-context-mode}
+If $\redreal{e}{\moname}$, $\Gamma;\cset\vdash e:\t$ with a premise containing $\Gamma;\cset\vdash\kwthis:\bt_{this}$, then $\Fmode(\bt_{this}) = \moname$.
+\end{lemma} 
+
+\begin{proof}
+\anote{Come back to prove.}
+\end{proof} 
+
+% LEMMA : Progress
+\begin{lemma}[Progress]
+\label{pf:progress}
+If $\Gamma;\cset \vdash e : \t$, then either $e$ is a value, $e$ is a bad cast, $e$ is a bad check, or there exists $e'$ such that $e \cloreduct{\moname} e'$.
+\end{lemma}
+
+\begin{proof}
+By induction on the derivation of $\Gamma,\cset \vdash e : \t$.
+
+\begin{case}[\stitlet{Var}]
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \VAR & \t = \Gamma(\VAR) & \\
+\end{tabular}\\
+Trivial.
+\end{case}
+
+\begin{case}[\stitlet{New}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \new{\classiota} & \t = \classiota & \\
+\end{tabular}\\
+Trivial by R-New, with $e' = \closure{\alpha}{\classiota}{\Finit(\programcode,\Cname)}$.
+\end{case}
+
+\begin{case}[\stitlet{Cast}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = (\bt')e_{1} & \t = \bt' & \\
+\Gamma;\cset \vdash e_1 : \classiota & & \\
+\end{tabular}\\ \\
+By the induction hypothesis, $e_1$ is a value, bad cast, bad check, or there exists $e_1'$ such that $e_1\cloreduct{\moname}e_1'$. 
+If $e_1$ is a value, then by Lemma \ref{pf:canonical-forms}, $e_{1} = \closure{\alpha}{\bt}{\overline{\val}}$ with $\cset\vdash\bt\tsub\classiota$. Now, if $\cset\vdash\classiota\tsub\bt'$ then by S-Trans we have $\cset\vdash\bt\tsub\bt'$, from which R-Cast applies, giving $e' = \closure{\alpha}{\bt}{\overline{\val}}$. If $\cset\vdash\classiota\tsub\bt'$ does not hold, then by S-Trans $\cset\vdash\bt\tsub\bt'$ does not hold; hence, we have a bad cast.
+If $e_1\cloreduct{\moname}e_1'$ then by the reduction context we may replace $e_1$ with $e_1'$, giving $e' = (\bt')e_{1}'$.
+\end{case}
+
+\begin{case}[\stitlet{Msg}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = e_{1}.(\overline{e_{1}}) & \t = \bt' & \\
+\Gamma;\cset \vdash e_{1}:\bt & \Gamma;\cset \vdash \overline{e_{1}}:\overline{\bt} & \Fmtype(\Mname,\bt) = \overline{\bt}\rightarrow\bt' \\ 
+\Gamma;\cset \vdash \kwthis:\bt_{this} & \cset \models \{\Fmode(\bt)\msub\Fmode(\bt_{this})\} & \Fmode(\bt) \neq \ ? \\
+\end{tabular}\\ \\
+By the induction hypothesis, 
+\begin{proofcenter}
+$e_1$ is a value, bad cast, bad check, or there exists $e_1'$ such that $e_1\cloreduct{\moname}e_1'$ \\
+$e_{1_i}$ is a value, bad cast, bad check, or there exists $e_{1_i}'$ for each $i$ such that $e_{1_i}\cloreduct{\moname}e_{1_i}'$.
+\end{proofcenter}
+If $e_1\cloreduct{\moname}e_1'$ then we may replace $e_1$ with $e_1'$ giving us $e' = e_{1}'.(\overline{e_{1}})$.
+
+If $e_1$ is a value then by Lemma \ref{pf:canonical-forms}, $e_{1} = \closure{\alpha}{\bt}{\overline{\val}}$ with $\cset\vdash\bt\tsub\classiota$. We consider the case that all $e_{1_i}$ are values first. By Lemma \ref{pf:this-equals-context-mode} we have $\cset \models \{\Fmode(\bt)\msub\moname\}$. R-Msg now applies, giving us $e' = \redreal{e\subst{\overline{\VAR}}{\overline{\val}'}\subst{\kwthis}{\closure{\alpha}{\bt}{\overline{\val}}}}{\moname'}$. Otherwise we may replace the first $e_{1_i}$ with $e_{1_i}'$ giving us $e' = \closure{\alpha}{\bt}{\val_{1_1},\dots,e_{1_i}',\dots,e_{1_n}}$.
+
+\end{case}
+
+\begin{case}[\stitlet{Field}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = e_1.\Fname_i & \t = \bt_i & \\
+\Gamma;\cset \vdash e_{1}:\bt & \Ffields(\bt) = \overline{\bt} \ \overline{\Fname} & \\
+\Gamma;\cset \vdash \kwthis:\bt_{this} & \cset \models \{\Fmode(\bt)\msub\Fmode(\bt_{this})\} & \Fmode(\bt) \neq \ ? \\
+\end{tabular}\\ \\
+By the induction hypothesis, $e_1$ is a value, bad cast, bad check, or there exists $e_1'$ such that $e_1\cloreduct{\moname}e_1'$. 
+
+If $e_1\cloreduct{\moname}e_1'$ then we may replace $e_1$ with $e_1'$ giving us $e' = e_1'.\Fname_i$. If $e_1$ is a value then by Lemma \ref{pf:canonical-forms}, $e_{1} = \closure{\alpha}{\bt}{\overline{\val}}$ with $\cset\vdash\bt\tsub\classiota$. By Lemma \ref{pf:this-equals-context-mode} we have $\cset \models \{\Fmode(\bt)\msub\moname\}$. R-Field now applies, giving us $e' = \val_i$.
+\end{case} 
+
+\begin{case}[\stitlet{Snapshot}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \snapshot{e_{1}}{\basemode_{1}}{\basemode_{2}} & \t = \texist{\econs}. \Cname\lb\mtvar,\listi\rb &  \\
+\Gamma;\cset \vdash e_{1} : \Cname\lb?,\listi\rb & \econs = \basemode_1 \msub \mtvar \msub \basemode_2 & \\
+\end{tabular}\\ \\
+By the induction hypothesis, $e_{1}$ is a value, bad cast, bad check, or there exists $e_{1}'$ such that $e_{1}\cloreduct{\moname}e_{1}'$. 
+
+If $e_{1}$ is a value then by Lemma \ref{pf:canonical-forms} $e_{1} = \closure{\alpha}{\bt}{\overline{\val}}$ with $\cset\vdash\bt\tsub\Cname\lb\dynmode,\listi\rb$. Now, if $\Feargs(\bt) = \dynmode,\listi$, then R-Snapshot1 applies, with $e' = \letx{\check{ \attributor \subst{\kwthis}{\closure{\alpha}{\bt}{\overline{\val}}}}{\moname'}{\moname''}}{\closure{\alpha'}{\bt\subst{\Feargs(\bt)}{\VAR,\listi}}{\overline{\val}}}$. Otherwise $\Feargs(\bt) = \moname,\listi$ from which we may apply R-Snapshot2 to get $e' = \letx{\check{\moname}{\moname'}{\moname''}}{\closure{\alpha}{\bt}{\overline{\val}}}$.
+
+If $e_{1}\cloreduct{\moname}e_{1}'$ then by the reduction context we may replace $e_{1}$ with $e_{1}'$ to get $e' = \snapshot{e_{1}'}{\basemode_{1}}{\basemode_{2}}$.
+
+\end{case}
+
+\begin{case}[\stitlet{MCase}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \mcase{\bt}{e_{1}} & \t = \tmcase{\bt} & \\
+\Gamma;\cset \vdash e_{1_{i}}:\bt \text{ for all} \ i & \overline{\moname} = \Fmodes(\programcode) & \\
+\end{tabular}\\ \\
+By the induction hypothesis, $e_{1_{i}}$ is a value, bad cast, bad check, or there exists $e_{1_{i}}'$ such that $e_{1_{i}}\cloreduct{\moname}e_{1_{i}}'$. 
+
+If all $e_{1_{i}}$ are values, then $e$ is a value. Otherwise by the reduction context we may replace $e_{1_{i}}$ with $e_{1_{i}}'$, giving us $e'$.
+\end{case}
+
+\begin{case}[\stitlet{ElimCase}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \mcasetag{e_{1}}{\basemode} & \t = \bt & \\
+\Gamma;\cset \vdash e_{1} : \tmcase{\bt} & \basemode \in \fundef{modes}(\programcode) \textrm{ or } \basemode \textrm{ appears in } \cset &  \\
+\end{tabular}\\ \\
+By the induction hypothesis, $e_{1}$ is a value, bad cast, bad check, or there exists $e_{1}'$ such that $e_{1}\cloreduct{\moname}e_{1}'$. 
+
+If $e_{1}$ is a value then by Lemma \ref{pf:canonical-forms}, $e_{1}$ has the shape $\mcase{\bt}{\val}$, from which R-McaseProj applies, giving us $e' = \val_{j}$. 
+If $e_{1}\cloreduct{\moname}e_{1}'$ then by the reduction context we may replace $e_{1}$ with $e_{1}'$, giving us $e' = \mcasetag{e_{1}'}{\basemode}$.
+
+\end{case}
+
+\begin{case}[\stitlet{Mode}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \moname & \t = \modevt \\
+\end{tabular}\\
+Trivial.
+\end{case}
+
+\begin{case}[\stitlet{Sub}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = e_{1} & \t = \t_{1}' \\
+\Gamma;\cset \vdash e_{1}:\t_{1} & \cset\vdash \t_{1}\tsub\t_{1}' & \\
+\end{tabular}\\ \\
+By the induction hypothesis, $e_{1}$ is a value, bad cast, bad check, or there exists $e_{1}'$ such that $e_{1}\cloreduct{\moname}e_{1}'$. 
+
+If $e_{1}$ is a value, we are done. If $e_{1}\cloreduct{\moname}e_{1}'$ then we may replace $e_{1}$ with $e_{1}'$ giving us $e' = e_{1}'$.
+\end{case}
+
+\begin{case}[\stitlet{Object}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \closure{\alpha}{\classiota}{\overline{e}} & \t = \classiota \\
+\Gamma;\cset \vdash \overline{e}:\overline{\t} & \Ffields(\classiota) = \overline{\t} \ \overline{\Fname} = \overline{e} & \\
+\end{tabular}\\ \\
+By the induction hypothesis, $e_{i}$ is a value, bad cast, bad check, or there exists $e_{i}'$ such that $e_{i}\cloreduct{\moname}e_{i}'$ for each $i$. 
+
+If all $e_{i}$ are values, then $e$ is a value and we are done. Otherwise, by the reduction context, we may replace an $e_{i}$ with $e_{i}'$, giving us $e' = \closure{\alpha}{\classiota}{\val_{1},\dots,e_{i}',\dots,e_{n}}$.
+\end{case}
+
+\begin{case}[\stitlet{Check}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \check{e_1}{\moname_1}{\moname_2} & \t = \modevt & \\
+\Gamma;\cset \vdash e_1 : \modevt \\
+\end{tabular}\\ \\
+By the induction hypothesis, $e_1$ is a value, bad cast, bad check, or there exists $e_1'$ such that $e_1\cloreduct{\moname}e_1'$.
+
+If $e_1$ is a value, then by Lemma \ref{pf:canonical-forms}, $e_1$ has the shape $\moname$. Now, we have two cases: If $\moname_1\msub\moname\msub\moname_2$ then R-Check applies, giving us $e' = \moname$. If $\moname_1\msub\moname\msub\moname_2$ \emph{does not hold} then by definition we have a bad check.
+
+If $e_1\cloreduct{\moname}e_1'$ then we may replace $e_1$ with $e_1'$ by the reduction context, giving us $e' = \check{e_1'}{\moname_1}{\moname_2}$.
+
+\end{case}
+
+\begin{case}[\stitlet{Let}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \letx{e_1}{e_2} & \t = \bt & \\
+\Gamma;\cset\vdash e_1:\t_1 & \Gamma,\VAR:\t_1;\cset\vdash e_2:\bt & \\
+\end{tabular}\\ \\
+By the induction hypothesis, $e_1$ is a value, bad cast, bad check, or there exists $e_1'$ such that $e_1\cloreduct{\moname}e_1'$.
+
+If $e_1$ is a value, then T-Let applies, giving us $e' = e_2\subst{\VAR}{e_1}$. If $e_1\cloreduct{\moname}e_1'$ then we may replace $e_1$ with $e_1'$ by the reduction context, giving us $e' = \letx{e_1'}{e_2}$.
+
+\end{case}
+
+
+\end{proof}
+
+
+
+% THEOREM : Type soundness
+\begin{theorem}[Type Soundness]
+\label{pf:staticsoundness}
+If $ \programcode$ is well-typed and $\Fboot(\programcode) = \lb\top,e\rb$, then either $e \cloreduct{\top}_{*} \val$, $\lb\top,e\rb \Uparrow$, or $e \cloreduct{\top}_{*} e'$ and $e'$ is a bad cast or a bad check.
+\end{theorem}
+
+Let us say $\lb\moname_0;e_0\rb$ is a \emph{sub-redex} of reduction $e \cloreduct{\moname} e'$ iff $e_0 \cloreduct{\moname_0} e'_0$ is a sub-derivation of $e \cloreduct{\moname} e'$. We next state two important properties of \ourlang{}. 
+
+% THEOREM : Type decidability
+\begin{theorem}[Type Decidability]
+\label{pf:typedecidability}
+For any program $\programcode$, it is decidable whether $\vdash \programcode$ holds.
+\end{theorem} 
+
+% THEOREM : Monotone snapshotting
+\begin{theorem}[Monotone Snapshotting]
+
+If $ \programcode$ is well-typed, $\Fboot(\programcode) = \lb\top,e\rb$, $e \cloreduct{\top} \dots e_1 \cloreduct{\top} e_2 \dots\cloreduct{\top} e_3 \cloreduct{\top} e_4$,  $\lb\moname; \closure{ \alpha, \bt}{\overline{\val}} \rb$ is a sub-redex of $e_1 \cloreduct{\top} e_2$ and $\lb\moname'; \closure{ \alpha, \bt'}{\overline{\val}'} \rb$ is a sub-redex of $e_3 \cloreduct{\top} e_4$, then if $\fundef{mode}(\bt) \neq \dynmode$, $\bt = \bt'$. 
+\end{theorem}
+
+In other words, once the type of an object becomes static, it can never be changed any more. This theorem reveals the \emph{monotone} nature of object type change throughout the object lifetime, a crucial property to guarantee type soundness. 
+
+% THEOREM : Waterfall invariant with hybrid typing.
+\begin{theorem}[Waterfall Invariant with Hybrid Typing]
+\label{pf:waterfallinvariant}
+
+If $ \programcode$ is well-typed, $\Fboot(\programcode) = \lb\top,e\rb$, $e \cloreduct{\top} \dots e_1 \cloreduct{\top} e_2$, and $\lb\moname,\closure{\alpha, \bt}{\overline{\val}}.\Mname(\overline{\val'})\rb$ or $\lb\moname,\closure{\alpha, \bt}{\overline{\val}}.\Fname(\overline{\val'})\rb$ is a sub-redex of $e_1 \cloreduct{\top} e_2$, then $\rodef \models \Fmode(\bt) \tsub \moname$ where $\programcode = \rodef \ \overline{\classes} \ e$.
+\end{theorem} 
+
+This theorem says even in the presence of hybrid typing, waterfall invariant --- a key principle to regulate mode-based energy management --- is still preserved. Observe that this theorem says run-time errors are never delayed to messaging or field access time. If any potential violation may happen due to dynamic typing, a run-time error would result from a bad check, \emph{i.e.}, at snapshotting time.
+
+\end{document}
+
+
+mm
