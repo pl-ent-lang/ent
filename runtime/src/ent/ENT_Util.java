@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 public class ENT_Util {
   public static BatterySupply Battery = new BatterySupply();
   public static TemperatureSupply Temperature = new TemperatureSupply();
-  //private static Stopwatch stopwatch = Stopwatch.createUnstarted();
+  public static Stopwatch stopwatch = new Stopwatch();
 
   public static String dumpMode(Object o) {
     Integer[] m = ENT_Runtime.getObjAll(o);
@@ -61,7 +61,6 @@ public class ENT_Util {
     }
   }
 
-  /*
   public static void startStopwatch() {
     stopwatch.start();
   }
@@ -74,10 +73,8 @@ public class ENT_Util {
     stopwatch.reset();
   }
 
-  public static String elapsedTime() {
-    return String.format("%d ms", stopwatch.elapsed(TimeUnit.MILLISECONDS));
+  public static double elapsedTime() {
+    return stopwatch.read();
   }
-  */
-
 
 }
