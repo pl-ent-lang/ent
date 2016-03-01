@@ -33,7 +33,8 @@ extra_cp=
 args=
 vmargs=
 classpath=$JAVA_PATH
-#java=/home/acanino/Src/jdk1.8.0_60/bin/java
+java=/home/acanino/Src/jdk1.8.0_60/bin/java
+#java=/home/acanino/Src/jdk1.7.0_79/bin/java
 java=java
 ext=ent
 

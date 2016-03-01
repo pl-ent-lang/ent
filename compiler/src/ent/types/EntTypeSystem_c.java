@@ -221,9 +221,12 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
     if (l instanceof ModeTypeVariable && u instanceof ModeTypeVariable) {
       ModeTypeVariable ltv = (ModeTypeVariable) l;
       ModeTypeVariable utv = (ModeTypeVariable) u;
-      return this.isSubtype(ltv.upperBound(), utv.lowerBound());
-        //this.isSubtype(utv.lowerBound(), ltv.lowerBound()) && 
-        //this.isSubtype(ltv.upperBound(), utv.upperBound());
+
+      // CRUNCH-HACK: Come back to fix, figure out the right subtyping
+
+      return this.isSubtype(ltv.upperBound(), utv.lowerBound()) ||
+        (this.isSubtype(utv.lowerBound(), ltv.lowerBound()) && 
+         this.isSubtype(ltv.upperBound(), utv.upperBound()));
     }
 
     return false;
@@ -250,6 +253,14 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
 
     if (this.isSpecialModeSubstCase(l, u)) {
       return this.isImplicitCastValid(l, ((ModeSubstType) u).baseType());
+    }
+
+    if (l instanceof ModeTypeVariable && u instanceof ModeTypeVariable) {
+      System.err.format("Checking!\n");
+      ModeTypeVariable lmt = (ModeTypeVariable) l;
+      ModeTypeVariable umt = (ModeTypeVariable) u;
+      return this.isImplicitCastValid(lmt.lowerBound(), umt.lowerBound()) &&
+             this.isImplicitCastValid(lmt.upperBound(), umt.upperBound());
     }
 
     if (u instanceof ModeTypeVariable) {
