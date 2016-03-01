@@ -1,0 +1,48 @@
+\begin{figure*}[t]
+\footnotesize
+\vspace{1ex}
+
+\hrule
+
+\begin{center}
+
+\begin{tabularx}{1\linewidth}{>{$}l<{$} >{$}r<{$} >{$}c<{$} >{$}l<{$} >{$}l<{$}}
+
+\rtitle{New} & \new{\classiota} & \cloreduct{\moname} & \closure{\alpha}{\classiota}{\Finit(\programcode,\Cname)} & \textrm{if} \ \alpha \ \textrm{is} \ fresh \\
+
+\rtitle{Cast} & (\t_0) \obj & \cloreduct{\moname} & \obj &\textrm{if} \ \t \tsub \t_0  \\ 
+
+\rtitle{Msg} & \obj \dot \Mname(\overline{\val}') & \cloreduct{\moname} & \cl{\moname'}{e\subst{\overline{\VAR}}{\overline{\val}'}\subst{\kwthis}{\obj}} & \textrm {if}\ \mode\msub\moname, \moname' = \Femode(\obj) \\
+
+\rtitle{Field} & \obj.\Fname_i & \cloreduct{\moname} & \val_i & \textrm{if} \ \mode \msub \moname \\
+
+%\rtitle{Snapshot1} & \snapshot{\obj}{\moname_1}{\moname_2} & \cloreduct{\moname} & \closure{\alpha'}{\Cname\lb\check{e_a\subst{\kwthis}{\obj}}{\moname_1}{\moname_2},\listi\rb}{\overline{\val}} \  & \textrm {if}  \ \mode = \dynmode, \kwclass\ \Cname\ \cdots\ \{\ \cdots\ \attributor \ \} \in \programcode, \alpha' \ \textrm{is} \ fresh, \Fabody(\Cname\lb\dynmode,\listi\rb) = e_a \\
+
+\rtitle{Snapshot1} & \snapshot{\obj}{\moname_1}{\moname_2} & \cloreduct{\moname} & \checkp{e_a\subst{\kwthis}{\obj}}{\moname_1}{\moname_2}{\obj} \  & \textrm {if}  \ \mode = \dynmode, \kwclass\ \Cname\ \cdots\ \{\ \cdots\ \attributor \ \} \in \programcode, \alpha' \ \textrm{is} \ fresh, \Fabody(\Cname\lb\dynmode,\listi\rb) = e_a \\
+
+\rtitle{Snapshot2} & \snapshot{\obj}{\moname_1}{\moname_2} & \cloreduct{\moname} & \obj & \textrm {if}\ \mode = \moname', \kwclass\ \Cname\ \cdots\ \{\ \cdots\ \attributor \ \} \in \programcode, \moname_1\msub\moname'\msub\moname_2 \\
+
+%\rtitle{Check} & \check{\moname'}{\moname_1}{\moname_2} & \cloreduct{\moname} & \moname' & \textrm {if} \ \moname_1\msub\moname'\msub\moname_2, \alpha'\ \textrm{is}\ fresh \\
+
+\rtitle{Check} & \checkp{\moname'}{\moname_1}{\moname_2}{\obj} & \cloreduct{\moname} & \closure{\alpha'}{\Cname\lb\moname',\listi\rb}{\overline{\val}} & \textrm {if} \ \moname_1\msub\moname'\msub\moname_2, \alpha'\ \textrm{is}\ fresh \\
+
+\rtitle{McaseProj} & \mcasetag{\mcase{\bt}{\val}}{\moname_{j}} & \cloreduct{\moname} & \val_{j} \\
+
+\rtitle{Closure1} & \cl{\moname'}{e} & \cloreduct{\moname} & \cl{\moname'}{e'} & \textrm{if}\ e \cloreduct{\moname'} e' \\
+
+\rtitle{Closure2} & \cl{\moname'}{\val} & \cloreduct{\moname} & \val & \\
+
+\rtitle{Context} & \redreal{e_1}{} & \cloreduct{\moname} & \redreal{e_2}{} & \textrm{if}\ e_1 \cloreduct{\moname} e_2 \\
+
+\end{tabularx}
+\end{center}
+
+\vskip 5ex
+\begin{center}
+for all rules: $\obj = \closure{\alpha,\bt}{\overline{\val}}$, $\Fmbody(\Mname,\bt) = \overline{\VAR}. e$, 
+$\bt = \Cname\lb\mode,\listi\rb$
+\end{center}
+
+\caption{Reduction Rules}
+\label{fig:reductionrules}
+\end{figure*}

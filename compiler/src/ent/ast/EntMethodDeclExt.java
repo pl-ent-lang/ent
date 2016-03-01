@@ -22,7 +22,8 @@ public class EntMethodDeclExt extends EntProcedureDeclExt {
   protected int modeTypeVarStartIndex(EntProcedureInstance pi) {
     EntClassType ct = (EntClassType) pi.container();
     
-    return ct.modeTypeVars().size();
+    //return ct.modeTypeVars().size();
+    return 0;
   }
 
   @Override

@@ -1,0 +1,31 @@
+\begin{figure}[h]
+\scriptsize
+\hrule
+\begin{mathpar}
+			\inferrule*[left=\wftitle{Empty}]
+      {}
+      { \programcode \judgewfe \epsilon }
+      \\
+
+			\inferrule*[left=\wftitle{ESpec}]
+      {
+        \programcode \judgewfe \espec \\ \basemode \msub \basemode'
+      }
+      {
+        \programcode \judgewfe \espec, \basemode \msub \mtvar \msub \basemode'
+      }
+      \\
+
+      \inferrule*[left=\wftitle{TSpec}]
+      {
+        \programcode \judgewfe \econs,\espec 
+      }
+      {
+        \programcode \judgewfe \dynmode\rightarrow\econs,\espec
+      }
+
+\end{mathpar}
+
+\caption{Environment Well-Formedness}
+\label{fig:wellenv}
+\end{figure}

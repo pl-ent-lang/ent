@@ -1,0 +1,21 @@
+\begin{figure}[h]
+\scriptsize
+\hrule
+\begin{mathpar}
+			\inferrule*[left=\wftitle{Class}]
+			{
+			  \kwclass\ \Cname\ \tspec\ \kwextends\ \Dname\ \dots \in \programcode \\
+        \Fiparam(\tspec) = \listi' \\ \Fcons(\tspec) = \cset' \\
+        \cset \models \cset'\subst{\listi'}{\overline{\basemode}} \\
+        \cset \judgewfti \Dname\lb\overline{\basemode}\rb \\
+			}
+			{
+        \cset \judgewfti \Cname\lb\overline{\basemode}\rb
+      } 
+      \\
+
+\end{mathpar}
+
+\caption{Internal Type Well-Formedness}
+\label{fig:welltypesinternal}
+\end{figure}

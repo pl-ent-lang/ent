@@ -1,0 +1,38 @@
+\begin{figure}[ht]
+\footnotesize
+\hrule
+  \begin{mathpar}
+    \inferrule*[left=\stitle{Obj}]
+    { 
+      \Gamma;\cset \vdash e:\texist{\moname_1\msub\mtvar\msub\moname_2}.\mtvar \\
+      \Gamma;\cset \vdash \overline{e}:\overline{\bt} \\
+      \Ffields(\Cname\lb\mtvar,\listi\rb) = \overline{\bt}\ \overline{\Fname} = \overline{e} \\
+    }
+    {
+      \Gamma;\cset \vdash \closure{\alpha}{\Cname\lb e,\listi\rb}{\overline{e}} : \Cname\lb\mtvar,\listi\rb
+    }
+    \\ 
+    
+    \inferrule*[left=\stitle{Check}]
+    { 
+      \Gamma;\cset \vdash e : \modevt \\ 
+    }
+    {
+      \Gamma;\cset \vdash \check{e}{\moname_1}{\moname_2} : \texist{\moname_1\msub\mtvar\msub\moname_2}.\mtvar
+    }
+    \\ 
+    
+    \inferrule*[left=\stitle{Closure}]
+    { 
+      \Gamma;\cset \vdash e:\t \\ 
+    }
+    { 
+      \Gamma;\cset \vdash \cl{\moname}{e} : \t 
+    }
+    \\ 
+
+  \end{mathpar}
+
+\caption{Auxiliary Run-time Expression Typing}
+\label{fig:runtimerules}
+\end{figure}

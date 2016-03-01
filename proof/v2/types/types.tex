@@ -1,0 +1,39 @@
+\begin{figure}[ht]
+\scriptsize
+\hrule
+\vspace{1ex}
+
+\begin{tabularx}{1\linewidth}{>{$}l<{$} >{$}l<{$} >{$}l<{$} @{\extracolsep{\fill}} >{$}r<{$}}
+
+\bt & \defassign & \classiota \mid \tmcase{\bt} & \textit{programmer type}  \\
+
+
+\listi & \defassign & \overline{\basemode} \mid \texttt{?},\overline{\basemode} & \textit{object mode parameter list} \\
+
+\basemode & \defassign & \moname \mid \mtvar \mid \top \mid \bot & \textit{static mode} \\
+
+\mode & \defassign & \basemode \mid \dynmode & \textit{mode}  \\
+
+\mtvar & & & \textit{mode type variable} \\
+
+\dynmode & & & \textit{dynamic mode type} \\
+
+\econs & \defassign & \basemode \msub \mtvar \msub \basemode' & \textit{constrained mode} \\
+
+
+\tspec & \defassign & \dynmode \rightarrow \econs,\espec \mid \espec & \textit{class mode parameter list}  \\
+
+\espec & \defassign & \overline{\econs} & \textit{constrained mode list} \\
+
+
+\t & \defassign & \bt \mid \texist{\econs}.\t  \mid \modevt & \textit{type}\\
+
+
+\cset & \defassign & \overline{\basemode \msub \basemode'} & \textit{constraints}
+
+\end{tabularx}
+
+\caption{Type Elements}
+\label{fig:types}
+\end{figure}
+

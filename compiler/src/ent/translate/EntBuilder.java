@@ -188,12 +188,10 @@ public class EntBuilder {
       Context ctx) {
     // 1.1. Capture the inferred method mode type variables.
     List<Expr> closElems = new ArrayList<>();
-    /*
     for (ModeTypeVariable v : capturedMtArgs) {
       ModeType mt = (ModeType) mtEnv.get(v);
       closElems.add(mt.rewriteForLookup(nf, toTs, ctx));
     }
-    */
 
     // 1.2. Build the closure expression
     List<Expr> closInit = new ArrayList<>();
