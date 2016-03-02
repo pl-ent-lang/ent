@@ -32,16 +32,25 @@
       }
 			\\
 
-			\inferrule*[left=\sbtitle{Exists}]
+			\inferrule*[left=\sbtitle{ExistOpen}]
 			{
-        \econs = \basemode_{1}\msub\mtvar\msub\basemode_{2} \\
-        \cset = \{\basemode_1 \msub \mtvar, \mtvar \msub \basemode_2\} \cup \cset' \\
-			  \mtvar \textrm{ does not appear in } \cset'  
+        \econs = \basemode_1\msub\mtvar\msub\basemode_2 \\
+        \cset' = \cset \cup \{\basemode_1\msub\mtvar,\mtvar\msub\basemode_2\} \\ \mtvar \not\in \cset' \\
+        \cset' \vdash \t \tsub \t' \\
 			}
 			{ 
-        \cset \vdash \texist{\econs}.\t \tsub \t  
+        \cset \vdash \texist{\econs}.\t \tsub \t'
       }
       \\
+
+      \inferrule*[left=\sbtitle{ExistAbstract}]
+      {
+        \econs = \basemode_1\msub\mtvar\msub\basemode_2 \\
+        \cset \models \{\basemode_1 \msub \mtvar, \mtvar \msub \basemode_2\} \\
+      }
+      {
+        \cset \vdash \t \tsub \texist{\econs}.\t
+      }
 
 			\inferrule*[left=\sbtitle{Class}]
 			{

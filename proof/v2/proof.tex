@@ -509,6 +509,7 @@ Trivial.
 
 \end{proof} 
 
+\begin{comment}
 \begin{lemma}
 \label{pf:fresh-object}
 If $\Gamma;\cset\vdash\closure{\alpha}{\classdyn}{\overline{\val}}:\classdyn$ and $\cset\judgewft\Cname\lb\moname,\listi\rb$ then $\Gamma;\cset\vdash\closure{\alpha'}{\Cname\lb\moname,\listi\rb}{\overline{\val}}$.
@@ -516,6 +517,7 @@ If $\Gamma;\cset\vdash\closure{\alpha}{\classdyn}{\overline{\val}}:\classdyn$ an
 
 \begin{proof}
 \end{proof}
+\end{comment}
 
 
 % LEMMA : Preservation (Subject Reduction)
@@ -643,9 +645,8 @@ Lemma \ref{pf:object-fields} gives $\Gamma;\cset\vdash\val_i:\bt_i$ which is exa
 
 \begin{case}[\stitlet{Snapshot}] 
 \begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
-e = \snapshot{e_1}{\basemode_1}{\basemode_2} & \t = \Cname\lb\mtvar,\listi\rb & \\
-\Gamma;\cset' \vdash e_1 : \Cname\lb\dynmode,\listi\rb & \mtvar\ fresh & \\
-\cset = \cset'\cup\{\basemode_1\msub\mtvar,\mtvar\msub\basemode_2\} & \cset \judgewft \Cname\lb\mtvar,\listi\rb & \\
+e = \snapshot{e_1}{\basemode_1}{\basemode_2} & \t = \texist{\econs}.\Cname\lb\mtvar,\listi\rb & \\
+\Gamma;\cset' \vdash e_1 : \Cname\lb\dynmode,\listi\rb & \econs = \basemode_1 \msub \mtvar \msub \basemode_2 & \\ 
 \end{tabular}\\
 
 %\begin{subcase-env}
@@ -659,13 +660,20 @@ Easy.
 
 \begin{subcase}[\rtitlet{Snapshot1}]
 \begin{tabular}[t]{>{$}l<{$} >{$}l<{$}}
-\snapshot{\obj}{\moname_1}{\moname_2} \cloreduct{\moname} \checkp{e_a\subst{\kwthis}{\obj}}{\moname_1}{\moname_2}{\obj} & \obj = \closure{\alpha}{\classdyn}{\overline{\val}} \\ 
-\kwclass\ \Cname\ \cdots\ \{\ \cdots\ \attributor \ \} \in \programcode & e_a = \Fabody(\classdyn) \\ 
+\snapshot{\obj}{\moname_1}{\moname_2} \cloreduct{\moname} \closure{\alpha'}{\Cname\lb\check{e_a\subst{\kwthis}{\obj}}{\moname_1}{\moname_2},\listi\rb,(\moname_1,\moname_2)}{\overline{\val}} & \\
+\obj = \closure{\alpha}{\classdyn}{\overline{\val}} & \\
+\kwclass\ \Cname\ \cdots\ \{\ \cdots\ \attributor \ \} \in \programcode & \\ 
+e_a = \Fabody(\classdyn) & \\ 
 \end{tabular}\\
 
 From Lemma \ref{pf:abody} we have $\kwthis:\classdyn;\cset'\vdash e_a:\modevt$. Then, by Lemma \ref{pf:termsubstitution-preserves-typing} we have $\varnothing;\cset'\vdash e_a\subst{\kwthis}{\obj}:\modevt$. Using Lemma \ref{pf:weakening} gives us $\Gamma;\cset\vdash e_a\subst{\kwthis}{\obj}:\modevt$.
 
-Now, we have $\cset = \cset'\cup\{\moname_1\msub\mtvar,\mtvar\msub\moname_2\}$ from T-Snapshot, from which $\cset\models\{\moname_1\msub\mtvar,\mtvar\msub\moname_2\}$ is immediate. Then, by T-Check, we have $\Gamma;\cset\vdash\checkp{\subst{\kwthis}{\obj}}{\moname_1}{\moname_2}{\obj}$.
+Now, we have $\cset = \cset'\cup\{\moname_1\msub\mtvar,\mtvar\msub\moname_2\}$ from T-Snapshot, from which $\cset\models\{\moname_1\msub\mtvar,\mtvar\msub\moname_2\}$ is immediate. 
+
+We may then apply \rtitlet{Check} to get $\Gamma;\cset\vdash\check{e_a\subst{\kwthis}{\obj}}{\moname_1}{\moname_2}:\modevt$. Using Lemma (come back), we have $\Gamma;\cset \vdash \overline{\val}:\overline{\bt}$.
+
+
+We may then apply \rtitlet{Object}, giving us $\Gamma;\cset\vdash\closure{\alpha'}{\Cname\lb\check{e_a\subst{\kwthis}{\obj}}{\moname_1}{\moname_2},\listi\rb,(\moname_1,\moname_2)}{\overline{\val}}:\texist{\moname_1\msub\mtvar'\msub\moname_2}.\Cname\lb\mtvar',\listi\rb$. Then, by T-Sub, we have $\Gamma;\cset\vdash\closure{\alpha'}{\Cname\lb\check{e_a\subst{\kwthis}{\obj}}{\moname_1}{\moname_2},\listi\rb,(\moname_1,\moname_2)}{\overline{\val}}:\texist{\basemode_1\msub\mtvar\msub\basemode_2}.\Cname\lb\mtvar,\listi\rb$
 
 \end{subcase}
 
@@ -752,38 +760,24 @@ Trival: Cannot occur.
 
 \begin{case}[\stitlet{Check}] 
 \begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
-e = \checkp{e_1}{\moname_1}{\moname_2}{e_2} & \t = \Cname\lb\mtvar,\listi\rb & \\
-\Gamma;\cset \vdash e_1 : \modevt & \Gamma;\cset \vdash e_2 : \Cname\lb\dynmode,\listi\rb & \\ 
-\cset\models\{\basemode_1\msub\mtvar,\mtvar\msub\basemode_2\} & \cset\models\{\basemode_1\msub\moname_1,\moname_2\msub\basemode_2\} & \\
+e = \check{e_1}{\moname_1}{\moname_2} & \t = \modevt & \\
+\Gamma;\cset \vdash e_1 : \modevt & \\ 
 \end{tabular}\\
 
 %\begin{subcase-env}
 
 \begin{subcase}
 \begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
-e_1 \cloreduct{\moname} e_1' & e' = \checkp{e_1'}{\moname_1}{\moname_2}{e_2} & \\
-\end{tabular}\\
-Easy.
-\end{subcase}
-
-\begin{subcase}
-\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
-e_2 \cloreduct{\moname} e_2' & e' = \checkp{\moname'}{\moname_1}{\moname_2}{e_2'} & \\
+e_1 \cloreduct{\moname} e_1' & e' = \check{e_1'}{\moname_1}{\moname_2} & \\
 \end{tabular}\\
 Easy.
 \end{subcase}
 
 \begin{subcase}[\rtitlet{Check}]
 \begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
-e_1 = \checkp{\moname'}{\moname_1}{\moname_2}{\obj} & \obj = \closure{\alpha}{\Cname\lb\dynmode,\listi\rb}{\overline{\val}} & \\
-\checkp{\moname'}{\moname_1}{\moname_2}{\obj} \cloreduct{\moname} \closure{\alpha'}{\Cname\lb\moname',\listi\rb}{\overline{\val}} & \moname_1\msub\moname'\msub\moname_2 & \\
-e' = \closure{\alpha'}{\Cname\lb\moname',\listi\rb}{\overline{\val}} & & \\
+e_1 = \check{\moname'}{\moname_1}{\moname_2} & \check{\moname'}{\moname_1}{\moname_2} \cloreduct{\moname} \moname' & e' = \modevt \\
 \end{tabular}\\
-
-We have $\cset\judgewft\Cname\lb\mtvar,\listi\rb$. Since $\cset\models\{\basemode_1\msub\moname_1,\moname_2\msub\basemode_2\}$ and $\cset\models\{\moname_1\msub\moname',\moname'\msub\basemode_2\}$ we have $\cset\models\{\basemode_1\msub\moname',\moname'\msub\basemode_2\}$; hence, $\cset\judgewft\Cname\lb\moname',\listi\rb$.
-
-From Lemma \ref{pf:fresh-object} we have $\Gamma;\cset\vdash\closure{\alpha'}{\Cname\lb\moname',\listi\rb}{\overline{\val}}:\Cname\lb\moname',\listi\rb$. Then, by T-Sub, $\Gamma;\cset\vdash\closure{\alpha'}{\Cname\lb\moname',\listi\rb}{\overline{\val}}:\Cname\lb\mtvar,\listi\rb$, which is exactly what we need.
-
+Easy.
 \end{subcase} 
 
 %\end{subcase-env}
@@ -961,11 +955,18 @@ If $\redreal{e}{\moname}$, $\Gamma;\cset\vdash e:\t$ with a premise containing $
 % LEMMA : Progress
 \begin{lemma}[Progress]
 \label{pf:progress}
-If $\Gamma;\cset \vdash e : \t$, then either $e$ is a value, $e$ is a bad cast, $e$ is a bad check, or there exists $e'$ such that $e \cloreduct{\moname} e'$.
+Suppose $\Gamma;\cset\vdash e:\t$, then either
+\leavevmode
+\begin{enumerate}[(\arabic*)] 
+\item $e \cloreduct{\moname} e'$ for some $e'$.
+\item $e$ is a value.
+\item $e = \redreal{\check{\moname'}{\moname_1}{\moname_2}}{}$ where $\moname_1\msub\moname\msub\moname_2$ does not hold.
+\item $e = \redreal{(\bt')\closure{\alpha}{\bt}{\overline{\val}}}{}$ where $\cset\vdash\bt\tsub\bt'$ does not hold.
+\end{enumerate}
 \end{lemma}
 
 \begin{proof}
-By induction on the derivation of $\Gamma,\cset \vdash e : \t$.
+By induction on the derivaiton of $\Gamma;\cset\vdash e:\t$.
 
 \begin{case}[\stitlet{Var}]
 \begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
@@ -983,28 +984,31 @@ Trivial by R-New, with $e' = \closure{\alpha}{\classiota}{\Finit(\programcode,\C
 
 \begin{case}[\stitlet{Cast}] 
 \begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
-e = (\bt')e_{1} & \t = \bt' & \\
+e = (\bt')e_1 & \t = \bt' & \\
 \Gamma;\cset \vdash e_1 : \classiota & & \\
 \end{tabular}\\ \\
-By the induction hypothesis, $e_1$ is a value, bad cast, bad check, or there exists $e_1'$ such that $e_1\cloreduct{\moname}e_1'$. 
-If $e_1$ is a value, then by Lemma \ref{pf:canonical-forms}, $e_{1} = \closure{\alpha}{\bt}{\overline{\val}}$ with $\cset\vdash\bt\tsub\classiota$. Now, if $\cset\vdash\classiota\tsub\bt'$ then by S-Trans we have $\cset\vdash\bt\tsub\bt'$, from which R-Cast applies, giving $e' = \closure{\alpha}{\bt}{\overline{\val}}$. If $\cset\vdash\classiota\tsub\bt'$ does not hold, then by S-Trans $\cset\vdash\bt\tsub\bt'$ does not hold; hence, we have a bad cast.
-If $e_1\cloreduct{\moname}e_1'$ then by the reduction context we may replace $e_1$ with $e_1'$, giving $e' = (\bt')e_{1}'$.
+By the induction hypothesis the following may occur: (1) $e_1\cloreduct e_1'$ from which we have $e' = (\bt')e_1'$ by \rtitlet{?}. (2) $e_1$ is a value from which Lemma \ref{canonical-forms} gives $e_1$ = $\closure{\alpha}{\bt}{\overline{\val}}$. If $\cset\vdash\bt\tsub\bt'$ then \rtitlet{Cast} applies, giving $e' = \closure{\alpha}{\bt}{\overline{\val}}$. If $\cset\vdash\bt\tsub\bt'$ does not hold, then $e = \redreal{(\bt')\closure{\alpha}{\bt}{\overline{\val}}}{}$. (3) $e_1 = \redreal{\check{\moname'}{\moname_1}{\moname_2}}{1}$ where $\moname_1\msub\moname\msub\moname_2$ does not hold, which gives $e = \redreal{\check{\moname'}{\moname_1}{\moname_2}}{}$ for $\env = (\bt')\env_1$. (4) $e_1 = \redreal{(\bt')\closure{\alpha}{\bt}{\overline{\val}}}{1}$ where $\cset\vdash\bt\tsub\bt'$ does not hold, which gives $e = \redreal{(\bt')\closure{\alpha}{\bt}{\overline{\val}}}{}$ for $\env = (\bt')\env_1$.
 \end{case}
 
 \begin{case}[\stitlet{Msg}] 
 \begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
-e = e_{1}.(\overline{e_{1}}) & \t = \bt' & \\
-\Gamma;\cset \vdash e_{1}:\bt & \Gamma;\cset \vdash \overline{e_{1}}:\overline{\bt} & \Fmtype(\Mname,\bt) = \overline{\bt}\rightarrow\bt' \\ 
+e = e_1.(\overline{e_1}) & \t = \bt' & \\
+\Gamma;\cset \vdash e_1:\bt & \Gamma;\cset \vdash \overline{e_1}:\overline{\bt} & \Fmtype(\Mname,\bt) = \overline{\bt}\rightarrow\bt' \\ 
 \Gamma;\cset \vdash \kwthis:\bt_{this} & \cset \models \{\Fmode(\bt)\msub\Fmode(\bt_{this})\} & \Fmode(\bt) \neq \ ? \\
 \end{tabular}\\ \\
 By the induction hypothesis, 
 \begin{proofcenter}
-$e_1$ is a value, bad cast, bad check, or there exists $e_1'$ such that $e_1\cloreduct{\moname}e_1'$ \\
-$e_{1_i}$ is a value, bad cast, bad check, or there exists $e_{1_i}'$ for each $i$ such that $e_{1_i}\cloreduct{\moname}e_{1_i}'$.
-\end{proofcenter}
-If $e_1\cloreduct{\moname}e_1'$ then we may replace $e_1$ with $e_1'$ giving us $e' = e_{1}'.(\overline{e_{1}})$.
 
-If $e_1$ is a value then by Lemma \ref{pf:canonical-forms}, $e_{1} = \closure{\alpha}{\bt}{\overline{\val}}$ with $\cset\vdash\bt\tsub\classiota$. We consider the case that all $e_{1_i}$ are values first. By Lemma \ref{pf:this-equals-context-mode} we have $\cset \models \{\Fmode(\bt)\msub\moname\}$. R-Msg now applies, giving us $e' = \redreal{e\subst{\overline{\VAR}}{\overline{\val}'}\subst{\kwthis}{\closure{\alpha}{\bt}{\overline{\val}}}}{\moname'}$. Otherwise we may replace the first $e_{1_i}$ with $e_{1_i}'$ giving us $e' = \closure{\alpha}{\bt}{\val_{1_1},\dots,e_{1_i}',\dots,e_{1_n}}$.
+$e_1\cloreduct{\moname} e_1'$, $e_1'$ is a value, $e_1 = \redreal{\check{\moname'}{\moname_1}{\moname_2}}{1}$ where $\moname_1\msub\moname'\msub\moname_2$ does not hold, or $e_1 = \redreal{(\bt')\closure{\alpha}{\bt}{\overline{\val}}}{1}$ where $\cset\vdash\bt\tsub\bt'$ does not hold. \\
+
+$e_{1_i}\cloreduct{\moname} e_{1_i}'$, $e_{1_i}'$ is a value, $e_{1_i} = \redreal{\check{\moname'}{\moname_1}{\moname_2}}{1_i}$ where $\moname_1\msub\moname'\msub\moname_2$ does not hold, or $e_{1_i} = \redreal{(\bt')\closure{\alpha}{\bt}{\overline{\val}}}{1_i}$ where $\cset\vdash\bt\tsub\bt'$ does not hold. \\
+\end{proofcenter}
+
+If $e_1\cloreduct{\moname}e_1'$ then we have $e' = e_1'.\overline{e_1}$ by \rtitlet{?}. If $e_1 = \redreal{\check{\moname'}{\moname_1}{\moname_2}}{1}$ or $e_1 = \redreal{(\bt')\closure{\alpha}{\bt}{\overline{\val}}}{1}$ then $e = \redreal{\check{\moname'}{\moname_1}{\moname_2}}{}$ or $e = \redreal{(\bt')\closure{\alpha}{\bt}{\overline{\val}}}{}$ for $\env = \env_1.\Mname(\overline{e_1})$.
+
+If $e_1$ is a value then by Lemma \ref{pf:canonical-forms}, $e_1 = \closure{\alpha}{\bt}{\overline{\val}}$. If $e_{1_i}\cloreduct{\moname}e_{1_i}'$, then we have $e' = \closure{\alpha}{\bt}{\overline{\val}}.\Mname(\dots,e_{1_i}'\dots)$ by \rtitlet{?}. If $e_{1_i} = \redreal{\check{\moname'}{\moname_1}{\moname_2}}{1_i}$ or $e_{1_i} = \redreal{(\bt')\closure{\alpha}{\bt}{\overline{\val}}}{1_i}$ then $e = \redreal{\check{\moname'}{\moname_1}{\moname_2}}{}$ or $e = \redreal{(\bt')\closure{\alpha}{\bt}{\overline{\val}}}{}$ for $\env = \closure{\alpha}{\bt}{\overline{\val}}.\Mname(\dots,\env_{1_i},\dots)$.  
+
+We now consider the case that all $e_{1_i}$ are values . By Lemma \ref{pf:this-equals-context-mode} we have $\cset \models \{\Fmode(\bt)\msub\moname\}$. R-Msg now applies, giving $e' = \cl{\moname'}{e_b\subst{\overline{\VAR}}{\overline{\val}'}\subst{\kwthis}{\obj}}$ with $\Fmbody(\Mname,\bt) = \overline{\VAR}.e_b$.
 
 \end{case}
 
@@ -1014,9 +1018,7 @@ e = e_1.\Fname_i & \t = \bt_i & \\
 \Gamma;\cset \vdash e_{1}:\bt & \Ffields(\bt) = \overline{\bt} \ \overline{\Fname} & \\
 \Gamma;\cset \vdash \kwthis:\bt_{this} & \cset \models \{\Fmode(\bt)\msub\Fmode(\bt_{this})\} & \Fmode(\bt) \neq \ ? \\
 \end{tabular}\\ \\
-By the induction hypothesis, $e_1$ is a value, bad cast, bad check, or there exists $e_1'$ such that $e_1\cloreduct{\moname}e_1'$. 
-
-If $e_1\cloreduct{\moname}e_1'$ then we may replace $e_1$ with $e_1'$ giving us $e' = e_1'.\Fname_i$. If $e_1$ is a value then by Lemma \ref{pf:canonical-forms}, $e_{1} = \closure{\alpha}{\bt}{\overline{\val}}$ with $\cset\vdash\bt\tsub\classiota$. By Lemma \ref{pf:this-equals-context-mode} we have $\cset \models \{\Fmode(\bt)\msub\moname\}$. R-Field now applies, giving us $e' = \val_i$.
+Similar.
 \end{case} 
 
 \begin{case}[\stitlet{Snapshot}] 
@@ -1024,12 +1026,7 @@ If $e_1\cloreduct{\moname}e_1'$ then we may replace $e_1$ with $e_1'$ giving us 
 e = \snapshot{e_{1}}{\basemode_{1}}{\basemode_{2}} & \t = \texist{\econs}. \Cname\lb\mtvar,\listi\rb &  \\
 \Gamma;\cset \vdash e_{1} : \Cname\lb?,\listi\rb & \econs = \basemode_1 \msub \mtvar \msub \basemode_2 & \\
 \end{tabular}\\ \\
-By the induction hypothesis, $e_{1}$ is a value, bad cast, bad check, or there exists $e_{1}'$ such that $e_{1}\cloreduct{\moname}e_{1}'$. 
-
-If $e_{1}$ is a value then by Lemma \ref{pf:canonical-forms} $e_{1} = \closure{\alpha}{\bt}{\overline{\val}}$ with $\cset\vdash\bt\tsub\Cname\lb\dynmode,\listi\rb$. Now, if $\Feargs(\bt) = \dynmode,\listi$, then R-Snapshot1 applies, with $e' = \letx{\check{ \attributor \subst{\kwthis}{\closure{\alpha}{\bt}{\overline{\val}}}}{\moname'}{\moname''}}{\closure{\alpha'}{\bt\subst{\Feargs(\bt)}{\VAR,\listi}}{\overline{\val}}}$. Otherwise $\Feargs(\bt) = \moname,\listi$ from which we may apply R-Snapshot2 to get $e' = \letx{\check{\moname}{\moname'}{\moname''}}{\closure{\alpha}{\bt}{\overline{\val}}}$.
-
-If $e_{1}\cloreduct{\moname}e_{1}'$ then by the reduction context we may replace $e_{1}$ with $e_{1}'$ to get $e' = \snapshot{e_{1}'}{\basemode_{1}}{\basemode_{2}}$.
-
+Easy.
 \end{case}
 
 \begin{case}[\stitlet{MCase}] 
@@ -1037,9 +1034,7 @@ If $e_{1}\cloreduct{\moname}e_{1}'$ then by the reduction context we may replace
 e = \mcase{\bt}{e_{1}} & \t = \tmcase{\bt} & \\
 \Gamma;\cset \vdash e_{1_{i}}:\bt \text{ for all} \ i & \overline{\moname} = \Fmodes(\programcode) & \\
 \end{tabular}\\ \\
-By the induction hypothesis, $e_{1_{i}}$ is a value, bad cast, bad check, or there exists $e_{1_{i}}'$ such that $e_{1_{i}}\cloreduct{\moname}e_{1_{i}}'$. 
-
-If all $e_{1_{i}}$ are values, then $e$ is a value. Otherwise by the reduction context we may replace $e_{1_{i}}$ with $e_{1_{i}}'$, giving us $e'$.
+Easy.
 \end{case}
 
 \begin{case}[\stitlet{ElimCase}] 
@@ -1047,11 +1042,7 @@ If all $e_{1_{i}}$ are values, then $e$ is a value. Otherwise by the reduction c
 e = \mcasetag{e_{1}}{\basemode} & \t = \bt & \\
 \Gamma;\cset \vdash e_{1} : \tmcase{\bt} & \basemode \in \fundef{modes}(\programcode) \textrm{ or } \basemode \textrm{ appears in } \cset &  \\
 \end{tabular}\\ \\
-By the induction hypothesis, $e_{1}$ is a value, bad cast, bad check, or there exists $e_{1}'$ such that $e_{1}\cloreduct{\moname}e_{1}'$. 
-
-If $e_{1}$ is a value then by Lemma \ref{pf:canonical-forms}, $e_{1}$ has the shape $\mcase{\bt}{\val}$, from which R-McaseProj applies, giving us $e' = \val_{j}$. 
-If $e_{1}\cloreduct{\moname}e_{1}'$ then by the reduction context we may replace $e_{1}$ with $e_{1}'$, giving us $e' = \mcasetag{e_{1}'}{\basemode}$.
-
+Similar, except for the case that $e_1$ is a value. by Lemma \ref{pf:canonical-forms}, $e_1$ has the shape $\mcase{\bt}{\val}$, from which \rtitle{McaseProj} applies, giving us $e' = \val_{j}$. 
 \end{case}
 
 \begin{case}[\stitlet{Mode}] 
@@ -1066,9 +1057,7 @@ Trivial.
 e = e_{1} & \t = \t_{1}' \\
 \Gamma;\cset \vdash e_{1}:\t_{1} & \cset\vdash \t_{1}\tsub\t_{1}' & \\
 \end{tabular}\\ \\
-By the induction hypothesis, $e_{1}$ is a value, bad cast, bad check, or there exists $e_{1}'$ such that $e_{1}\cloreduct{\moname}e_{1}'$. 
-
-If $e_{1}$ is a value, we are done. If $e_{1}\cloreduct{\moname}e_{1}'$ then we may replace $e_{1}$ with $e_{1}'$ giving us $e' = e_{1}'$.
+Easy.
 \end{case}
 
 \begin{case}[\stitlet{Object}] 
@@ -1076,9 +1065,7 @@ If $e_{1}$ is a value, we are done. If $e_{1}\cloreduct{\moname}e_{1}'$ then we 
 e = \closure{\alpha}{\classiota}{\overline{e}} & \t = \classiota \\
 \Gamma;\cset \vdash \overline{e}:\overline{\t} & \Ffields(\classiota) = \overline{\t} \ \overline{\Fname} = \overline{e} & \\
 \end{tabular}\\ \\
-By the induction hypothesis, $e_{i}$ is a value, bad cast, bad check, or there exists $e_{i}'$ such that $e_{i}\cloreduct{\moname}e_{i}'$ for each $i$. 
-
-If all $e_{i}$ are values, then $e$ is a value and we are done. Otherwise, by the reduction context, we may replace an $e_{i}$ with $e_{i}'$, giving us $e' = \closure{\alpha}{\classiota}{\val_{1},\dots,e_{i}',\dots,e_{n}}$.
+Easy.
 \end{case}
 
 \begin{case}[\stitlet{Check}] 
@@ -1091,12 +1078,16 @@ By the induction hypothesis, $e_1$ is a value, bad cast, bad check, or there exi
 If $e_1$ is a value, then by Lemma \ref{pf:canonical-forms}, $e_1$ has the shape $\moname$. Now, we have two cases: If $\moname_1\msub\moname\msub\moname_2$ then R-Check applies, giving us $e' = \moname$. If $\moname_1\msub\moname\msub\moname_2$ \emph{does not hold} then by definition we have a bad check.
 
 If $e_1\cloreduct{\moname}e_1'$ then we may replace $e_1$ with $e_1'$ by the reduction context, giving us $e' = \check{e_1'}{\moname_1}{\moname_2}$.
-
 \end{case}
 
+\begin{case}[\stitlet{Cl}] 
+\begin{tabular}[t]{>{$}l<{$} >{$}l<{$} >{$}l<{$}}
+e = \cl{\moname'}{e_1} & \t = \t_1 & \\
+\Gamma;\cset\vdash e_1:\t_1 & & \\
+\end{tabular}\\ \\
+\end{case} 
+Easy.
 \end{proof}
-
-
 
 % THEOREM : Type soundness
 \begin{theorem}[Type Soundness]
