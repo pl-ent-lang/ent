@@ -10,7 +10,9 @@ e & \defassign & \dots & \textit{runtime expressions} \\
 & \mid & \closure{\alpha}{\classiota}{\overline{e}} & \\
 & \mid & \cl{\moname}{e} & \\ 
 & & & \\
-\env & \defassign & \odot \mid \ \env.\Mname(\overline{e}) \mid \obj.\Mname(\dots, \obj, \env, e, \dots) & \textit{evaluation context} \\
+\env & \defassign & \odot & \textit{evaluation context} \\
+& \mid & \env.\Mname(\overline{e}) & \\
+& \mid & \obj.\Mname(\dots, \obj, \env, e, \dots) & \\
 & \mid & (\bt)\env \mid \env.\Fname \\
 & \mid & \snapshot{\env}{\moname_1}{\moname_2}\\
 & \mid & \{\dots \moname: \val; \moname: \env; \moname: e \dots \} \mid \env \triangleright \mode \\

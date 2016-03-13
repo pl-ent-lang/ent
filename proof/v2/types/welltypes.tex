@@ -4,10 +4,9 @@
 \begin{mathpar}
 			\inferrule*[left=\wftitle{Class}]
 			{
-			 \kwclass\ \Cname\ \tspec\ \kwextends\ \Dname\ \dots \in \programcode \\
-       \Feparam(\tspec) = \listi' \\ \Fcons(\tspec) = \cset' \\
-       \cset \models \cset'\subst{\listi'}{\overline{\basemode}} \\
-       \cset \judgewft \Dname\lb\overline{\basemode}\rb \\
+			  \kwclass\ \Cname\ \tspec\ \kwextends\ \Dname\ \dots \in \programcode \\
+        \Fiparam(\tspec) = \listi' \\ \Fcons(\tspec) = \cset' \\
+        \cset \models \cset'\subst{\listi'}{\overline{\basemode}} 
 			}
 			{
         \cset \judgewft \Cname\lb\overline{\basemode}\rb
@@ -17,10 +16,9 @@
       \inferrule*[left=\wftitle{ClassDyn}]
 			{
 			 \kwclass\ \Cname\ \dynmode\rightarrow\econs,\espec\ \kwextends\ \Dname \dots \in \programcode \\
-       \Feparam(\dynmode\rightarrow\econs,\espec) = \listi' \\ 
+       \Fiparam(\dynmode\rightarrow\econs,\espec) = \listi' \\ 
        \Fcons(\espec) = \cset' \\
        \cset \models \cset'\subst{\listi'}{\overline{\basemode}} \\
-       \cset \judgewft \Dname\lb\overline{\basemode}\rb \\
 			}
 			{ 
         \cset \judgewft \Cname\lb\dynmode,\overline{\basemode}\rb 
@@ -42,9 +40,13 @@
       }
 
       \inferrule*[left=\wftitle{MCase}]
-			{\cset \judgewft \bt}
-			{\cset \judgewft \tmcase{\bt} }
-%      \\
+			{
+        \cset \judgewft \bt
+      }
+			{
+        \cset \judgewft \tmcase{\bt} 
+      }
+%     \\
 %
 %      \inferrule*[left=\wftitle{ModeBase}]
 %      {}

@@ -9,17 +9,14 @@
 
       \inferrule*[left=\stitle{Class}]
 			{ 
-        \listi = \Fiparam(\tspec) \\
   			\cset = \Fcons(\tspec) \\
-        \fundef{ithis}(\tspec) = \Fmode(\Dname) \\
-        %\overline{x}:\overline{\bt};\kwthis:\classiota;\cset \vdash e: \bt \textrm{ for each }  \bt \ \Mname (\overline{\bt}\ \overline{x})  \{\ e\ \} \in \mdlist \\
         \mdlist\ \textrm{OK IN}\ \Cname, \tspec \\
         \attributor\ \textrm{OK IN}\ \Cname, \tspec \\
         \fdlist = \overline{\bt}\ \overline{\Fname} = \overline{e} \\ \varnothing;\cset \vdash \overline{e}:\overline{\bt} \\
-        \kwclass\ \Cname\ \tspec\ \kwextends\ \Dname \{ \fdlist \ \mdlist \ \attributor \} \textrm{ FJ OK } 
+        \kwclass\ \Dname\ \tspec\ \kwextends\ \Ename \{ \dots \}\ \textrm{FJ OK} 
 			}
 			{  
-        \kwclass\ \Cname\ \tspec\ \kwextends\ \Dname \{ \fdlist \ \mdlist \ \attributor \}\textrm{ OK }
+        \kwclass\ \Cname\ \tspec\ \kwextends\ \Dname \{ \fdlist \ \mdlist \ \attributor \}\ \textrm{OK}
 			}
       \\
 
@@ -29,6 +26,7 @@
   			\cset = \Fcons(\tspec) \\
         \attributor = e \\
 			  \tspec;\kwthis:\classiota \vdash e: \modevt \\
+        \cset\judgewft\classiota \\
 			}
 			{ 
         \attributor\ \textrm{OK IN}\ \Cname, \tspec
@@ -37,11 +35,11 @@
 
 			\inferrule*[left=\stitle{Method}]
 			{
-			  %\kwclass\ \Cname\ \tspec\ \kwextends\ \bt \{ \dots \}\ \textrm{OK} \\
         \listi = \Fiparam(\tspec) \\
   			\cset = \Fcons(\tspec) \\
 			  \overline{x}:\overline{\bt};\kwthis:\classiota;\cset\vdash e:\bt \\
 			  \Foverride(\Mname, \classiota, \cset, \overline{\bt}\rightarrow\bt) \\
+        \cset\judgewft\classiota \\
 			}
 			{ \bt\ \Mname(\overline{\bt}\ \overline{x})  \{\ e\ \}\ \textrm{OK IN}\ \Cname\ \tspec
 			}
