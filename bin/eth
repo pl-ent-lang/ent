@@ -111,8 +111,7 @@ while true; do
     esac
 done
 
-classpath="$dir/compiler/classes:$dir/runtime/classes:$dir/lib/polyglot.jar:$dir/lib/java_cup.jar"
-classpath="$classpath:/Users/acanino/Research/polyglot-personal/tools/pth/classes:/Users/acanino/Research/polyglot-personal/tools/lib/pth.jar"
+classpath="$dir/compiler/classes:$dir/runtime/classes:$dir/lib/polyglot.jar:$dir/lib/java_cup.jar:$dir/lib/pth.jar"
 classpath="$classpath:$extra_cp"
 classpath=`fixclasspath "$classpath"`
 
