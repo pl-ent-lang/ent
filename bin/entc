@@ -81,6 +81,7 @@ done
 #if [ -n "$ext" ]; then
 #  args="-sx '$ext' $args"
 #fi 
+
 joe_args=`$joe -l pan "$args"`
 
 #classpath=$classpath:"$dir/compiler/classes:$dir/runtime/classes:$dir/lib/polyglot.jar:$dir/lib/java_cup.jar:$dir/lib/jsr305-1.3.9.jar:$dir/lib/guava-18.0.jar"
@@ -101,4 +102,4 @@ if [ "$verbose" = 1 ]; then
 fi
 
 polyglot "-assert -simpleoutput $joe_args"
-#polyglot "-assert -simpleoutput -dontTranslatePanda $joe_args"
+#polyglot "-assert -simpleoutput -dontTranslateEnt $joe_args"

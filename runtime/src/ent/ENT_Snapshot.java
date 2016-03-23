@@ -15,14 +15,22 @@ public class ENT_Snapshot {
       throw new ENT_RuntimeException("Dynamic mode failed to resolve!", mode, lb, ub);
     }
 
-    T copy = (T) o.ENT_copy();
-    if (saveMode) {
-      Integer[] cmodes = ENT_Runtime.getObjAll(o).clone();
+    if (ENT_Runtime.objectCopied(o)) {
+      T copy = (T) o.ENT_copy();
+      if (saveMode) {
+        Integer[] cmodes = ENT_Runtime.getObjAll(o).clone();
+        cmodes[0] = mode;
+        ENT_Runtime.putObj(copy, cmodes);
+      }
+      System.out.println("Object copied!");
+      return copy;
+    } else {
+      System.out.println("Object updated!");
+      Integer[] cmodes = ENT_Runtime.getObjAll(o);
       cmodes[0] = mode;
-      ENT_Runtime.putObj(copy, cmodes);
+      ENT_Runtime.updateObject(o,true,cmodes);
+      return o;
     }
-
-    return copy;
   }
 
   public static <T extends ENT_Attributable> T forceSnapshot(T o, int lb, int ub, boolean saveMode) {
@@ -31,16 +39,20 @@ public class ENT_Snapshot {
       mode = ub;
     }
 
-    T copy = (T) o.ENT_copy();
-    if (saveMode) {
-      Integer[] cmodes = ENT_Runtime.getObjAll(o).clone();
+
+    if (ENT_Runtime.objectCopied(o)) {
+      T copy = (T) o.ENT_copy();
+      if (saveMode) {
+        Integer[] cmodes = ENT_Runtime.getObjAll(o).clone();
+        cmodes[0] = mode;
+        ENT_Runtime.putObj(copy, cmodes);
+      }
+      return copy;
+    } else {
+      Integer[] cmodes = ENT_Runtime.getObjAll(o);
       cmodes[0] = mode;
-      ENT_Runtime.putObj(copy, cmodes);
+      ENT_Runtime.updateObject(o,true,cmodes);
+      return o;
     }
-
-    return copy;
-  }
-
-
-
+  } 
 }

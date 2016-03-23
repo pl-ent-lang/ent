@@ -33,6 +33,9 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
     this.name = name;
     this.uniqueId = this.genId();
     this.index = -1;
+    //this.upperBound = null;
+    //this.lowerBound = null;
+
     this.upperBound = ts.unknownType(pos);
     this.lowerBound = ts.unknownType(pos);
   }

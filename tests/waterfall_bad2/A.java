@@ -2,7 +2,7 @@ package waterfall_bad2;
 
 modes {low <: mid; mid <: high; };
 
-public class A@mode<? -> X <= mid> {
+public class A@mode<? ->(low<=X<= mid)> {
   attributor {
     return @mode<high>;
   }

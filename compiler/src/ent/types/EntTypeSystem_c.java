@@ -211,7 +211,12 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
     }
 
     if (!(l instanceof ModeTypeVariable) && u instanceof ModeTypeVariable) {
+      //System.out.format("%s sub %s\n", l, u);
       ModeTypeVariable utv = (ModeTypeVariable) u;
+      //if (utv.lowerBound() == null) {
+      //  return false;
+      //}
+      //System.out.format("%s tsub %s\n", l, utv.lowerBound());
       return this.isSubtype(l, utv.lowerBound());
       
         //this.isSubtype(utv.lowerBound(), l) && 
@@ -221,9 +226,11 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
     if (l instanceof ModeTypeVariable && u instanceof ModeTypeVariable) {
       ModeTypeVariable ltv = (ModeTypeVariable) l;
       ModeTypeVariable utv = (ModeTypeVariable) u;
+      //if (utv.lowerBound() == null) {
+      //  return ltv.descendsFromImpl(utv);
+      //}
 
       // CRUNCH-HACK: Come back to fix, figure out the right subtyping
-
       return this.isSubtype(ltv.upperBound(), utv.lowerBound()) ||
         (this.isSubtype(utv.lowerBound(), ltv.lowerBound()) && 
          this.isSubtype(ltv.upperBound(), utv.upperBound()));
@@ -470,7 +477,7 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
       if (lb instanceof ModeTypeVariable) {
         lb = mtMap.get(lb);
       }
-      if (!this.isSubtype(lb, mtArg)) {
+      if (lb != null && !this.isSubtype(lb, mtArg)) {
         return new SemanticException("cannot satisfy constraint: " + lb + "<=" + mtArg);
       }
 
