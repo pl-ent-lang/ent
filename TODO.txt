@@ -1,0 +1,36 @@
+(0) Grep TODO and see if there is anything obvious that can be added to
+the issue tracker.
+
+(1) Annotate test suite: 
+  - Each standalone file should have comments at the top indicating what
+  is being tested.
+
+  - If it is a bug fix, name it after the bug that is fixed.
+
+  - Each directory should have a file named 'test.dir' that has comments
+  indicating what is being tested.
+
+(2) Fix subtyping to work with the current set of tests
+  - Leave the wildcard escape in
+  - Handle lower bound / upper bound etc
+
+(3) Redo the runtime
+  - Ugly OO code; just rewrite.
+
+(4) Rewrite syntax to match up with paper. This includes..
+  (1) Mindless syntax changes (?mode, snapshot)
+  (2) Removing @mode<X> as a ModeValue, and instead looking up
+  via an identifier etc.
+
+(5) Pull the polyglot test suite into the ent test suite.
+  (1) JL Tests
+  (2) JL5 Tests
+  (3) JL7 Tests
+
+(6) See if we can fix the JL7 issue I was running into a while back. 
+It has to do with the AST rewriting. We may need to extend polyglot
+a little bit here.
+
+(7) 1-6 gets us fairly stable, begin checking off issue tracker.
+
+
