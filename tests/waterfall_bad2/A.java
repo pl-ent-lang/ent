@@ -1,8 +1,11 @@
+// Test: Simple waterfall invariant check; A potentially having a dynamic mode type should
+// not affect the static type checking.
+
 package waterfall_bad2;
 
 modes {low <: mid; mid <: high; };
 
-public class A@mode<? ->(low<=X<= mid)> {
+public class A@mode<?->(low<=X<= mid)> {
   attributor {
     return @mode<high>;
   }

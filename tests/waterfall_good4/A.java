@@ -1,3 +1,5 @@
+// Test: FIX
+
 package waterfall_good5;
 
 modes {low <: mid; mid <: high; };

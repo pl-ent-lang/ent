@@ -1,3 +1,5 @@
+// Test: Simple waterfall invariant check.
+
 package waterfall_good1;
 
 modes {low <: mid; mid <: high; };

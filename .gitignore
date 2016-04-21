@@ -4,7 +4,9 @@ classes/
 *.swp
 .*.swp
 *.log
+*.results
 
 tests/dacapo/
+tests/build/
 
 tags

@@ -1,0 +1,3 @@
+// Test: Checks that type substitution on a class that operates under a single mode (a mode value 
+// type parameter) is enforced on said class's object creation when using constrained mode type
+// parameters (B.java).

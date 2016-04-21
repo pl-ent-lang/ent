@@ -1,3 +1,6 @@
+// Test: Simple waterfall invariant check; class A potentially having a dynamic mode type should
+// not affect the static type checking.
+
 package waterfall_good2;
 
 modes {low <: mid; mid <: high; };

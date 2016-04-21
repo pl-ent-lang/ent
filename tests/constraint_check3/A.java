@@ -1,3 +1,6 @@
+// Test: Checks that type substitution on a class that operates under a single mode (a mode value 
+// type parameter) is enforced on said class's object creation when using (concrete) mode types.
+
 package constraint_check3;
 
 modes {low <: mid; mid <: high; };

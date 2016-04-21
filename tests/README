@@ -1,0 +1,24 @@
+Test suite documentation
+------
+Each "test" typically has its own directory containing all files needed for the test. The directory
+serves as the top level package for the test that all files are part of. Tests consisting of a
+single file should have comments at the top indicating what is being tested. Tests with multiple 
+files should have a file named 'TEST' that has comments indicating what is being tested.
+
+Inside each file, there is usually a short comment // Good or // Error! that pinpoints what should
+fail. These exist solely for the reader. The pthScript performs the actual compilation and pattern
+matching against compiler output.
+
+Tests that contain "good" or "bad" in their name indicate whether they exist to check interesting
+cases that are tough to compile successfully or are tough to type check successfully. Tests that
+are not tagged with either are more straightforward.
+
+Tests that contain "pass" or "fail" in their name indicate that these a predominately runtime
+type system tests and should always compile. When run, a "pass" should complete silently, a "fail"
+should throw a RuntimeException. 
+  - These tests will be removed from pthScript shortly, as they should always compile.
+  - We are working on a wrapper around pthScript, that will the test harness for pthScript, and
+  then compile and run each "pass" and "fail" test. This will combine the static test harness
+  with a dynamic test harness.
+
+

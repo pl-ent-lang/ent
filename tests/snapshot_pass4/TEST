@@ -1,0 +1,7 @@
+// main: B
+// Test: Checks that snapshot passes at runtime if the snapshotted object returns a mode type
+// within the snapshot bounds when: 
+//  (1) a method mode type variable is used for both bounds
+//  (2) a class mode type variable is substituted into said method
+
+// FIX

@@ -1,0 +1,3 @@
+// main: B
+// Test: Checks that snapshot errors at runtime if the snapshotted object returns a mode type
+// outside of the snapshot bounds but statically type checks.

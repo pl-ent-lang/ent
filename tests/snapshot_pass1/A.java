@@ -6,6 +6,5 @@ public class A@mode<? -> X> {
   attributor {
     return @mode<mid>;
   }
-
   public void m1() { }
 }

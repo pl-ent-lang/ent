@@ -1,0 +1,2 @@
+// main: B
+// Test: Checks that an mcase projected from a method mode type variable resolves correctly. 

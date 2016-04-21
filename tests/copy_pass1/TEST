@@ -1,0 +1,6 @@
+// main:A
+// Test: Checks the lazy copy optimization: snapshot should only perform an actual copy iff 
+// the object is snapshotted multiple times.
+//
+// FIX: Address why == is not working.
+

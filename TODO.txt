@@ -2,13 +2,14 @@
 the issue tracker.
 
 (1) Annotate test suite: 
-  - Each standalone file should have comments at the top indicating what
-  is being tested.
+  - Each standalone or directory with a single file should have comments at the top 
+  indicating what is being tested.
+
+  - Each directory with multiple files should have a file named 'TEST' that has comments
+  indicating what is being tested.
 
   - If it is a bug fix, name it after the bug that is fixed.
 
-  - Each directory should have a file named 'test.dir' that has comments
-  indicating what is being tested.
 
 (2) Fix subtyping to work with the current set of tests
   - Leave the wildcard escape in

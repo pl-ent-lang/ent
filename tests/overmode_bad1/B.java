@@ -1,4 +1,4 @@
-package overmode_good1;
+package overmode_bad1;
 
 public class B@mode<X <= mid> {
   public void m1() {

@@ -67,25 +67,11 @@ ent.EntExtensionInfo "-d out" {
   constraint_check4/A.java constraint_check4/B.java (Semantic, "cannot satisfy constraint") ; 
 
   overmode_good1/A.java overmode_good1/B.java ;
-  overmode_good2/A.java overmode_good2/B.java ;
   overmode_good3/A.java overmode_good3/B.java ;
 
   overmode_bad1/A.java overmode_bad1/B.java (Semantic, "Cannot send message") ;
-  overmode_bad2/A.java overmode_bad2/B.java 
-    (Semantic, "Cannot send message") ,
-    (Semantic, "Cannot send message") ;
 
   overmode_bad3/A.java overmode_bad3/B.java 
     (Semantic, "Cannot send message") ,
-    (Semantic, "Cannot send message") ;
-
-  snapshot_pass1/A.java snapshot_pass1/B.java ;
-  snapshot_pass2/A.java snapshot_pass2/B.java ;
-  snapshot_pass3/A.java snapshot_pass3/B.java ;
-  snapshot_pass4/A.java snapshot_pass4/B.java ;
-  snapshot_pass5/A.java snapshot_pass5/B.java ;
-
-  snapshot_fail1/A.java snapshot_fail1/B.java ;
-
-  method_mcase_pass1/A.java method_mcase_pass1/B.java ;
+    (Semantic, "Cannot send message") ; 
 }

@@ -1,4 +1,4 @@
-package overmode_good1;
+package overmode_bad1;
 
 modes {low <: mid; mid <: high; }
 
