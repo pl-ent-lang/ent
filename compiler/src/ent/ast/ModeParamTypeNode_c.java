@@ -19,11 +19,12 @@ public class ModeParamTypeNode_c extends TypeNode_c implements ModeParamTypeNode
   protected List<ModeTypeNode> upperBounds;
   protected boolean isDynRecvr;
 
-  public ModeParamTypeNode_c(Position pos, 
-                             Id id, 
-                             boolean isDynRecvr,
-                             List<ModeTypeNode> lowerBounds,
-                             List<ModeTypeNode> upperBounds) {
+  public ModeParamTypeNode_c(
+      Position pos, 
+      Id id, 
+      boolean isDynRecvr, 
+      List<ModeTypeNode> lowerBounds, 
+      List<ModeTypeNode> upperBounds) {
     super(pos);
     this.id = id;
     this.isDynRecvr = isDynRecvr;

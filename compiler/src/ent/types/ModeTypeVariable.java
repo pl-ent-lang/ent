@@ -35,6 +35,9 @@ public interface ModeTypeVariable extends ModeType {
 
   int uniqueId();
 
+  boolean isExistential();
+  void isExistential(boolean isExistential);
+
   public boolean inferBounds();
 
   int index();

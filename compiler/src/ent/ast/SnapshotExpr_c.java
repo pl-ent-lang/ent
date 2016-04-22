@@ -195,9 +195,8 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
       throw new SemanticException("Bounds must be concrete mode types.");
     }
 
-    ModeTypeVariable elm = ts.createModeTypeVariable(this.position(), "_");
-
-
+    // TODO: Refactor into a clear ModeTypeVariable creation.
+    ModeTypeVariable elm = ts.createBoundedExistential(this.position()); 
     elm.upperBound(um);
     elm.lowerBound(lm);
 

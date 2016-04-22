@@ -1,2 +1,3 @@
 // Test: Checks that the resulting existential from a snapshot conforms to
-// the waterfall invariant.
+// the waterfall invariant. In particular, we need to check that the sending
+// bounded type is above the receiving existential type.

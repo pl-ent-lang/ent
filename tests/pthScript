@@ -41,7 +41,6 @@ ent.EntExtensionInfo "-d out" {
   snapshot_good1/A.java snapshot_good1/B.java ;
   snapshot_good2/A.java snapshot_good2/B.java ;
   snapshot_good3/A.java snapshot_good3/B.java ;
-  snapshot_good3/A.java snapshot_good3/B.java ; 
 
   snapshot_bad1/A.java snapshot_bad1/B.java 
     (Semantic, "Cannot send message") ,

@@ -23,10 +23,9 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
   protected ProcedureInstance declaringProc;
   protected int uniqueId;
   protected int index;
+  protected boolean isExistential;
 
-  public ModeTypeVariable_c(EntTypeSystem ts,
-                            Position pos,
-                            String name) {
+  public ModeTypeVariable_c(EntTypeSystem ts, Position pos, String name, boolean isExistential) {
     super(ts, name);
     this.upperBounds = Collections.emptyList();
     this.lowerBounds = Collections.emptyList();
@@ -38,6 +37,7 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
 
     this.upperBound = ts.unknownType(pos);
     this.lowerBound = ts.unknownType(pos);
+    this.isExistential = isExistential;
   }
 
   // Property Methods
@@ -79,8 +79,7 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
     } else {
       this.lowerBounds = lowerBounds;
     }
-  }
-
+  } 
 
   public boolean hasLowerBound() {
     return this.lowerBound != null;
@@ -128,6 +127,14 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
 
   public void index(int index) {
     this.index = index;
+  }
+
+  public boolean isExistential() {
+    return this.isExistential;
+  }
+
+  public void isExistential(boolean isExistential) {
+    this.isExistential = isExistential;
   }
 
   public boolean inferBounds() {
@@ -225,6 +232,11 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
     } 
 
     ModeTypeVariable tv = (ModeTypeVariable) o;
+    if (this.isExistential() && tv.isExistential()) {
+      return (ts.typeEquals(this.lowerBound(), tv.lowerBound()) &&
+              ts.typeEquals(this.upperBound(), tv.upperBound()));
+    }
+
     return this.uniqueId() == tv.uniqueId();
   }
 

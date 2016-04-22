@@ -126,27 +126,23 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
   }
 
   @Override
-  public JL5ConstructorInstance constructorInstance(Position pos,
-          ClassType container, Flags flags, List<? extends Type> argTypes,
-          List<? extends Type> excTypes, List<TypeVariable> typeParams) {
-      assert_(container);
-      assert_(argTypes);
-      assert_(excTypes);
-      assert_(typeParams);
-      return new EntConstructorInstance_c(this,
-                                            pos,
-                                            container,
-                                            flags,
-                                            argTypes,
-                                            excTypes,
-                                            typeParams,
-                                            null);
-    }
+  public JL5ConstructorInstance constructorInstance(
+      Position pos, 
+      ClassType container, 
+      Flags flags, 
+      List<? extends Type> argTypes,
+      List<? extends Type> excTypes, 
+      List<TypeVariable> typeParams) {
+    assert_(container);
+    assert_(argTypes);
+    assert_(excTypes);
+    assert_(typeParams);
+    return new EntConstructorInstance_c(this, pos, container, flags, argTypes, excTypes, typeParams, null);
+  }
 
 
   @Override
-  public ParsedClassType createClassType(LazyClassInitializer init, 
-                                         Source fromSource) {
+  public ParsedClassType createClassType(LazyClassInitializer init, Source fromSource) {
     return new EntParsedClassType_c(this, init, fromSource);
   }
 
@@ -186,9 +182,7 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
     // Until we decide on strengthening/weaking for type variables, let
     // type variables that do not yet have a mode subst pass through to
     // an objec that does
-    if (l instanceof TypeVariable && 
-        !(l instanceof ModeSubstType) &&
-        u instanceof ModeSubstType) {
+    if (l instanceof TypeVariable && !(l instanceof ModeSubstType) && u instanceof ModeSubstType) {
       return this.isSubtype(l, ((ModeSubstType) u).baseType());
     }
 
@@ -211,12 +205,12 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
     }
 
     if (!(l instanceof ModeTypeVariable) && u instanceof ModeTypeVariable) {
-      //System.out.format("%s sub %s\n", l, u);
+      //System.out.format("%s <: %s\n", l, u);
       ModeTypeVariable utv = (ModeTypeVariable) u;
       //if (utv.lowerBound() == null) {
       //  return false;
       //}
-      //System.out.format("%s tsub %s\n", l, utv.lowerBound());
+      //System.out.format("%s <: %s: %b\n", l, utv.lowerBound(), this.isSubtype(l, utv.lowerBound()));
       return this.isSubtype(l, utv.lowerBound());
       
         //this.isSubtype(utv.lowerBound(), l) && 
@@ -224,16 +218,20 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
     }
 
     if (l instanceof ModeTypeVariable && u instanceof ModeTypeVariable) {
+      //System.out.format("Type Variable: %s <: %s\n", l, u);
       ModeTypeVariable ltv = (ModeTypeVariable) l;
       ModeTypeVariable utv = (ModeTypeVariable) u;
       //if (utv.lowerBound() == null) {
       //  return ltv.descendsFromImpl(utv);
       //}
 
+      return this.isSubtype(ltv.upperBound(), utv.lowerBound());
       // CRUNCH-HACK: Come back to fix, figure out the right subtyping
+      /*
       return this.isSubtype(ltv.upperBound(), utv.lowerBound()) ||
         (this.isSubtype(utv.lowerBound(), ltv.lowerBound()) && 
          this.isSubtype(ltv.upperBound(), utv.upperBound()));
+      */
     }
 
     return false;
@@ -263,7 +261,6 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
     }
 
     if (l instanceof ModeTypeVariable && u instanceof ModeTypeVariable) {
-      System.err.format("Checking!\n");
       ModeTypeVariable lmt = (ModeTypeVariable) l;
       ModeTypeVariable umt = (ModeTypeVariable) u;
       return this.isImplicitCastValid(lmt.lowerBound(), umt.lowerBound()) &&
@@ -1302,11 +1299,15 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
   }
 
   public ModeTypeVariable createModeTypeVariable(Position pos, String name) {
-    return new ModeTypeVariable_c(this, pos, name);
+    return new ModeTypeVariable_c(this, pos, name, false);
+  }
+
+  public ModeTypeVariable createBoundedExistential(Position pos) {
+    return new ModeTypeVariable_c(this, pos, "_", true);
   }
 
   public ModeTypeVariable createWildcardModeTypeVariable(Position pos, String name) {
-    ModeTypeVariable mtv = new ModeTypeVariable_c(this, pos, name);
+    ModeTypeVariable mtv = new ModeTypeVariable_c(this, pos, name, false);
     List<Type> bounds = new ArrayList<>(); 
     bounds.add(this.WildcardModeType());
     mtv.lowerBounds(bounds);

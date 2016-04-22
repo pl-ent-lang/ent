@@ -1,15 +1,9 @@
 (0) Grep TODO and see if there is anything obvious that can be added to
 the issue tracker.
 
-(1) Annotate test suite: 
-  - Each standalone or directory with a single file should have comments at the top 
-  indicating what is being tested.
-
-  - Each directory with multiple files should have a file named 'TEST' that has comments
-  indicating what is being tested.
-
-  - If it is a bug fix, name it after the bug that is fixed.
-
+(1) Annotate test suite: (DONE)
+  - Waterfall / snapshot tests need more anotation that will be given after
+  adjusting the type system (2).  
 
 (2) Fix subtyping to work with the current set of tests
   - Leave the wildcard escape in

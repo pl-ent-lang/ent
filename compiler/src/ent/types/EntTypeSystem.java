@@ -35,6 +35,7 @@ public interface EntTypeSystem extends JL7TypeSystem {
   ModeOrderingInstance createModeOrderingInstance();
 
   ModeTypeVariable createModeTypeVariable(Position pos, String name);
+  ModeTypeVariable createBoundedExistential(Position pos);
   ModeTypeVariable createWildcardModeTypeVariable(Position pos, String name);
 
   ModeValueType createModeValueType(Type mode);

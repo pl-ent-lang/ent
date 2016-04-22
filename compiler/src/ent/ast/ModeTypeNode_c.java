@@ -55,7 +55,10 @@ public class ModeTypeNode_c extends TypeNode_c implements ModeTypeNode {
     return n;
   } 
 
-  protected <N extends ModeTypeNode_c> N reconstruct(N n, ModeTypeNode lowerBound, ModeTypeNode upperBound) {
+  protected <N extends ModeTypeNode_c> N reconstruct(
+      N n, 
+      ModeTypeNode lowerBound, 
+      ModeTypeNode upperBound) {
     n = this.lowerBound(n, lowerBound);
     n = this.upperBound(n, upperBound);
     return n;
@@ -97,7 +100,8 @@ public class ModeTypeNode_c extends TypeNode_c implements ModeTypeNode {
     EntTypeSystem ts = (EntTypeSystem) sc.typeSystem();
 
     if (this.name().equals("_") && this.lowerBound() != null && this.upperBound() != null) {
-      ModeTypeVariable mtv = ts.createModeTypeVariable(this.position(), this.name());
+      // TODO: Refactor into a clear ModeTypeVariable creation.
+      ModeTypeVariable mtv = ts.createBoundedExistential(this.position());
       mtv.upperBound(this.upperBound().type());
       mtv.lowerBound(this.lowerBound().type());
       return this.type(mtv);
