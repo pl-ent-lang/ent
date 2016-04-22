@@ -1,6 +1,6 @@
 // Test: FIX
 
-package waterfall_good5;
+package waterfall_good4;
 
 modes {low <: mid; mid <: high; };
 

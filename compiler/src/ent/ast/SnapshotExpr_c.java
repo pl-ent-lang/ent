@@ -199,6 +199,7 @@ public class SnapshotExpr_c extends Expr_c implements SnapshotExpr {
     ModeTypeVariable elm = ts.createBoundedExistential(this.position()); 
     elm.upperBound(um);
     elm.lowerBound(lm);
+    //System.out.format("Existential: %s\n", elm);
 
     // We introduce a type variable bounded by the bounds supplied in snapshot
     ModeSubstType ct = ((ModeSubstType) tt).deepCopy();

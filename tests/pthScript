@@ -31,26 +31,39 @@ ent.EntExtensionInfo "-d out" {
   waterfall_good2/A.java ;
   waterfall_good3/A.java ;
   waterfall_good4/A.java ;
+  waterfall_good5/A.java ;
+  waterfall_good6/A.java ;
 
   waterfall_bad1/A.java (Semantic, "Cannot send message") ;
   waterfall_bad2/A.java (Semantic, "Cannot send message") ;
   waterfall_bad3/A.java 
     (Semantic, "Cannot send message") ,
     (Semantic, "Cannot send message") ;
+  waterfall_bad5/A.java 
+    (Semantic, "Cannot send message") ,
+    (Semantic, "Cannot send message") ,
+    (Semantic, "Cannot send message") ;
 
   snapshot_good1/A.java snapshot_good1/B.java ;
   snapshot_good2/A.java snapshot_good2/B.java ;
   snapshot_good3/A.java snapshot_good3/B.java ;
+  snapshot_good4/A.java snapshot_good4/B.java ;
 
   snapshot_bad1/A.java snapshot_bad1/B.java 
     (Semantic, "Cannot send message") ,
     (Semantic, "Cannot send message") ;
 
   snapshot_bad2/A.java snapshot_bad2/B.java 
+    (Semantic, "Cannot send message") ,
     (Semantic, "Cannot send message") ;
 
   snapshot_bad3/A.java snapshot_bad3/B.java 
     (Semantic, "Cannot send message") ,
+    (Semantic, "Cannot send message") ; 
+
+  snapshot_bad4/A.java snapshot_bad4/B.java 
+    (Semantic, "Cannot send message") ,
+    (Semantic, "Cannot send message") , 
     (Semantic, "Cannot send message") ; 
     
   constraint_check1/A.java 

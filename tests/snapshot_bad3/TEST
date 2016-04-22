@@ -1,2 +1,4 @@
 // Test: Checks that the resulting existential from a snapshot conforms to
-// the waterfall invariant.
+// the waterfall invariant when an object is used in its bounds. Two checks:
+//  (1) Object has a simple mode type
+//  (2) Object has mode type parameter from the containing that is not the class's mode type

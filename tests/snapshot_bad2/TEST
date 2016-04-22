@@ -1,2 +1,5 @@
 // Test: Checks that the resulting existential from a snapshot conforms to
-// the waterfall invariant.
+// the waterfall invariant when a class mode type variable is used in its bounds. 
+// Two checks:
+//  (1) Mode type variable without a lower bound.
+//  (2) Mode type variable with lower and upper bound.
