@@ -16,9 +16,12 @@ are not tagged with either are more straightforward.
 Tests that contain "pass" or "fail" in their name indicate that these a predominately runtime
 type system tests and should always compile. When run, a "pass" should complete silently, a "fail"
 should throw a RuntimeException. 
-  - These tests will be removed from pthScript shortly, as they should always compile.
-  - We are working on a wrapper around pthScript, that will the test harness for pthScript, and
-  then compile and run each "pass" and "fail" test. This will combine the static test harness
-  with a dynamic test harness.
 
+Tests in the "extended" directory are full benchmarks that have been integrated as part of the test
+suite. 
+
+The "test.bash" script automatically fires of the eth harness and the run harness. Running the
+test script with the extended option "-e or -extended" will run the extended harness. These tests
+MUST be run before a commit but may be ignored while making smaller edits due to thier longer 
+compiles.
 
