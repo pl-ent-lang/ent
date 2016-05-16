@@ -19,23 +19,22 @@ public class EntNewExt extends EntExt implements NewOps {
 
   @Override
   public New node() {
-    return (New) super.node();
+    return (New)super.node();
   }
 
-  protected Map<ModeTypeVariable, Type> infModeTypes() {
-    return this.infModeTypes;
-  }
+  protected Map<ModeTypeVariable, Type> infModeTypes() { return this.infModeTypes; }
 
   protected New infModeTypes(Map<ModeTypeVariable, Type> infModeTypes) {
     return this.infModeTypes(this.node(), infModeTypes);
   }
 
   protected <N extends New> N infModeTypes(N n, Map<ModeTypeVariable, Type> infModeTypes) {
-    EntNewExt ext = (EntNewExt) EntExt.ext(n);
-    if (ext.infModeTypes == infModeTypes) return n;
+    EntNewExt ext = (EntNewExt)EntExt.ext(n);
+    if (ext.infModeTypes == infModeTypes)
+      return n;
     if (this.node() == n) {
       n = Copy.Util.copy(n);
-      ext = (EntNewExt) EntExt.ext(n);
+      ext = (EntNewExt)EntExt.ext(n);
     }
     ext.infModeTypes = infModeTypes;
     return n;
@@ -63,10 +62,9 @@ public class EntNewExt extends EntExt implements NewOps {
     return superLang().constantValue(node(), lang);
   }
 
-
   @Override
-  public TypeNode findQualifiedTypeNode(AmbiguityRemover ar, ClassType outer,
-            TypeNode objectType) throws SemanticException {
+  public TypeNode findQualifiedTypeNode(AmbiguityRemover ar, ClassType outer, TypeNode objectType)
+      throws SemanticException {
     return superLang().findQualifiedTypeNode(this.node(), ar, outer, objectType);
   }
 
@@ -93,7 +91,7 @@ public class EntNewExt extends EntExt implements NewOps {
   @Override
   public void printShortObjectType(CodeWriter w, PrettyPrinter tr) {
     superLang().printShortObjectType(this.node(), w, tr);
-  } 
+  }
 
   @Override
   public void printBody(CodeWriter w, PrettyPrinter tr) {
@@ -103,18 +101,17 @@ public class EntNewExt extends EntExt implements NewOps {
   @Override
   public ClassType findEnclosingClass(Context c, ClassType ct) {
     if (ct instanceof ModeSubstType) {
-      ct = (ClassType) ((ModeSubstType) ct).baseType();
+      ct = (ClassType)((ModeSubstType)ct).baseType();
     }
     return superLang().findEnclosingClass(this.node(), c, ct);
-  } 
+  }
 
   @Override
-  public Node typeCheck(TypeChecker tc) throws SemanticException { 
-    New n = (New) superLang().typeCheck(this.node(), tc);
-    EntTypeSystem ts = (EntTypeSystem) tc.typeSystem();
+  public Node typeCheck(TypeChecker tc) throws SemanticException {
+    New n = (New)superLang().typeCheck(this.node(), tc);
+    EntTypeSystem ts = (EntTypeSystem)tc.typeSystem();
 
-    EntProcedureInstance pi = 
-      (EntProcedureInstance) n.constructorInstance();
+    EntProcedureInstance pi = (EntProcedureInstance)n.constructorInstance();
 
     if (pi.modeTypeVars().isEmpty()) {
       return n;
@@ -126,28 +123,26 @@ public class EntNewExt extends EntExt implements NewOps {
     }
     ModeSubst subst = ts.inferModeTypeArgs(pi.baseInstance(), argTypes, null);
 
-    EntNewExt ext = (EntNewExt) EntExt.ext(n);
+    EntNewExt ext = (EntNewExt)EntExt.ext(n);
     return ext.infModeTypes(subst.modeTypeMap());
   }
 
-  public boolean needsEntClosure() {
-    return this.infModeTypes() != null;
-  }
-  
+  public boolean needsEntClosure() { return this.infModeTypes() != null; }
+
   public boolean needsModeTablePreservation(TypePreserver tp) {
-    ModeSubstType st = (ModeSubstType) this.node().type();
-    EntTypeSystem ts = (EntTypeSystem) tp.typeSystem();
-    return st.modeType() == ts.DynamicModeType() || 
-           ((EntClassType) st.baseType()).hasMcaseFields() ||
-           ((EntClassType) st.baseType()).instancesNeedTypePreservation();
+    ModeSubstType st = (ModeSubstType)this.node().type();
+    EntTypeSystem ts = (EntTypeSystem)tp.typeSystem();
+    return st.modeType() == ts.DynamicModeType() ||
+        ((EntClassType)st.baseType()).hasMcaseFields() ||
+        ((EntClassType)st.baseType()).instancesNeedTypePreservation();
   }
 
   @Override
   public Node typePreserve(TypePreserver tp) {
     New n = this.node();
 
-    EntNodeFactory nf = (EntNodeFactory) tp.nodeFactory();
-    EntTypeSystem ts = (EntTypeSystem) tp.typeSystem();
+    EntNodeFactory nf = (EntNodeFactory)tp.nodeFactory();
+    EntTypeSystem ts = (EntTypeSystem)tp.typeSystem();
     Context ctx = tp.context();
 
     if (!(n.type() instanceof ModeSubstType)) {
@@ -161,28 +156,18 @@ public class EntNewExt extends EntExt implements NewOps {
     // 3. Rewrite new A() to ((A) ENT_Runtime.putObj(new A(), constants))
     if (this.needsEntClosure()) {
       List<Expr> args = new ArrayList<>(n.arguments());
-      args.add(
-        EntBuilder.instance().buildEntClosure(
+      args.add(EntBuilder.instance().buildEntClosure(
           nf,
           tp.toTypeSystem(),
-          ((EntProcedureInstance) n.procedureInstance()).modeTypeVars(),
+          ((EntProcedureInstance)n.procedureInstance()).modeTypeVars(),
           this.infModeTypes(),
-          ctx
-          )
-        ); 
+          ctx));
       n = n.arguments(args);
     }
 
-    if (this.needsModeTablePreservation(tp)) { 
-      return
-        EntBuilder.instance().
-          buildModeTableObjectWithCast(
-            nf, 
-            tp.toTypeSystem(), 
-            n, 
-            ((ModeSubstType) n.type()).modeTypeArgs(), 
-            ctx
-            );
+    if (this.needsModeTablePreservation(tp)) {
+      return EntBuilder.instance().buildModeTableObjectWithCast(
+          nf, tp.toTypeSystem(), n, ((ModeSubstType)n.type()).modeTypeArgs(), ctx);
     } else {
       return n;
     }

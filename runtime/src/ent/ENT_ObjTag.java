@@ -1,9 +1,9 @@
 package ent.runtime;
 
-public class ENT_Tag {
+public class ENT_ObjTag {
   public boolean copied;
   public Integer[] modes;
-  public ENT_Tag(boolean copied, Integer[] modes) {
+  public ENT_ObjTag(boolean copied, Integer[] modes) {
     this.copied = copied;
     this.modes = modes;
   }

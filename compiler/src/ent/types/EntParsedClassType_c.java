@@ -18,9 +18,7 @@ public class EntParsedClassType_c extends JL5ParsedClassType_c implements EntPar
   private boolean hasMcaseFields;
   private boolean instancesNeedTypePreservation;
 
-  public EntParsedClassType_c(EntTypeSystem ts,
-                                LazyClassInitializer init, 
-                                Source fromSource) {
+  public EntParsedClassType_c(EntTypeSystem ts, LazyClassInitializer init, Source fromSource) {
     super(ts, init, fromSource);
   }
 
@@ -29,7 +27,7 @@ public class EntParsedClassType_c extends JL5ParsedClassType_c implements EntPar
     if (this.modeTypeVars == null) {
       // Inject a mode type variable here, done this way to catch as many classes
       // as possible.
-      EntTypeSystem ts = (EntTypeSystem) this.typeSystem();
+      EntTypeSystem ts = (EntTypeSystem)this.typeSystem();
       ModeTypeVariable mtv = ts.createWildcardModeTypeVariable(this.position(), "_LM");
       if (mtv.lowerBound() == null) {
         System.err.format("Lowerbound not set from %s!\n", this);
@@ -40,51 +38,34 @@ public class EntParsedClassType_c extends JL5ParsedClassType_c implements EntPar
     }
     return this.modeTypeVars;
   }
-  
+
   public void modeTypeVars(List<ModeTypeVariable> modeTypeVars) {
     this.modeTypeVars = modeTypeVars;
     this.isImplicitModeTypeVar = false;
   }
 
-  public boolean isImplicitModeTypeVar() {
-    return this.isImplicitModeTypeVar;
-  }
+  public boolean isImplicitModeTypeVar() { return this.isImplicitModeTypeVar; }
 
-  public boolean hasAttribute() {
-    return (this.attributeInstance() != null);
-  }
+  public boolean hasAttribute() { return (this.attributeInstance() != null); }
 
-  public AttributeInstance attributeInstance() {
-    return this.attributeInstance;
-  }
+  public AttributeInstance attributeInstance() { return this.attributeInstance; }
 
   public void attributeInstance(AttributeInstance attributeInstance) {
     this.attributeInstance = attributeInstance;
   }
 
-  public CopyInstance copyInstance() {
-    return this.copyInstance;
-  }
+  public CopyInstance copyInstance() { return this.copyInstance; }
 
-  public void copyInstance(CopyInstance copyInstance) {
-    this.copyInstance = copyInstance;
-  } 
+  public void copyInstance(CopyInstance copyInstance) { this.copyInstance = copyInstance; }
 
-  public boolean hasCopy() {
-    return (this.copyInstance() != null);
-  }
+  public boolean hasCopy() { return (this.copyInstance() != null); }
 
-  public boolean hasMcaseFields() {
-    return this.hasMcaseFields;
-  }
+  public boolean hasMcaseFields() { return this.hasMcaseFields; }
 
-  public void hasMcaseFields(boolean hasMcaseFields) {
-    this.hasMcaseFields = hasMcaseFields;
-  }
+  public void hasMcaseFields(boolean hasMcaseFields) { this.hasMcaseFields = hasMcaseFields; }
 
   public boolean hasDynamicRecv() {
-    return (this.modeTypeVars().size() > 0 && 
-            this.modeTypeVars().get(0).isDynRecvr());
+    return (this.modeTypeVars().size() > 0 && this.modeTypeVars().get(0).isDynRecvr());
   }
 
   public boolean containsModeTypeVariable(ModeTypeVariable mt) {
@@ -99,13 +80,10 @@ public class EntParsedClassType_c extends JL5ParsedClassType_c implements EntPar
     return false;
   }
 
-  public boolean instancesNeedTypePreservation() {
-    return this.instancesNeedTypePreservation;
-  }
+  public boolean instancesNeedTypePreservation() { return this.instancesNeedTypePreservation; }
 
   public void instancesNeedTypePreservation(boolean needs) {
     this.instancesNeedTypePreservation = needs;
   }
-
 }
 

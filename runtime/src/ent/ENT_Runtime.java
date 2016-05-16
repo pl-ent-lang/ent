@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ENT_Runtime {
-  private static Map<Object, ENT_Tag> objTab = new WeakHashMap<>();
+  private static Map<Object, ENT_ObjTag> objTab = new WeakHashMap<>();
   private static Map<Integer, Integer> modeVarTab = new WeakHashMap<>();
   public static boolean NOEXIT_MODE = false;
 
@@ -16,13 +16,7 @@ public class ENT_Runtime {
     }
   }
 
-  // For performance analysis
-  private static int numGetObjModeCalls = 0;
-  private static int numPutObjCalls = 0;
-
   public static int getObjMode(Object o, int m) {
-    ENT_Runtime.numGetObjModeCalls++;
-
     Integer mode = ENT_Runtime.objTab.get(o).modes[m];
     if (mode == null) {
       return -1;
@@ -40,9 +34,7 @@ public class ENT_Runtime {
   }
 
   public static Object putObj(Object o, Integer[] modes) {
-    ENT_Runtime.numPutObjCalls++;
-
-    ENT_Runtime.objTab.put(o, new ENT_Tag(false,modes));
+    ENT_Runtime.objTab.put(o, new ENT_ObjTag(false,modes));
     return o;
   }
 
@@ -61,5 +53,7 @@ public class ENT_Runtime {
   public static void putModeVar(int uniqueId, int mode) {
     ENT_Runtime.modeVarTab.put(uniqueId, mode);
   } 
+
+  // For snapshotting
 }
 
