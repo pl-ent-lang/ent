@@ -1,7 +1,7 @@
 package snapshot_pass5;
 
-public class B@mode<(mid <= X <= high)> {
-  public @mode<(mid <= Y <= high), (high <= Z <= high)> void m1() {
+public class B@mode<(mid <= X <= mid)> {
+  public @mode<(mid <= Y <= mid), (high <= Z <= high)> void m1() {
     A@mode<?> ad = new A@mode<?>();
     A@mode<*> a1 = snapshot ad ?mode[@mode<Y>,@mode<Z>];
   }
@@ -11,7 +11,7 @@ public class B@mode<(mid <= X <= high)> {
   }
 
   public static void main(String[] args) {
-    B@mode<high> b = new B@mode<high>();
+    B@mode<mid> b = new B@mode<mid>();
     b.@mode<mid>m2();
   }
 

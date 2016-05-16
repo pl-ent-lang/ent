@@ -202,11 +202,21 @@ public class EntCallExt extends EntExt {
       targetType = ((RawClass)targetType).base();
     }
 
+    // LAST : Here we go, make sure all mode type variables
+    // trigger preservation
     List<ModeType> actualModeTypes = null;
     if (this.modeTypeArgs() != null) {
       actualModeTypes = new ArrayList<>();
       for (ModeTypeNode mn : this.modeTypeArgs()) {
-        actualModeTypes.add((ModeType)mn.type());
+        ModeType mt = ((ModeType)mn.type());
+        if (mt instanceof ModeTypeVariable) {
+          ModeTypeVariable mtv = (ModeTypeVariable) mt;
+          if (mtv.declaringClass() != null) {
+            EntClassType ct = (EntClassType) mtv.declaringClass();
+            ct.instancesNeedTypePreservation(true);
+          }
+        }
+        actualModeTypes.add(mt);
       }
     }
     // Save for closure
