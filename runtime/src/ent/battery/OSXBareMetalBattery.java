@@ -8,13 +8,7 @@ import java.io.BufferedReader;
 
 public class OSXBareMetalBattery implements BareMetalBattery {
 
-  public int getRemainingCapacity() {
-    return 20;
-  }
+  public int getRemainingCapacity() { return 20; }
 
-  public int getTotalCapacity() {
-    return 100;
-  }
-
+  public int getTotalCapacity() { return 100; }
 }
-

@@ -13,13 +13,9 @@ public class ModeValueType_c extends Type_c implements ModeValueType {
     this.mode = mode;
   }
 
-  public Type mode() {
-    return this.mode;
-  }
+  public Type mode() { return this.mode; }
 
-  public String name() {
-    return "@mode<" + this.mode() + ">";
-  }
+  public String name() { return "@mode<" + this.mode() + ">"; }
 
   @Override
   public String toString() {
@@ -45,7 +41,4 @@ public class ModeValueType_c extends Type_c implements ModeValueType {
   public boolean containsVariable() {
     return (this.mode() instanceof ModeTypeVariable);
   }
-
-
-
 }

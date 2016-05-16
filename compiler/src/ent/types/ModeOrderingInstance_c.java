@@ -21,26 +21,22 @@ public class ModeOrderingInstance_c extends TypeObject_c implements ModeOrdering
   }
 
   // Property Methods
-  public Map<ModeType, ModeType> modeOrdering() {
-    return this.modeOrdering;
-  }
+  public Map<ModeType, ModeType> modeOrdering() { return this.modeOrdering; }
 
   @Override
   public boolean isCanonical() {
     return true;
-  } 
+  }
 
   // Business Methods
-  public void insertModeTypeOrdering(ModeType lb, ModeType ub) 
-    throws SemanticException { 
-    EntTypeSystem ts = (EntTypeSystem) this.typeSystem();
+  public void insertModeTypeOrdering(ModeType lb, ModeType ub) throws SemanticException {
+    EntTypeSystem ts = (EntTypeSystem)this.typeSystem();
 
     if (this.modeOrdering().containsKey(lb)) {
       if (!this.modeOrdering().get(lb).equals(ts.DynamicModeType())) {
         // Semantic Error, this means the mode was defined as a bottom
         // mode twice. Currently not allowing.
-        throw new SemanticException(
-            lb + " defined multiple times as a lower bound");
+        throw new SemanticException(lb + " defined multiple times as a lower bound");
       }
     }
     this.modeOrdering().put(lb, ub);
@@ -52,11 +48,11 @@ public class ModeOrderingInstance_c extends TypeObject_c implements ModeOrdering
     ModeType bottomUb = this.modeOrdering().get(ts.BottomModeType());
     if (bottomUb == null || bottomUb.equals(ub)) {
       this.modeOrdering.put(ts.BottomModeType(), lb);
-    } 
+    }
   }
 
   public void buildModeTypeOrdering() throws SemanticException {
-    EntTypeSystem ts = (EntTypeSystem) this.typeSystem();
+    EntTypeSystem ts = (EntTypeSystem)this.typeSystem();
     Map<ModeType, Boolean> visited = new HashMap<>();
     for (Map.Entry<ModeType, ModeType> e : this.modeOrdering().entrySet()) {
       visited.put(e.getKey(), false);
@@ -67,9 +63,9 @@ public class ModeOrderingInstance_c extends TypeObject_c implements ModeOrdering
     ModeType last = null;
 
     int uniqueId = 0;
-    
+
     // Set a uniqueId for each mode for compilation
-    while(iter != null) {
+    while (iter != null) {
       if (visited.get(iter)) {
         throw new SemanticException("Modes do not form a partial ordering!");
       }
@@ -93,9 +89,4 @@ public class ModeOrderingInstance_c extends TypeObject_c implements ModeOrdering
       }
     }
   }
-
-
-
 }
-
-

@@ -23,27 +23,23 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
   }
 
   // Property Methods
-  public Block body() {
-    return this.body;
-  }
+  public Block body() { return this.body; }
 
-  public AttributeDecl body(Block body) {
-    return this.body(this, body);
-  }
+  public AttributeDecl body(Block body) { return this.body(this, body); }
 
   public <N extends AttributeDecl_c> N body(N n, Block body) {
-    if (this.body() == body) return n;
+    if (this.body() == body)
+      return n;
     n = this.copyIfNeeded(n);
     n.body = body;
     return n;
   }
 
-  public AttributeInstance attributeInstance() {
-    return this.ai;
-  }
+  public AttributeInstance attributeInstance() { return this.ai; }
 
   public <N extends AttributeDecl_c> N attributeInstance(N n, AttributeInstance ai) {
-    if (this.ai == ai) return n;
+    if (this.ai == ai)
+      return n;
     n = copyIfNeeded(n);
     n.ai = ai;
     return n;
@@ -53,18 +49,18 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
   @Override
   public Term codeBody() {
     return this.body();
-  } 
+  }
 
   @Override
   public CodeInstance codeInstance() {
     return this.attributeInstance();
-  } 
+  }
 
-  // Node Methods 
+  // Node Methods
   protected <N extends AttributeDecl_c> N reconstruct(N n, Block body) {
     n = this.body(n, body);
     return n;
-  } 
+  }
 
   @Override
   public Node visitChildren(NodeVisitor v) {
@@ -74,7 +70,7 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
 
   @Override
   public Node copy(NodeFactory nf) {
-    EntNodeFactory pnf = (EntNodeFactory) nf;
+    EntNodeFactory pnf = (EntNodeFactory)nf;
     return pnf.AttributeDecl(this.position(), this.body());
   }
 
@@ -86,9 +82,9 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
 
   @Override
   public Node buildTypes(TypeBuilder tb) throws SemanticException {
-    EntTypeSystem ts = (EntTypeSystem) tb.typeSystem();
-    EntParsedClassType ct = (EntParsedClassType) tb.currentClass();
-  
+    EntTypeSystem ts = (EntTypeSystem)tb.typeSystem();
+    EntParsedClassType ct = (EntParsedClassType)tb.currentClass();
+
     if (ct == null) {
       // Big error, attributor needs to be part of a class only
     }
@@ -97,8 +93,7 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
       throw new SemanticException("Only one attributor may be defined per class.");
     }
 
-    AttributeInstance ai = 
-      ts.createAttributeInstance(this.position(),ct,null);
+    AttributeInstance ai = ts.createAttributeInstance(this.position(), ct, null);
     ct.attributeInstance(ai);
 
     return this.attributeInstance(this, ai);
@@ -111,19 +106,15 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
 
   @Override
   public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
-    EntRewriter prw = (EntRewriter) rw;
-    NodeFactory nf = (NodeFactory) prw.nodeFactory();
+    EntRewriter prw = (EntRewriter)rw;
+    NodeFactory nf = (NodeFactory)prw.nodeFactory();
     QQ qq = prw.qq();
 
-    ClassMember md = 
-      qq.parseMember(
-          "public int ENT_attribute() { %LS }", 
-          this.body().statements()
-          );
+    ClassMember md = qq.parseMember("public int ENT_attribute() { %LS }", this.body().statements());
 
     return md;
-  } 
-  
+  }
+
   @Override
   public void dump(CodeWriter w) {
     super.dump(w);
@@ -134,7 +125,7 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
       w.write("(instance " + this.attributeInstance() + ")");
       w.end();
     }
-  } 
+  }
 
   // Term Method
   @Override
@@ -146,7 +137,7 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
   public <T> List<T> acceptCFG(CFGBuilder<?> v, List<T> succs) {
     if (this.body() != null) {
       v.visitCFG(this.body(), this, EXIT);
-    } 
+    }
 
     return succs;
   }
@@ -155,6 +146,5 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
   @Override
   public MemberInstance memberInstance() {
     return this.ai;
-  } 
-    
+  }
 }

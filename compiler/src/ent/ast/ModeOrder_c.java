@@ -28,31 +28,25 @@ public class ModeOrder_c extends Term_c implements ModeOrder {
   }
 
   // Property Methods
-  public String lower() {
-    return this.lower;
-  }
+  public String lower() { return this.lower; }
 
-  public ModeOrder lower(String lower) {
-    return this.lower(this, lower);
-  }
+  public ModeOrder lower(String lower) { return this.lower(this, lower); }
 
   public <N extends ModeOrder_c> N lower(N n, String lower) {
-    if (this.lower == lower) return n;
+    if (this.lower == lower)
+      return n;
     n = this.copyIfNeeded(n);
     n.lower = lower;
     return n;
   }
 
-  public String upper() {
-    return this.upper;
-  }
+  public String upper() { return this.upper; }
 
-  public ModeOrder upper(String upper) {
-    return this.upper(this, upper);
-  }
+  public ModeOrder upper(String upper) { return this.upper(this, upper); }
 
   public <N extends ModeOrder_c> N upper(N n, String upper) {
-    if (this.upper == upper) return n;
+    if (this.upper == upper)
+      return n;
     n = this.copyIfNeeded(n);
     n.upper = upper;
     return n;
@@ -74,5 +68,4 @@ public class ModeOrder_c extends Term_c implements ModeOrder {
   public <T> List<T> acceptCFG(CFGBuilder<?> v, List<T> succs) {
     return succs;
   }
-
 }

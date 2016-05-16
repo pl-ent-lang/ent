@@ -6,7 +6,7 @@ import ent.runtime.temperature.TemperatureSupply;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 
-//import com.google.common.base.Stopwatch;
+// import com.google.common.base.Stopwatch;
 import java.util.concurrent.TimeUnit;
 
 public class ENT_Util {
@@ -18,9 +18,9 @@ public class ENT_Util {
     Integer[] m = ENT_Runtime.getObjAll(o);
     if (m == null) {
       return o.getClass() + ":-1";
-    } 
+    }
     return o.getClass() + ":" + Integer.toString(m[0]);
-  } 
+  }
 
   public static String dumpTable(Object o) {
     Integer[] m = ENT_Runtime.getObjAll(o);
@@ -61,20 +61,11 @@ public class ENT_Util {
     }
   }
 
-  public static void startStopwatch() {
-    stopwatch.start();
-  }
+  public static void startStopwatch() { stopwatch.start(); }
 
-  public static void stopStopwatch() {
-    stopwatch.stop();
-  }
+  public static void stopStopwatch() { stopwatch.stop(); }
 
-  public static void resetStopwatch() {
-    stopwatch.reset();
-  }
+  public static void resetStopwatch() { stopwatch.reset(); }
 
-  public static double elapsedTime() {
-    return stopwatch.read();
-  }
-
+  public static double elapsedTime() { return stopwatch.read(); }
 }

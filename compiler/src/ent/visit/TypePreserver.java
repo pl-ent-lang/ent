@@ -17,17 +17,13 @@ public class TypePreserver extends ContextVisitor {
     this.toTypeSystem = toTs;
   }
 
-  public TypeSystem toTypeSystem() {
-    return this.toTypeSystem;
-  }
+  public TypeSystem toTypeSystem() { return this.toTypeSystem; }
 
-  public QQ qq() {
-    return null;
-  }
+  public QQ qq() { return null; }
 
   @Override
   public EntLang lang() {
-    return (EntLang) super.lang();
+    return (EntLang)super.lang();
   }
 
   @Override
@@ -39,5 +35,4 @@ public class TypePreserver extends ContextVisitor {
   public Node leaveCall(Node o, Node n, NodeVisitor v) {
     return this.lang().typePreserve(n, this);
   }
-
 }

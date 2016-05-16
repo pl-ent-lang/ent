@@ -8,19 +8,17 @@ import java.io.BufferedReader;
 
 public class UnixBareMetalTemperature implements BareMetalTemperature {
 
-  private static final String TEMPERATURE_ZONE0_PATH =
-    "/sys/class/thermal/thermal_zone0/temp";
+  private static final String TEMPERATURE_ZONE0_PATH = "/sys/class/thermal/thermal_zone0/temp";
 
   private static final int TEMPERATURE_ZONE0_CONVERSION = 1000;
 
-  public UnixBareMetalTemperature() {
-  }
-	
+  public UnixBareMetalTemperature() {}
+
   public float getTempC() {
     float currentTemperature = 0;
     try {
-      currentTemperature = 
-        ((float) this.getBareMetalZoneTemperature()) / ((float) TEMPERATURE_ZONE0_CONVERSION);
+      currentTemperature =
+          ((float)this.getBareMetalZoneTemperature()) / ((float)TEMPERATURE_ZONE0_CONVERSION);
     } catch (IOException e) {
       // TODO: How to handle?
     }
@@ -32,11 +30,8 @@ public class UnixBareMetalTemperature implements BareMetalTemperature {
     FileReader fileReader = new FileReader(TEMPERATURE_ZONE0_PATH);
     BufferedReader bufferedReader = new BufferedReader(fileReader);
 
-    int currentTemperature = 
-      Integer.parseInt(bufferedReader.readLine());
+    int currentTemperature = Integer.parseInt(bufferedReader.readLine());
 
     return currentTemperature;
-
   }
-
 }

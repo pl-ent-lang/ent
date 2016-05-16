@@ -10,20 +10,14 @@ import polyglot.ext.jl5.ast.*;
 public class EntElementValuePairExt extends EntExt {
 
   @Override
-  public Node extRewrite(ExtensionRewriter rw) throws SemanticException { 
-    EntRewriter prw = (EntRewriter) rw;
-    JL5NodeFactory nf = (JL5NodeFactory) prw.to_nf();
+  public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
+    EntRewriter prw = (EntRewriter)rw;
+    JL5NodeFactory nf = (JL5NodeFactory)prw.to_nf();
 
-    ElementValuePair pair = (ElementValuePair) this.node();
+    ElementValuePair pair = (ElementValuePair)this.node();
 
-    ElementValuePair n =
-      nf.ElementValuePair(
-        pair.position(),
-        pair.id(),
-        pair.value()
-        );
+    ElementValuePair n = nf.ElementValuePair(pair.position(), pair.id(), pair.value());
 
     return n;
   }
-
 }

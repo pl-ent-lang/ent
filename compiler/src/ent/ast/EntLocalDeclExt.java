@@ -24,26 +24,25 @@ public class EntLocalDeclExt extends EntExt {
 
   @Override
   public Node typeCheck(TypeChecker tc) throws SemanticException {
-    LocalDecl n = (LocalDecl) this.node();
-    EntTypeSystem ts = (EntTypeSystem) tc.typeSystem();
+    LocalDecl n = (LocalDecl)this.node();
+    EntTypeSystem ts = (EntTypeSystem)tc.typeSystem();
 
     // MODE-NOTE: Kicking up to superLang() if not a mode subst type
     if (!(n.type().type() instanceof ModeSubstType)) {
       return superLang().typeCheck(n, tc);
     }
 
-    ModeSubstType st = (ModeSubstType) n.type().type();
-    if (st.modeType() != ts.WildcardModeType() || 
-        n.init() == null ||
+    ModeSubstType st = (ModeSubstType)n.type().type();
+    if (st.modeType() != ts.WildcardModeType() || n.init() == null ||
         !(n.init().type() instanceof ModeSubstType)) {
       return superLang().typeCheck(n, tc);
     }
 
     // Right now this will trigger inference
     List<Type> mtArgs = st.modeTypeArgs();
-    ModeSubstType inf = (ModeSubstType) n.init().type();
+    ModeSubstType inf = (ModeSubstType)n.init().type();
     List<Type> infArgs = inf.modeTypeArgs();
-    
+
     // Allow all wildcard types to be inferenced
     if (mtArgs.size() != infArgs.size()) {
       // This is an error, just send it up to the super lang for now, it will
@@ -65,9 +64,8 @@ public class EntLocalDeclExt extends EntExt {
 
     // Must reset type for local instance
     LocalInstance li = n.localInstance();
-    li.setType(st); 
+    li.setType(st);
 
     return superLang().typeCheck(this.reconstruct(n, st), tc);
   }
-
 }

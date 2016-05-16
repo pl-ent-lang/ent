@@ -33,7 +33,9 @@ public class EntInferenceSolver_c extends JL7InferenceSolver_c implements Infere
 
   private List<TypeVariable> typeVariablesToSolve;
 
-  public EntInferenceSolver_c(JL5ProcedureInstance pi, List<? extends Type> actuals, JL5TypeSystem ts) {
+  public EntInferenceSolver_c(JL5ProcedureInstance pi,
+                              List<? extends Type> actuals,
+                              JL5TypeSystem ts) {
     super(pi, actuals, ts);
     this.pi = pi;
     this.typeVariablesToSolve = typeVariablesToSolve(pi);
@@ -47,54 +49,38 @@ public class EntInferenceSolver_c extends JL7InferenceSolver_c implements Infere
     int numFormals = formalTypes.size();
     for (int i = 0; i < numFormals - 1; i++) {
       constraints.add(
-        new SubConversionConstraint(
-          actualArgumentTypes.get(i), 
-          formalTypes.get(i), 
-          this
-          )
-        );
+          new SubConversionConstraint(actualArgumentTypes.get(i), formalTypes.get(i), this));
     }
     if (numFormals > 0) {
       if (pi != null && JL5Flags.isVarArgs(pi.flags())) {
-        JL5ArrayType lastFormal = (JL5ArrayType) pi.formalTypes().get(numFormals - 1);
-        if (actualArgumentTypes.size() == numFormals && 
-            ((Type) actualArgumentTypes.get(numFormals - 1)).isArray()) {
-            // there are the same number of actuals as formals, and the last actual is an array type.
-            // So the last actual must be convertible to the array type.
-          constraints.add(
-            new SubConversionConstraint(
-              actualArgumentTypes.get(numFormals - 1), 
-              formalTypes.get(numFormals - 1), 
-              this
-              )
-            );
+        JL5ArrayType lastFormal = (JL5ArrayType)pi.formalTypes().get(numFormals - 1);
+        if (actualArgumentTypes.size() == numFormals &&
+            ((Type)actualArgumentTypes.get(numFormals - 1)).isArray()) {
+          // there are the same number of actuals as formals, and the last actual is an array type.
+          // So the last actual must be convertible to the array type.
+          constraints.add(new SubConversionConstraint(
+              actualArgumentTypes.get(numFormals - 1), formalTypes.get(numFormals - 1), this));
         } else {
-            // more than one remaining actual, or the last remaining actual is not an array type.
-            // all remaining actuals must be convertible to the basetype of the last (i.e. varargs) formal.
+          // more than one remaining actual, or the last remaining actual is not an array type.
+          // all remaining actuals must be convertible to the basetype of the last (i.e. varargs)
+          // formal.
           for (int i = numFormals - 1; i < actualArgumentTypes.size(); i++) {
             constraints.add(
-              new SubConversionConstraint(
-                actualArgumentTypes.get(i), 
-                lastFormal.base(), 
-                this)
-              );
+                new SubConversionConstraint(actualArgumentTypes.get(i), lastFormal.base(), this));
           }
         }
       } else if (numFormals == actualArgumentTypes.size()) {
-          // not a varargs method
-        constraints.add(
-          new SubConversionConstraint(
-            actualArgumentTypes.get(numFormals - 1), 
-            formalTypes.get(numFormals - 1), 
-            this
-            )
-          );
+        // not a varargs method
+        constraints.add(new SubConversionConstraint(
+            actualArgumentTypes.get(numFormals - 1), formalTypes.get(numFormals - 1), this));
       }
     }
     return constraints;
   }
 
-  private Type[] solve( List<Constraint> constraints, boolean useSubtypeConstraints, boolean useSupertypeConstraints) {
+  private Type[] solve(List<Constraint> constraints,
+                       boolean useSubtypeConstraints,
+                       boolean useSupertypeConstraints) {
     List<EqualConstraint> equals = new ArrayList<>();
     List<SubTypeConstraint> subs = new ArrayList<>();
     List<SuperTypeConstraint> supers = new ArrayList<>();
@@ -106,23 +92,23 @@ public class EntInferenceSolver_c extends JL7InferenceSolver_c implements Infere
         constraints.addAll(0, simps);
       } else {
         if (head instanceof EqualConstraint) {
-          EqualConstraint eq = (EqualConstraint) head;
+          EqualConstraint eq = (EqualConstraint)head;
           equals.add(eq);
         } else if (head instanceof SubTypeConstraint) {
-          SubTypeConstraint sub = (SubTypeConstraint) head;
+          SubTypeConstraint sub = (SubTypeConstraint)head;
           subs.add(sub);
         } else if (head instanceof SuperTypeConstraint) {
-          SuperTypeConstraint sup = (SuperTypeConstraint) head;
+          SuperTypeConstraint sup = (SuperTypeConstraint)head;
           supers.add(sup);
         }
       }
     }
-        
+
     Comparator<Constraint> comp = new Comparator<Constraint>() {
       @Override
       public int compare(Constraint o1, Constraint o2) {
-        return typeVariablesToSolve().indexOf(o1.formal())
-                - typeVariablesToSolve().indexOf(o2.formal());
+        return typeVariablesToSolve().indexOf(o1.formal()) -
+            typeVariablesToSolve().indexOf(o2.formal());
       }
     };
     Collections.sort(equals, comp);
@@ -147,7 +133,7 @@ public class EntInferenceSolver_c extends JL7InferenceSolver_c implements Infere
         Set<ReferenceType> bounds = new LinkedHashSet<>();
         for (Constraint c : subSupConstraints) {
           if (c.formal().equals(toSolve) && c.actual().isReference()) {
-            bounds.add((ReferenceType) c.actual());
+            bounds.add((ReferenceType)c.actual());
           }
         }
         List<ReferenceType> u = new ArrayList<>(bounds);
@@ -184,11 +170,10 @@ public class EntInferenceSolver_c extends JL7InferenceSolver_c implements Infere
       solution = handleUnresolvedTypeArgs(solution, expectedReturnType);
     } else {
       // resolved all type arguments. Do we want to try to be more permissive?
-      JL5Options opts = (JL5Options) ts.extensionInfo().getOptions();
+      JL5Options opts = (JL5Options)ts.extensionInfo().getOptions();
       Type returnType = returnType(pi);
-      if (opts.morePermissiveInference && returnType != null && 
-          returnType.isReference() && !returnType.isVoid() && 
-          expectedReturnType != null) {
+      if (opts.morePermissiveInference && returnType != null && returnType.isReference() &&
+          !returnType.isVoid() && expectedReturnType != null) {
         // Try to perform a more permissive inference where we take the
         // expected return type into consideration, even if the the previous
         // step finds a solution for all type variables. This may find a better one.
@@ -197,13 +182,7 @@ public class EntInferenceSolver_c extends JL7InferenceSolver_c implements Infere
 
         List<Constraint> cons = new ArrayList<>();
         cons.addAll(getInitialConstraints());
-        cons.add(
-          new SuperConversionConstraint(
-            expectedReturnType, 
-            returnType, 
-            this
-            )
-          );
+        cons.add(new SuperConversionConstraint(expectedReturnType, returnType, this));
         Type[] betterSolution = this.solve(cons, true, false);
         if (betterSolution != null) {
           solution = betterSolution;
@@ -217,7 +196,7 @@ public class EntInferenceSolver_c extends JL7InferenceSolver_c implements Infere
         // no solution for this variable.
         solution[i] = ts.Object();
       }
-      m.put(typeVariablesToSolve().get(i), (ReferenceType) solution[i]);
+      m.put(typeVariablesToSolve().get(i), (ReferenceType)solution[i]);
     }
     return m;
   }
@@ -229,7 +208,7 @@ public class EntInferenceSolver_c extends JL7InferenceSolver_c implements Infere
     // get the substitution corresponding to the solution so far
     Map<TypeVariable, ReferenceType> m = new LinkedHashMap<>();
     for (int i = 0; i < solution.length; i++) {
-      ReferenceType t = (ReferenceType) solution[i];
+      ReferenceType t = (ReferenceType)solution[i];
       if (t == null) {
         t = typeVariablesToSolve().get(i);
       }
@@ -245,13 +224,7 @@ public class EntInferenceSolver_c extends JL7InferenceSolver_c implements Infere
         expectedReturnType = ts.Object();
       }
       Type rt = subst.substType(returnType);
-      constraints.add(
-        new SuperConversionConstraint(
-          expectedReturnType, 
-          rt, 
-          this
-          )
-        );
+      constraints.add(new SuperConversionConstraint(expectedReturnType, rt, this));
     }
 
     for (int i = 0; i < solution.length; i++) {
@@ -262,7 +235,8 @@ public class EntInferenceSolver_c extends JL7InferenceSolver_c implements Infere
 
     Type[] remainingSolution = solve(constraints, false, true);
     for (int i = 0; i < solution.length; i++) {
-      if (solution[i] == null) solution[i] = remainingSolution[i];
+      if (solution[i] == null)
+        solution[i] = remainingSolution[i];
     }
     return solution;
   }
@@ -275,7 +249,4 @@ public class EntInferenceSolver_c extends JL7InferenceSolver_c implements Infere
     }
     return false;
   }
-
-
 }
-

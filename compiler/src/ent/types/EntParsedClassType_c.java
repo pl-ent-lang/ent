@@ -86,4 +86,3 @@ public class EntParsedClassType_c extends JL5ParsedClassType_c implements EntPar
     this.instancesNeedTypePreservation = needs;
   }
 }
-

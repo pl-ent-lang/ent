@@ -8,11 +8,7 @@ import java.io.BufferedReader;
 
 public class OSXBareMetalTemperature implements BareMetalTemperature {
 
-  public OSXBareMetalTemperature() {
-  }
-	
-  public float getTempC() {
-    return 0.0f;
-  }
+  public OSXBareMetalTemperature() {}
 
+  public float getTempC() { return 0.0f; }
 }

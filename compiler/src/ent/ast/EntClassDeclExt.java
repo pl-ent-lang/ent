@@ -25,22 +25,21 @@ public class EntClassDeclExt extends EntExt {
   protected List<ModeParamTypeNode> modeParams = Collections.emptyList();
 
   // Property Methods
-  public List<ModeParamTypeNode> modeParams() {
-    return this.modeParams;
-  }
+  public List<ModeParamTypeNode> modeParams() { return this.modeParams; }
 
   public Node modeParams(List<ModeParamTypeNode> modeParams) {
     return this.modeParams(this.node(), modeParams);
   }
 
   public <N extends Node> N modeParams(N n, List<ModeParamTypeNode> modeParams) {
-    EntClassDeclExt ext = (EntClassDeclExt) EntExt.ext(n);
-    if (CollectionUtil.equals(ext.modeParams,modeParams)) return n;
+    EntClassDeclExt ext = (EntClassDeclExt)EntExt.ext(n);
+    if (CollectionUtil.equals(ext.modeParams, modeParams))
+      return n;
     if (this.node() == n) {
       n = Copy.Util.copy(n);
-      ext = (EntClassDeclExt) EntExt.ext(n);
+      ext = (EntClassDeclExt)EntExt.ext(n);
     }
-    ext.modeParams = ListUtil.copy(modeParams, true); 
+    ext.modeParams = ListUtil.copy(modeParams, true);
     return n;
   }
 
@@ -59,19 +58,19 @@ public class EntClassDeclExt extends EntExt {
 
   @Override
   public Context enterChildScope(Node child, Context c) {
-    EntContext ctx = (EntContext) superLang().enterChildScope(this.node(), child, c);
+    EntContext ctx = (EntContext)superLang().enterChildScope(this.node(), child, c);
     for (ModeParamTypeNode t : this.modeParams()) {
-      ctx.addModeTypeVariable((ModeTypeVariable) t.type());
+      ctx.addModeTypeVariable((ModeTypeVariable)t.type());
     }
     return ctx;
   }
 
   @Override
   public Node buildTypes(TypeBuilder tb) throws SemanticException {
-    ClassDecl n = (ClassDecl) superLang().buildTypes(this.node(), tb);
+    ClassDecl n = (ClassDecl)superLang().buildTypes(this.node(), tb);
 
-    EntTypeSystem ts = (EntTypeSystem) tb.typeSystem();
-    EntParsedClassType ct = (EntParsedClassType) n.type();
+    EntTypeSystem ts = (EntTypeSystem)tb.typeSystem();
+    EntParsedClassType ct = (EntParsedClassType)n.type();
 
     if (this.modeParams() == null || this.modeParams().isEmpty()) {
       return n;
@@ -81,16 +80,16 @@ public class EntClassDeclExt extends EntExt {
     List<ModeTypeVariable> mtVars = new ArrayList<>(this.modeParams().size());
     Set<String> mtVarCheck = new HashSet<>();
     for (ModeParamTypeNode m : this.modeParams()) {
-      // If we are a declared mode type variable, say high, it is syntactic sugar for high <= _ <= high.
+      // If we are a declared mode type variable, say high, it is syntactic sugar for high <= _ <=
+      // high.
 
       // Check and catch duplicate error as early as possible
       if (mtVarCheck.contains(m.name())) {
-        throw new SemanticException("Duplicate mode type variable declaration.",
-                                    n.position());
+        throw new SemanticException("Duplicate mode type variable declaration.", n.position());
       }
       mtVarCheck.add(m.name());
 
-      ModeTypeVariable mtVar = (ModeTypeVariable) m.type();
+      ModeTypeVariable mtVar = (ModeTypeVariable)m.type();
       mtVar.declaringClass(ct);
       mtVar.index(dbInd);
       mtVars.add(mtVar);
@@ -100,43 +99,40 @@ public class EntClassDeclExt extends EntExt {
     ct.modeTypeVars(mtVars);
 
     return n;
-  } 
+  }
 
   @Override
   public Node typeCheck(TypeChecker tc) throws SemanticException {
-    ClassDecl n = (ClassDecl) superLang().typeCheck(this.node(), tc);
-    EntClassDeclExt ext = (EntClassDeclExt) EntExt.ext(n);
+    ClassDecl n = (ClassDecl)superLang().typeCheck(this.node(), tc);
+    EntClassDeclExt ext = (EntClassDeclExt)EntExt.ext(n);
 
     for (int i = 1; i < ext.modeParams().size(); i++) {
       ModeParamTypeNode m = ext.modeParams().get(i);
-      ModeTypeVariable mtVar = (ModeTypeVariable) m.type();
+      ModeTypeVariable mtVar = (ModeTypeVariable)m.type();
       if (mtVar.isDynRecvr()) {
-        throw new 
-          SemanticException(
-            "Only the first mode type variable may be a dynamic reciever",
-            m.position() 
-            );
+        throw new SemanticException("Only the first mode type variable may be a dynamic reciever",
+                                    m.position());
       }
     }
 
-    EntParsedClassType ct = (EntParsedClassType) n.type();
+    EntParsedClassType ct = (EntParsedClassType)n.type();
 
     // NOTE : We force classes to implement
-    if (ct.hasDynamicRecv() && !ct.flags().isInterface() && !ct.flags().isAbstract() && !ct.hasAttribute()) {
+    if (ct.hasDynamicRecv() && !ct.flags().isInterface() && !ct.flags().isAbstract() &&
+        !ct.hasAttribute()) {
       throw new SemanticException(
           "Class must define an attributor to receive the dynamic mode type.");
     }
 
     if ((ct.flags().isInterface() || ct.flags().isAbstract()) && ct.hasAttribute()) {
-      throw new SemanticException( "Only a concrete class can implement an attributor.");
+      throw new SemanticException("Only a concrete class can implement an attributor.");
     }
 
     if (!ct.hasDynamicRecv() && ct.hasAttribute()) {
-      throw new 
-        SemanticException(
-          "Class must declare a mode type variable with a dynamic mode receiver " +
-          "to implement an attributor."
-          );
+      throw new SemanticException(
+          "Class must declare a mode type variable with a dynamic mode receiver "
+          +
+          "to implement an attributor.");
     }
 
     return n;
@@ -147,17 +143,16 @@ public class EntClassDeclExt extends EntExt {
     List<ClassMember> members = new ArrayList<>();
     for (ClassMember cm : body.members()) {
       if (cm instanceof FieldDecl) {
-        FieldDecl fd = (FieldDecl) cm;
+        FieldDecl fd = (FieldDecl)cm;
         if (fd.name().equals("values")) {
           continue;
         }
         members.add(cm);
       } else if (cm instanceof ConstructorDecl) {
-        members.add(
-          fixConstructorDeclAsEnumConstructorDecl(((ConstructorDecl) cm)));
+        members.add(fixConstructorDeclAsEnumConstructorDecl(((ConstructorDecl)cm)));
       } else if (cm instanceof MethodDecl) {
-        MethodDecl md = (MethodDecl) cm;
-        if (md.name().equals("valueOf") || md.name().equals("values")) { 
+        MethodDecl md = (MethodDecl)cm;
+        if (md.name().equals("valueOf") || md.name().equals("values")) {
           continue;
         }
         members.add(cm);
@@ -168,71 +163,63 @@ public class EntClassDeclExt extends EntExt {
     return body.members(members);
   }
 
-
   private ConstructorDecl fixConstructorDeclAsEnumConstructorDecl(ConstructorDecl cd) {
     // remove the two dummy arguments
     List<Formal> newFormals = new LinkedList<>(cd.formals());
 
-    cd = (ConstructorDecl) cd.formals(newFormals);
+    cd = (ConstructorDecl)cd.formals(newFormals);
 
     // remove the call to super
 
     List<Stmt> newStmts = new LinkedList<>(cd.body().statements());
     if (!newStmts.isEmpty() && newStmts.get(0) instanceof ConstructorCall) {
-        newStmts.remove(0);
+      newStmts.remove(0);
     }
 
     Block newBody = cd.body().statements(newStmts);
-    cd = (ConstructorDecl) cd.body(newBody);
+    cd = (ConstructorDecl)cd.body(newBody);
     return cd;
   }
 
-
   @Override
-  public Node extRewrite(ExtensionRewriter rw) throws SemanticException { 
-    EntRewriter prw = (EntRewriter) rw;
-    JL5NodeFactory nf = (JL5NodeFactory) prw.to_nf();
+  public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
+    EntRewriter prw = (EntRewriter)rw;
+    JL5NodeFactory nf = (JL5NodeFactory)prw.to_nf();
     QQ qq = prw.qq();
 
-    ClassDecl decl = (ClassDecl) this.node();
-    JL5ClassDeclExt ext = (JL5ClassDeclExt) JL5Ext.ext(decl);
-    EntParsedClassType ct = (EntParsedClassType) decl.type();
+    ClassDecl decl = (ClassDecl)this.node();
+    JL5ClassDeclExt ext = (JL5ClassDeclExt)JL5Ext.ext(decl);
+    EntParsedClassType ct = (EntParsedClassType)decl.type();
 
     // HACK : Fix enum, but not that bad of a hack, as this is just
     // how polyglot handles things.
     if (ext instanceof JL5EnumDeclExt) {
-      ClassDecl n = 
-        nf.EnumDecl(
-          decl.position(),
-          decl.flags(),
-          ext.annotationElems(),
-          decl.id(),
-          decl.superClass(),
-          decl.interfaces(),
-          fixClassBodyAsEnumBody(decl.body())
-          );
+      ClassDecl n = nf.EnumDecl(decl.position(),
+                                decl.flags(),
+                                ext.annotationElems(),
+                                decl.id(),
+                                decl.superClass(),
+                                decl.interfaces(),
+                                fixClassBodyAsEnumBody(decl.body()));
 
       return n;
     }
 
     // Manual translation to JL5
-    ClassDecl n = 
-      nf.ClassDecl(
-        decl.position(),
-        decl.flags(),
-        ext.annotationElems(),
-        decl.id(),
-        decl.superClass(),
-        decl.interfaces(),
-        decl.body(),
-        ext.paramTypes()
-        );
+    ClassDecl n = nf.ClassDecl(decl.position(),
+                               decl.flags(),
+                               ext.annotationElems(),
+                               decl.id(),
+                               decl.superClass(),
+                               decl.interfaces(),
+                               decl.body(),
+                               ext.paramTypes());
 
     // 1. Generate ENT_Attributable interface
     List<TypeNode> interfaces = new ArrayList<>(decl.interfaces());
     if (ct.hasAttribute() || ct.hasDynamicRecv()) {
       // 1.1. Generate ENT_Attributable
-      interfaces.add(qq.parseType("ENT_Attributable")); 
+      interfaces.add(qq.parseType("ENT_Attributable"));
       n = n.interfaces(interfaces);
     }
 
@@ -248,7 +235,7 @@ public class EntClassDeclExt extends EntExt {
       for (ConstructorInstance ci : ct.constructors()) {
         if (ci.formalTypes().isEmpty()) {
           genDef = false;
-          pci = (EntConstructorInstance) ci;
+          pci = (EntConstructorInstance)ci;
           break;
         }
       }
@@ -272,20 +259,14 @@ public class EntClassDeclExt extends EntExt {
       } else {
         newStr = "%T ENT_ld = new %T();";
       }
-      stmts.add(
-        qq.parseStmt(
-          newStr,
-          qq.parseType(decl.name()),
-          qq.parseType(decl.name())
-          )
-        ); 
+      stmts.add(qq.parseStmt(newStr, qq.parseType(decl.name()), qq.parseType(decl.name())));
 
       // 3.2. Copy each member of the class manually
       for (ClassMember m : decl.body().members()) {
         if (!(m instanceof FieldDecl)) {
           continue;
         }
-        FieldDecl fd = (FieldDecl) m;
+        FieldDecl fd = (FieldDecl)m;
         if (fd.flags().isStatic() || fd.flags().isFinal()) {
           continue;
         }
@@ -303,9 +284,8 @@ public class EntClassDeclExt extends EntExt {
       members.add(md);
       body = body.members(members);
       n = n.body(body);
-    } 
+    }
 
     return n;
   }
-
 }

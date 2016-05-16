@@ -12,10 +12,10 @@ public interface ModeSubstType extends Type {
   void baseType(Type baseType);
 
   List<Type> modeTypeArgs();
-  void modeTypeArgs(List<Type> modeTypeArgs); 
+  void modeTypeArgs(List<Type> modeTypeArgs);
 
-  Type modeType(); 
-  void modeType(Type modeType); 
+  Type modeType();
+  void modeType(Type modeType);
 
   ModeSubstType deepCopy();
 

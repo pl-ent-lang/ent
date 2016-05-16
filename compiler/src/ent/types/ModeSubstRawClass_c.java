@@ -31,12 +31,12 @@ public class ModeSubstRawClass_c extends ModeSubstClassType_c implements ModeSub
 
   @Override
   public ModeSubstType deepCopy() {
-    return new ModeSubstRawClass_c((EntRawClass) this.baseType(),
+    return new ModeSubstRawClass_c((EntRawClass)this.baseType(),
                                    new ArrayList<Type>(this.modeTypeArgs()));
   }
 
   // RawClass Methods
-  
+
   @Override
   public boolean isRawClass() {
     return true;
@@ -44,113 +44,112 @@ public class ModeSubstRawClass_c extends ModeSubstClassType_c implements ModeSub
 
   @Override
   public JL5ParsedClassType base() {
-    return ((EntRawClass) this.baseType()).base();
+    return ((EntRawClass)this.baseType()).base();
   }
 
   @Override
   public JL5SubstClassType erased() {
     System.out.println("Erased!");
-    return ((EntRawClass) this.baseType()).erased();
+    return ((EntRawClass)this.baseType()).erased();
   }
-                           
+
   @Override
   public List<EnumInstance> enumConstants() {
-    return ((EntRawClass) this.baseType()).enumConstants();
+    return ((EntRawClass)this.baseType()).enumConstants();
   }
 
   @Override
   public Kind kind() {
-    return ((EntRawClass) this.baseType()).kind();
+    return ((EntRawClass)this.baseType()).kind();
   }
 
   @Override
   public ClassType outer() {
-    return ((EntRawClass) this.baseType()).outer();
+    return ((EntRawClass)this.baseType()).outer();
   }
 
   @Override
   public String toString() {
-    return ((EntRawClass) this.baseType()).toString() + "@mode<" + this.modeType() + ">";
+    return ((EntRawClass)this.baseType()).toString() + "@mode<" + this.modeType() + ">";
   }
 
   @Override
   public Package package_() {
-    return ((EntRawClass) this.baseType()).package_();
+    return ((EntRawClass)this.baseType()).package_();
   }
 
   @Override
   public Flags flags() {
-    return ((EntRawClass) this.baseType()).flags();
+    return ((EntRawClass)this.baseType()).flags();
   }
 
   @Override
   public List<? extends ConstructorInstance> constructors() {
-    return ((EntRawClass) this.baseType()).constructors();
+    return ((EntRawClass)this.baseType()).constructors();
   }
 
   @Override
   public List<? extends ClassType> memberClasses() {
-    return ((EntRawClass) this.baseType()).memberClasses();
+    return ((EntRawClass)this.baseType()).memberClasses();
   }
 
   @Override
   public List<? extends MethodInstance> methods() {
-    return ((EntRawClass) this.baseType()).methods();
+    return ((EntRawClass)this.baseType()).methods();
   }
 
   @Override
   public List<? extends FieldInstance> fields() {
-    return ((EntRawClass) this.baseType()).fields();
+    return ((EntRawClass)this.baseType()).fields();
   }
 
   @Override
   public List<? extends ReferenceType> interfaces() {
-    return ((EntRawClass) this.baseType()).interfaces();
+    return ((EntRawClass)this.baseType()).interfaces();
   }
 
   @Override
   public Type superType() {
-    return ((EntRawClass) this.baseType()).superType();
+    return ((EntRawClass)this.baseType()).superType();
   }
 
   @Override
   public Set<? extends Type> superclasses() {
-    return ((EntRawClass) this.baseType()).superclasses();
+    return ((EntRawClass)this.baseType()).superclasses();
   }
 
   @Override
   public String translateAsReceiver(Resolver c) {
-    return ((EntRawClass) this.baseType()).translateAsReceiver(c);
+    return ((EntRawClass)this.baseType()).translateAsReceiver(c);
   }
 
   @Override
   public boolean inStaticContext() {
-    return ((EntRawClass) this.baseType()).inStaticContext();
+    return ((EntRawClass)this.baseType()).inStaticContext();
   }
 
   @Override
   public void setFlags(Flags flags) {
-    ((EntRawClass) this.baseType()).setFlags(flags);
+    ((EntRawClass)this.baseType()).setFlags(flags);
   }
 
   @Override
   public void setContainer(ReferenceType container) {
-    ((EntRawClass) this.baseType()).setContainer(container);
+    ((EntRawClass)this.baseType()).setContainer(container);
   }
 
   @Override
   public AnnotationTypeElemInstance annotationElemNamed(String name) {
-    return ((EntRawClass) this.baseType()).annotationElemNamed(name);
+    return ((EntRawClass)this.baseType()).annotationElemNamed(name);
   }
 
   @Override
   public List<AnnotationTypeElemInstance> annotationElems() {
-    return ((EntRawClass) this.baseType()).annotationElems();
+    return ((EntRawClass)this.baseType()).annotationElems();
   }
 
   @Override
   public Annotations annotations() {
-    return ((EntRawClass) this.baseType()).annotations();
+    return ((EntRawClass)this.baseType()).annotations();
   }
-
 }

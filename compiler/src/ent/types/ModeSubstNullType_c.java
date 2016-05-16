@@ -13,11 +13,8 @@ public class ModeSubstNullType_c extends ModeSubstType_c implements ModeSubstNul
 
   @Override
   public ModeSubstType deepCopy() {
-    return 
-      new ModeSubstNullType_c(
-          (NullType) this.baseType(), 
-          new ArrayList<Type>(this.modeTypeArgs())
-          );
+    return new ModeSubstNullType_c((NullType)this.baseType(),
+                                   new ArrayList<Type>(this.modeTypeArgs()));
   }
 
   @Override
@@ -28,7 +25,7 @@ public class ModeSubstNullType_c extends ModeSubstType_c implements ModeSubstNul
   @Override
   public boolean isNull() {
     return true;
-  } 
+  }
 
   @Override
   public boolean descendsFromImpl(Type ansT) {
@@ -36,7 +33,7 @@ public class ModeSubstNullType_c extends ModeSubstType_c implements ModeSubstNul
       return this.ts.descendsFrom(this.baseType(), ansT);
     }
 
-    ModeSubstType st = (ModeSubstType) ansT;
+    ModeSubstType st = (ModeSubstType)ansT;
     return this.ts.descendsFrom(this.baseType(), st.baseType());
   }
 
@@ -44,9 +41,9 @@ public class ModeSubstNullType_c extends ModeSubstType_c implements ModeSubstNul
   public boolean isCastValidImpl(Type toT) {
     if (!(toT instanceof ModeSubstType)) {
       return this.ts.isCastValid(this.baseType(), toT);
-    } 
+    }
 
-    ModeSubstType st = (ModeSubstType) toT;
+    ModeSubstType st = (ModeSubstType)toT;
     return this.ts.isCastValid(this.baseType(), st.baseType());
   }
 
@@ -54,11 +51,9 @@ public class ModeSubstNullType_c extends ModeSubstType_c implements ModeSubstNul
   public boolean isImplicitCastValidImpl(Type toT) {
     if (!(toT instanceof ModeSubstType)) {
       return this.ts.isImplicitCastValid(this.baseType(), toT);
-    } 
+    }
 
-    ModeSubstType st = (ModeSubstType) toT;
+    ModeSubstType st = (ModeSubstType)toT;
     return this.ts.isImplicitCastValid(this.baseType(), st.baseType());
   }
-
-
 }

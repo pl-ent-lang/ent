@@ -23,10 +23,7 @@ import javax.tools.JavaFileObject;
 
 public class EntTranslator extends JL5Translator {
 
-  public EntTranslator(Job job, 
-                         TypeSystem ts, 
-                         NodeFactory nf, 
-                         TargetFactory tf) {
+  public EntTranslator(Job job, TypeSystem ts, NodeFactory nf, TargetFactory tf) {
     super(job, ts, nf, tf);
   }
 
@@ -34,7 +31,7 @@ public class EntTranslator extends JL5Translator {
 
   @Override
   protected boolean translateSource(SourceFile sf) {
-    EntSourceFileExt ext = (EntSourceFileExt) EntExt.ext(sf);
+    EntSourceFileExt ext = (EntSourceFileExt)EntExt.ext(sf);
 
     if (ext.modesDecl() != null) {
       if (!this.translateModesDecl(sf)) {
@@ -49,21 +46,19 @@ public class EntTranslator extends JL5Translator {
     TargetFactory tf = this.tf;
     int outputWidth = job.compiler().outputWidth();
     Collection<JavaFileObject> outputFiles = job.compiler().outputFiles();
-    EntSourceFileExt ext = (EntSourceFileExt) EntExt.ext(sf);
+    EntSourceFileExt ext = (EntSourceFileExt)EntExt.ext(sf);
 
     PackageNode pkgNode = sf.package_();
     String pkg = pkgNode != null ? pkgNode.package_().fullName() : "";
 
-    JavaFileObject of = 
-      tf.outputFileObject(pkg,  
-                          EntTranslator.MODES_DECL_CLASS_NAME,
-                          sf.source());
+    JavaFileObject of = tf.outputFileObject(pkg, EntTranslator.MODES_DECL_CLASS_NAME, sf.source());
     String opfPath = of.getName();
-    if (!opfPath.endsWith("$")) outputFiles.add(of);
+    if (!opfPath.endsWith("$"))
+      outputFiles.add(of);
 
-    try(CodeWriter w = tf.outputCodeWriter(of, outputWidth)) {
+    try (CodeWriter w = tf.outputCodeWriter(of, outputWidth)) {
       writeHeader(sf, w);
-      
+
       Translator tr;
       if (sf.isDisambiguated() && sf.isTypeChecked()) {
         Context c = lang().enterScope(sf, context);
@@ -74,14 +69,11 @@ public class EntTranslator extends JL5Translator {
       lang().translate(ext.modesDecl(), w, tr);
 
     } catch (IOException e) {
-      job.compiler()
-         .errorQueue()
-         .enqueue(ErrorInfo.IO_ERROR,
-                  "I/O error while translating: " + e.getMessage());
+      job.compiler().errorQueue().enqueue(ErrorInfo.IO_ERROR,
+                                          "I/O error while translating: " + e.getMessage());
       return false;
     }
     return true;
-
   }
 
   @Override
@@ -92,5 +84,4 @@ public class EntTranslator extends JL5Translator {
     w.write("import ent.runtime.*;");
     w.newline(0);
   }
-
 }

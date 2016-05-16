@@ -14,5 +14,4 @@ public interface ModesDecl extends ClassDecl {
 
   ModeOrderingInstance modeOrderingInstance();
   ModesDecl modeOrderingInstance(ModeOrderingInstance oi);
-   
 }

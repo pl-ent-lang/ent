@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
 
-public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements ModeSubstSubstClassType {
+public class ModeSubstSubstClassType_c
+    extends ModeSubstClassType_c implements ModeSubstSubstClassType {
 
   public ModeSubstSubstClassType_c(EntSubstClassType baseType, List<Type> modeTypeArgs) {
     super(baseType, modeTypeArgs);
@@ -29,57 +30,55 @@ public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements M
 
   @Override
   public ModeSubstType deepCopy() {
-    return 
-      new ModeSubstSubstClassType_c((EntSubstClassType) this.baseType(),
-                                     new ArrayList<Type>(this.modeTypeArgs()));
-      
+    return new ModeSubstSubstClassType_c((EntSubstClassType)this.baseType(),
+                                         new ArrayList<Type>(this.modeTypeArgs()));
   }
 
   @Override
   public Iterator<Entry<TypeVariable, ReferenceType>> entries() {
-    return ((EntSubstClassType) this.baseType()).entries();
+    return ((EntSubstClassType)this.baseType()).entries();
   }
 
   // JL5SubstType Methods
   @Override
   public PClass<TypeVariable, ReferenceType> instantiatedFrom() {
-    return ((EntSubstClassType) this.baseType()).instantiatedFrom();
+    return ((EntSubstClassType)this.baseType()).instantiatedFrom();
   }
 
   @Override
   public Subst<TypeVariable, ReferenceType> subst() {
-    return ((EntSubstClassType) this.baseType()).subst();
+    return ((EntSubstClassType)this.baseType()).subst();
   }
 
   @Override
   public List<ReferenceType> actuals() {
-    return ((EntSubstClassType) this.baseType()).actuals();
+    return ((EntSubstClassType)this.baseType()).actuals();
   }
 
   // JL5ClassType
   @Override
   public EnumInstance enumConstantNamed(String name) {
-    return ((EntSubstClassType) this.baseType()).enumConstantNamed(name);
+    return ((EntSubstClassType)this.baseType()).enumConstantNamed(name);
   }
 
   @Override
   public List<EnumInstance> enumConstants() {
-    return ((EntSubstClassType) this.baseType()).enumConstants();
+    return ((EntSubstClassType)this.baseType()).enumConstants();
   }
 
   @Override
   public AnnotationTypeElemInstance annotationElemNamed(String name) {
-    return ((EntSubstClassType) this.baseType()).annotationElemNamed(name);
+    return ((EntSubstClassType)this.baseType()).annotationElemNamed(name);
   }
 
   @Override
   public List<AnnotationTypeElemInstance> annotationElems() {
-    return ((EntSubstClassType) this.baseType()).annotationElems();
+    return ((EntSubstClassType)this.baseType()).annotationElems();
   }
 
   @Override
   public void printParams(CodeWriter w) {
-    ((EntSubstClassType) this.baseType()).printParams(w);
+    ((EntSubstClassType)this.baseType()).printParams(w);
   }
 
   @Override
@@ -92,45 +91,45 @@ public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements M
 
   @Override
   public JL5ParsedClassType base() {
-    JL5ParsedClassType base = ((EntSubstClassType) this.baseType()).base();
-    EntTypeSystem ts = (EntTypeSystem) this.ts;
+    JL5ParsedClassType base = ((EntSubstClassType)this.baseType()).base();
+    EntTypeSystem ts = (EntTypeSystem)this.ts;
 
-    EntParsedClassType ps = (EntParsedClassType) ts.createModeSubst(base, this.modeTypeArgs());
+    EntParsedClassType ps = (EntParsedClassType)ts.createModeSubst(base, this.modeTypeArgs());
 
     return base;
   }
 
   @Override
   public String translateAsReceiver(Resolver c) {
-    return ((EntSubstClassType) this.baseType()).translateAsReceiver(c);
+    return ((EntSubstClassType)this.baseType()).translateAsReceiver(c);
   }
 
   @Override
   public ClassType outer() {
-    return ((EntSubstClassType) this.baseType()).outer();
+    return ((EntSubstClassType)this.baseType()).outer();
   }
 
   @Override
   public Annotations annotations() {
-    return ((EntSubstClassType) this.baseType()).annotations();
+    return ((EntSubstClassType)this.baseType()).annotations();
   }
 
   @Override
   public Set<? extends Type> superclasses() {
-    return ((EntSubstClassType) this.baseType()).superclasses();
+    return ((EntSubstClassType)this.baseType()).superclasses();
   }
 
   @Override
   public String fullName() {
-    return ((EntSubstClassType) this.baseType()).fullName();
+    return ((EntSubstClassType)this.baseType()).fullName();
   }
 
   @Override
   public String toString() {
-    String name = ((EntSubstClassType) this.baseType()).toString() + "@mode<";
+    String name = ((EntSubstClassType)this.baseType()).toString() + "@mode<";
     for (int i = 0; i < this.modeTypeArgs().size(); ++i) {
       name += this.modeTypeArgs().get(i);
-      if (i+1 < this.modeTypeArgs().size()) {
+      if (i + 1 < this.modeTypeArgs().size()) {
         name += ",";
       }
     }
@@ -140,23 +139,24 @@ public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements M
 
   @Override
   public Flags flags() {
-    return ((EntSubstClassType) this.baseType()).flags();
+    return ((EntSubstClassType)this.baseType()).flags();
   }
 
   @Override
   public Package package_() {
-    return ((EntSubstClassType) this.baseType()).package_();
+    return ((EntSubstClassType)this.baseType()).package_();
   }
 
   @Override
   public Type superType() {
-    return ((EntSubstClassType) this.baseType()).superType();
+    return ((EntSubstClassType)this.baseType()).superType();
   }
 
   @Override
   public List<? extends ReferenceType> interfaces() {
     if (this.interfaces == null) {
-      this.interfaces = this.modeSubst().substTypeList(((EntSubstClassType) this.baseType()).interfaces());
+      this.interfaces =
+          this.modeSubst().substTypeList(((EntSubstClassType)this.baseType()).interfaces());
     }
     return this.interfaces;
   }
@@ -164,11 +164,10 @@ public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements M
   @Override
   public List<? extends FieldInstance> fields() {
     if (this.fields == null) {
-      this.fields = this.modeSubst().substFieldList(((EntSubstClassType) this.baseType()).fields());
+      this.fields = this.modeSubst().substFieldList(((EntSubstClassType)this.baseType()).fields());
     }
     return this.fields;
   }
-
 
   @Override
   public FieldInstance fieldNamed(String name) {
@@ -183,7 +182,8 @@ public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements M
   @Override
   public List<? extends MethodInstance> methods() {
     if (this.methods == null) {
-      this.methods = this.modeSubst().substMethodList(((EntSubstClassType) this.baseType()).methods());
+      this.methods =
+          this.modeSubst().substMethodList(((EntSubstClassType)this.baseType()).methods());
     }
     return this.methods;
   }
@@ -197,56 +197,54 @@ public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements M
       }
     }
     return methods;
-  } 
-
+  }
 
   @Override
   public List<? extends ConstructorInstance> constructors() {
     if (this.constructors == null) {
-      this.constructors = ((EntSubstClassType) this.baseType()).constructors();
+      this.constructors = ((EntSubstClassType)this.baseType()).constructors();
       this.constructors = this.modeSubst().substConstructorList(this.constructors);
     }
     return this.constructors;
-  } 
+  }
 
   @Override
   public List<? extends ClassType> memberClasses() {
-    return ((EntSubstClassType) this.baseType()).memberClasses();
+    return ((EntSubstClassType)this.baseType()).memberClasses();
   }
 
   @Override
   public ClassType.Kind kind() {
-    return ((EntSubstClassType) this.baseType()).kind();
+    return ((EntSubstClassType)this.baseType()).kind();
   }
 
   @Override
   public boolean inStaticContext() {
-    return ((EntSubstClassType) this.baseType()).inStaticContext();
+    return ((EntSubstClassType)this.baseType()).inStaticContext();
   }
 
   @Override
   public void setFlags(Flags flags) {
-    ((EntSubstClassType) this.baseType()).setFlags(flags);
+    ((EntSubstClassType)this.baseType()).setFlags(flags);
   }
 
   @Override
   public void setContainer(ReferenceType container) {
-    ((EntSubstClassType) this.baseType()).setContainer(container);
+    ((EntSubstClassType)this.baseType()).setContainer(container);
   }
 
   private boolean hasWildCardArg() {
-    JL5ParsedClassType b = (JL5ParsedClassType) this.base();
+    JL5ParsedClassType b = (JL5ParsedClassType)this.base();
 
     for (TypeVariable t : b.typeVariables()) {
       Type substType = this.subst().substType(t);
-      if (substType instanceof WildCardType && 
+      if (substType instanceof WildCardType &&
           !(substType instanceof CaptureConvertedWildCardType)) {
-          return true;
+        return true;
       }
     }
     return false;
   }
-
 
   // Type Methods
   /*
@@ -320,5 +318,4 @@ public class ModeSubstSubstClassType_c extends ModeSubstClassType_c implements M
     return false;
   }
   */
-
 }

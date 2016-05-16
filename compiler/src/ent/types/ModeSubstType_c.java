@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.*;
 
-
 public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
 
   protected Type baseType;
@@ -22,48 +21,35 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
   }
 
   // ModeSubstType Methods
-  public Type baseType() {
-    return (Type) this.baseType;
-  }
+  public Type baseType() { return (Type)this.baseType; }
 
-  public void baseType(Type baseType) {
-    this.baseType = baseType;
-  }
+  public void baseType(Type baseType) { this.baseType = baseType; }
 
-  public List<Type> modeTypeArgs() {
-    return this.modeTypeArgs;
-  }
+  public List<Type> modeTypeArgs() { return this.modeTypeArgs; }
 
-  public void modeTypeArgs(List<Type> modeTypeArgs) {
-    this.modeTypeArgs = modeTypeArgs;
-  } 
+  public void modeTypeArgs(List<Type> modeTypeArgs) { this.modeTypeArgs = modeTypeArgs; }
 
-  public Type modeType() {
-    return this.modeTypeArgs().get(0);
-  }
+  public Type modeType() { return this.modeTypeArgs().get(0); }
 
-  public void modeType(Type modeType) {
-    this.modeTypeArgs().set(0, modeType);
-  } 
+  public void modeType(Type modeType) { this.modeTypeArgs().set(0, modeType); }
 
   public abstract ModeSubstType deepCopy();
 
-  @SuppressWarnings("unused")
-  private static final long readObjectVersionUID = 1L;
+  @SuppressWarnings("unused") private static final long readObjectVersionUID = 1L;
 
-  private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException { 
-    in.defaultReadObject(); 
+  private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    in.defaultReadObject();
 
     if (in instanceof TypeInputStream) {
-      TypeInputStream tin = (TypeInputStream) in;
-      EntTypeSystem ts = (EntTypeSystem) tin.getTypeSystem();
+      TypeInputStream tin = (TypeInputStream)in;
+      EntTypeSystem ts = (EntTypeSystem)tin.getTypeSystem();
 
       // TODO : This is a total deserialization hack, but needs to be used until
       // there is time to site down and serialize / deserialize proplery.
 
       List<Type> fixed = new ArrayList<>();
       for (Type t : this.modeTypeArgs()) {
-        ModeType mt = (ModeType) t;
+        ModeType mt = (ModeType)t;
         if (mt.name().equals("*")) {
           fixed.add(ts.WildcardModeType());
         } else if (mt.name().equals("?")) {
@@ -75,9 +61,8 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
 
       this.modeTypeArgs(fixed);
     }
+  }
 
-  } 
-  
   // Type Methods
   @Override
   public String toString() {
@@ -213,53 +198,38 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
   // subst type for these methods.
   @Override
   public ClassType toClass() {
-    EntTypeSystem ts = (EntTypeSystem) this.ts;
-    return 
-      (ClassType) ts.createModeSubst(
-        this.baseType.toClass(),
-        Arrays.<Type>asList(ts.WildcardModeType())
-        );
+    EntTypeSystem ts = (EntTypeSystem)this.ts;
+    return (ClassType)ts.createModeSubst(this.baseType.toClass(),
+                                         Arrays.<Type>asList(ts.WildcardModeType()));
   }
 
   @Override
   public NullType toNull() {
-    EntTypeSystem ts = (EntTypeSystem) this.ts;
-    return 
-      (NullType) ts.createModeSubst(
-        this.baseType.toNull(),
-        Arrays.<Type>asList(ts.WildcardModeType())
-        );
+    EntTypeSystem ts = (EntTypeSystem)this.ts;
+    return (NullType)ts.createModeSubst(this.baseType.toNull(),
+                                        Arrays.<Type>asList(ts.WildcardModeType()));
   }
 
   @Override
   public ReferenceType toReference() {
-    EntTypeSystem ts = (EntTypeSystem) this.ts;
+    EntTypeSystem ts = (EntTypeSystem)this.ts;
 
-    return 
-      (ReferenceType) ts.createModeSubst(
-        this.baseType.toReference(),
-        new ArrayList<>(this.modeTypeArgs())
-        );
+    return (ReferenceType)ts.createModeSubst(this.baseType.toReference(),
+                                             new ArrayList<>(this.modeTypeArgs()));
   }
 
   @Override
   public PrimitiveType toPrimitive() {
-    EntTypeSystem ts = (EntTypeSystem) this.ts;
-    return 
-      (PrimitiveType) ts.createModeSubst(
-        this.baseType.toPrimitive(),
-        Arrays.<Type>asList(ts.WildcardModeType())
-        );
+    EntTypeSystem ts = (EntTypeSystem)this.ts;
+    return (PrimitiveType)ts.createModeSubst(this.baseType.toPrimitive(),
+                                             Arrays.<Type>asList(ts.WildcardModeType()));
   }
 
   @Override
   public ArrayType toArray() {
-    EntTypeSystem ts = (EntTypeSystem) this.ts;
-    return 
-      (ArrayType) ts.createModeSubst(
-        this.baseType.toArray(),
-        Arrays.<Type>asList(ts.WildcardModeType())
-        );
+    EntTypeSystem ts = (EntTypeSystem)this.ts;
+    return (ArrayType)ts.createModeSubst(this.baseType.toArray(),
+                                         Arrays.<Type>asList(ts.WildcardModeType()));
   }
 
   @Override
@@ -279,7 +249,7 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
       }
     }
     return true;
-  } 
+  }
 
   protected boolean modeTypeArgsDescends(ModeSubstType ot) {
     if (this.modeTypeArgs().size() != ot.modeTypeArgs().size()) {
@@ -291,7 +261,7 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
       }
     }
     return true;
-  } 
+  }
 
   protected boolean modeTypeArgsImplicit(ModeSubstType ot) {
     if (this.modeTypeArgs().size() != ot.modeTypeArgs().size()) {
@@ -322,26 +292,24 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
   }
 
   // FIXME: See Stringer.java to catch bug
-  @Override 
+  @Override
   public boolean equalsImpl(TypeObject o) {
     if (!(o instanceof ModeSubstType)) {
       return false;
-    } 
+    }
 
-    ModeSubstType st = (ModeSubstType) o;
-    return this.baseType().equals(st.baseType()) && 
-           this.modeTypeArgsEquals(st);
-  } 
+    ModeSubstType st = (ModeSubstType)o;
+    return this.baseType().equals(st.baseType()) && this.modeTypeArgsEquals(st);
+  }
 
   @Override
   public boolean typeEqualsImpl(Type ansT) {
     if (!(ansT instanceof ModeSubstType)) {
       return this.ts.typeEquals(this.baseType(), ansT);
-    } 
+    }
 
-    ModeSubstType st = (ModeSubstType) ansT;
-    return this.ts.typeEquals(this.baseType(), st.baseType()) &&
-           this.modeTypeArgsEquals(st);
+    ModeSubstType st = (ModeSubstType)ansT;
+    return this.ts.typeEquals(this.baseType(), st.baseType()) && this.modeTypeArgsEquals(st);
   }
 
   @Override
@@ -353,9 +321,9 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
   public boolean descendsFromImpl(Type ansT) {
     if (!(ansT instanceof ModeSubstType)) {
       return this.ts.descendsFrom(this.baseType(), ansT);
-    } 
+    }
 
-    ModeSubstType st = (ModeSubstType) ansT;
+    ModeSubstType st = (ModeSubstType)ansT;
 
     // 3 Cases for descends
     //  1. Base descends, mode types are equal
@@ -363,8 +331,7 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
     //  3. Base are equal, mode type descend
     //  TODO : Refactor and then optimize this code
     boolean descends = this.ts.descendsFrom(this.baseType(), st.baseType());
-    if ((descends && this.modeTypeArgsEquals(st)) ||
-        (descends && this.modeTypeArgsDescends(st))) {
+    if ((descends && this.modeTypeArgsEquals(st)) || (descends && this.modeTypeArgsDescends(st))) {
       return true;
     }
 
@@ -375,22 +342,21 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
   public boolean isCastValidImpl(Type toT) {
     if (!(toT instanceof ModeSubstType)) {
       return this.ts.isCastValid(this.baseType(), toT);
-    } 
+    }
 
-    ModeSubstType st = (ModeSubstType) toT;
-    return this.ts.isCastValid(this.baseType(), st.baseType()) &&
-           this.modeTypeArgsEquals(st);
+    ModeSubstType st = (ModeSubstType)toT;
+    return this.ts.isCastValid(this.baseType(), st.baseType()) && this.modeTypeArgsEquals(st);
   }
 
   @Override
   public boolean isImplicitCastValidImpl(Type toT) {
     if (!(toT instanceof ModeSubstType)) {
       return this.ts.isImplicitCastValid(this.baseType(), toT);
-    } 
+    }
 
-    ModeSubstType st = (ModeSubstType) toT;
+    ModeSubstType st = (ModeSubstType)toT;
     return this.ts.isImplicitCastValid(this.baseType(), st.baseType()) &&
-           this.modeTypeArgsImplicit(st);
+        this.modeTypeArgsImplicit(st);
   }
 
   /*
@@ -400,8 +366,9 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
       System.out.println("Types: " + this + " " + ansT);
       System.out.println("Classes: " + this.getClass() + " " + ansT.getClass());
       throw new InternalCompilerError(
-          "unexpected non mode substituted type " + ansT + ". typeEquals should allow the special case.");
-    } 
+          "unexpected non mode substituted type " + ansT + ". typeEquals should allow the special
+  case.");
+    }
 
     ModeSubstType st = (ModeSubstType) ansT;
     return this.ts.descendsFrom(this.baseType(), st.baseType()) &&
@@ -414,8 +381,9 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
       System.out.println("Types: " + this + " " + toT);
       System.out.println("Classes: " + this.getClass() + " " + toT.getClass());
       throw new InternalCompilerError(
-          "unexpected non mode substituted type " + toT + " from " + this + ". typeEquals should allow the special case.");
-    } 
+          "unexpected non mode substituted type " + toT + " from " + this + ". typeEquals should
+  allow the special case.");
+    }
 
     ModeSubstType st = (ModeSubstType) toT;
     return this.ts.isCastValid(this.baseType(), st.baseType()) &&
@@ -428,8 +396,9 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
       System.out.println("Types: " + this + " " + toT);
       System.out.println("Classes: " + this.getClass() + " " + toT.getClass());
       throw new InternalCompilerError(
-          "unexpected non mode substituted type " + toT + ". typeEquals should allow the special case.");
-    } 
+          "unexpected non mode substituted type " + toT + ". typeEquals should allow the special
+  case.");
+    }
 
     ModeSubstType st = (ModeSubstType) toT;
     return this.ts.isImplicitCastValid(this.baseType(), st.baseType()) &&
@@ -448,11 +417,8 @@ public abstract class ModeSubstType_c extends Type_c implements ModeSubstType {
     for (Type t : this.modeTypeArgs()) {
       args += t.toString() + ",";
     }
-    args = args.substring(0, args.length()-1);
+    args = args.substring(0, args.length() - 1);
     args += ">";
     return args;
-  } 
-
+  }
 }
-
-

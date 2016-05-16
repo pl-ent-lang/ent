@@ -6,5 +6,4 @@ public interface ModeTypeNode extends TypeNode {
 
   // Property Methods
   String name();
-
 }

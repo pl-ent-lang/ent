@@ -43,4 +43,3 @@ public interface ModeTypeVariable extends ModeType {
   int index();
   void index(int index);
 }
-

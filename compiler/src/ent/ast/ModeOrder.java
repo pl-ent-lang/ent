@@ -8,5 +8,4 @@ public interface ModeOrder extends Term {
   String lower();
 
   String upper();
-   
 }

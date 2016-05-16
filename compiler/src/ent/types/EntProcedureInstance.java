@@ -15,8 +15,7 @@ public interface EntProcedureInstance extends JL5ProcedureInstance {
   EntProcedureInstance baseInstance();
   void baseInstance(EntProcedureInstance baseInstance);
 
-  List<ModeType> actualModeArgsTop(); 
-  void actualModeArgsPop(); 
-  void actualModeArgsPush(List<ModeType> actualModeArgs); 
+  List<ModeType> actualModeArgsTop();
+  void actualModeArgsPop();
+  void actualModeArgsPush(List<ModeType> actualModeArgs);
 }
-

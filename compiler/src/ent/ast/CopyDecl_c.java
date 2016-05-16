@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Collections;
 
 public class CopyDecl_c extends Term_c implements CopyDecl {
-  
+
   protected Block body;
   protected CopyInstance copyInstance;
 
@@ -24,31 +24,27 @@ public class CopyDecl_c extends Term_c implements CopyDecl {
   }
 
   // Property Methods
-  public Block body() {
-    return this.body;
-  }
+  public Block body() { return this.body; }
 
-  public CopyDecl body(Block body) {
-    return this.body(this, body);
-  }
+  public CopyDecl body(Block body) { return this.body(this, body); }
 
   public <N extends CopyDecl_c> N body(N n, Block body) {
-    if (this.body() == body) return n;
+    if (this.body() == body)
+      return n;
     n = this.copyIfNeeded(n);
     n.body = body;
     return n;
   }
 
-  public CopyInstance copyInstance() {
-    return this.copyInstance;
-  }
+  public CopyInstance copyInstance() { return this.copyInstance; }
 
   public CopyDecl copyInstance(CopyInstance copyInstance) {
     return this.copyInstance(this, copyInstance);
   }
 
   public <N extends CopyDecl_c> N copyInstance(N n, CopyInstance copyInstance) {
-    if (this.copyInstance() == copyInstance) return n;
+    if (this.copyInstance() == copyInstance)
+      return n;
     n = this.copyIfNeeded(n);
     n.copyInstance = copyInstance;
     return n;
@@ -58,12 +54,12 @@ public class CopyDecl_c extends Term_c implements CopyDecl {
   @Override
   public Term codeBody() {
     return this.body();
-  } 
+  }
 
   @Override
   public CodeInstance codeInstance() {
     return this.copyInstance();
-  } 
+  }
 
   protected <N extends CopyDecl_c> N reconstruct(N n, Block body) {
     n = this.body(n, body);
@@ -78,7 +74,7 @@ public class CopyDecl_c extends Term_c implements CopyDecl {
 
   @Override
   public Node copy(NodeFactory nf) {
-    EntNodeFactory pnf = (EntNodeFactory) nf;
+    EntNodeFactory pnf = (EntNodeFactory)nf;
     return pnf.CopyDecl(this.position(), this.body());
   }
 
@@ -90,9 +86,9 @@ public class CopyDecl_c extends Term_c implements CopyDecl {
 
   @Override
   public Node buildTypes(TypeBuilder tb) throws SemanticException {
-    EntTypeSystem ts = (EntTypeSystem) tb.typeSystem();
-    EntParsedClassType ct = (EntParsedClassType) tb.currentClass();
-  
+    EntTypeSystem ts = (EntTypeSystem)tb.typeSystem();
+    EntParsedClassType ct = (EntParsedClassType)tb.currentClass();
+
     if (ct == null) {
       // Big error, attributor needs to be part of a class only
     }
@@ -101,8 +97,7 @@ public class CopyDecl_c extends Term_c implements CopyDecl {
       throw new SemanticException("Only one copy may be defined per class.");
     }
 
-    CopyInstance ci = 
-      ts.createCopyInstance(this.position(), ct);
+    CopyInstance ci = ts.createCopyInstance(this.position(), ct);
     ct.copyInstance(ci);
 
     return this.copyInstance(this, ci);
@@ -110,18 +105,15 @@ public class CopyDecl_c extends Term_c implements CopyDecl {
 
   @Override
   public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
-    EntRewriter prw = (EntRewriter) rw;
-    NodeFactory nf = (NodeFactory) prw.nodeFactory();
+    EntRewriter prw = (EntRewriter)rw;
+    NodeFactory nf = (NodeFactory)prw.nodeFactory();
     QQ qq = prw.qq();
 
-    ClassMember md = 
-      qq.parseMember(
-        "public ENT_Attributable ENT_copy() { %LS }", 
-        this.body().statements()
-        );
+    ClassMember md =
+        qq.parseMember("public ENT_Attributable ENT_copy() { %LS }", this.body().statements());
 
     return md;
-  } 
+  }
 
   @Override
   public void dump(CodeWriter w) {
@@ -133,7 +125,7 @@ public class CopyDecl_c extends Term_c implements CopyDecl {
       w.write("(instance " + this.copyInstance() + ")");
       w.end();
     }
-  } 
+  }
 
   // Term Method
   @Override
@@ -145,7 +137,7 @@ public class CopyDecl_c extends Term_c implements CopyDecl {
   public <T> List<T> acceptCFG(CFGBuilder<?> v, List<T> succs) {
     if (this.body() != null) {
       v.visitCFG(this.body(), this, EXIT);
-    } 
+    }
 
     return succs;
   }
@@ -154,7 +146,5 @@ public class CopyDecl_c extends Term_c implements CopyDecl {
   @Override
   public MemberInstance memberInstance() {
     return this.copyInstance();
-  } 
-
-  
+  }
 }

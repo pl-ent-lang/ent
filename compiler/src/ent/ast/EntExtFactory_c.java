@@ -5,93 +5,89 @@ import polyglot.ast.ExtFactory;
 
 public final class EntExtFactory_c extends EntAbstractExtFactory_c {
 
-  public EntExtFactory_c() {
-    super();
-  }
+  public EntExtFactory_c() { super(); }
 
-  public EntExtFactory_c(ExtFactory nextExtFactory) {
-    super(nextExtFactory);
-  }
+  public EntExtFactory_c(ExtFactory nextExtFactory) { super(nextExtFactory); }
 
-  @Override 
+  @Override
   protected Ext extAnnotationElemDeclImpl() {
     return new EntAnnotationElemDeclExt();
-  } 
+  }
 
-  @Override 
+  @Override
   protected Ext extNormalAnnotationElemImpl() {
     return new EntAnnotationElemExt();
-  } 
+  }
 
-  @Override 
+  @Override
   protected Ext extMarkerAnnotationElemImpl() {
     return new EntAnnotationElemExt();
-  } 
+  }
 
-  @Override 
+  @Override
   protected Ext extSingleElementAnnotationElemImpl() {
     return new EntAnnotationElemExt();
-  } 
+  }
 
-  @Override 
+  @Override
   protected Ext extCallImpl() {
     return new EntCallExt();
-  } 
+  }
 
-  @Override 
+  @Override
   protected Ext extCanonicalTypeNodeImpl() {
     return new EntCanonicalTypeNodeExt();
-  } 
+  }
 
-  @Override 
+  @Override
   protected Ext extCaseImpl() {
     return new EntCaseExt();
   }
 
-  @Override 
+  @Override
   protected Ext extClassDeclImpl() {
     return new EntClassDeclExt();
   }
 
-  @Override 
+  @Override
   protected Ext extConstructorDeclImpl() {
     return new EntConstructorDeclExt();
-  } 
+  }
 
-  @Override 
+  @Override
   protected Ext extEnumConstantDeclImpl() {
     return new EntEnumConstantDeclExt();
-  } 
+  }
 
-  @Override 
+  @Override
   protected Ext extEnumConstantImpl() {
     return new EntEnumConstantExt();
-  } 
+  }
 
-  @Override 
+  @Override
   protected Ext extElementValuePairImpl() {
     return new EntElementValuePairExt();
-  } 
+  }
 
-  @Override 
+  @Override
   protected Ext extExtendedForImpl() {
     return new EntExtendedForExt();
-  } 
+  }
 
-  @Override 
+  @Override
   protected Ext extFieldImpl() {
     return new EntFieldExt();
-  } 
+  }
 
-  @Override 
+  @Override
   protected Ext extFieldDeclImpl() {
     return new EntFieldDeclExt();
-  } 
+  }
 
-  @Override 
+  @Override
   protected Ext extFormalImpl() {
     return new EntFormalExt();
-  } 
+  }
 
   @Override
   protected Ext extLitImpl() {
@@ -103,10 +99,10 @@ public final class EntExtFactory_c extends EntAbstractExtFactory_c {
     return new EntLocalDeclExt();
   }
 
-  @Override 
+  @Override
   protected Ext extModesDeclImpl() {
     return new EntModesDeclExt();
-  } 
+  }
 
   @Override
   protected Ext extMethodDeclImpl() {
@@ -116,12 +112,12 @@ public final class EntExtFactory_c extends EntAbstractExtFactory_c {
   @Override
   protected Ext extNewImpl() {
     return new EntNewExt();
-  } 
+  }
 
   @Override
   protected Ext extNodeImpl() {
     return new EntExt();
-  } 
+  }
 
   @Override
   protected Ext extParamTypeNodeImpl() {
@@ -142,5 +138,4 @@ public final class EntExtFactory_c extends EntAbstractExtFactory_c {
   protected Ext extSwitchImpl() {
     return new EntSwitchExt();
   }
-
 }

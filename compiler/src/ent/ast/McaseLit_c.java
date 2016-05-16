@@ -29,30 +29,29 @@ public class McaseLit_c extends Lit_c implements McaseLit {
   }
 
   // Property Methods
-  protected TypeNode mcaseTypeNode() {
-    return this.mcaseTypeNode;
-  }
+  protected TypeNode mcaseTypeNode() { return this.mcaseTypeNode; }
 
   protected <N extends McaseLit_c> N mcaseTypeNode(N n, TypeNode mcaseTypeNode) {
-    if (this.mcaseTypeNode() == mcaseTypeNode) return n;
+    if (this.mcaseTypeNode() == mcaseTypeNode)
+      return n;
     n = this.copyIfNeeded(n);
     n.mcaseTypeNode = mcaseTypeNode;
     return n;
   }
 
-  protected List<McaseFieldDecl> fields() {
-    return this.fields;
-  }
+  protected List<McaseFieldDecl> fields() { return this.fields; }
 
   protected <N extends McaseLit_c> N fields(N n, List<McaseFieldDecl> fields) {
-    if (CollectionUtil.equals(this.fields(),fields)) return n;
+    if (CollectionUtil.equals(this.fields(), fields))
+      return n;
     n = this.copyIfNeeded(n);
     n.fields = ListUtil.copy(fields, true);
     return n;
   }
 
   // Node Methods
-  protected <N extends McaseLit_c> N reconstruct(N n, TypeNode mcaseTypeNode, List<McaseFieldDecl> fields) {
+  protected <N extends McaseLit_c>
+      N reconstruct(N n, TypeNode mcaseTypeNode, List<McaseFieldDecl> fields) {
     n = this.mcaseTypeNode(n, mcaseTypeNode);
     n = this.fields(n, fields);
     return n;
@@ -80,13 +79,13 @@ public class McaseLit_c extends Lit_c implements McaseLit {
 
   @Override
   public Node typeCheck(TypeChecker tc) throws SemanticException {
-    // Current, for an mcase type to typecheck, 
+    // Current, for an mcase type to typecheck,
     //  1. Each init must have the type of the base
     //  2. All modes must be covered
 
     Set<String> found = new HashSet<>();
-    EntTypeSystem ts = (EntTypeSystem) tc.typeSystem();
-    McaseType mcT = (McaseType) this.mcaseTypeNode().type();
+    EntTypeSystem ts = (EntTypeSystem)tc.typeSystem();
+    McaseType mcT = (McaseType)this.mcaseTypeNode().type();
 
     for (McaseFieldDecl fd : this.fields()) {
       String mode = fd.field().id();
@@ -99,16 +98,16 @@ public class McaseLit_c extends Lit_c implements McaseLit {
       }
 
       if (!ts.typeEquals(mcT.base(), fd.init().type())) {
-        throw new SemanticException("Initializer type " + fd.init().type() + " does not match mcase type");
+        throw new SemanticException("Initializer type " + fd.init().type() +
+                                    " does not match mcase type");
       }
 
       found.add(mode);
     }
 
     // Check to make sure all modes were covered
-    for (Map.Entry<String,ModeType> e : ts.createdModeTypes().entrySet()) {
-      if (e.getValue() == ts.WildcardModeType() || 
-          e.getValue() == ts.DynamicModeType() || 
+    for (Map.Entry<String, ModeType> e : ts.createdModeTypes().entrySet()) {
+      if (e.getValue() == ts.WildcardModeType() || e.getValue() == ts.DynamicModeType() ||
           e.getValue() == ts.BottomModeType()) {
         continue;
       }
@@ -150,31 +149,21 @@ public class McaseLit_c extends Lit_c implements McaseLit {
   }
 
   @Override
-  public Node extRewrite(ExtensionRewriter rw) throws SemanticException { 
-    EntRewriter prw = (EntRewriter) rw;
-    JL5NodeFactory nf = (JL5NodeFactory) prw.to_nf();
+  public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
+    EntRewriter prw = (EntRewriter)rw;
+    JL5NodeFactory nf = (JL5NodeFactory)prw.to_nf();
     QQ qq = prw.qq();
 
     List<Expr> exprs = new ArrayList<Expr>();
-    for (int i = 0 ; i < this.fields().size(); i++) {
-      exprs.add((Expr) this.fields().get(i));
+    for (int i = 0; i < this.fields().size(); i++) {
+      exprs.add((Expr)this.fields().get(i));
     }
 
-    Node n =
-      nf.NewArray(
-        Position.COMPILER_GENERATED,
-        prw.typeToJava(
-          ((McaseType) this.type()).base(),
-          this.position()
-          ),
-        1,
-        nf.ArrayInit(
-          Position.COMPILER_GENERATED,
-          exprs
-          )
-        );
+    Node n = nf.NewArray(Position.COMPILER_GENERATED,
+                         prw.typeToJava(((McaseType)this.type()).base(), this.position()),
+                         1,
+                         nf.ArrayInit(Position.COMPILER_GENERATED, exprs));
 
     return n;
   }
-
 }

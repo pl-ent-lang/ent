@@ -24,37 +24,21 @@ public class ModeType_c extends Type_c implements ModeType {
     this.name = name;
   }
 
-  public String name() {
-    return this.name;
-  }
+  public String name() { return this.name; }
 
-  public void name(String name) {
-    this.name = name;
-  }
+  public void name(String name) { this.name = name; }
 
-  public Type superType() {
-    return this.superType;
-  }
+  public Type superType() { return this.superType; }
 
-  public void superType(Type superType) {
-    this.superType = superType;
-  }
+  public void superType(Type superType) { this.superType = superType; }
 
-  public Type subType() {
-    return this.subType;
-  }
+  public Type subType() { return this.subType; }
 
-  public void subType(Type subType) {
-    this.subType = subType;
-  }
+  public void subType(Type subType) { this.subType = subType; }
 
-  public int uniqueId() {
-    return this.uniqueId;
-  }
+  public int uniqueId() { return this.uniqueId; }
 
-  public void uniqueId(int uniqueId) {
-    this.uniqueId = uniqueId;
-  }
+  public void uniqueId(int uniqueId) { this.uniqueId = uniqueId; }
 
   public String compileId() {
     if (this.name().equals("?")) {
@@ -84,13 +68,13 @@ public class ModeType_c extends Type_c implements ModeType {
     } else {
       return this.name().toUpperCase() + "_MODE = " + this.uniqueId;
     }
-  } 
+  }
 
   public String runtimeCode() {
     if (this.name().equals("?")) {
       return "DYNAMIC_MODE";
     } else if (this.name().equals("*")) {
-      return "WILDCARD_MODE"; 
+      return "WILDCARD_MODE";
     } else {
       return this.name().toUpperCase() + "_MODE";
     }
@@ -111,31 +95,30 @@ public class ModeType_c extends Type_c implements ModeType {
     return this.toString();
   }
 
-  @Override 
+  @Override
   public boolean equalsImpl(TypeObject o) {
     return (this == o);
-  } 
+  }
 
-  @Override 
+  @Override
   public boolean typeEqualsImpl(Type o) {
     if (this == o) {
       return true;
     }
 
-    EntTypeSystem ts = (EntTypeSystem) this.typeSystem();
+    EntTypeSystem ts = (EntTypeSystem)this.typeSystem();
 
-    //System.err.format("ModeType: %s %s\n", this, o);
-    //System.err.format("ModeType: %s %s %s\n", this == o, this == ts.WildcardModeType(), o == ts.WildcardModeType());
+    // System.err.format("ModeType: %s %s\n", this, o);
+    // System.err.format("ModeType: %s %s %s\n", this == o, this == ts.WildcardModeType(), o ==
+    // ts.WildcardModeType());
 
-    return (this == o ||
-            this == ts.WildcardModeType() ||
-            o == ts.WildcardModeType());
-  } 
+    return (this == o || this == ts.WildcardModeType() || o == ts.WildcardModeType());
+  }
 
   @Override
   public boolean descendsFromImpl(Type o) {
-    EntTypeSystem ts = (EntTypeSystem) this.typeSystem();
-    if (ts.typeEquals(this,o)) {
+    EntTypeSystem ts = (EntTypeSystem)this.typeSystem();
+    if (ts.typeEquals(this, o)) {
       return true;
     }
     if (this.superType() == null) {
@@ -149,35 +132,21 @@ public class ModeType_c extends Type_c implements ModeType {
     return ts.typeEquals(this, o);
   }
 
-
   @Override
   public Expr rewriteForLookup(NodeFactory nf, TypeSystem ts, Context c) {
-    EntTypeSystem fromTs = (EntTypeSystem) this.typeSystem();
+    EntTypeSystem fromTs = (EntTypeSystem)this.typeSystem();
     Receiver recv = null;
-      if (fromTs.modesDeclPackage() != null) {
-        recv =
-          nf.AmbReceiver(
-            Position.COMPILER_GENERATED,
-            nf.PackageNode(
-              Position.COMPILER_GENERATED,
-              ts.createPackage(fromTs.modesDeclPackage().fullName())
-            ),
-            nf.Id(Position.COMPILER_GENERATED, "EntMode")
-            );
-      } else {
-        recv =
-          nf.AmbReceiver(
-            Position.COMPILER_GENERATED,
-            nf.Id(Position.COMPILER_GENERATED, "EntMode")
-            );
-      }
-    Expr n = 
-      nf.Field(
-        Position.COMPILER_GENERATED,
-        recv,
-        nf.Id(Position.COMPILER_GENERATED, this.runtimeCode())
-        );
+    if (fromTs.modesDeclPackage() != null) {
+      recv = nf.AmbReceiver(Position.COMPILER_GENERATED,
+                            nf.PackageNode(Position.COMPILER_GENERATED,
+                                           ts.createPackage(fromTs.modesDeclPackage().fullName())),
+                            nf.Id(Position.COMPILER_GENERATED, "EntMode"));
+    } else {
+      recv = nf.AmbReceiver(Position.COMPILER_GENERATED,
+                            nf.Id(Position.COMPILER_GENERATED, "EntMode"));
+    }
+    Expr n = nf.Field(
+        Position.COMPILER_GENERATED, recv, nf.Id(Position.COMPILER_GENERATED, this.runtimeCode()));
     return n;
   }
-
 }

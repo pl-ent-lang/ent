@@ -19,39 +19,35 @@ public abstract class EntProcedureDeclExt extends EntExt {
   protected List<ModeParamTypeNode> modeParams = Collections.emptyList();
   protected ModeTypeNode overmode = null;
 
-  public List<ModeParamTypeNode> modeParams() {
-    return this.modeParams;
-  }
+  public List<ModeParamTypeNode> modeParams() { return this.modeParams; }
 
   public Node modeParams(List<ModeParamTypeNode> modeParams) {
     return this.modeParams(this.node(), modeParams);
   }
 
   public <N extends Node> N modeParams(N n, List<ModeParamTypeNode> modeParams) {
-    EntProcedureDeclExt ext = (EntProcedureDeclExt) EntExt.ext(n);
-    if (CollectionUtil.equals(ext.modeParams, modeParams)) return n;
+    EntProcedureDeclExt ext = (EntProcedureDeclExt)EntExt.ext(n);
+    if (CollectionUtil.equals(ext.modeParams, modeParams))
+      return n;
     if (this.node() == n) {
       n = Copy.Util.copy(n);
-      ext = (EntProcedureDeclExt) EntExt.ext(n);
+      ext = (EntProcedureDeclExt)EntExt.ext(n);
     }
-    ext.modeParams = ListUtil.copy(modeParams, true); 
+    ext.modeParams = ListUtil.copy(modeParams, true);
     return n;
   }
 
-  public ModeTypeNode overmode() {
-    return this.overmode;
-  }
+  public ModeTypeNode overmode() { return this.overmode; }
 
-  public Node overmode(ModeTypeNode overmode) {
-    return this.overmode(this.node(), overmode);
-  }
+  public Node overmode(ModeTypeNode overmode) { return this.overmode(this.node(), overmode); }
 
   public <N extends Node> N overmode(N n, ModeTypeNode overmode) {
-    EntProcedureDeclExt ext = (EntProcedureDeclExt) EntExt.ext(n);
-    if (ext.overmode == overmode) return n;
+    EntProcedureDeclExt ext = (EntProcedureDeclExt)EntExt.ext(n);
+    if (ext.overmode == overmode)
+      return n;
     if (this.node() == n) {
       n = Copy.Util.copy(n);
-      ext = (EntProcedureDeclExt) EntExt.ext(n);
+      ext = (EntProcedureDeclExt)EntExt.ext(n);
     }
     ext.overmode = overmode;
     return n;
@@ -74,36 +70,34 @@ public abstract class EntProcedureDeclExt extends EntExt {
 
   @Override
   public Context enterScope(Context c) {
-    ProcedureDecl pd = (ProcedureDecl) this.node();
+    ProcedureDecl pd = (ProcedureDecl)this.node();
     c = superLang().enterScope(pd, c);
     for (ModeParamTypeNode t : this.modeParams()) {
-      ((EntContext) c).addModeTypeVariable((ModeTypeVariable) t.type());
+      ((EntContext)c).addModeTypeVariable((ModeTypeVariable)t.type());
     }
     return c;
-  } 
+  }
 
   @Override
   public Node buildTypes(TypeBuilder tb) throws SemanticException {
-    ProcedureDecl pd = (ProcedureDecl) superLang().buildTypes(this.node(), tb);
-    EntTypeSystem ts = (EntTypeSystem) tb.typeSystem();
-    EntProcedureInstance pi = (EntProcedureInstance) pd.procedureInstance();
+    ProcedureDecl pd = (ProcedureDecl)superLang().buildTypes(this.node(), tb);
+    EntTypeSystem ts = (EntTypeSystem)tb.typeSystem();
+    EntProcedureInstance pi = (EntProcedureInstance)pd.procedureInstance();
 
     int dbInd = this.modeTypeVarStartIndex(pi);
 
     if (this.modeParams() != null && !this.modeParams().isEmpty()) {
-      List<ModeTypeVariable> mtVars = 
-        new ArrayList<ModeTypeVariable>(this.modeParams().size());
+      List<ModeTypeVariable> mtVars = new ArrayList<ModeTypeVariable>(this.modeParams().size());
       Set<String> mtVarCheck = new HashSet<>();
 
       for (TypeNode n : this.modeParams()) {
         // Check and catch duplicate error as early as possible
         if (mtVarCheck.contains(n.name())) {
-          throw new SemanticException("Duplicate mode type variable declaration.",
-                                      n.position());
+          throw new SemanticException("Duplicate mode type variable declaration.", n.position());
         }
         mtVarCheck.add(n.name());
 
-        ModeTypeVariable mtVar = (ModeTypeVariable) n.type();
+        ModeTypeVariable mtVar = (ModeTypeVariable)n.type();
         mtVar.declaringProc(pi);
         mtVar.index(dbInd);
         mtVars.add(mtVar);
@@ -128,25 +122,23 @@ public abstract class EntProcedureDeclExt extends EntExt {
       return this.node();
     }
 
-    ProcedureDecl pd = (ProcedureDecl) superLang().disambiguate(this.node(), tr);
-    EntProcedureInstance pi = (EntProcedureInstance) pd.procedureInstance();
+    ProcedureDecl pd = (ProcedureDecl)superLang().disambiguate(this.node(), tr);
+    EntProcedureInstance pi = (EntProcedureInstance)pd.procedureInstance();
     if (this.overmode() != null) {
       pi.overmode((ModeType)this.overmode().type());
     }
-    
+
     return pd;
   }
 
   @Override
   public Node typeCheck(TypeChecker tc) throws SemanticException {
-    ProcedureDecl n = (ProcedureDecl) superLang().typeCheck(this.node(), tc);
-    EntProcedureDeclExt ext = (EntProcedureDeclExt) EntExt.ext(n);
+    ProcedureDecl n = (ProcedureDecl)superLang().typeCheck(this.node(), tc);
+    EntProcedureDeclExt ext = (EntProcedureDeclExt)EntExt.ext(n);
     for (ModeParamTypeNode m : this.modeParams()) {
       if (m.isDynRecvr()) {
-        throw new SemanticException(
-          "Method mode type variable cannot be a dynamic reciever.",
-          m.position()
-          );
+        throw new SemanticException("Method mode type variable cannot be a dynamic reciever.",
+                                    m.position());
       }
     }
     return n;
@@ -158,48 +150,29 @@ public abstract class EntProcedureDeclExt extends EntExt {
 
   @Override
   public Node typePreserve(TypePreserver tp) {
-    ProcedureDecl n = (ProcedureDecl) this.node();
-    EntNodeFactory nf = (EntNodeFactory) tp.nodeFactory();
-    EntTypeSystem ts = (EntTypeSystem) tp.typeSystem();
+    ProcedureDecl n = (ProcedureDecl)this.node();
+    EntNodeFactory nf = (EntNodeFactory)tp.nodeFactory();
+    EntTypeSystem ts = (EntTypeSystem)tp.typeSystem();
 
     if (!this.preserveTypes()) {
       return n;
     }
-    
+
     // NOTE: I need to come back to fix this...
 
     // To preserve the context of the mode type vars, we simply accept ENT_Closure
     List<Formal> formals = new ArrayList<>(n.formals());
-    Formal f =
-      nf.Formal(
-        Position.COMPILER_GENERATED,
-        Flags.NONE,
-        nf.AmbTypeNode(
-          Position.COMPILER_GENERATED,
-          nf.Id(
-            Position.COMPILER_GENERATED,
-            "ENT_Closure"
-            )
-          ),
-        nf.Id(
-          Position.COMPILER_GENERATED,
-          "ENT_this"
-          )
-        );
-    LocalInstance li =
-      ts.localInstance(
-        f.position(),
-        f.flags(),
-        ts.unknownType(
-          Position.COMPILER_GENERATED
-          ),
-        f.name()
-        );
+    Formal f = nf.Formal(Position.COMPILER_GENERATED,
+                         Flags.NONE,
+                         nf.AmbTypeNode(Position.COMPILER_GENERATED,
+                                        nf.Id(Position.COMPILER_GENERATED, "ENT_Closure")),
+                         nf.Id(Position.COMPILER_GENERATED, "ENT_this"));
+    LocalInstance li = ts.localInstance(
+        f.position(), f.flags(), ts.unknownType(Position.COMPILER_GENERATED), f.name());
 
     f = f.localInstance(li);
     formals.add(f);
-     
+
     return n.formals(formals);
   }
-
 }

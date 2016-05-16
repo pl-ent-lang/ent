@@ -33,51 +33,45 @@ public class AmbModeTypeInstantiation_c extends ModeTypeNode_c implements AmbMod
   protected TypeNode base;
   protected List<ModeTypeNode> modeTypeArgs;
 
-  public AmbModeTypeInstantiation_c(Position pos,
-                                    TypeNode base,
-                                    List<ModeTypeNode> modeTypeArgs) {
+  public AmbModeTypeInstantiation_c(Position pos, TypeNode base, List<ModeTypeNode> modeTypeArgs) {
     super(pos, null);
     this.base = base;
     this.modeTypeArgs = CollectionUtil.nonNullList(modeTypeArgs);
   }
 
   // Property Methods
-  public TypeNode base() {
-    return this.base;
-  }
+  public TypeNode base() { return this.base; }
 
-  public AmbModeTypeInstantiation base(TypeNode base) {
-    return this.base(this, base);
-  }
+  public AmbModeTypeInstantiation base(TypeNode base) { return this.base(this, base); }
 
   public <N extends AmbModeTypeInstantiation_c> N base(N n, TypeNode base) {
-    if (this.base == base) return n;
+    if (this.base == base)
+      return n;
     n = this.copyIfNeeded(n);
     n.base = base;
     return n;
   }
 
-  public List<ModeTypeNode> modeTypeArgs() {
-    return this.modeTypeArgs;
-  }
+  public List<ModeTypeNode> modeTypeArgs() { return this.modeTypeArgs; }
 
   public AmbModeTypeInstantiation modeTypeArgs(List<ModeTypeNode> modeTypeArgs) {
     return this.modeTypeArgs(this, modeTypeArgs);
   }
 
-  public <N extends AmbModeTypeInstantiation_c> N modeTypeArgs(N n, List<ModeTypeNode> modeTypeArgs) {
-    if (CollectionUtil.equals(this.modeTypeArgs,modeTypeArgs)) return n;
+  public <N extends AmbModeTypeInstantiation_c> N modeTypeArgs(N n,
+                                                               List<ModeTypeNode> modeTypeArgs) {
+    if (CollectionUtil.equals(this.modeTypeArgs, modeTypeArgs))
+      return n;
     n = this.copyIfNeeded(n);
     n.modeTypeArgs = ListUtil.copy(modeTypeArgs, true);
     return n;
   }
 
-  public boolean isImplicitMode() {
-    return this.modeTypeArgs().isEmpty();
-  }
+  public boolean isImplicitMode() { return this.modeTypeArgs().isEmpty(); }
 
   // Node Methods
-  protected <N extends AmbModeTypeInstantiation_c> N reconstruct(N n, TypeNode base, List<ModeTypeNode> modeTypeArgs) {
+  protected <N extends AmbModeTypeInstantiation_c>
+      N reconstruct(N n, TypeNode base, List<ModeTypeNode> modeTypeArgs) {
     n = this.base(n, base);
     n = this.modeTypeArgs(n, modeTypeArgs);
     return n;
@@ -85,7 +79,7 @@ public class AmbModeTypeInstantiation_c extends ModeTypeNode_c implements AmbMod
 
   @Override
   public Node visitChildren(NodeVisitor v) {
-    TypeNode base = (TypeNode) visitChild(this.base(), v);
+    TypeNode base = (TypeNode)visitChild(this.base(), v);
     List<ModeTypeNode> modeTypeArgs = visitList(this.modeTypeArgs(), v);
     return this.reconstruct(this, base, modeTypeArgs);
   }
@@ -112,7 +106,7 @@ public class AmbModeTypeInstantiation_c extends ModeTypeNode_c implements AmbMod
     }
 
     // NOTE : Expand a single wildcard to allow inference
-    EntClassType ct = (EntClassType) bt;
+    EntClassType ct = (EntClassType)bt;
     if (mtArgs.size() == 1 && ts.WildcardModeType() == mtArgs.get(0)) {
       for (int i = 1; i < ct.modeTypeVars().size(); i++) {
         mtArgs.add(ts.WildcardModeType());
@@ -128,7 +122,7 @@ public class AmbModeTypeInstantiation_c extends ModeTypeNode_c implements AmbMod
       return this;
     }
 
-    EntTypeSystem ts = (EntTypeSystem) sc.typeSystem();
+    EntTypeSystem ts = (EntTypeSystem)sc.typeSystem();
 
     List<Type> mtArgs = new ArrayList<Type>();
     if (this.isImplicitMode()) {
@@ -143,7 +137,8 @@ public class AmbModeTypeInstantiation_c extends ModeTypeNode_c implements AmbMod
     // NOTE: We can check size here, but anything else needs to wait util
     // the typecheck pass.
     if (!this.validModeTypeArgs(mtArgs, ts)) {
-      throw new SemanticException(this.base().type() + " cannot be instantiated with mode type arguments");
+      throw new SemanticException(this.base().type() +
+                                  " cannot be instantiated with mode type arguments");
     }
 
     Type st = ts.createModeSubst(this.base().type(), mtArgs);
@@ -151,8 +146,5 @@ public class AmbModeTypeInstantiation_c extends ModeTypeNode_c implements AmbMod
   }
 
   @Override
-  public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
-  }
-
-
+  public void prettyPrint(CodeWriter w, PrettyPrinter tr) {}
 }

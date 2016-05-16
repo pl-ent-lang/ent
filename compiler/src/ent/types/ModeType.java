@@ -17,11 +17,11 @@ public interface ModeType extends Type {
   int uniqueId();
   void uniqueId(int uniqueId);
 
-  String compileId(); 
+  String compileId();
   String compileExpr();
 
-  String compileCode(); 
-  String runtimeCode(); 
+  String compileCode();
+  String runtimeCode();
 
   Expr rewriteForLookup(NodeFactory nf, TypeSystem ts, Context c);
 }

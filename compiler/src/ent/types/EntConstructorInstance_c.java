@@ -18,28 +18,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
 
-public class EntConstructorInstance_c extends JL5ConstructorInstance_c implements EntConstructorInstance {
+public class EntConstructorInstance_c
+    extends JL5ConstructorInstance_c implements EntConstructorInstance {
 
   private List<ModeTypeVariable> modeTypeVars;
   private EntProcedureInstance baseInstance;
   private ModeType overmode;
 
-  public EntConstructorInstance_c(EntTypeSystem ts, 
-                                    Position pos, 
-                                    ClassType container, 
-                                    Flags flags, 
-                                    List<? extends Type> argTypes, 
-                                    List<? extends Type> excTypes, 
-                                    List<? extends TypeVariable> typeParams,
-                                    List<ModeTypeVariable> modeTypeVars) {
-    super((JL5TypeSystem_c) ts, pos, container, flags, argTypes, excTypes, typeParams);
+  public EntConstructorInstance_c(EntTypeSystem ts,
+                                  Position pos,
+                                  ClassType container,
+                                  Flags flags,
+                                  List<? extends Type> argTypes,
+                                  List<? extends Type> excTypes,
+                                  List<? extends TypeVariable> typeParams,
+                                  List<ModeTypeVariable> modeTypeVars) {
+    super((JL5TypeSystem_c)ts, pos, container, flags, argTypes, excTypes, typeParams);
     this.modeTypeVars(modeTypeVars);
     this.overmode(overmode);
   }
 
-  public List<ModeTypeVariable> modeTypeVars() {
-    return this.modeTypeVars;
-  }
+  public List<ModeTypeVariable> modeTypeVars() { return this.modeTypeVars; }
 
   public void modeTypeVars(List<ModeTypeVariable> modeTypeVars) {
     if (modeTypeVars != null) {
@@ -47,33 +46,23 @@ public class EntConstructorInstance_c extends JL5ConstructorInstance_c implement
     } else {
       this.modeTypeVars = Collections.emptyList();
     }
-  } 
-
-  public ModeType overmode() {
-    return this.overmode;
   }
 
-  public void overmode(ModeType overmode) {
-    this.overmode = overmode;
-  } 
+  public ModeType overmode() { return this.overmode; }
 
-  public EntProcedureInstance baseInstance() {
-    return this.baseInstance;
-  }
+  public void overmode(ModeType overmode) { this.overmode = overmode; }
 
-  public void baseInstance(EntProcedureInstance baseInstance) {
-    this.baseInstance = baseInstance;
-  }
+  public EntProcedureInstance baseInstance() { return this.baseInstance; }
+
+  public void baseInstance(EntProcedureInstance baseInstance) { this.baseInstance = baseInstance; }
 
   private List<List<ModeType>> actualModeArgStack = new ArrayList<List<ModeType>>();
 
   public List<ModeType> actualModeArgsTop() {
-    return actualModeArgStack.get(actualModeArgStack.size()-1);
+    return actualModeArgStack.get(actualModeArgStack.size() - 1);
   }
 
-  public void actualModeArgsPop() {
-    actualModeArgStack.remove(actualModeArgStack.size()-1);
-  }
+  public void actualModeArgsPop() { actualModeArgStack.remove(actualModeArgStack.size() - 1); }
 
   public void actualModeArgsPush(List<ModeType> actualModeArgs) {
     actualModeArgStack.add(actualModeArgs);
@@ -98,8 +87,4 @@ public class EntConstructorInstance_c extends JL5ConstructorInstance_c implement
 
     return !(i1.hasNext() || i2.hasNext());
   }
-
-
-
-
 }

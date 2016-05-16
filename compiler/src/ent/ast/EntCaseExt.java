@@ -12,15 +12,13 @@ public class EntCaseExt extends EntExt implements JL5CaseOps {
 
   @Override
   public Case resolveCaseLabel(TypeChecker tc, Type switchType) throws SemanticException {
-    JL5TypeSystem ts = (JL5TypeSystem) tc.typeSystem();
+    JL5TypeSystem ts = (JL5TypeSystem)tc.typeSystem();
 
-    Case c = (Case) this.node();
+    Case c = (Case)this.node();
 
     if (switchType.isClass() && ts.String().typeEquals(switchType)) {
       return c;
     }
     return J7Lang_c.lang(pred()).resolveCaseLabel(c, tc, switchType);
   }
-
-
 }

@@ -21,17 +21,13 @@ public class ModeBuilder extends NodeVisitor {
     this.nf = nf;
   }
 
-  public TypeSystem typeSystem() {
-    return this.ts;
-  }
+  public TypeSystem typeSystem() { return this.ts; }
 
-  public ErrorQueue errorQueue() {
-    return this.job.compiler().errorQueue();
-  }
+  public ErrorQueue errorQueue() { return this.job.compiler().errorQueue(); }
 
   @Override
   public EntLang lang() {
-    return (EntLang) super.lang();
+    return (EntLang)super.lang();
   }
 
   @Override
@@ -56,7 +52,7 @@ public class ModeBuilder extends NodeVisitor {
   @Override
   public Node leave(Node o, Node n, NodeVisitor v) {
     try {
-      return this.lang().buildModes(n, (ModeBuilder) v);
+      return this.lang().buildModes(n, (ModeBuilder)v);
     } catch (SemanticException e) {
       Position position = e.position();
 
@@ -71,5 +67,4 @@ public class ModeBuilder extends NodeVisitor {
       return n;
     }
   }
-
 }

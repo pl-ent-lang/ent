@@ -32,8 +32,8 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
     this.name = name;
     this.uniqueId = this.genId();
     this.index = -1;
-    //this.upperBound = null;
-    //this.lowerBound = null;
+    // this.upperBound = null;
+    // this.lowerBound = null;
 
     this.upperBound = ts.unknownType(pos);
     this.lowerBound = ts.unknownType(pos);
@@ -41,25 +41,15 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
   }
 
   // Property Methods
-  public String name() {
-    return this.name;
-  }
+  public String name() { return this.name; }
 
-  public void name(String name) {
-    this.name = name;
-  }
+  public void name(String name) { this.name = name; }
 
-  public boolean isDynRecvr() {
-    return this.isDynRecvr;
-  }
+  public boolean isDynRecvr() { return this.isDynRecvr; }
 
-  public void isDynRecvr(boolean isDynRecvr) {
-    this.isDynRecvr = isDynRecvr;
-  }
+  public void isDynRecvr(boolean isDynRecvr) { this.isDynRecvr = isDynRecvr; }
 
-  public List<Type> upperBounds() {
-    return this.upperBounds;
-  }
+  public List<Type> upperBounds() { return this.upperBounds; }
 
   public void upperBounds(List<Type> upperBounds) {
     if (upperBounds == null) {
@@ -69,9 +59,7 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
     }
   }
 
-  public List<Type> lowerBounds() {
-    return this.lowerBounds;
-  }
+  public List<Type> lowerBounds() { return this.lowerBounds; }
 
   public void lowerBounds(List<Type> lowerBounds) {
     if (lowerBounds == null) {
@@ -79,63 +67,35 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
     } else {
       this.lowerBounds = lowerBounds;
     }
-  } 
-
-  public boolean hasLowerBound() {
-    return this.lowerBound != null;
   }
 
-  public Type lowerBound() {
-    return this.lowerBound;
-  }
+  public boolean hasLowerBound() { return this.lowerBound != null; }
 
-  public void lowerBound(Type lowerBound) {
-    this.lowerBound = lowerBound;
-  }
+  public Type lowerBound() { return this.lowerBound; }
 
-  public Type upperBound() {
-    return this.upperBound;
-  }
+  public void lowerBound(Type lowerBound) { this.lowerBound = lowerBound; }
 
-  public void upperBound(Type upperBound) {
-    this.upperBound = upperBound;
-  }
+  public Type upperBound() { return this.upperBound; }
 
-  public ClassType declaringClass() {
-    return this.declaringClass;
-  }
+  public void upperBound(Type upperBound) { this.upperBound = upperBound; }
 
-  public void declaringClass(ClassType declaringClass) {
-    this.declaringClass = declaringClass;
-  }
+  public ClassType declaringClass() { return this.declaringClass; }
 
-  public ProcedureInstance declaringProc() {
-    return this.declaringProc;
-  }
+  public void declaringClass(ClassType declaringClass) { this.declaringClass = declaringClass; }
 
-  public void declaringProc(ProcedureInstance declaringProc) {
-    this.declaringProc = declaringProc;
-  }
+  public ProcedureInstance declaringProc() { return this.declaringProc; }
 
-  public int uniqueId() {
-    return this.uniqueId;
-  }
+  public void declaringProc(ProcedureInstance declaringProc) { this.declaringProc = declaringProc; }
 
-  public int index() {
-    return this.index;
-  }
+  public int uniqueId() { return this.uniqueId; }
 
-  public void index(int index) {
-    this.index = index;
-  }
+  public int index() { return this.index; }
 
-  public boolean isExistential() {
-    return this.isExistential;
-  }
+  public void index(int index) { this.index = index; }
 
-  public void isExistential(boolean isExistential) {
-    this.isExistential = isExistential;
-  }
+  public boolean isExistential() { return this.isExistential; }
+
+  public void isExistential(boolean isExistential) { this.isExistential = isExistential; }
 
   public boolean inferBounds() {
     boolean r1 = this.inferLowerBound();
@@ -144,7 +104,7 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
   }
 
   public boolean inferLowerBound() {
-    EntTypeSystem ts = (EntTypeSystem) this.ts;
+    EntTypeSystem ts = (EntTypeSystem)this.ts;
 
     if (this.lowerBounds().isEmpty()) {
       // What does this mean exactly?
@@ -166,10 +126,10 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
 
     this.lowerBound(glb);
     return true;
-  } 
+  }
 
   public boolean inferUpperBound() {
-    EntTypeSystem ts = (EntTypeSystem) this.ts;
+    EntTypeSystem ts = (EntTypeSystem)this.ts;
 
     if (this.upperBounds().isEmpty()) {
       // What does this mean exactly?
@@ -212,26 +172,24 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
     return this.name();
   }
 
-  private int genId() {
-    return ModeTypeVariable_c.gen++;
-  }
+  private int genId() { return ModeTypeVariable_c.gen++; }
 
   @Override
   public boolean typeEqualsImpl(Type o) {
-    EntTypeSystem ts = (EntTypeSystem) this.typeSystem();
+    EntTypeSystem ts = (EntTypeSystem)this.typeSystem();
 
     // We allow wildcard for now
     // TODO: Not sure how to let this happen, wildcards need
     // to be allowed.
     if (o == ts.WildcardModeType()) {
       return true;
-    } 
+    }
 
     if (!(o instanceof ModeTypeVariable)) {
       return false;
-    } 
+    }
 
-    ModeTypeVariable tv = (ModeTypeVariable) o;
+    ModeTypeVariable tv = (ModeTypeVariable)o;
     if (this.isExistential() && tv.isExistential()) {
       return (ts.typeEquals(this.lowerBound(), tv.lowerBound()) &&
               ts.typeEquals(this.upperBound(), tv.upperBound()));
@@ -242,8 +200,8 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
 
   @Override
   public boolean descendsFromImpl(Type o) {
-    EntTypeSystem ts = (EntTypeSystem) this.typeSystem();
-    if (ts.typeEquals(this,o)) {
+    EntTypeSystem ts = (EntTypeSystem)this.typeSystem();
+    if (ts.typeEquals(this, o)) {
       return true;
     }
     return ts.isSubtype(this.upperBound(), o);
@@ -251,8 +209,8 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
 
   @Override
   public boolean isImplicitCastValidImpl(Type toType) {
-    EntTypeSystem ts = (EntTypeSystem) this.typeSystem();
-    if (ts.typeEquals(this,toType)) {
+    EntTypeSystem ts = (EntTypeSystem)this.typeSystem();
+    if (ts.typeEquals(this, toType)) {
       return true;
     }
     return ts.isImplicitCastValid(this.upperBound(), toType);
@@ -260,7 +218,7 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
 
   @Override
   public String runtimeCode() {
-    return ((ModeType) this.upperBound()).runtimeCode();
+    return ((ModeType)this.upperBound()).runtimeCode();
   }
 
   @Override
@@ -268,51 +226,19 @@ public class ModeTypeVariable_c extends ModeType_c implements ModeTypeVariable {
     Expr n = null;
     // Use class variable context if class mode type variable
     // and used outside of constructor.
-    if (this.declaringClass() != null && 
-        !(c.currentCode() instanceof ConstructorInstance)) {
-      n = 
-        nf.Call(
+    if (this.declaringClass() != null && !(c.currentCode() instanceof ConstructorInstance)) {
+      n = nf.Call(Position.COMPILER_GENERATED,
+                  nf.AmbTypeNode(Position.COMPILER_GENERATED,
+                                 nf.Id(Position.COMPILER_GENERATED, "ENT_Runtime")),
+                  nf.Id(Position.COMPILER_GENERATED, "getObjMode"),
+                  nf.This(Position.COMPILER_GENERATED),
+                  nf.IntLit(Position.COMPILER_GENERATED, IntLit.INT, this.index()));
+    } else if (this.declaringProc() != null || c.currentCode() instanceof ConstructorInstance) {
+      n = nf.Call(
           Position.COMPILER_GENERATED,
-          nf.AmbTypeNode(
-            Position.COMPILER_GENERATED,
-            nf.Id(
-              Position.COMPILER_GENERATED,
-              "ENT_Runtime"
-              )
-            ),
-          nf.Id(
-            Position.COMPILER_GENERATED,
-            "getObjMode"
-            ),
-          nf.This(Position.COMPILER_GENERATED),
-          nf.IntLit(
-            Position.COMPILER_GENERATED,
-            IntLit.INT,
-            this.index()
-            )
-          );
-    } else if (this.declaringProc() != null ||
-               c.currentCode() instanceof ConstructorInstance) {
-      n =
-        nf.Call(
-          Position.COMPILER_GENERATED,
-          nf.Local(
-            Position.COMPILER_GENERATED,
-            nf.Id(
-              Position.COMPILER_GENERATED,
-              "ENT_this"
-              )
-            ),
-          nf.Id(
-            Position.COMPILER_GENERATED,
-            "getModeVar"
-            ),
-          nf.IntLit(
-            Position.COMPILER_GENERATED,
-            IntLit.INT,
-            this.index()
-            )
-          );
+          nf.Local(Position.COMPILER_GENERATED, nf.Id(Position.COMPILER_GENERATED, "ENT_this")),
+          nf.Id(Position.COMPILER_GENERATED, "getModeVar"),
+          nf.IntLit(Position.COMPILER_GENERATED, IntLit.INT, this.index()));
     } else {
       System.out.println("ERROR - Mode type variable does not have declaring class or proc");
       System.exit(1);

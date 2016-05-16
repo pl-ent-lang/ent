@@ -17,12 +17,11 @@ public class McaseTypeNode_c extends TypeNode_c implements McaseTypeNode {
   }
 
   // Property Methods
-  protected TypeNode base() {
-    return this.base;
-  }
+  protected TypeNode base() { return this.base; }
 
   protected <N extends McaseTypeNode_c> N base(N n, TypeNode base) {
-    if (n.base() == base) return n;
+    if (n.base() == base)
+      return n;
     n = this.copyIfNeeded(n);
     n.base = base;
     return n;
@@ -52,7 +51,7 @@ public class McaseTypeNode_c extends TypeNode_c implements McaseTypeNode {
     }
 
     // Create new mode case type
-    EntTypeSystem ts = (EntTypeSystem) sc.typeSystem();
+    EntTypeSystem ts = (EntTypeSystem)sc.typeSystem();
     Type tt = ts.createMcaseType(this.base().type());
 
     return this.type(ts.createMcaseType(this.base().type()));
@@ -60,9 +59,8 @@ public class McaseTypeNode_c extends TypeNode_c implements McaseTypeNode {
 
   @Override
   public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
-    w.write("mcase<"); 
+    w.write("mcase<");
     tr.lang().prettyPrint(this.base(), w, tr);
     w.write(">");
   }
-
 }

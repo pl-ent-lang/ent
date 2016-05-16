@@ -14,9 +14,9 @@ public class EntLitExt extends EntExt {
   @Override
   public Node typeCheck(TypeChecker tc) throws SemanticException {
     // TODO : This is one big place holder for infering mode types
-    EntTypeSystem ts = (EntTypeSystem) tc.typeSystem();
+    EntTypeSystem ts = (EntTypeSystem)tc.typeSystem();
 
-    Lit n = (Lit) superLang().typeCheck(this.node(), tc);
+    Lit n = (Lit)superLang().typeCheck(this.node(), tc);
     if (n.type() instanceof ModeSubstType) {
       return n;
     }
@@ -27,5 +27,4 @@ public class EntLitExt extends EntExt {
 
     return n.type(st);
   }
-
 }

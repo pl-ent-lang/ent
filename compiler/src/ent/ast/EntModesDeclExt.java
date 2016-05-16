@@ -13,10 +13,10 @@ public class EntModesDeclExt extends EntExt {
 
   @Override
   public Node buildModes(ModeBuilder mb) throws SemanticException {
-    ModesDecl md = (ModesDecl) this.node();
+    ModesDecl md = (ModesDecl)this.node();
 
     // Save the package we are defined in
-    EntTypeSystem ts = (EntTypeSystem) mb.typeSystem();
+    EntTypeSystem ts = (EntTypeSystem)mb.typeSystem();
     ModeOrderingInstance oi = ts.createModeOrderingInstance();
 
     for (ModeOrder modeOrder : md.orders()) {
@@ -30,6 +30,4 @@ public class EntModesDeclExt extends EntExt {
 
     return md;
   }
-
-
 }

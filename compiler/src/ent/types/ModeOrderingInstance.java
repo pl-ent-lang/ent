@@ -12,5 +12,4 @@ public interface ModeOrderingInstance extends TypeObject {
 
   void insertModeTypeOrdering(ModeType lowerBound, ModeType upperBound) throws SemanticException;
   void buildModeTypeOrdering() throws SemanticException;
-
 }

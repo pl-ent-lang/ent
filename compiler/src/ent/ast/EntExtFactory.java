@@ -32,6 +32,4 @@ public interface EntExtFactory extends JL7ExtFactory {
   Ext extModeValue();
 
   Ext extSnapshotExpr();
-
-
 }

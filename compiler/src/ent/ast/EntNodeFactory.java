@@ -18,59 +18,57 @@ import polyglot.ext.jl7.ast.JL7NodeFactory;
 public interface EntNodeFactory extends JL7NodeFactory {
 
   // Factory Methods for Ext Nodes
-  Call Call(Position pos,  
-            Receiver target, 
-            List<TypeNode> typeArgs, 
-            Id name, 
+  Call Call(Position pos,
+            Receiver target,
+            List<TypeNode> typeArgs,
+            Id name,
             List<Expr> args,
             List<ModeTypeNode> modeTypeArgs);
 
-
-  ClassDecl ClassDecl(Position pos,  
-                      Flags flags, 
-                      List<AnnotationElem> annotations, 
-                      Id name, 
-                      TypeNode superType, 
-                      List<TypeNode> interfaces, 
+  ClassDecl ClassDecl(Position pos,
+                      Flags flags,
+                      List<AnnotationElem> annotations,
+                      Id name,
+                      TypeNode superType,
+                      List<TypeNode> interfaces,
                       ClassBody body,
                       List<ParamTypeNode> paramTypes,
-                      List<ModeParamTypeNode> modeParamTypes); 
+                      List<ModeParamTypeNode> modeParamTypes);
 
-  ConstructorDecl ConstructorDecl(Position pos, 
-                                  Flags flags, 
-                                  List<AnnotationElem> annotations, 
-                                  Id name, 
-                                  List<Formal> formals, 
-                                  List<TypeNode> throwTypes, 
-                                  Block body, 
+  ConstructorDecl ConstructorDecl(Position pos,
+                                  Flags flags,
+                                  List<AnnotationElem> annotations,
+                                  Id name,
+                                  List<Formal> formals,
+                                  List<TypeNode> throwTypes,
+                                  Block body,
                                   List<ParamTypeNode> typeParams,
                                   List<ModeParamTypeNode> modeParamTypes,
-                                  ModeTypeNode overmode); 
+                                  ModeTypeNode overmode);
 
-  MethodDecl MethodDecl(Position pos, 
-                        Flags flags, 
-                        List<AnnotationElem> annotations, 
-                        TypeNode returnType, 
-                        Id name, 
-                        List<Formal> formals, 
-                        List<TypeNode> throwTypes, 
-                        Block body, 
+  MethodDecl MethodDecl(Position pos,
+                        Flags flags,
+                        List<AnnotationElem> annotations,
+                        TypeNode returnType,
+                        Id name,
+                        List<Formal> formals,
+                        List<TypeNode> throwTypes,
+                        Block body,
                         List<ParamTypeNode> typeParams,
                         List<ModeParamTypeNode> modeParams,
-                        ModeTypeNode overmode); 
+                        ModeTypeNode overmode);
 
-  SourceFile SourceFile(Position pos, 
-                        PackageNode packageName, 
-                        List<Import> imports, 
+  SourceFile SourceFile(Position pos,
+                        PackageNode packageName,
+                        List<Import> imports,
                         List<TopLevelDecl> decls,
                         ModesDecl modesDecl);
 
   // Factory Methods for New Nodes
   AmbModeTypeInstantiation AmbModeTypeInstantiation(Position pos, TypeNode base);
 
-  AmbModeTypeInstantiation AmbModeTypeInstantiation(Position pos, 
-                                                    TypeNode base, 
-                                                    List<ModeTypeNode> modeTypeArgs);
+  AmbModeTypeInstantiation
+  AmbModeTypeInstantiation(Position pos, TypeNode base, List<ModeTypeNode> modeTypeArgs);
 
   AttributeDecl AttributeDecl(Position pos, Block body);
 
@@ -81,21 +79,26 @@ public interface EntNodeFactory extends JL7NodeFactory {
   McaseLit McaseLit(Position pos, TypeNode mcaseTypeNode, List<McaseFieldDecl> fields);
 
   McaseTypeNode McaseTypeNode(Position pos, TypeNode base);
-  
+
   ModeOrder ModeOrder(Position pos, String lower, String upper);
 
   ModesDecl ModesDecl(Position pos, List<ModeOrder> orders);
 
-  ModeParamTypeNode ModeParamTypeNode(Position pos, Id id, boolean isDynRecv, List<ModeTypeNode> lowerBounds, List<ModeTypeNode> upperBounds);
-  
+  ModeParamTypeNode ModeParamTypeNode(Position pos,
+                                      Id id,
+                                      boolean isDynRecv,
+                                      List<ModeTypeNode> lowerBounds,
+                                      List<ModeTypeNode> upperBounds);
+
   ModeTypeNode ModeTypeNode(Position pos, String name);
 
-  ModeTypeNode ModeTypeNode(Position pos, String name, ModeTypeNode lowerBound, ModeTypeNode upperBound);
+  ModeTypeNode
+  ModeTypeNode(Position pos, String name, ModeTypeNode lowerBound, ModeTypeNode upperBound);
 
   ModeValue ModeValue(Position pos, ModeTypeNode modeTypeNode);
 
   SnapshotExpr SnapshotExpr(Position pos, Expr target, Expr lower, Expr upper);
 
-  SnapshotExpr SnapshotExpr(Position pos, Expr target, Expr lower, Expr upper, boolean saveMode, boolean force);
-
+  SnapshotExpr
+  SnapshotExpr(Position pos, Expr target, Expr lower, Expr upper, boolean saveMode, boolean force);
 }

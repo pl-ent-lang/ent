@@ -19,78 +19,77 @@ public class ModeSubstArrayType_c extends ModeSubstReferenceType_c implements Mo
 
   @Override
   public ModeSubstType deepCopy() {
-    return new ModeSubstArrayType_c((JL5ArrayType) this.baseType(), 
-                                    this.modeTypeArgs());
+    return new ModeSubstArrayType_c((JL5ArrayType)this.baseType(), this.modeTypeArgs());
   }
 
   // ArrayType Methods
   @Override
   public Type base() {
-    return ((JL5ArrayType) this.baseType()).base();
+    return ((JL5ArrayType)this.baseType()).base();
   }
 
   @Override
   public ArrayType base(Type base) {
-    return ((JL5ArrayType) this.baseType()).base(base);
+    return ((JL5ArrayType)this.baseType()).base(base);
   }
 
   @Override
   public Type ultimateBase() {
-    return ((JL5ArrayType) this.baseType()).ultimateBase();
+    return ((JL5ArrayType)this.baseType()).ultimateBase();
   }
 
   @Override
   public int dims() {
-    return ((JL5ArrayType) this.baseType()).dims();
+    return ((JL5ArrayType)this.baseType()).dims();
   }
 
   @Override
   public List<? extends MethodInstance> methods() {
-    return ((JL5ArrayType) this.baseType()).methods();
+    return ((JL5ArrayType)this.baseType()).methods();
   }
 
   @Override
   public List<? extends FieldInstance> fields() {
-    return ((JL5ArrayType) this.baseType()).fields();
+    return ((JL5ArrayType)this.baseType()).fields();
   }
 
   @Override
   public MethodInstance cloneMethod() {
-    return ((JL5ArrayType) this.baseType()).cloneMethod();
+    return ((JL5ArrayType)this.baseType()).cloneMethod();
   }
 
   @Override
   public FieldInstance fieldNamed(String name) {
-    return ((JL5ArrayType) this.baseType()).fieldNamed(name);
+    return ((JL5ArrayType)this.baseType()).fieldNamed(name);
   }
 
   @Override
   public FieldInstance lengthField() {
-    return ((JL5ArrayType) this.baseType()).lengthField();
+    return ((JL5ArrayType)this.baseType()).lengthField();
   }
 
   @Override
   public Type superType() {
-    return ((JL5ArrayType) this.baseType()).superType();
+    return ((JL5ArrayType)this.baseType()).superType();
   }
 
   @Override
   public List<? extends ReferenceType> interfaces() {
-    return ((JL5ArrayType) this.baseType()).interfaces();
+    return ((JL5ArrayType)this.baseType()).interfaces();
   }
-  
+
   // JL5ArrayType Methods
   @Override
   public boolean isVarArg() {
-    return ((JL5ArrayType) this.baseType()).isVarArg();
+    return ((JL5ArrayType)this.baseType()).isVarArg();
   }
 
   @Override
   public void setVarArg() {
-    ((JL5ArrayType) this.baseType()).setVarArg();
+    ((JL5ArrayType)this.baseType()).setVarArg();
   }
 
-  // Inheritance Side-effect Methods 
+  // Inheritance Side-effect Methods
   @Override
   public EnumInstance enumConstantNamed(String name) {
     return null;
@@ -103,20 +102,17 @@ public class ModeSubstArrayType_c extends ModeSubstReferenceType_c implements Mo
     if (!(toT instanceof ModeSubstType)) {
       return this.ts.isImplicitCastValid(this.baseType(), toT);
     }
-    ModeSubstType st = (ModeSubstType) toT;
+    ModeSubstType st = (ModeSubstType)toT;
     return this.ts.isImplicitCastValid(this.baseType(), st.baseType()) &&
-           this.modeTypeArgsEquals(st);
+        this.modeTypeArgsEquals(st);
   }
-
 
   @Override
   public boolean isCastValidImpl(Type toT) {
     if (!(toT instanceof ModeSubstType)) {
       return this.ts.isCastValid(this.baseType(), toT);
     }
-    ModeSubstType st = (ModeSubstType) toT;
-    return this.ts.isCastValid(this.baseType(), st.baseType()) &&
-           this.modeTypeArgsEquals(st);
+    ModeSubstType st = (ModeSubstType)toT;
+    return this.ts.isCastValid(this.baseType(), st.baseType()) && this.modeTypeArgsEquals(st);
   }
-
 }

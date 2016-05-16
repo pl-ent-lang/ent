@@ -18,25 +18,19 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Arrays;
-import java.util.Map; 
+import java.util.Map;
 
 public class EntScheduler extends JL7Scheduler {
 
-  public EntScheduler(JLExtensionInfo extInfo) {
-    super(extInfo);
-  }
+  public EntScheduler(JLExtensionInfo extInfo) { super(extInfo); }
 
   private void scheduleEntModes() {
     ExtensionInfo outInfo = extInfo.outputExtensionInfo();
     Scheduler outScheduler = outInfo.scheduler();
 
     SourceFile sf = EntBuilder.instance().buildEntMode(extInfo, outInfo);
-    Source source = 
-      EntBuilder.instance().buildSource(
-        extInfo, 
-        ((EntTypeSystem) extInfo.typeSystem()).modesDeclPackage(), 
-        "EntMode.java"
-        );
+    Source source = EntBuilder.instance().buildSource(
+        extInfo, ((EntTypeSystem)extInfo.typeSystem()).modesDeclPackage(), "EntMode.java");
     sf = sf.source(source);
 
     Job job = outScheduler.addJob(source, sf);
@@ -48,7 +42,7 @@ public class EntScheduler extends JL7Scheduler {
   public boolean runToCompletion() {
     boolean complete = super.runToCompletion();
     if (complete) {
-      EntTypeSystem ts = (EntTypeSystem) extInfo.typeSystem();
+      EntTypeSystem ts = (EntTypeSystem)extInfo.typeSystem();
       if (!ts.createdModeTypes().isEmpty()) {
         this.scheduleEntModes();
       }
@@ -96,22 +90,18 @@ public class EntScheduler extends JL7Scheduler {
     try {
       g.addPrerequisiteGoal(AttributeExitChecked(job), this);
       g.addPrerequisiteGoal(Serialized(job), this);
-    } catch(CyclicDependencyException e) {
+    } catch (CyclicDependencyException e) {
       throw new InternalCompilerError(e);
     }
     return internGoal(g);
   }
 
   public Goal RemoveEnt(Job job) {
-    Goal g =
-      new VisitorGoal(job,
-                      new EntRewriter(job,
-                                        extInfo,
-                                        extInfo.outputExtensionInfo()));
+    Goal g = new VisitorGoal(job, new EntRewriter(job, extInfo, extInfo.outputExtensionInfo()));
     try {
       g.addPrerequisiteGoal(PreRemoveEnt(job), this);
 
-      EntOptions entOpt = (EntOptions) extInfo.getOptions();
+      EntOptions entOpt = (EntOptions)extInfo.getOptions();
       if (entOpt.preserveTypes && entOpt.translateEnt) {
         g.addPrerequisiteGoal(TypePreserver(job), this);
       }
@@ -141,7 +131,7 @@ public class EntScheduler extends JL7Scheduler {
     Goal g = new EmptyGoal(job, "CodeGenerated");
     try {
       g.addPrerequisiteGoal(RemoveEnt(job), this);
-    } catch(CyclicDependencyException e) {
+    } catch (CyclicDependencyException e) {
       throw new InternalCompilerError(e);
     }
     return internGoal(g);
@@ -160,12 +150,10 @@ public class EntScheduler extends JL7Scheduler {
     return g;
   }
 
-
   public Goal ModesBuilt(Job job) {
     TypeSystem ts = extInfo.typeSystem();
     NodeFactory nf = extInfo.nodeFactory();
-    Goal g = 
-      new VisitorGoal(job, new ModeBuilder(job, ts, nf));
+    Goal g = new VisitorGoal(job, new ModeBuilder(job, ts, nf));
     try {
       g.addPrerequisiteGoal(Parsed(job), this);
     } catch (CyclicDependencyException e) {
@@ -174,12 +162,10 @@ public class EntScheduler extends JL7Scheduler {
     return this.internGoal(g);
   }
 
-
   public Goal AttributeExitChecked(Job job) {
     TypeSystem ts = extInfo.typeSystem();
     NodeFactory nf = extInfo.nodeFactory();
-    Goal g = 
-      new VisitorGoal(job, new AttributeExitChecker(job, ts, nf));
+    Goal g = new VisitorGoal(job, new AttributeExitChecker(job, ts, nf));
     try {
       g.addPrerequisiteGoal(ExitPathsChecked(job), this);
     } catch (CyclicDependencyException e) {
@@ -192,8 +178,7 @@ public class EntScheduler extends JL7Scheduler {
     TypeSystem ts = extInfo.typeSystem();
     NodeFactory nf = extInfo.nodeFactory();
     TypeSystem to_ts = extInfo.outputExtensionInfo().typeSystem();
-    Goal g = 
-      new VisitorGoal(job, new TypePreserver(job, ts, nf, to_ts));
+    Goal g = new VisitorGoal(job, new TypePreserver(job, ts, nf, to_ts));
     try {
       g.addPrerequisiteGoal(AttributeExitChecked(job), this);
     } catch (CyclicDependencyException e) {
@@ -201,7 +186,4 @@ public class EntScheduler extends JL7Scheduler {
     }
     return this.internGoal(g);
   }
-
-
-
 }

@@ -29,27 +29,25 @@ public class ModesDecl_c extends ClassDecl_c implements ModesDecl {
   }
 
   // Property Methods
-  public List<ModeOrder> orders() {
-    return this.orders;
-  }
+  public List<ModeOrder> orders() { return this.orders; }
 
   public <N extends ModesDecl_c> N orders(N n, List<ModeOrder> orders) {
-    if (CollectionUtil.equals(n.orders(), orders)) return n;
+    if (CollectionUtil.equals(n.orders(), orders))
+      return n;
     n = this.copyIfNeeded(n);
     n.orders = ListUtil.copy(orders, true);
     return n;
   }
 
-  public ModeOrderingInstance modeOrderingInstance() {
-    return this.oi;
-  }
+  public ModeOrderingInstance modeOrderingInstance() { return this.oi; }
 
   public ModesDecl modeOrderingInstance(ModeOrderingInstance oi) {
     return this.modeOrderingInstance(this, oi);
   }
 
   public <N extends ModesDecl_c> N modeOrderingInstance(N n, ModeOrderingInstance oi) {
-    if (this.modeOrderingInstance() == oi) return n;
+    if (this.modeOrderingInstance() == oi)
+      return n;
     n = this.copyIfNeeded(n);
     n.oi = oi;
     return n;
@@ -69,19 +67,19 @@ public class ModesDecl_c extends ClassDecl_c implements ModesDecl {
 
   @Override
   public Node copy(NodeFactory nf) {
-    EntNodeFactory pnf = (EntNodeFactory) nf;
+    EntNodeFactory pnf = (EntNodeFactory)nf;
     return pnf.ModesDecl(this.position(), ListUtil.copy(this.orders(), true));
   }
 
   @Override
   public Context enterChildScope(Node child, Context c) {
     return c;
-  } 
+  }
 
-  //Done is EntModesDeclExt
-  //public Node buildModes(ModeBuilder tb) throws SemanticException {
+  // Done is EntModesDeclExt
+  // public Node buildModes(ModeBuilder tb) throws SemanticException {
   //}
-  
+
   @Override
   public NodeVisitor buildTypesEnter(TypeBuilder tb) throws SemanticException {
     return tb;
@@ -89,7 +87,7 @@ public class ModesDecl_c extends ClassDecl_c implements ModesDecl {
 
   @Override
   public Node buildTypes(TypeBuilder tb) throws SemanticException {
-    EntTypeSystem ts = (EntTypeSystem) tb.typeSystem();
+    EntTypeSystem ts = (EntTypeSystem)tb.typeSystem();
     if (ts.modesDeclPackage() != null) {
       throw new SemanticException("redeclaration of modes!");
     }
@@ -106,7 +104,7 @@ public class ModesDecl_c extends ClassDecl_c implements ModesDecl {
   @Override
   public boolean isDisambiguated() {
     return true;
-  } 
+  }
 
   @Override
   public Node disambiguate(AmbiguityRemover sc) throws SemanticException {
@@ -133,7 +131,7 @@ public class ModesDecl_c extends ClassDecl_c implements ModesDecl {
 
       Expr expr = null;
       if (mt == ts.DynamicModeType() || mt == ts.WildcardModeType()) {
-        expr = 
+        expr =
           nf.Field(
             Position.COMPILER_GENERATED,
             nf.AmbReceiver(
@@ -143,10 +141,11 @@ public class ModesDecl_c extends ClassDecl_c implements ModesDecl {
             nf.Id(Position.COMPILER_GENERATED, mt.compileExpr())
             );
       } else {
-        expr = nf.IntLit(Position.COMPILER_GENERATED, IntLit.INT, Integer.parseInt(mt.compileExpr()));
+        expr = nf.IntLit(Position.COMPILER_GENERATED, IntLit.INT,
+    Integer.parseInt(mt.compileExpr()));
       }
 
-      ClassMember fd = 
+      ClassMember fd =
         qq.parseMember("public static final int %s = %E;", mt.compileId(), expr);
 
       members.add(fd);
@@ -170,6 +169,5 @@ public class ModesDecl_c extends ClassDecl_c implements ModesDecl {
       v.visitCFGList(this.orders(), this, ENTRY);
     }
     return succs;
-  } 
-
+  }
 }

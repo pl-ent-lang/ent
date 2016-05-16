@@ -15,20 +15,17 @@ public class EntSourceFileExt extends EntExt {
 
   protected ClassDecl modesDecl;
 
-  public ClassDecl modesDecl() {
-    return this.modesDecl;
-  }
+  public ClassDecl modesDecl() { return this.modesDecl; }
 
-  public Node modesDecl(ClassDecl modesDecl) {
-    return this.modesDecl(this.node(), modesDecl);
-  }
+  public Node modesDecl(ClassDecl modesDecl) { return this.modesDecl(this.node(), modesDecl); }
 
   public <N extends Node> N modesDecl(N n, ClassDecl modesDecl) {
-    EntSourceFileExt ext = (EntSourceFileExt) EntExt.ext(n);
-    if (this.modesDecl == modesDecl) return n;
+    EntSourceFileExt ext = (EntSourceFileExt)EntExt.ext(n);
+    if (this.modesDecl == modesDecl)
+      return n;
     if (this.node() == n) {
       n = Copy.Util.copy(n);
-      ext = (EntSourceFileExt) EntExt.ext(n);
+      ext = (EntSourceFileExt)EntExt.ext(n);
     }
     ext.modesDecl = modesDecl;
     return n;
@@ -56,18 +53,15 @@ public class EntSourceFileExt extends EntExt {
 
   @Override
   public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
-    EntRewriter prw = (EntRewriter) rw;
+    EntRewriter prw = (EntRewriter)rw;
     NodeFactory nf = prw.nodeFactory();
 
-    SourceFile n = (SourceFile) super.extRewrite(rw);
+    SourceFile n = (SourceFile)super.extRewrite(rw);
 
     // Inject the ent runtime into all source files
-    List<Import> imports = new LinkedList<>(n.imports()); 
+    List<Import> imports = new LinkedList<>(n.imports());
     imports.add(
-        nf.Import(Position.COMPILER_GENERATED,
-                  Import.TYPE_IMPORT_ON_DEMAND,
-                  "ent.runtime")
-        );
+        nf.Import(Position.COMPILER_GENERATED, Import.TYPE_IMPORT_ON_DEMAND, "ent.runtime"));
     n = n.imports(imports);
 
     /*
@@ -77,10 +71,9 @@ public class EntSourceFileExt extends EntExt {
       List<TopLevelDecl> decls = new LinkedList<>(n.decls());
       decls.add(ext.modesDecl());
       n = n.decls(decls);
-    } 
+    }
     */
 
     return n;
   }
-
 }

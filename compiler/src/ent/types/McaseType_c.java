@@ -13,9 +13,7 @@ public class McaseType_c extends Type_c implements McaseType {
   }
 
   // Property Methods
-  public Type base() {
-    return this.base;
-  }
+  public Type base() { return this.base; }
 
   @Override
   public boolean isCanonical() {
@@ -40,13 +38,13 @@ public class McaseType_c extends Type_c implements McaseType {
   @Override
   public String translate(Resolver c) {
     return this.base().translate(c) + "[]";
-  } 
+  }
 
   @Override
   public boolean typeEqualsImpl(Type o) {
-    EntTypeSystem ts = (EntTypeSystem) this.typeSystem();
+    EntTypeSystem ts = (EntTypeSystem)this.typeSystem();
     if (o instanceof McaseType) {
-      McaseType_c m = (McaseType_c) o;
+      McaseType_c m = (McaseType_c)o;
       return ts.typeEquals(this.base(), m.base());
     }
     return ts.typeEquals(this.base(), o);
@@ -54,9 +52,9 @@ public class McaseType_c extends Type_c implements McaseType {
 
   @Override
   public boolean isCastValidImpl(Type toT) {
-    EntTypeSystem ts = (EntTypeSystem) this.typeSystem();
+    EntTypeSystem ts = (EntTypeSystem)this.typeSystem();
     if (toT instanceof McaseType) {
-      McaseType m = (McaseType) toT;
+      McaseType m = (McaseType)toT;
       return ts.isCastValid(this.base(), m.base());
     }
 
@@ -65,13 +63,12 @@ public class McaseType_c extends Type_c implements McaseType {
 
   @Override
   public boolean isImplicitCastValidImpl(Type toT) {
-    EntTypeSystem ts = (EntTypeSystem) this.typeSystem();
+    EntTypeSystem ts = (EntTypeSystem)this.typeSystem();
     if (toT instanceof McaseType) {
-      McaseType m = (McaseType) toT;
+      McaseType m = (McaseType)toT;
       return ts.isImplicitCastValid(this.base(), m.base());
     }
 
     return ts.isImplicitCastValid(this.base(), toT);
   }
-
 }

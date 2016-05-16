@@ -1,14 +1,10 @@
 package ent.runtime;
 
 public class ENT_Snapshot {
-  public static int WILDCARD  = 0;
-  public static int DYNAMIC   = 0;
+  public static int WILDCARD = 0;
+  public static int DYNAMIC = 0;
 
-  public static <T extends ENT_Attributable> T snapshot(
-      T o, 
-      int lb, 
-      int ub, 
-      boolean saveMode) {
+  public static <T extends ENT_Attributable> T snapshot(T o, int lb, int ub, boolean saveMode) {
     int mode = o.ENT_attribute();
 
     if (mode < lb && lb != ENT_Modes.WILDCARD_MODE && !ENT_Runtime.NOEXIT_MODE) {
@@ -20,7 +16,7 @@ public class ENT_Snapshot {
     }
 
     if (ENT_Runtime.objectCopied(o)) {
-      T copy = (T) o.ENT_copy();
+      T copy = (T)o.ENT_copy();
       if (saveMode) {
         Integer[] cmodes = ENT_Runtime.getObjAll(o).clone();
         cmodes[0] = mode;
@@ -32,23 +28,20 @@ public class ENT_Snapshot {
       System.out.println("Object updated!");
       Integer[] cmodes = ENT_Runtime.getObjAll(o);
       cmodes[0] = mode;
-      ENT_Runtime.updateObject(o,true,cmodes);
+      ENT_Runtime.updateObject(o, true, cmodes);
       return o;
     }
   }
 
-  public static <T extends ENT_Attributable> T forceSnapshot(
-      T o, 
-      int lb, 
-      int ub, 
-      boolean saveMode) {
+  public static <T extends ENT_Attributable>
+      T forceSnapshot(T o, int lb, int ub, boolean saveMode) {
     int mode = o.ENT_attribute();
     if (mode < lb || mode > ub) {
       mode = ub;
-    } 
+    }
 
     if (ENT_Runtime.objectCopied(o)) {
-      T copy = (T) o.ENT_copy();
+      T copy = (T)o.ENT_copy();
       if (saveMode) {
         Integer[] cmodes = ENT_Runtime.getObjAll(o).clone();
         cmodes[0] = mode;
@@ -58,8 +51,8 @@ public class ENT_Snapshot {
     } else {
       Integer[] cmodes = ENT_Runtime.getObjAll(o);
       cmodes[0] = mode;
-      ENT_Runtime.updateObject(o,true,cmodes);
+      ENT_Runtime.updateObject(o, true, cmodes);
       return o;
     }
-  } 
+  }
 }

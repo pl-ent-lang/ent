@@ -1,4 +1,3 @@
 package ent.types;
 
-public interface ModeSubstRawClass extends ModeSubstClassType, EntRawClass {
-}
+public interface ModeSubstRawClass extends ModeSubstClassType, EntRawClass {}

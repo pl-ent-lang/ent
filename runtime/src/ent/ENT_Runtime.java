@@ -24,9 +24,7 @@ public class ENT_Runtime {
     return mode.intValue();
   }
 
-  public static Integer[] getObjAll(Object o) {
-    return ENT_Runtime.objTab.get(o).modes;
-  }
+  public static Integer[] getObjAll(Object o) { return ENT_Runtime.objTab.get(o).modes; }
 
   public static void updateObject(Object o, boolean copied, Integer[] modes) {
     ENT_Runtime.objTab.get(o).copied = copied;
@@ -34,13 +32,11 @@ public class ENT_Runtime {
   }
 
   public static Object putObj(Object o, Integer[] modes) {
-    ENT_Runtime.objTab.put(o, new ENT_ObjTag(false,modes));
+    ENT_Runtime.objTab.put(o, new ENT_ObjTag(false, modes));
     return o;
   }
 
-  public static boolean objectCopied(Object o) {
-    return ENT_Runtime.objTab.get(o).copied;
-  }
+  public static boolean objectCopied(Object o) { return ENT_Runtime.objTab.get(o).copied; }
 
   public static int getModeVar(int uniqueId) {
     Integer mode = ENT_Runtime.modeVarTab.get(uniqueId);
@@ -52,8 +48,7 @@ public class ENT_Runtime {
 
   public static void putModeVar(int uniqueId, int mode) {
     ENT_Runtime.modeVarTab.put(uniqueId, mode);
-  } 
+  }
 
   // For snapshotting
 }
-

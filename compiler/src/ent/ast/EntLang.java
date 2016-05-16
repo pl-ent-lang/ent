@@ -14,5 +14,4 @@ public interface EntLang extends J7Lang {
 
   TypePreserver typePreserveEnter(Node n, TypePreserver tp);
   Node typePreserve(Node n, TypePreserver tp);
-
 }

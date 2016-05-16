@@ -15,13 +15,13 @@ public class EntExt extends Ext_c implements EntOps {
   public static EntExt ext(Node n) {
     Ext e = n.ext();
     while (e != null && !(e instanceof EntExt)) {
-        e = e.ext();
+      e = e.ext();
     }
     if (e == null) {
-        throw new InternalCompilerError("No Ent extension object for node "
-                + n + " (" + n.getClass() + ")", n.position());
+      throw new InternalCompilerError(
+          "No Ent extension object for node " + n + " (" + n.getClass() + ")", n.position());
     }
-    return (EntExt) e;
+    return (EntExt)e;
   }
 
   @Override
@@ -39,7 +39,6 @@ public class EntExt extends Ext_c implements EntOps {
     return this.node();
   }
 
-
   @Override
   public TypePreserver typePreserveEnter(TypePreserver tp) {
     return tp;
@@ -49,5 +48,4 @@ public class EntExt extends Ext_c implements EntOps {
   public Node typePreserve(TypePreserver tp) {
     return this.node();
   }
-
 }

@@ -14,5 +14,4 @@ public interface AmbModeTypeInstantiation extends ModeTypeNode {
 
   List<ModeTypeNode> modeTypeArgs();
   AmbModeTypeInstantiation modeTypeArgs(List<ModeTypeNode> modeTypeArgs);
-
 }

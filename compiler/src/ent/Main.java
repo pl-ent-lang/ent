@@ -5,19 +5,17 @@ package ent;
  * It simply invokes Polyglot's main, passing in the extension's
  * ExtensionInfo.
  */
-public class Main
-{
+public class Main {
   public static boolean PDEBUG = false;
 
   public static void main(String[] args) {
-      polyglot.main.Main polyglotMain = new polyglot.main.Main();
+    polyglot.main.Main polyglotMain = new polyglot.main.Main();
 
-      try {
-          polyglotMain.start(args, new ent.EntExtensionInfo());
-      }
-      catch (polyglot.main.Main.TerminationException e) {
-          System.err.println(e.getMessage());
-          System.exit(1);
-      }
+    try {
+      polyglotMain.start(args, new ent.EntExtensionInfo());
+    } catch (polyglot.main.Main.TerminationException e) {
+      System.err.println(e.getMessage());
+      System.exit(1);
+    }
   }
 }

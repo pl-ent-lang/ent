@@ -13,27 +13,26 @@ import polyglot.visit.*;
 public class EntFieldExt extends EntExt {
 
   public Node typeCheckCommon(TypeChecker tc) throws SemanticException {
-    Field n = (Field) superLang().typeCheck(this.node(), tc);
-    EntTypeSystem ts = (EntTypeSystem) tc.typeSystem();
-    EntContext ctx = (EntContext) tc.context();
-    EntClassType ct = (EntClassType) ctx.currentClassScope();
+    Field n = (Field)superLang().typeCheck(this.node(), tc);
+    EntTypeSystem ts = (EntTypeSystem)tc.typeSystem();
+    EntContext ctx = (EntContext)tc.context();
+    EntClassType ct = (EntClassType)ctx.currentClassScope();
 
     // NOTE: No target means this is a static call, kick it up
     if (n.target() == null) {
       return n;
-    } 
+    }
 
     Type t = n.target().type();
     if (!(t instanceof ModeSubstType)) {
       return n;
-    } 
+    }
 
     // Disallow dynamic type seperately for better diagnostics
-    ModeSubstType mt = (ModeSubstType) t;
-    if (mt.modeType() == ts.DynamicModeType() &&
-        !EntFlags.isModesafe(n.fieldInstance().flags())) {
+    ModeSubstType mt = (ModeSubstType)t;
+    if (mt.modeType() == ts.DynamicModeType() && !EntFlags.isModesafe(n.fieldInstance().flags())) {
       throw new SemanticException(
-        "Dynamic mode type cannot receive messages. Resolve using snapshot.");
+          "Dynamic mode type cannot receive messages. Resolve using snapshot.");
     }
 
     if (ctx.inStaticContext()) {
@@ -45,21 +44,22 @@ public class EntFieldExt extends EntExt {
     // than the recievers mode type.
     ModeTypeVariable mtThis = ct.modeTypeVars().get(0);
     if (!ts.isSubtype(mt.modeType(), mtThis) && mtThis.upperBound() != ts.WildcardModeType()) {
-      throw new SemanticException("Cannot send message to " + t + " from mode " + mtThis.upperBound() + ".");
+      throw new SemanticException("Cannot send message to " + t + " from mode " +
+                                  mtThis.upperBound() + ".");
     }
 
     return n;
   }
 
   @Override
-  public Node typeCheck(TypeChecker tc) throws SemanticException { 
-    Field n = (Field) this.typeCheckCommon(tc);
+  public Node typeCheck(TypeChecker tc) throws SemanticException {
+    Field n = (Field)this.typeCheckCommon(tc);
 
     if ((n.type() instanceof McaseType)) {
       // Special check for Mcases
-      EntTypeSystem ts = (EntTypeSystem) tc.typeSystem();
-      EntContext ctx = (EntContext) tc.context();
-      EntClassType ct = (EntClassType) ctx.currentClassScope();
+      EntTypeSystem ts = (EntTypeSystem)tc.typeSystem();
+      EntContext ctx = (EntContext)tc.context();
+      EntClassType ct = (EntClassType)ctx.currentClassScope();
       if (ctx.currentCode() instanceof ConstructorInstance &&
           ts.typeEquals(n.fieldInstance().container(), ct)) {
         throw new SemanticException("Cannot use mcase expression inside containing constructor");
@@ -71,7 +71,7 @@ public class EntFieldExt extends EntExt {
 
   @Override
   public Node typePreserve(TypePreserver tp) {
-    Field f = (Field) this.node();
+    Field f = (Field)this.node();
     NodeFactory nf = tp.nodeFactory();
 
     if (!(f.type() instanceof McaseType)) {
@@ -80,39 +80,21 @@ public class EntFieldExt extends EntExt {
 
     Expr recv = null;
     if (f.target() instanceof Expr) {
-      recv = (Expr) f.target();
+      recv = (Expr)f.target();
     } else {
       recv = nf.This(Position.COMPILER_GENERATED);
     }
 
     Node n =
-      nf.ArrayAccess(
-        Position.COMPILER_GENERATED,
-        f,
-        nf.Call(
-          Position.COMPILER_GENERATED,
-          nf.AmbReceiver(
-            Position.COMPILER_GENERATED,
-            nf.Id(
-              Position.COMPILER_GENERATED,
-              "ENT_Runtime"
-              )
-            ),
-          nf.Id(
-            Position.COMPILER_GENERATED,
-            "getObjMode"
-            ),
-          recv,
-          nf.IntLit(
-            Position.COMPILER_GENERATED,
-            IntLit.INT,
-            0
-            )
-          )
-        );
+        nf.ArrayAccess(Position.COMPILER_GENERATED,
+                       f,
+                       nf.Call(Position.COMPILER_GENERATED,
+                               nf.AmbReceiver(Position.COMPILER_GENERATED,
+                                              nf.Id(Position.COMPILER_GENERATED, "ENT_Runtime")),
+                               nf.Id(Position.COMPILER_GENERATED, "getObjMode"),
+                               recv,
+                               nf.IntLit(Position.COMPILER_GENERATED, IntLit.INT, 0)));
 
     return n;
   }
-
-
 }

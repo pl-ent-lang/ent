@@ -8,5 +8,4 @@ public interface ModeValueType extends Type {
 
   boolean containsBuiltin();
   boolean containsVariable();
-
 }

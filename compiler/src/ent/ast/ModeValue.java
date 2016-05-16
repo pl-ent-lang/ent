@@ -10,5 +10,4 @@ public interface ModeValue extends Lit {
   ModeValue modeTypeNode(ModeTypeNode modeTypeNode);
 
   Node rewriteModeValue(ExtensionRewriter rw) throws SemanticException;
-
 }

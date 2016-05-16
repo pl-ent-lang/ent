@@ -19,16 +19,13 @@ public class McaseFieldDecl_c extends Term_c implements McaseFieldDecl {
   }
 
   // Property Methods
-  public Id field() {
-    return this.field;
-  }
+  public Id field() { return this.field; }
 
-  public Expr init() {
-    return this.init;
-  }
+  public Expr init() { return this.init; }
 
   protected <N extends McaseFieldDecl_c> N init(N n, Expr init) {
-    if (this.init() == init) return n;
+    if (this.init() == init)
+      return n;
     n = this.copyIfNeeded(n);
     n.init = init;
     return n;
@@ -45,7 +42,6 @@ public class McaseFieldDecl_c extends Term_c implements McaseFieldDecl {
     Expr init = visitChild(this.init(), v);
     return this.reconstruct(this, init);
   }
-
 
   @Override
   public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
@@ -66,11 +62,7 @@ public class McaseFieldDecl_c extends Term_c implements McaseFieldDecl {
   }
 
   @Override
-  public Node extRewrite(ExtensionRewriter rw) throws SemanticException { 
+  public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
     return this.init();
   }
-
-
-
-
 }

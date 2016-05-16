@@ -23,29 +23,24 @@ public class EntContext_c extends JL5Context_c implements EntContext {
 
   @Override
   protected Context_c push() {
-    EntContext_c context = (EntContext_c) super.push();
+    EntContext_c context = (EntContext_c)super.push();
     context.modeTypeVars = new HashMap<String, ModeTypeVariable>();
     return context;
   }
 
   @Override
   public EntTypeSystem typeSystem() {
-    return (EntTypeSystem) this.ts;
+    return (EntTypeSystem)this.ts;
   }
 
   // Property Methods
-  public Map<String, ModeTypeVariable> modeTypeVars() {
-    return this.modeTypeVars;
-  }
+  public Map<String, ModeTypeVariable> modeTypeVars() { return this.modeTypeVars; }
 
   public void modeTypeVars(Map<String, ModeTypeVariable> modeTypeVars) {
     this.modeTypeVars = modeTypeVars;
   }
 
-
-  public AttributeInstance currentAttribute() {
-    return this.currentAttribute;
-  }
+  public AttributeInstance currentAttribute() { return this.currentAttribute; }
 
   public void currentAttribute(AttributeInstance currentAttribute) {
     this.currentAttribute = currentAttribute;
@@ -68,5 +63,4 @@ public class EntContext_c extends JL5Context_c implements EntContext {
   public boolean isAttribute() {
     return this.kind == CODE && (this.code instanceof AttributeInstance);
   }
-
 }

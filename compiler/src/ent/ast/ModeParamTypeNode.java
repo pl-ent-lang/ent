@@ -12,5 +12,4 @@ public interface ModeParamTypeNode extends TypeNode {
 
   public List<ModeTypeNode> lowerBounds();
   public List<ModeTypeNode> upperBounds();
-
 }
