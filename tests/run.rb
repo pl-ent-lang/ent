@@ -69,7 +69,7 @@ def run_test(test)
   if (command == "pass" && result != 0)
     puts "#{test} failed: test should pass"
     exit 1
-  elsif (command == "fail" && result == 0)
+  elsif (command == "fail" && result != 2)
     puts "#{test} failed: test should fail"
     exit 1
   end

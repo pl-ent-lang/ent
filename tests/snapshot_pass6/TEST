@@ -1,6 +1,10 @@
 // main: B
 // Test: Checks that snapshot passes at runtime if the snapshotted object returns a mode type
 // within the snapshot bounds when: 
-//  (1) a method mode type variable is used within said bounds
+//  (1) a method mode type variable is used within said bounds passed from a 
+//  method 2 levels away
 //  (2) a class mode type variable is substituted into said method
 //  (3) a second method mode type variable is substituted into said method
+
+// Overall, this is checking that the ENT_Closure mechanism captures "parent"
+// method mode type variables etc.

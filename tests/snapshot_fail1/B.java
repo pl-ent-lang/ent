@@ -8,6 +8,10 @@ public class B@mode<(mid <= X <= high)> {
   }
   public static void main(String[] args) {
     B@mode<high> b = new B@mode<high>();
-    b.m1();
+    try {
+      b.m1();
+    } catch (RuntimeException e) {
+      System.exit(2);
+    }
   }
 }

@@ -1,0 +1,6 @@
+// main: B
+// Test: Checks that snapshot fails at runtime if the snapshotted object returns a mode type
+// outside the snapshot bounds when: 
+//  (1) a method mode type variable is used within said bounds that is passed from another method
+//  (2) a class mode type variable is substituted into said method
+//  (3) a second method mode type variable is substituted into said method

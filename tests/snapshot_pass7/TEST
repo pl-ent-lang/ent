@@ -1,0 +1,9 @@
+// main: C
+// Test: Checks that snapshot passes at runtime if the snapshotted object returns a mode type
+// within the snapshot bounds when: 
+//  (1) a class mode type variable is substituted into a method mode type variable
+//  from another class.
+//  (2) a second method mode type variable is substituted into said method
+
+// Overall, this is checking that the ENT_Closure mechanism captures "parent"
+// method mode type variables etc.
