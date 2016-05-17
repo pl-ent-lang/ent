@@ -6,7 +6,6 @@ import java.util.Map;
 
 public class ENT_Runtime {
   private static Map<Object, ENT_ObjTag> objTab = new WeakHashMap<>();
-  private static Map<Integer, Integer> modeVarTab = new WeakHashMap<>();
   public static boolean NOEXIT_MODE = false;
 
   static {
@@ -38,17 +37,4 @@ public class ENT_Runtime {
 
   public static boolean objectCopied(Object o) { return ENT_Runtime.objTab.get(o).copied; }
 
-  public static int getModeVar(int uniqueId) {
-    Integer mode = ENT_Runtime.modeVarTab.get(uniqueId);
-    if (mode == null) {
-      return -1;
-    }
-    return mode.intValue();
-  }
-
-  public static void putModeVar(int uniqueId, int mode) {
-    ENT_Runtime.modeVarTab.put(uniqueId, mode);
-  }
-
-  // For snapshotting
 }
