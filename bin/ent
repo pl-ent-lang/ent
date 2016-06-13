@@ -79,10 +79,10 @@ while true; do
 done
 
 # Use this while developing
-classpath="$JAVA_PATH:$dir/runtime/classes:$dir/lib/guava-18.0.jar"
+#classpath="$JAVA_PATH:$dir/runtime/classes:$dir/lib/guava-18.0.jar"
 
 # Use this in production
-#classpath="$dir/lib/$ext-rt.jar"
+classpath="$JAVA_PATH:$dir/lib/$ext-rt.jar:$dir/lib/guava-18.0.jar"
 
 classpath="$classpath$extra_cp"
 classpath=`fixclasspath "$classpath"`

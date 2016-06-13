@@ -6,13 +6,21 @@ import ent.runtime.temperature.TemperatureSupply;
 import java.io.FileWriter;
 import java.io.BufferedWriter;
 
+import android.content.Context;
+
 // import com.google.common.base.Stopwatch;
 import java.util.concurrent.TimeUnit;
+
 
 public class ENT_Util {
   public static BatterySupply Battery = new BatterySupply();
   public static TemperatureSupply Temperature = new TemperatureSupply();
   public static Stopwatch stopwatch = new Stopwatch();
+  public static Context context = null;
+
+  public void registerAndroidContext(Context context) {
+    this.context = context;
+  } 
 
   public static String dumpMode(Object o) {
     Integer[] m = ENT_Runtime.getObjAll(o);

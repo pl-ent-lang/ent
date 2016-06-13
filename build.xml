@@ -71,6 +71,7 @@
         </fileset>
     </path>
 
+    <pathconvert property="classpathProp" refid="standard.classpath"/>
 
     <!-- ****************************************
        Clean up targets and other admin tasks

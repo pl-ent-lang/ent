@@ -19,8 +19,7 @@ public class BatterySupply {
       bareMetalBattery = new UnixBareMetalBattery();
       break;
     case ANDROID:
-      System.err.println("Windows not supported. Exiting.");
-      System.exit(1);
+      bareMetalBattery = new AndroidBareMetalBattery();
       break;
     case NONE:
       System.err.println("Encountered unsupported operating system. Exiting.");
