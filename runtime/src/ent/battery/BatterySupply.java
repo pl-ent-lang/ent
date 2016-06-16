@@ -33,7 +33,6 @@ public class BatterySupply {
   public int getTotalCapacity() { return bareMetalBattery.getTotalCapacity(); }
 
   public float percentRemaining() {
-    return 0.40f;
-    // return ((float) this.getRemainingCapacity()) / ((float) this.getTotalCapacity());
+    return ((float) this.getRemainingCapacity()) / ((float) this.getTotalCapacity());
   }
 }

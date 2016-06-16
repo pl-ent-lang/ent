@@ -84,6 +84,8 @@ class Flat
         else
           string += l + " "
         end
+      elsif l.start_with?("\"")
+        files << l[1..-2]
       else
         files << l
       end

@@ -131,6 +131,22 @@ public class EntBuilder {
         extInfo.nodeFactory(), outInfo.typeSystem(), capturedMtArgs, mtEnv, ctx);
   }
 
+  public List<Stmt> buildAndroidInjection(NodeFactory nf, TypeSystem toTs) {
+    //Stmt s2 = qq.parseStmt("ENT_Util.registerAndroidContext(getApplicationContext());");
+
+    List<Stmt> stmts = new ArrayList<>();
+    Stmt s = nf.Eval(Position.COMPILER_GENERATED,
+                     nf.Call(Position.COMPILER_GENERATED,
+                             nf.AmbTypeNode(Position.COMPILER_GENERATED,
+                                            nf.Id(Position.COMPILER_GENERATED, "ENT_Util")),
+                             nf.Id(Position.COMPILER_GENERATED, "registerAndroidContext"),
+                             nf.Call(Position.COMPILER_GENERATED, "getApplicationContext")));
+    stmts.add(s);
+
+    return stmts;
+  }
+
+
   public New buildEntClosure(NodeFactory nf,
                              TypeSystem toTs,
                              List<ModeTypeVariable> capturedMtArgs,

@@ -1,7 +1,9 @@
 package ent.ast;
 
+import ent.EntOptions;
 import ent.types.*;
 import ent.visit.*;
+import ent.translate.*;
 
 import polyglot.ast.*;
 import polyglot.types.*;
@@ -153,6 +155,22 @@ public abstract class EntProcedureDeclExt extends EntExt {
     ProcedureDecl n = (ProcedureDecl)this.node();
     EntNodeFactory nf = (EntNodeFactory)tp.nodeFactory();
     EntTypeSystem ts = (EntTypeSystem)tp.typeSystem();
+
+    // Dirty OO, but I just don't care.
+    if (n.procedureInstance() instanceof MethodInstance) {
+      MethodInstance mi = (MethodInstance)n.procedureInstance();
+      ParsedClassType pct = (ParsedClassType)mi.container();
+      EntOptions opt = (EntOptions) tp.job().extensionInfo().getOptions();
+      if (!opt.androidMainHint.equals("") && mi.name().equals("onCreate") &&
+          opt.androidMainHint.equals(pct.fullName())) {
+
+        List<Stmt> stmts = new ArrayList<>();
+        stmts.addAll(n.body().statements());
+        stmts.addAll(EntBuilder.instance().buildAndroidInjection(tp.nodeFactory(), tp.toTypeSystem()));
+
+        n = (ProcedureDecl) n.body(n.body().statements(stmts));
+      }
+    }
 
     if (!this.preserveTypes()) {
       return n;

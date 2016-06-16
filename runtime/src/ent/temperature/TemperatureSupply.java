@@ -19,8 +19,8 @@ public class TemperatureSupply {
       bareMetalTemperature = new UnixBareMetalTemperature();
       break;
     case ANDROID:
-      System.err.println("Windows not supported. Exiting.");
-      System.exit(1);
+      System.err.println("WARNING: Android not supported!");
+      bareMetalTemperature = new AndroidBareMetalTemperature();
       break;
     case NONE:
       System.err.println("Encountered unsupported operating system. Exiting.");

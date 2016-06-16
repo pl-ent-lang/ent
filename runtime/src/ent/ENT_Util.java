@@ -18,8 +18,8 @@ public class ENT_Util {
   public static Stopwatch stopwatch = new Stopwatch();
   public static Context context = null;
 
-  public void registerAndroidContext(Context context) {
-    this.context = context;
+  public static void registerAndroidContext(Context context) {
+    ENT_Util.context = context;
   } 
 
   public static String dumpMode(Object o) {
