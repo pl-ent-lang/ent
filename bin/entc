@@ -31,7 +31,7 @@ fixclasspath() {
 }
 
 extra_cp=
-args=
+args=-morepermissivecasts
 vmargs=
 classpath=$JAVA_PATH
 java=/home/acanino/Src/jdk1.8.0_60/bin/java
@@ -42,6 +42,8 @@ ext=ent
 polyglot() {
   #eval "$java" "$vmargs" -classpath "'$classpath'" -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y panda.Main "$@"
   eval "$java" "$vmargs" -classpath "'$classpath'" ent.Main "$@"
+
+  #eval "$java" "$vmargs" -classpath "'$classpath'" polyglot.main.Main "$@"
 }
 
 fa=`$flat -l pan -- $@`
@@ -92,7 +94,6 @@ done
 
 joe_args=`$joe -l pan -- $args`
 
-#echo $joe_args
 
 #classpath=$classpath:"$dir/compiler/classes:$dir/runtime/classes:$dir/lib/polyglot.jar:$dir/lib/java_cup.jar:$dir/lib/jsr305-1.3.9.jar:$dir/lib/guava-18.0.jar"
 classpath=$classpath:"$dir/compiler/classes:$dir/runtime/classes:$dir/lib/polyglot.jar:$dir/lib/java_cup.jar:$dir/lib/android.jar"
@@ -110,6 +111,8 @@ fi
 if [ "$verbose" = 1 ]; then
   echo "$java" "$vmargs" -classpath "'$classpath'" "$@"
 fi
+
+#joe_args="-extclass polyglot.ext.jl7.JL7ExtensionInfo $joe_args"
 
 polyglot "-assert -simpleoutput $joe_args"
 #polyglot "-assert -simpleoutput -dontTranslateEnt $joe_args"

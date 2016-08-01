@@ -27,6 +27,18 @@
 #                       compiler; is always enclosed in quotes.
 
 ent.EntExtensionInfo "-d out" {
+  # Tests for normal java features that break because of our 
+  # significantly more complicated type system.
+  j7_exceptions/A.java ;
+  diamond_type/A.java diamond_type/Pair.java ;  
+  switch_integer/A.java ;
+  switch_enum/A.java switch_enum/Color.java ;
+
+  # Tests that expose polyglot bugs. These are listed as reminder.
+  cast1/A.java ;
+  super_abstract/A.java ;
+
+  # Tests specific to Ent.
   waterfall_good1/A.java ;
   waterfall_good2/A.java ;
   waterfall_good3/A.java ;

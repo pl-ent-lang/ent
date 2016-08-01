@@ -33,6 +33,12 @@ public class BatterySupply {
   public int getTotalCapacity() { return bareMetalBattery.getTotalCapacity(); }
 
   public float percentRemaining() {
-    return ((float) this.getRemainingCapacity()) / ((float) this.getTotalCapacity());
+    String simBattery = System.getenv("ENT_BATTERY_LEVEL");
+    if (simBattery == null) {
+      return ((float) this.getRemainingCapacity()) / ((float) this.getTotalCapacity());
+    } else {
+      Float batteryLevel = Float.parseFloat(simBattery);
+      return batteryLevel;
+    }
   }
 }

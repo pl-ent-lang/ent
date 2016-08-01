@@ -49,24 +49,24 @@ public class EntLubType_c extends LubType_c implements EntLubType {
     Set<ReferenceType> est = null;
 
     for (ReferenceType u : lubElems) {
-
-      st.addAll(ts.allAncestorsOf(u));
-
       // TODO : To fix this hack, we need our own LinkedHashSet that
       // uses typeEquals and not equals OR a method that does a
       // complete erasue of modes
-      Set<ReferenceType> tmp = new LinkedHashSet<>();
-      for (ReferenceType t : st) {
+      Set<ReferenceType> ent_st = new LinkedHashSet<>();
+      for (ReferenceType t : ts.allAncestorsOf(u)) {
         if (t instanceof ModeSubstType) {
-          tmp.add((ReferenceType)((ModeSubstType)t).baseType());
+          ent_st.add((ReferenceType)((ModeSubstType)t).baseType());
         } else {
-          tmp.add(t);
+          ent_st.add(t);
         }
       }
-      st = tmp;
+      st.addAll(ent_st);
+
+      // Use ent_st in place of the subsequent allAncestorsOf calls found
+      // in JL5::LubType_c
 
       List<ReferenceType> u_supers = new ArrayList<>();
-      for (ReferenceType u_super : st) {
+      for (ReferenceType u_super : ent_st) {
         if (u_super instanceof RawClass) {
           u_supers.add(((RawClass)u_super).erased());
         } else

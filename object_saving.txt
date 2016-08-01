@@ -1,0 +1,14 @@
+Notes on object saving.
+
+The scenarios where I actually save an object in the mode table:
+
+(1) If the object is declared with a dynamic mode type
+(2) If the object's class contains a mode case
+(3) If the object's class mode type parameter is used as a snapshot bounds
+  - Bugged
+
+Scenarios where the above hueristics wont work
+
+(1) Co-change that is several contexts deep (more than 1)
+
+

@@ -1,0 +1,97 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        if (rootProject.ext.has("gradle_classpath")) {
+            classpath rootProject.ext.gradle_classpath
+        } else {
+            logger.warn('classpath not found in rootProject')
+            classpath 'com.android.tools.build:gradle:1.2.3'
+        }
+    }
+}
+
+apply plugin: 'com.android.application'
+
+android {
+
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
+
+    /*
+    if (rootProject.ext.has("compileSdkVersion")) {
+        compileSdkVersion rootProject.ext.compileSdkVersion
+        buildToolsVersion rootProject.ext.buildToolsVersion
+    } else {
+        logger.warn('compileSdkVersion not found in rootProject')
+        compileSdkVersion 23
+        buildToolsVersion "23.0.0 rc3"
+    }
+    */
+
+    defaultConfig {
+        applicationId "de.j4velin.pedometer"
+    }
+
+    signingConfigs {
+        release
+    }
+
+    productFlavors {
+        play
+        fdroid
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            zipAlignEnabled true
+            minifyEnabled true
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt'
+        }
+        debug {
+            debuggable true
+            signingConfig signingConfigs.release
+            zipAlignEnabled true
+            minifyEnabled false
+        }
+    }
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'com.github.j4velin.colorpicker:colorpicker:1.2.3'
+    compile 'com.github.j4velin.EazeGraph:EazeGraph:1.0.2'
+    compile 'com.google.android.apps.dashclock:dashclock-api:2.0.0'
+    playCompile 'com.google.android.gms:play-services-fitness:8.4.0'
+    playCompile 'com.google.android.gms:play-services-games:8.4.0'
+    playCompile 'com.google.android.gms:play-services-identity:8.4.0'
+
+    apk files("/home/acanino/Projects/ent/lib/ent-rt.jar")
+}
+
+def props = new Properties()
+
+props.load(new FileInputStream(project.file("key.properties")))
+
+android.signingConfigs.release.storeFile rootProject.file(props.keyStore)
+
+android.signingConfigs.release.storePassword props.keyStorePassword
+
+android.signingConfigs.release.keyAlias props.keyAlias
+
+android.signingConfigs.release.keyPassword props.keyAliasPassword
+
+
+gradle.projectsEvaluated {
+  tasks.withType(JavaCompile) {
+    options.fork = true
+    options.forkOptions.executable = '/home/acanino/Projects/ent/bin/entc'
+  }
+}

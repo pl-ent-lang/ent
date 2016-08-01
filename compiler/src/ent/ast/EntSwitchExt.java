@@ -1,5 +1,7 @@
 package ent.ast;
 
+import ent.types.*;
+
 import polyglot.ast.*;
 import polyglot.ext.jl5.ast.*;
 import polyglot.types.*;
@@ -16,10 +18,21 @@ public class EntSwitchExt extends EntExt implements JL5SwitchOps {
 
   @Override
   public boolean isAcceptableSwitchType(Type type) {
-    JL5TypeSystem ts = (JL5TypeSystem)type.typeSystem();
-    if (ts.String().typeEquals(type)) {
+    // Stealing the show from polyglot due to the whole typeEquals/typeEquals issue
+    EntTypeSystem ts = (EntTypeSystem)type.typeSystem();
+    if (ts.Char().typeEquals(type) || ts.Byte().typeEquals(type) || ts.Short().typeEquals(type) ||
+        ts.Int().typeEquals(type) || ts.String().typeEquals(type)) {
       return true;
     }
-    return J7Lang_c.lang(pred()).isAcceptableSwitchType(this.node(), type);
+    if (ts.wrapperClassOfPrimitive(ts.Char()).typeEquals(type) ||
+        ts.wrapperClassOfPrimitive(ts.Byte()).typeEquals(type) ||
+        ts.wrapperClassOfPrimitive(ts.Short()).typeEquals(type) ||
+        ts.wrapperClassOfPrimitive(ts.Int()).typeEquals(type)) {
+      return true;
+    }
+    if (type.isClass() && JL5Flags.isEnum(type.toClass().flags())) {
+      return true;
+    }
+    return false;
   }
 }

@@ -50,7 +50,8 @@ public class EntRewriter extends ExtensionRewriter {
       return to_nf.ParamTypeNode(pos, to_nf.Id(pos, ct.name()), bounds);
 
     } else if (t instanceof LubType) {
-      throw new InternalCompilerError("I don't understand what to do here");
+      LubType lub = (LubType) t;
+      return this.typeToJava(lub.calculateLub(), pos);
 
     } else if (t instanceof WildCardType) {
       WildCardType wc = (WildCardType)t;

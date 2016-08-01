@@ -673,6 +673,7 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
 
         if (substMi != null) {
           mi = substMi;
+
           if (isMember(mi, container.toReference()) &&
               isAccessible(mi, container, currClass, fromClient)) {
             if (varArgsRequired(mi)) {
@@ -705,7 +706,7 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
             inaccessible.add(mi);
             if (error == null) {
               error = new NoMemberException(NoMemberException.METHOD,
-                                            "Method " + mi.signature() + " in " + container +
+                                            "(3) Method " + mi.signature() + " in " + container +
                                                 " is inaccessible.");
             }
           }
@@ -763,6 +764,7 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
       return phase3methods;
 
     // No acceptable accessible methods were found
+
     throw error;
   }
 

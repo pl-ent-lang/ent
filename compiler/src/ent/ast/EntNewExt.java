@@ -111,6 +111,8 @@ public class EntNewExt extends EntExt implements NewOps {
     New n = (New)superLang().typeCheck(this.node(), tc);
     EntTypeSystem ts = (EntTypeSystem)tc.typeSystem();
 
+    //System.err.format("Node:%s - Pos:%s\n", n, n.position());
+
     EntProcedureInstance pi = (EntProcedureInstance)n.constructorInstance();
 
     if (pi.modeTypeVars().isEmpty()) {

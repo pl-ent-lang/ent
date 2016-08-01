@@ -220,7 +220,7 @@ public class EntCallExt extends EntExt {
       }
     }
     // Save for closure
-    n = this.actualModeTypes(actualModeTypes);
+    n = this.actualModeTypes(actualModeTypes); 
 
     EntMethodInstance mi = (EntMethodInstance)ts.findMethod(targetType,
                                                             n.name(),

@@ -84,6 +84,11 @@ public class EntSubst_c extends JL5Subst_c implements EntSubst {
       return new EntSubstClassType_c(ts, t.position(), pct, this);
     }
 
+    if (t instanceof EntDiamondType) {
+      // We won't substitute for now. See what happens.
+      return t;
+    }
+
     throw new InternalCompilerError("Don't know how to handle class type " + t.getClass());
   }
 }

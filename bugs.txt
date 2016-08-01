@@ -1,0 +1,34 @@
+--
+List of bugs that are big issues, and need fixes.
+
+(1) Object Saving
+  - Need to get rid of the mcase hack that avoids having to properly track
+  which objects need to be saved for the runtime. Right now we rely on
+  heuristics.
+
+(2) Battery Manager Android
+  - If the Battery is needed during application Boot before the main
+  activity is loaded, the current method will not work.
+
+  It's possible that the current method will not work for any app that
+  processes events in the background.
+
+(3) Dynamic Mode Type Declaration
+  - If we declare a class with the dynamic mode type, does that mean ALL
+  instances of the class must have a dynamic mode type.
+
+  Right now, I don't enforce this, but it causes issues with object saving.
+
+--
+List of bugs that have workarounds, but need better solutions.
+
+(1) J7 Exceptions -> LUB Type
+  - J7 exception handling is wrong, can't simply replace with the LUB type
+
+--
+List of bugs that have been encountered compiling benchmarks and external
+applications that I was not able to isolate enough. Simply grep 'ENT-BUG'
+on the benchmark.
+
+(1) Signal-Android
+
