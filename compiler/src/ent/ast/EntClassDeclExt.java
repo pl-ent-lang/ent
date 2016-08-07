@@ -2,6 +2,7 @@ package ent.ast;
 
 import ent.translate.*;
 import ent.types.*;
+import ent.visit.*;
 
 import polyglot.ast.*;
 import polyglot.types.*;
@@ -179,6 +180,57 @@ public class EntClassDeclExt extends EntExt {
     Block newBody = cd.body().statements(newStmts);
     cd = (ConstructorDecl)cd.body(newBody);
     return cd;
+  }
+
+  private ClassMember buildAttrProxy(EntNodeFactory nf, EntTypeSystem ts, MethodDecl md) {
+    EntMethodDeclExt entext = (EntMethodDeclExt) EntExt.ext(md);
+
+    EntMethodInstance mi = (EntMethodInstance) md.methodInstance();
+    String name = "ENT_PROXY_" + mi.name();
+
+    MethodDecl proxy = (MethodDecl) md.name(name);
+
+    proxy = (MethodDecl) proxy.position(Position.COMPILER_GENERATED);
+    proxy = (MethodDecl) ((EntMethodDeclExt) EntExt.ext(proxy)).attrDecl(null);
+    proxy = (MethodDecl) ((EntMethodDeclExt) EntExt.ext(proxy)).proxy(true);
+
+    return proxy;
+  }
+
+
+  @Override
+  public Node typePreserve(TypePreserver tp) {
+    ClassDecl n = (ClassDecl) this.node();
+    EntClassDeclExt ext = (EntClassDeclExt) EntExt.ext(n);
+
+    // LAST : Fix copy bug
+
+    List<ClassMember> members = new ArrayList<>();
+    ClassBody body = n.body();
+
+    for (ClassMember m : body.members()) {
+      if (!(m instanceof MethodDecl)) {
+        members.add(m);
+        continue;
+      }
+      EntMethodDeclExt md = (EntMethodDeclExt) EntExt.ext(m);
+      if (md.attrDecl() != null) {
+        members.add(md.attrDecl());
+        members.add(
+          buildAttrProxy((EntNodeFactory) tp.nodeFactory(), 
+                         (EntTypeSystem) tp.typeSystem(), 
+                         (MethodDecl) m)
+          );
+
+        m = (ClassMember) md.attrDecl(null);
+      } 
+      members.add(m);
+    }
+
+    body = body.members(members);
+    n = n.body(body);
+
+    return n;
   }
 
   @Override

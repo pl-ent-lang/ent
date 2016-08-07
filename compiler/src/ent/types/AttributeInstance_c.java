@@ -9,14 +9,15 @@ import java.util.List;
 public class AttributeInstance_c extends TypeObject_c implements AttributeInstance {
 
   protected Flags flags = Flags.PUBLIC;
-  protected ReferenceType container;
   protected List<Type> modes = new ArrayList<>();
   protected Type lowerBound;
   protected Type upperBound;
 
-  public AttributeInstance_c(EntTypeSystem ts, Position pos, ReferenceType container, Flags flags) {
+  protected ReferenceType container;
+  protected MethodInstance methodContainer;
+
+  public AttributeInstance_c(EntTypeSystem ts, Position pos, Flags flags) {
     super(ts, pos);
-    this.container = container;
   }
 
   // Property Methods
@@ -41,6 +42,10 @@ public class AttributeInstance_c extends TypeObject_c implements AttributeInstan
   public ReferenceType container() { return this.container; }
 
   public void setContainer(ReferenceType container) { this.container = container; }
+
+  public MethodInstance methodContainer() { return this.methodContainer; }
+
+  public void setMethodContainer(MethodInstance methodContainer) { this.methodContainer = methodContainer; }
 
   // AttributeInstance Methods
   public void addMode(Type mode) { this.modes().add(mode); }

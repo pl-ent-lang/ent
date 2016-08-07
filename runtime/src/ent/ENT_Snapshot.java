@@ -4,6 +4,13 @@ public class ENT_Snapshot {
   public static int WILDCARD = 0;
   public static int DYNAMIC = 0;
 
+  public static int methodSnapshot(int methodMode, int ub) {
+    if (methodMode > ub && ub != ENT_Modes.WILDCARD_MODE && !ENT_Runtime.NOEXIT_MODE) {
+      throw new ENT_RuntimeException("Method mode failed to resolve!", methodMode, ub, ub);
+    }
+    return methodMode;
+  }
+
   public static <T extends ENT_Attributable> T snapshot(T o, int lb, int ub, boolean saveMode) {
     int mode = o.ENT_attribute();
 

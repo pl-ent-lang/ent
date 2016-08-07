@@ -1,4 +1,4 @@
-package method_attributor_pass1;
+package method_attributor_nocap_constants_pass;
 
 modes { low <: mid; mid <: high; }
 

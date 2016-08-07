@@ -56,7 +56,8 @@ public interface EntNodeFactory extends JL7NodeFactory {
                         Block body,
                         List<ParamTypeNode> typeParams,
                         List<ModeParamTypeNode> modeParams,
-                        ModeTypeNode overmode);
+                        ModeTypeNode overmode,
+                        AttributeDecl attrDecl);
 
   SourceFile SourceFile(Position pos,
                         PackageNode packageName,

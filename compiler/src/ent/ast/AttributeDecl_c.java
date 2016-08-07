@@ -9,13 +9,18 @@ import polyglot.translate.*;
 import polyglot.types.*;
 import polyglot.visit.*;
 import polyglot.util.*;
+import polyglot.ext.jl5.ast.*;
+import polyglot.ext.jl5.types.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 
 public class AttributeDecl_c extends Term_c implements AttributeDecl {
 
   protected Block body;
   protected AttributeInstance ai;
+  protected List<Formal> formals;
 
   public AttributeDecl_c(Position pos, Block body) {
     super(pos, null);
@@ -25,13 +30,25 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
   // Property Methods
   public Block body() { return this.body; }
 
-  public AttributeDecl body(Block body) { return this.body(this, body); }
+  public AttributeDecl body(Block body) { return this.body(this, body); } 
 
   public <N extends AttributeDecl_c> N body(N n, Block body) {
     if (this.body() == body)
       return n;
     n = this.copyIfNeeded(n);
     n.body = body;
+    return n;
+  }
+
+  public List<Formal> formals() { return this.formals; }
+
+  public AttributeDecl formals(List<Formal> formals) { return this.formals(this, formals); } 
+
+  public <N extends AttributeDecl_c> N formals(N n, List<Formal> formals) {
+    if (this.formals() == formals)
+      return n;
+    n = this.copyIfNeeded(n);
+    n.formals = formals;
     return n;
   }
 
@@ -83,36 +100,87 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
   @Override
   public Node buildTypes(TypeBuilder tb) throws SemanticException {
     EntTypeSystem ts = (EntTypeSystem)tb.typeSystem();
-    EntParsedClassType ct = (EntParsedClassType)tb.currentClass();
+    AttributeInstance ai = ts.createAttributeInstance(this.position(), null);
+    return this.attributeInstance(this, ai);
+  }
 
-    if (ct == null) {
-      // Big error, attributor needs to be part of a class only
+  protected boolean shouldDisambiguate() {
+    AttributeInstance ai = this.attributeInstance();
+    return (ai.container() == null && ai.methodContainer() == null);
+  }
+
+  @Override
+  public Node disambiguate(AmbiguityRemover sc) throws SemanticException {
+    EntTypeSystem ts = (EntTypeSystem)sc.typeSystem();
+
+    if (!this.shouldDisambiguate()) {
+      return this;
     }
 
-    if (ct.attributeInstance() != null) {
-      throw new SemanticException("Only one attributor may be defined per class.");
-    }
+    AttributeInstance ai = this.attributeInstance();
+    Context parentCtxt = sc.context().pop();
 
-    AttributeInstance ai = ts.createAttributeInstance(this.position(), ct, null);
-    ct.attributeInstance(ai);
+    if (parentCtxt.inCode()) {
+      // Method level attributor
+      EntMethodInstance mi = (EntMethodInstance) parentCtxt.currentCode();
+
+      mi.attributeInstance(ai);
+      ai.setMethodContainer(mi);
+
+    } else {
+      EntParsedClassType ct = (EntParsedClassType) sc.context().currentClass();
+
+      if (ct.attributeInstance() != null) {
+        throw new SemanticException("Only one attributor may be defined per class.");
+      }
+
+      ct.attributeInstance(ai);
+      ai.setContainer(ct); 
+    }
 
     return this.attributeInstance(this, ai);
   }
 
   @Override
-  public Node disambiguate(AmbiguityRemover sc) throws SemanticException {
-    return this;
-  }
-
-  @Override
   public Node extRewrite(ExtensionRewriter rw) throws SemanticException {
     EntRewriter prw = (EntRewriter)rw;
-    NodeFactory nf = (NodeFactory)prw.nodeFactory();
+    JL5NodeFactory nf = (JL5NodeFactory)prw.to_nf();
+    JL5TypeSystem ts = (JL5TypeSystem)prw.toTypeSystem();
     QQ qq = prw.qq();
 
-    ClassMember md = qq.parseMember("public int ENT_attribute() { %LS }", this.body().statements());
+    ClassMember cm = null;
+    if (this.attributeInstance().container() != null) {
+      cm = qq.parseMember("public int ENT_attribute() { %LS }", this.body().statements());
+    } else if (this.attributeInstance().methodContainer() != null) {
+      EntMethodInstance mi = (EntMethodInstance) this.attributeInstance().methodContainer();
 
-    return md;
+      /*
+      List<Object> toPass = new ArrayList<Object>();
+      toPass.add((Object) mi.name());
+      for (Formal f : this.formals()) {
+        toPass.add((Object) f);
+      }
+      for (Stmt s : this.body().statements()) {
+        toPass.add((Object) s);
+      }
+      */
+
+      Node n = nf.MethodDecl(Position.COMPILER_GENERATED,
+                             Flags.PUBLIC,
+                             Collections.<AnnotationElem>emptyList(),
+                             nf.CanonicalTypeNode(Position.COMPILER_GENERATED, ts.Int()),
+                             nf.Id(Position.COMPILER_GENERATED, methodName),
+                             this.formals(),
+                             Collections.<TypeNode>emptyList(),
+                             this.body(),
+                             Collections.<ParamTypeNode>emptyList());
+
+      cm = (ClassMember) n;
+
+      System.out.println(cm);
+    }
+
+    return cm;
   }
 
   @Override

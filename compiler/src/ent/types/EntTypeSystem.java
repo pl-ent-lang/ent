@@ -24,7 +24,7 @@ public interface EntTypeSystem extends JL7TypeSystem {
   Package modesDeclPackage();
 
   // Factory Methods
-  AttributeInstance createAttributeInstance(Position pos, ReferenceType container, Flags flags);
+  AttributeInstance createAttributeInstance(Position pos, Flags flags);
 
   CopyInstance createCopyInstance(Position pos, ReferenceType container);
 

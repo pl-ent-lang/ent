@@ -1,9 +1,9 @@
-package method_attributor_pass1;
+package method_attributor_nocap_constants_pass;
 
 public class B@mode<X> {
   public void m1() {
     A a = new A();
-    a.m1();
+    a.@mode<?>m1();
   }
 
   public static void main(String[] args) {
@@ -23,7 +23,7 @@ public class B@mode<X> {
 
     if (!thrown) {
       System.out.format("b3 should fail\n");
-      throw new Exception();
+      throw new RuntimeException();
     }
   }
 }

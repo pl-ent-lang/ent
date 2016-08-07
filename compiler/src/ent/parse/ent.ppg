@@ -47,6 +47,7 @@ non terminal ModeTypeNode overmode_opt;
 non terminal ModeTypeNode overmode;
 
 non terminal AttributeDecl attribute_declaration;
+non terminal AttributeDecl attribute_declaration_opt;
 non terminal CopyDecl copy_declaration;
 
 non terminal ModeValue mode_value;
@@ -181,9 +182,7 @@ override interface_declaration ::=
     superints.add(parser.nf.CanonicalTypeNode(parser.pos(b, e), parser.ts.Annotation()));
     RESULT = parser.nf.ClassDecl(parser.pos(b, d), a.setFlag(Flags.INTERFACE.set(JL5Flags.ANNOTATION)).flags(), a.annotations(), parser.nf.Id(parser.pos(d), d.getIdentifier()), null, superints, e, null); 
   :}
-;
-
-
+; 
 
 extend class_member_declaration ::=
   attribute_declaration:a
@@ -206,6 +205,13 @@ attribute_declaration ::=
     RESULT = parser.nf.AttributeDecl(parser.pos(a,b), b);
   :}
 ;
+
+attribute_declaration_opt ::=
+  attribute_declaration:a 
+  {: RESULT = a; :}
+| /* empty */
+  {: RESULT = null; :}
+;  
 
 copy_declaration ::=
   COPY:a method_body:body
@@ -253,37 +259,128 @@ override constructor_declaration ::=
 ; 
 
 override method_header ::=
-  modifiers_or_annotations_opt:a type:b IDENTIFIER:d LPAREN formal_parameter_list_opt:e RPAREN dims_opt:g throws_opt:h overmode_opt:o
+  modifiers_or_annotations_opt:a type:b IDENTIFIER:d LPAREN formal_parameter_list_opt:e RPAREN dims_opt:g throws_opt:h attribute_declaration_opt:adcl
   {: 
-    RESULT = parser.nf.MethodDecl(parser.pos(b, g, d), a.flags(), a.annotations(), parser.array(b, g.intValue()), parser.nf.Id(parser.pos(d), d.getIdentifier()), e, h, null, new LinkedList<ParamTypeNode>(), new ArrayList<ModeParamTypeNode>(), o); 
+    RESULT = parser.nf.MethodDecl(parser.pos(b, g, d), 
+                                  a.flags(), 
+                                  a.annotations(), 
+                                  parser.array(b, g.intValue()), 
+                                  parser.nf.Id(parser.pos(d), d.getIdentifier()), 
+                                  e, 
+                                  h, 
+                                  null, 
+                                  new LinkedList<ParamTypeNode>(), 
+                                  new ArrayList<ModeParamTypeNode>(), 
+                                  null,
+                                  adcl); 
   :}
-| modifiers_or_annotations_opt:a mode_type_parameters_decl:m type:b IDENTIFIER:d LPAREN formal_parameter_list_opt:e RPAREN dims_opt:g throws_opt:h overmode_opt:o
+| modifiers_or_annotations_opt:a mode_type_parameters_decl:m type:b IDENTIFIER:d LPAREN formal_parameter_list_opt:e RPAREN dims_opt:g throws_opt:h attribute_declaration_opt:adcl
   {: 
-    RESULT = parser.nf.MethodDecl(parser.pos(b, g, d), a.flags(), a.annotations(), parser.array(b, g.intValue()), parser.nf.Id(parser.pos(d), d.getIdentifier()), e, h, null, new LinkedList<ParamTypeNode>(), m, o); 
+    RESULT = parser.nf.MethodDecl(parser.pos(b, g, d), 
+                                  a.flags(), 
+                                  a.annotations(), 
+                                  parser.array(b, g.intValue()), 
+                                  parser.nf.Id(parser.pos(d), d.getIdentifier()), 
+                                  e, 
+                                  h, 
+                                  null, 
+                                  new LinkedList<ParamTypeNode>(), 
+                                  m, 
+                                  null,
+                                  adcl); 
   :}
-| modifiers_or_annotations_opt:a LT type_parameter_list_1:c type:d IDENTIFIER:i LPAREN formal_parameter_list_opt:e RPAREN dims_opt:g throws_opt:h overmode_opt:o
+| modifiers_or_annotations_opt:a LT type_parameter_list_1:c type:d IDENTIFIER:i LPAREN formal_parameter_list_opt:e RPAREN dims_opt:g throws_opt:h attribute_declaration_opt:adcl
   {: 
-    RESULT = parser.nf.MethodDecl(parser.pos(d, g, i), a.flags(), a.annotations(), parser.array(d, g.intValue()), parser.nf.Id(parser.pos(i), i.getIdentifier()), e, h, null, c, new ArrayList<ModeParamTypeNode>(), o); 
+    RESULT = parser.nf.MethodDecl(parser.pos(d, g, i), 
+                                  a.flags(), 
+                                  a.annotations(), 
+                                  parser.array(d, g.intValue()), 
+                                  parser.nf.Id(parser.pos(i), i.getIdentifier()), 
+                                  e, 
+                                  h, 
+                                  null, 
+                                  c, 
+                                  new ArrayList<ModeParamTypeNode>(), 
+                                  null,
+                                  adcl); 
   :}
-| modifiers_or_annotations_opt:a LT type_parameter_list_1:c mode_type_parameters_decl:m type:d IDENTIFIER:i LPAREN formal_parameter_list_opt:e RPAREN dims_opt:g throws_opt:h overmode_opt:o
+| modifiers_or_annotations_opt:a LT type_parameter_list_1:c mode_type_parameters_decl:m type:d IDENTIFIER:i LPAREN formal_parameter_list_opt:e RPAREN dims_opt:g throws_opt:h attribute_declaration_opt:adcl
   {: 
-    RESULT = parser.nf.MethodDecl(parser.pos(d, g, i), a.flags(), a.annotations(), parser.array(d, g.intValue()), parser.nf.Id(parser.pos(i), i.getIdentifier()), e, h, null, c, m, o); 
+    RESULT = parser.nf.MethodDecl(parser.pos(d, g, i), 
+                                  a.flags(), 
+                                  a.annotations(), 
+                                  parser.array(d, g.intValue()), 
+                                  parser.nf.Id(parser.pos(i), i.getIdentifier()), 
+                                  e, 
+                                  h, 
+                                  null, 
+                                  c, 
+                                  m, 
+                                  null,
+                                  adcl); 
   :} 
-| modifiers_or_annotations_opt:a VOID:b IDENTIFIER:c LPAREN formal_parameter_list_opt:e RPAREN:f throws_opt:h overmode_opt:o
+| modifiers_or_annotations_opt:a VOID:b IDENTIFIER:c LPAREN formal_parameter_list_opt:e RPAREN:f throws_opt:h attribute_declaration_opt:adcl
   {: 
-    RESULT = parser.nf.MethodDecl(parser.pos(b, f, c), a.flags(), a.annotations(), parser.nf.CanonicalTypeNode(parser.pos(b), parser.ts.Void()), parser.nf.Id(parser.pos(c), c.getIdentifier()), e, h, null, new LinkedList<ParamTypeNode>(), new ArrayList<ModeParamTypeNode>(), o); 
+    RESULT = parser.nf.MethodDecl(parser.pos(b, f, c), 
+                                  a.flags(), 
+                                  a.annotations(), 
+                                  parser.nf.CanonicalTypeNode(parser.pos(b), parser.ts.Void()), 
+                                  parser.nf.Id(parser.pos(c), c.getIdentifier()), 
+                                  e, 
+                                  h, 
+                                  null, 
+                                  new 
+                                  LinkedList<ParamTypeNode>(), 
+                                  new ArrayList<ModeParamTypeNode>(), 
+                                  null,
+                                  adcl); 
   :}
-| modifiers_or_annotations_opt:a mode_type_parameters_decl:m VOID:b IDENTIFIER:c LPAREN formal_parameter_list_opt:e RPAREN:f throws_opt:h overmode_opt:o
+| modifiers_or_annotations_opt:a mode_type_parameters_decl:m VOID:b IDENTIFIER:c LPAREN formal_parameter_list_opt:e RPAREN:f throws_opt:h attribute_declaration_opt:adcl
   {: 
-    RESULT = parser.nf.MethodDecl(parser.pos(b, f, c), a.flags(), a.annotations(), parser.nf.CanonicalTypeNode(parser.pos(b), parser.ts.Void()), parser.nf.Id(parser.pos(c), c.getIdentifier()), e, h, null, new LinkedList<ParamTypeNode>(), m, o); 
+    RESULT = parser.nf.MethodDecl(parser.pos(b, f, c), 
+                                  a.flags(), 
+                                  a.annotations(), 
+                                  parser.nf.CanonicalTypeNode(parser.pos(b), parser.ts.Void()), 
+                                  parser.nf.Id(parser.pos(c), c.getIdentifier()), 
+                                  e, 
+                                  h, 
+                                  null, 
+                                  new 
+                                  LinkedList<ParamTypeNode>(), 
+                                  m, 
+                                  null,
+                                  adcl); 
   :}
-| modifiers_or_annotations_opt:a LT type_parameter_list_1:c VOID:d IDENTIFIER:i LPAREN formal_parameter_list_opt:e RPAREN:f throws_opt:h overmode_opt:o
+| modifiers_or_annotations_opt:a LT type_parameter_list_1:c VOID:d IDENTIFIER:i LPAREN formal_parameter_list_opt:e RPAREN:f throws_opt:h attribute_declaration_opt:adcl
   {: 
-    RESULT = parser.nf.MethodDecl(parser.pos(d, f, i), a.flags(), a.annotations(), parser.nf.CanonicalTypeNode(parser.pos(d), parser.ts.Void()), parser.nf.Id(parser.pos(i), i.getIdentifier()), e, h, null, c, new ArrayList<ModeParamTypeNode>(), o); 
+    RESULT = parser.nf.MethodDecl(parser.pos(d, f, i), 
+                                  a.flags(), 
+                                  a.annotations(), 
+                                  parser.nf.CanonicalTypeNode(parser.pos(d), parser.ts.Void()), 
+                                  parser.nf.Id(parser.pos(i), i.getIdentifier()), 
+                                  e, 
+                                  h, 
+                                  null, 
+                                  c, 
+                                  new 
+                                  ArrayList<ModeParamTypeNode>(), 
+                                  null,
+                                  adcl); 
   :}
-| modifiers_or_annotations_opt:a LT type_parameter_list_1:c mode_type_parameters_decl:m VOID:d IDENTIFIER:i LPAREN formal_parameter_list_opt:e RPAREN:f throws_opt:h overmode_opt:o
+| modifiers_or_annotations_opt:a LT type_parameter_list_1:c mode_type_parameters_decl:m VOID:d IDENTIFIER:i LPAREN formal_parameter_list_opt:e RPAREN:f throws_opt:h attribute_declaration_opt:adcl
   {: 
-    RESULT = parser.nf.MethodDecl(parser.pos(d, f, i), a.flags(), a.annotations(), parser.nf.CanonicalTypeNode(parser.pos(d), parser.ts.Void()), parser.nf.Id(parser.pos(i), i.getIdentifier()), e, h, null, c, m, o); 
+    RESULT = parser.nf.MethodDecl(parser.pos(d, f, i), 
+                                  a.flags(), 
+                                  a.annotations(), 
+                                  parser.nf.CanonicalTypeNode(parser.pos(d), parser.ts.Void()), 
+                                  parser.nf.Id(parser.pos(i), i.getIdentifier()), 
+                                  e, 
+                                  h, 
+                                  null, 
+                                  c, 
+                                  m, 
+                                  null,
+                                  adcl); 
   :}
 ; 
 

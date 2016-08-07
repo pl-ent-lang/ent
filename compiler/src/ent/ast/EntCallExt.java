@@ -30,6 +30,26 @@ public class EntCallExt extends EntExt {
 
   protected List<ModeType> actualModeTypes() { return this.actualModeTypes; }
 
+  protected boolean proxyCall;
+
+  protected boolean proxyCall() { return this.proxyCall; }
+
+  protected Call proxyCall(boolean proxyCall) {
+    return this.proxyCall((Call)this.node(), proxyCall);
+  }
+
+  protected <N extends Node> N proxyCall(N n, boolean proxyCall) {
+    EntCallExt ext = (EntCallExt)EntExt.ext(n);
+    if (ext.proxyCall == proxyCall)
+      return n;
+    if (this.node() == n) {
+      n = Copy.Util.copy(n);
+      ext = (EntCallExt)EntExt.ext(n);
+    }
+    ext.proxyCall = proxyCall;
+    return n;
+  } 
+
   protected Call actualModeTypes(List<ModeType> actualModeTypes) {
     return this.actualModeTypes((Call)this.node(), actualModeTypes);
   }
@@ -317,10 +337,19 @@ public class EntCallExt extends EntExt {
           pi2 = ms.substProcedure(pi);
         }
 
-        if (!ts.isSubtype(pi2.modeTypeVars().get(0), mtThis)) {
-          throw new SemanticException("Cannot send message to overmode<" +
-                                      pi2.modeTypeVars().get(0) + "> from mode " +
-                                      mtThis.upperBound() + ".");
+        System.out.format("PI ModeTypeVars:%s\n", pi2.modeTypeVars());
+        if (pi2.modeTypeVars().get(0) == ts.DynamicModeType()) {
+          System.out.println("Hit!\n");
+          // Mark class for object saving
+          n = (Call) ((EntCallExt) EntExt.ext(n)).proxyCall(true);
+          ct.instancesNeedTypePreservation(true); 
+
+        } else {
+          if (!ts.isSubtype(pi2.modeTypeVars().get(0), mtThis)) {
+            throw new SemanticException("Cannot send message to overmode<" +
+                                        pi2.modeTypeVars().get(0) + "> from mode " +
+                                        mtThis.upperBound() + ".");
+          }
         }
       }
     }
@@ -369,9 +398,44 @@ public class EntCallExt extends EntExt {
     JL5NodeFactory nf = (JL5NodeFactory)prw.to_nf();
 
     JL5CallExt ext = (JL5CallExt)JL5Ext.ext(this.node());
-    Call call = (Call)super.extRewrite(rw);
+    EntCallExt entext = (EntCallExt)EntExt.ext(this.node());
+      
+    Call call = (Call) this.node();
 
-    Call n = nf.Call(call.position(), call.target(), ext.typeArgs(), call.id(), call.arguments());
-    return n;
+    if (entext.proxyCall()) {
+      EntMethodInstance mi = (EntMethodInstance)call.methodInstance();
+
+      call = (Call)super.extRewrite(rw);
+
+      Id forwardId = nf.Id(Position.COMPILER_GENERATED, String.format("ENT_PROXY_%s", mi.name()));
+
+      call = call.id(forwardId); 
+      List<Expr> forwardArguments = new ArrayList<>();
+      forwardArguments.add(
+        nf.Call(
+          Position.COMPILER_GENERATED,
+          nf.AmbReceiver(
+            Position.COMPILER_GENERATED,
+            nf.Id(Position.COMPILER_GENERATED, "ENT_Runtime")
+            ),
+          nf.Id(Position.COMPILER_GENERATED, "getObjMode"),
+          nf.This(Position.COMPILER_GENERATED), 
+          nf.IntLit(Position.COMPILER_GENERATED, IntLit.INT, 0)
+        )
+      );
+      for (Expr e : call.arguments()) {
+        forwardArguments.add(e);
+      } 
+
+      call = (Call) call.arguments(forwardArguments);
+
+      return nf.Call(call.position(), call.target(), ext.typeArgs(), call.id(), call.arguments());
+    } else {
+      call = (Call)super.extRewrite(rw);
+      return nf.Call(call.position(), call.target(), ext.typeArgs(), call.id(), call.arguments());
+    }
+  
+
+
   }
 }

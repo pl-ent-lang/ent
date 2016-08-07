@@ -19,6 +19,7 @@ public class EntMethodInstance_c extends JL5MethodInstance_c implements EntMetho
   private List<ModeTypeVariable> modeTypeVars;
   private EntProcedureInstance baseInstance;
   private ModeType overmode;
+  private AttributeInstance attrInstance;
 
   public EntMethodInstance_c(EntTypeSystem ts,
                              Position pos,
@@ -45,6 +46,10 @@ public class EntMethodInstance_c extends JL5MethodInstance_c implements EntMetho
       this.modeTypeVars = Collections.emptyList();
     }
   }
+
+  public AttributeInstance attributeInstance() { return this.attrInstance; }
+
+  public void attributeInstance(AttributeInstance attrInstance) { this.attrInstance = attrInstance; }
 
   public ModeType overmode() { return this.overmode; }
 

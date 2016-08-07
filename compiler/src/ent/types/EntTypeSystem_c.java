@@ -1199,8 +1199,8 @@ public class EntTypeSystem_c extends JL7TypeSystem_c implements EntTypeSystem {
   // Ent TypeSystem Methods
 
   public AttributeInstance
-  createAttributeInstance(Position pos, ReferenceType container, Flags flags) {
-    return new AttributeInstance_c(this, pos, container, flags);
+  createAttributeInstance(Position pos, Flags flags) {
+    return new AttributeInstance_c(this, pos, flags);
   }
 
   public CopyInstance createCopyInstance(Position pos, ReferenceType container) {

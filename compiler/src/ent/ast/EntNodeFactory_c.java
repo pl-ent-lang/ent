@@ -80,12 +80,15 @@ public class EntNodeFactory_c extends JL7NodeFactory_c implements EntNodeFactory
                                Block body,
                                List<ParamTypeNode> typeParams,
                                List<ModeParamTypeNode> modeParams,
-                               ModeTypeNode overmode) {
+                               ModeTypeNode overmode,
+                               AttributeDecl attrDecl) {
     MethodDecl n = super.MethodDecl(
         pos, flags, annotations, returnType, name, formals, throwTypes, body, typeParams);
     EntMethodDeclExt ext = (EntMethodDeclExt)EntExt.ext(n);
     ext.modeParams = CollectionUtil.nonNullList(modeParams);
     ext.overmode = overmode;
+    ext.attrDecl = attrDecl;
+    ext.proxy = false;
     return n;
   }
 
