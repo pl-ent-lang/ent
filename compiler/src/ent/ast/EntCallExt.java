@@ -337,9 +337,7 @@ public class EntCallExt extends EntExt {
           pi2 = ms.substProcedure(pi);
         }
 
-        System.out.format("PI ModeTypeVars:%s\n", pi2.modeTypeVars());
         if (pi2.modeTypeVars().get(0) == ts.DynamicModeType()) {
-          System.out.println("Hit!\n");
           // Mark class for object saving
           n = (Call) ((EntCallExt) EntExt.ext(n)).proxyCall(true);
           ct.instancesNeedTypePreservation(true); 

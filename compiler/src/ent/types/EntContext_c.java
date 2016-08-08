@@ -1,10 +1,8 @@
 package ent.types;
 
-import polyglot.ast.Lang;
-import polyglot.types.Context;
-import polyglot.types.Context_c;
-import polyglot.types.TypeSystem;
-import polyglot.ext.jl5.types.JL5Context_c;
+import polyglot.ast.*;
+import polyglot.types.*;
+import polyglot.ext.jl5.types.*;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -12,9 +10,6 @@ import java.util.HashMap;
 public class EntContext_c extends JL5Context_c implements EntContext {
 
   private Map<String, ModeTypeVariable> modeTypeVars;
-  private AttributeInstance currentAttribute = null;
-
-  public static final Kind ATTRIBUTE = new Kind("attribute");
 
   public EntContext_c(Lang lang, TypeSystem ts) {
     super(lang, ts);
@@ -39,13 +34,7 @@ public class EntContext_c extends JL5Context_c implements EntContext {
   public void modeTypeVars(Map<String, ModeTypeVariable> modeTypeVars) {
     this.modeTypeVars = modeTypeVars;
   }
-
-  public AttributeInstance currentAttribute() { return this.currentAttribute; }
-
-  public void currentAttribute(AttributeInstance currentAttribute) {
-    this.currentAttribute = currentAttribute;
-  }
-
+  
   public void addModeTypeVariable(ModeTypeVariable modeTypeVar) {
     this.modeTypeVars().put(modeTypeVar.name(), modeTypeVar);
   }
@@ -61,6 +50,24 @@ public class EntContext_c extends JL5Context_c implements EntContext {
   }
 
   public boolean isAttribute() {
-    return this.kind == CODE && (this.code instanceof AttributeInstance);
+    return (this.code instanceof AttributeInstance);
   }
+
+  public AttributeInstance currentAttribute() {
+    return (AttributeInstance) this.code;
+  }
+
+  public EntContext attributorParent() {
+    EntContext outer = (EntContext) this.pop();
+    if (this.kind == CODE && this.isAttribute()) {
+      return outer;
+    }
+
+    if (outer == null) {
+      return outer;
+    } else {
+      return outer.attributorParent();
+    }
+  }
+
 }

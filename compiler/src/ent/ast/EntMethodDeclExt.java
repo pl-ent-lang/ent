@@ -98,10 +98,12 @@ public class EntMethodDeclExt extends EntProcedureDeclExt {
     MethodDecl n = (MethodDecl)superLang().typeCheck(this.node(), tc);
     EntMethodDeclExt ext = (EntMethodDeclExt)EntExt.ext(n);
 
+    /*
     if (this.attrDecl() != null) {
       CodeDecl attrDecl = ((AttributeDecl) this.attrDecl()).formals(n.formals());
       n = (MethodDecl) this.attrDecl(attrDecl);
     }
+    */
 
     // TODO : Require dynamic method to have attributor implemented
     // and vice-versa
@@ -150,8 +152,18 @@ public class EntMethodDeclExt extends EntProcedureDeclExt {
       formals.add(f);
     }
 
+
     List<Stmt> stmts = new ArrayList<>();
+
     EntMethodInstance mi = (EntMethodInstance) decl.methodInstance();
+
+    List<Expr> attributeArgs = new ArrayList<>();
+    for (int i = 0; i < decl.formals().size()-1; i++) {
+      attributeArgs.add(
+        nf.AmbExpr(Position.COMPILER_GENERATED, decl.formals().get(i).id())
+        ); 
+    }
+
     List<Expr> methodSnapshotArgs = new ArrayList<>();
     methodSnapshotArgs.add(
       nf.Call(
@@ -162,7 +174,7 @@ public class EntMethodDeclExt extends EntProcedureDeclExt {
           Position.COMPILER_GENERATED,
           String.format("ENT_attribute_%s", mi.name())
           ),
-        Collections.<Expr>emptyList()
+        attributeArgs
         )
       );
     methodSnapshotArgs.add(

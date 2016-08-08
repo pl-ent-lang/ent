@@ -100,4 +100,5 @@ ent.EntExtensionInfo "-d out" {
     (Semantic, "Cannot send message") ; 
 
   method_attributor_nocap_good/A.java ;
+  method_attributor_cap_good/A.java ;
 }

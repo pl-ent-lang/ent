@@ -22,9 +22,10 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
   protected AttributeInstance ai;
   protected List<Formal> formals;
 
-  public AttributeDecl_c(Position pos, Block body) {
+  public AttributeDecl_c(Position pos, Block body, List<Formal> formals) {
     super(pos, null);
     this.body = body;
+    this.formals = formals;
   }
 
   // Property Methods
@@ -74,21 +75,23 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
   }
 
   // Node Methods
-  protected <N extends AttributeDecl_c> N reconstruct(N n, Block body) {
+  protected <N extends AttributeDecl_c> N reconstruct(N n, Block body, List<Formal> formals) {
     n = this.body(n, body);
+    n = this.formals(n, formals);
     return n;
   }
 
   @Override
   public Node visitChildren(NodeVisitor v) {
+    List<Formal> formals = visitList(this.formals(), v);
     Block body = visitChild(this.body(), v);
-    return this.reconstruct(this, body);
+    return this.reconstruct(this, body, formals);
   }
 
   @Override
   public Node copy(NodeFactory nf) {
     EntNodeFactory pnf = (EntNodeFactory)nf;
-    return pnf.AttributeDecl(this.position(), this.body());
+    return pnf.AttributeDecl(this.position(), this.body(), this.formals());
   }
 
   @Override
@@ -165,19 +168,22 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
       }
       */
 
-      Node n = nf.MethodDecl(Position.COMPILER_GENERATED,
-                             Flags.PUBLIC,
-                             Collections.<AnnotationElem>emptyList(),
-                             nf.CanonicalTypeNode(Position.COMPILER_GENERATED, ts.Int()),
-                             nf.Id(Position.COMPILER_GENERATED, methodName),
-                             this.formals(),
-                             Collections.<TypeNode>emptyList(),
-                             this.body(),
-                             Collections.<ParamTypeNode>emptyList());
+      Node n = nf.MethodDecl(
+                 Position.COMPILER_GENERATED,
+                 Flags.PUBLIC,
+                 Collections.<AnnotationElem>emptyList(),
+                 nf.CanonicalTypeNode(Position.COMPILER_GENERATED, ts.Int()),
+                 nf.Id(
+                   Position.COMPILER_GENERATED, 
+                   String.format("ENT_attribute_%s", mi.name())
+                   ),
+                 this.formals(),
+                 Collections.<TypeNode>emptyList(),
+                 this.body(),
+                 Collections.<ParamTypeNode>emptyList()
+                 );
 
       cm = (ClassMember) n;
-
-      System.out.println(cm);
     }
 
     return cm;

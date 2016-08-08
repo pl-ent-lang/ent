@@ -84,6 +84,11 @@ public class EntNodeFactory_c extends JL7NodeFactory_c implements EntNodeFactory
                                AttributeDecl attrDecl) {
     MethodDecl n = super.MethodDecl(
         pos, flags, annotations, returnType, name, formals, throwTypes, body, typeParams);
+
+    if (attrDecl != null) {
+      attrDecl = attrDecl.formals(formals);
+    }
+
     EntMethodDeclExt ext = (EntMethodDeclExt)EntExt.ext(n);
     ext.modeParams = CollectionUtil.nonNullList(modeParams);
     ext.overmode = overmode;
@@ -117,7 +122,11 @@ public class EntNodeFactory_c extends JL7NodeFactory_c implements EntNodeFactory
   }
 
   public AttributeDecl AttributeDecl(Position pos, Block body) {
-    AttributeDecl n = new AttributeDecl_c(pos, body);
+    return this.AttributeDecl(pos, body, new ArrayList<Formal>());
+  }
+
+  public AttributeDecl AttributeDecl(Position pos, Block body, List<Formal> formals) {
+    AttributeDecl n = new AttributeDecl_c(pos, body, formals);
     n = ext(n, extFactory().extAttributeDecl());
     return n;
   }

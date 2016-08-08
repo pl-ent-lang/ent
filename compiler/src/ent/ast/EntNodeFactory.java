@@ -73,6 +73,8 @@ public interface EntNodeFactory extends JL7NodeFactory {
 
   AttributeDecl AttributeDecl(Position pos, Block body);
 
+  AttributeDecl AttributeDecl(Position pos, Block body, List<Formal> formals);
+
   CopyDecl CopyDecl(Position pos, Block body);
 
   McaseFieldDecl McaseFieldDecl(Position pos, Id field, Expr init);
