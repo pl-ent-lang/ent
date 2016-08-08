@@ -92,6 +92,6 @@ android.signingConfigs.release.keyPassword props.keyAliasPassword
 gradle.projectsEvaluated {
   tasks.withType(JavaCompile) {
     options.fork = true
-    options.forkOptions.executable = '/home/acanino/Projects/ent/bin/entc'
+    options.forkOptions.executable = '/home/bucs/Projects/ent/bin/entc'
   }
 }

@@ -44,7 +44,7 @@
 
     <javac 
       fork="yes" 
-      executable="/home/acanino/Projects/ent/bin/entc" 
+      executable="/home/bucs/Projects/ent/bin/entc" 
       srcdir="${src.dir}" 
       destdir="${build.classes.dir}" 
       debug="on" 
