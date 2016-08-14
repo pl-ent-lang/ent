@@ -1,5 +1,21 @@
 # ent
 
+Prerequisites
+------------
+Ent makes use of ruby scripts to hook in to popular java build frameworks, notably ant and gradle. For that reason, ruby must be installed, along with the nokogiri gem. If you have ruby gem's installed, simply run the following command.
+
+```
+gem install nokogiri
+```
+
+If one wishes the run the test suite, the ptools gem is required.
+
+```
+gem install ptools
+``` 
+
+Lastly, JRAPL is required to run the extended test suite, as well as the [ent benchmarks](https://github.com/anthonycanino1/entbench). Please see the [JRAPL homepage](http://kliu20.github.io/jRAPL/) for installation instructions. Once JRAPL is installed, you will need to add it to your JAVA_PATH.
+
 Installation
 ------------
 
