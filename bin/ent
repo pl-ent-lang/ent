@@ -35,7 +35,7 @@ java=java
 ext=ent
 
 polyglot() {
-  eval "$java" "$vmargs" -Xmx4g -classpath "'$classpath'" "$@"
+  eval "$java" "$vmargs" -Xmx2g -classpath "'$classpath'" "$@"
 }
 
 while true; do
