@@ -97,7 +97,14 @@ public class McaseLit_c extends Lit_c implements McaseLit {
         throw new SemanticException("Undeclared mode " + mode + " in mcase!");
       }
 
+      /*
       if (!ts.typeEquals(mcT.base(), fd.init().type())) {
+        throw new SemanticException("Initializer type " + fd.init().type() +
+                                    " does not match mcase type");
+      }
+      */
+
+      if (!ts.isSubtype(fd.init().type(), mcT.base())) {
         throw new SemanticException("Initializer type " + fd.init().type() +
                                     " does not match mcase type");
       }

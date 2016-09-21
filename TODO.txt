@@ -28,4 +28,17 @@ a little bit here.
 
 (7) 1-6 gets us fairly stable, begin checking off issue tracker.
 
+(8) Fix mcase java array implementation
+  - Java arrays cannot be used to represent parameterized types (currently get a
+  compiler generation error). If we want to allow something like
+
+  mcase<List<String>> {
+    low: new ArrayList<String>();
+    mid: new ArrayList<String>();
+    high: new ArrayList<String>();
+  }
+
+  We need a different runtime representation
+
+
 
