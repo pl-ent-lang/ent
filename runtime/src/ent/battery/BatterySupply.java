@@ -34,7 +34,6 @@ public class BatterySupply {
   public int getTotalCapacity() { return bareMetalBattery.getTotalCapacity(); }
 
   public float percentRemaining() {
-    /*
     String simBattery = System.getenv("ENT_BATTERY_LEVEL");
     if (simBattery == null) {
       return ((float) this.getRemainingCapacity()) / ((float) this.getTotalCapacity());
@@ -42,9 +41,8 @@ public class BatterySupply {
       Float batteryLevel = Float.parseFloat(simBattery);
       return batteryLevel;
     }
-    */
 
-    Float level = (Float) ENT_Properties.getProperty("ENT_BATTERY_LEVEL");
-    return level;
+    //Float level = (Float) ENT_Properties.getProperty("ENT_BATTERY_LEVEL");
+    //return level;
   }
 }
