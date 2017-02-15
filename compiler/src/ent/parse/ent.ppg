@@ -536,7 +536,13 @@ extend primary ::=
 ;
 
 snapshot_expr ::=
-  SNAPSHOT:s expression:e MODEBOUND LBRACK expression:lb COMMA expression:ub RBRACK:r
+  SNAPSHOT:s expression:e MODEBOUND LBRACK RBRACK:r
+  {:
+    ModeTypeNode wildcard = parser.nf.ModeTypeNode(parser.pos(e), "*");
+    ModeValue mv = parser.nf.ModeValue(parser.pos(e), wildcard);
+    RESULT = parser.nf.SnapshotExpr(parser.pos(s,r), e, mv, mv, false, false);
+  :}
+| SNAPSHOT:s expression:e MODEBOUND LBRACK expression:lb COMMA expression:ub RBRACK:r
   {:
     RESULT = parser.nf.SnapshotExpr(parser.pos(s,r), e, lb, ub, false, false);
   :}

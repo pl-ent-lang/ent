@@ -88,10 +88,6 @@ public class McaseLit_c extends Lit_c implements McaseLit {
       return this;
     }
 
-    for (McaseFieldDecl fd : this.fields()) {
-      System.err.format("Disambig: %s\n", fd.init());
-    }
-
     return this.type(this.mcaseTypeNode().type());
   }
 
@@ -100,10 +96,6 @@ public class McaseLit_c extends Lit_c implements McaseLit {
     // Current, for an mcase type to typecheck,
     //  1. Each init must have the type of the base
     //  2. All modes must be covered
-
-    for (McaseFieldDecl fd : this.fields()) {
-      System.err.format("TypeCheck: %s %s\n", fd.init(), fd.init().type());
-    } 
 
     Set<String> found = new HashSet<>();
     EntTypeSystem ts = (EntTypeSystem)tc.typeSystem();
@@ -118,8 +110,6 @@ public class McaseLit_c extends Lit_c implements McaseLit {
       if (!ts.createdModeTypes().containsKey(mode)) {
         throw new SemanticException("Undeclared mode " + mode + " in mcase!");
       }
-
-      System.err.format("%s %s\n", mcT.base(), fd.init());
 
       if (!ts.isSubtype(fd.init().type(), mcT.base())) {
         throw new SemanticException("Initializer type " + fd.init().type() +

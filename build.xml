@@ -180,8 +180,14 @@
        ****************************************  -->
 
     <target name="jar" depends="compile-all">
-        <jar jarfile="${compiler.jar}" basedir="${compiler.classes}" includes="${package.dir}/**" />
-        <jar jarfile="${runtime.jar}" basedir="${runtime.classes}" includes="${package.dir}/**" />
+        <jar jarfile="${compiler.jar}" basedir="${compiler.classes}" includes="${package.dir}/**">
+          <fileset dir="vendor/jrapl-port/classes" includes="jrapl/**/*.class" />
+          <fileset dir="vendor/jrapl-port/classes" includes="jrapl/**/*.so" />
+        </jar>
+        <jar jarfile="${runtime.jar}" basedir="${runtime.classes}" includes="${package.dir}/**">
+          <fileset dir="vendor/jrapl-port/classes" includes="jrapl/**/*.class" />
+          <fileset dir="vendor/jrapl-port/classes" includes="jrapl/**/*.so" />
+        </jar>
     </target>
 
 
