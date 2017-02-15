@@ -28,12 +28,15 @@ public class EntFieldExt extends EntExt {
       return n;
     }
 
-    // Disallow dynamic type seperately for better diagnostics
     ModeSubstType mt = (ModeSubstType)t;
+    // Disallow dynamic type seperately for better diagnostics
+    // NOTE: Formally, we allow this communication.
+    /*
     if (mt.modeType() == ts.DynamicModeType() && !EntFlags.isModesafe(n.fieldInstance().flags())) {
       throw new SemanticException(
           "Dynamic mode type cannot receive messages. Resolve using snapshot.");
     }
+    */
 
     if (ctx.inStaticContext()) {
       // Kick up to super lang for now

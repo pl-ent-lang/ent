@@ -1,6 +1,7 @@
 package ent.runtime.battery;
 
 import ent.runtime.util.OsUtil;
+import ent.runtime.ENT_Properties;
 
 public class BatterySupply {
   private BareMetalBattery bareMetalBattery;
@@ -40,5 +41,8 @@ public class BatterySupply {
       Float batteryLevel = Float.parseFloat(simBattery);
       return batteryLevel;
     }
+
+    //Float level = (Float) ENT_Properties.getProperty("ENT_BATTERY_LEVEL");
+    //return level;
   }
 }

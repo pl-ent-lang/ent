@@ -19,6 +19,11 @@ List of bugs that are big issues, and need fixes.
 
   Right now, I don't enforce this, but it causes issues with object saving.
 
+(4) Object Mode Cases
+  - We have a bug where mode cases that are created with objects do not
+    compile. Looks like it has to do with lookup order of classes.
+    Grep ENT-BUG on polyglot to uncomment helpful print statements.
+
 --
 List of bugs that have workarounds, but need better solutions.
 

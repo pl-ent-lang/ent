@@ -52,15 +52,15 @@ public class McaseLit_c extends Lit_c implements McaseLit {
   // Node Methods
   protected <N extends McaseLit_c>
       N reconstruct(N n, TypeNode mcaseTypeNode, List<McaseFieldDecl> fields) {
-    n = this.mcaseTypeNode(n, mcaseTypeNode);
     n = this.fields(n, fields);
+    n = this.mcaseTypeNode(n, mcaseTypeNode);
     return n;
   }
 
   @Override
-  public Node visitChildren(NodeVisitor v) {
+  public Node visitChildren(NodeVisitor v) { 
+    List<McaseFieldDecl> fields = visitList(this.fields(), v); 
     TypeNode mcaseTypeNode = visitChild(this.mcaseTypeNode(), v);
-    List<McaseFieldDecl> fields = visitList(this.fields(), v);
     return this.reconstruct(this, mcaseTypeNode, fields);
   }
 
@@ -70,10 +70,24 @@ public class McaseLit_c extends Lit_c implements McaseLit {
   }
 
   @Override
+  public boolean isDisambiguated() {
+    if (!this.mcaseTypeNode().isDisambiguated()) {
+      return false;
+    }
+    for (McaseFieldDecl fd : this.fields()) {
+      if (!fd.isDisambiguated()) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  @Override
   public Node disambiguate(AmbiguityRemover sc) throws SemanticException {
     if (!this.mcaseTypeNode().isDisambiguated()) {
       return this;
     }
+
     return this.type(this.mcaseTypeNode().type());
   }
 
@@ -97,7 +111,7 @@ public class McaseLit_c extends Lit_c implements McaseLit {
         throw new SemanticException("Undeclared mode " + mode + " in mcase!");
       }
 
-      if (!ts.typeEquals(mcT.base(), fd.init().type())) {
+      if (!ts.isSubtype(fd.init().type(), mcT.base())) {
         throw new SemanticException("Initializer type " + fd.init().type() +
                                     " does not match mcase type");
       }

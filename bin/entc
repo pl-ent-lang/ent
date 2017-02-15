@@ -96,7 +96,8 @@ joe_args=`$joe -l pan -- $args`
 
 
 #classpath=$classpath:"$dir/compiler/classes:$dir/runtime/classes:$dir/lib/polyglot.jar:$dir/lib/java_cup.jar:$dir/lib/jsr305-1.3.9.jar:$dir/lib/guava-18.0.jar"
-classpath=$classpath:"$dir/compiler/classes:$dir/runtime/classes:$dir/lib/polyglot.jar:$dir/lib/java_cup.jar:$dir/lib/android.jar"
+#classpath=$classpath:"$dir/compiler/classes:$dir/runtime/classes:$dir/lib/polyglot.jar:$dir/lib/java_cup.jar:$dir/lib/android.jar"
+classpath=$classpath:"$dir/lib/$ext.jar:$dir/lib/$ext-rt.jar:$dir/lib/polyglot.jar:$dir/lib/java_cup.jar:$dir/lib/android.jar"
 if [ -n "$ext" ]; then
   classpath="$classpath:$dir/lib/$ext.jar"
 fi

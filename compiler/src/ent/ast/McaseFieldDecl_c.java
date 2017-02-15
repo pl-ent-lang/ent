@@ -44,6 +44,21 @@ public class McaseFieldDecl_c extends Term_c implements McaseFieldDecl {
   }
 
   @Override
+  public boolean isDisambiguated() {
+    return this.init().isDisambiguated();
+  }
+
+  /*
+  @Override
+  public Node disambiguate(AmbiguityRemover sc) throws SemanticException {
+    System.err.format("Type of init: %s\n", this.init().type());
+    System.err.format("Disambig of init: %s\n", this.init().isDisambiguated());
+    System.err.format("Init: %s %s\n", this.init(), this.init().getClass());
+    return this;
+  }
+  */
+
+  @Override
   public void prettyPrint(CodeWriter w, PrettyPrinter tr) {
     print(this.field(), w, tr);
     w.write(":");

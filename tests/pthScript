@@ -39,6 +39,11 @@ ent.EntExtensionInfo "-d out" {
   super_abstract/A.java ;
 
   # Tests specific to Ent.
+  mcase_primitive/A.java ;
+  mcase_easy_object/A.java ;
+  mcase_list/A.java ;
+  mcase_tuple/A.java mcase_tuple/Tuple.java;
+ 
   waterfall_good1/A.java ;
   waterfall_good2/A.java ;
   waterfall_good3/A.java ;

@@ -37,4 +37,8 @@ public class ENT_Runtime {
 
   public static boolean objectCopied(Object o) { return ENT_Runtime.objTab.get(o).copied; }
 
+  public static int objectTableSize() {
+    return ENT_Runtime.objTab.size();
+  }
+
 }
