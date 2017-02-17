@@ -204,11 +204,15 @@ public class AttributeDecl_c extends Term_c implements AttributeDecl {
   // Term Method
   @Override
   public Term firstChild() {
-    return this.body();
+    return listChild(formals(), body());
   }
 
   @Override
   public <T> List<T> acceptCFG(CFGBuilder<?> v, List<T> succs) {
+    if (formals() != null) {
+      v.visitCFGList(formals(), body(), ENTRY);
+    }
+
     if (this.body() != null) {
       v.visitCFG(this.body(), this, EXIT);
     }

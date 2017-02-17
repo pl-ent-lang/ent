@@ -213,6 +213,12 @@ public class EntClassDeclExt extends EntExt {
         members.add(m);
         continue;
       }
+      EntExt ext2 = EntExt.ext(m);
+      if (!(ext2 instanceof EntMethodDeclExt)) {
+        members.add(m);
+        continue;
+      }
+
       EntMethodDeclExt md = (EntMethodDeclExt) EntExt.ext(m);
       if (md.attrDecl() != null) {
         members.add(md.attrDecl());

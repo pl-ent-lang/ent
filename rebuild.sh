@@ -10,3 +10,4 @@ cd $cwd
 cp /home/acanino/Research/polyglot-personal/lib/polyglot.jar ./lib
 ant clean
 ant
+ant jar

@@ -7,5 +7,5 @@ public class Database {
 
   // Show David inference bug!
   // Comment out annotation on Site
-  public static Site@mode<?> lookupSite(String url) { return sites.get(url); }
+  public static Site lookupSite(String url) { return sites.get(url); }
 }

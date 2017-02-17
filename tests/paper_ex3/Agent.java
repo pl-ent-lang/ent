@@ -8,9 +8,10 @@ public class Agent@mode<managed> {
   public ArraySet work(String url) { 
     Site s = Database.lookupSite(url);
     if (Env.mediaSearch) {
-      return s.mediaCrawl();
+      //return s.mediaCrawl();   // Should error!
+      return null;
     } else {
-      Rule[] rules = generateRules(s);
+      List<Rule@mode<energy_saver> > rules = this.@mode<energy_saver>generateRules(s);
       return s.crawl(rules); 
     }
   } 
@@ -36,5 +37,6 @@ public class Agent@mode<managed> {
     for (Image i : Arrays.asList(s.parsedimgs)) {
       writer.write(i);
     }
+    return new ArraySet();
   }
 }

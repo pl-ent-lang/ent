@@ -112,7 +112,9 @@ public class ModeType_c extends Type_c implements ModeType {
     // System.err.format("ModeType: %s %s %s\n", this == o, this == ts.WildcardModeType(), o ==
     // ts.WildcardModeType());
 
-    return (this == o || this == ts.WildcardModeType() || o == ts.WildcardModeType());
+    return (this == o || 
+            (this == ts.WildcardModeType() && o != ts.DynamicModeType()) || 
+            (o == ts.WildcardModeType() && this != ts.DynamicModeType()));
   }
 
   @Override
@@ -131,6 +133,15 @@ public class ModeType_c extends Type_c implements ModeType {
   public boolean isImplicitCastValidImpl(Type o) {
     return ts.typeEquals(this, o);
   }
+
+  @Override
+  public boolean isCastValidImpl(Type o) {
+    EntTypeSystem ts = (EntTypeSystem)this.typeSystem();
+    return (ts.typeEquals(this, o) || 
+        (this == ts.WildcardModeType()) || 
+        (o == ts.WildcardModeType()));
+  }
+
 
   @Override
   public Expr rewriteForLookup(NodeFactory nf, TypeSystem ts, Context c) {

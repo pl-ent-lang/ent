@@ -28,8 +28,8 @@ public class Agent@mode<?->X> {
 
   public ArraySet work(String url) { 
     Site ds = Database.lookupSite(url);
-    Site s = snapshot ds ?mode[@mode<*>, @mode<X>];
-    return s.crawl(depth); 
+    //Site s = snapshot ds ?mode[@mode<*>, @mode<X>];
+    return ds.crawl(depth); 
   } 
 
   Rule[] parseConfigurationFile(String file) { 

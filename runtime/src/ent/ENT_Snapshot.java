@@ -29,10 +29,8 @@ public class ENT_Snapshot {
         cmodes[0] = mode;
         ENT_Runtime.putObj(copy, cmodes);
       }
-      System.out.println("Object copied!");
       return copy;
     } else {
-      System.out.println("Object updated!");
       Integer[] cmodes = ENT_Runtime.getObjAll(o);
       cmodes[0] = mode;
       ENT_Runtime.updateObject(o, true, cmodes);

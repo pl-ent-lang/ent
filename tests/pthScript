@@ -39,6 +39,9 @@ ent.EntExtensionInfo "-d out" {
   super_abstract/A.java ;
 
   # Tests specific to Ent.
+  nonequivocate/A.java (Semantic, "cannot be called") ;
+  nonequivocate2/A.java (Semantic, "cannot be called") ;
+
   mcase_primitive/A.java ;
   mcase_easy_object/A.java ;
   mcase_list/A.java ;

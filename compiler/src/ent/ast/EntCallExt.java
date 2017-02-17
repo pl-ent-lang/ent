@@ -364,6 +364,7 @@ public class EntCallExt extends EntExt {
       argTypes.add(e.type());
     }
     Type expectedRetType = ((EntCallExt)EntExt.ext(n)).expectedReturnType;
+    System.err.format("EntCall:%s %s %s\n", n, n.position(), pi.baseInstance());
     ModeSubst subst = ts.inferModeTypeArgs(pi.baseInstance(), argTypes, expectedRetType);
     EntCallExt ext = (EntCallExt)EntExt.ext(n);
     return ext.infModeTypes(subst.modeTypeMap());
