@@ -1,6 +1,7 @@
 package ent.runtime.battery;
 
 import ent.runtime.util.OsUtil;
+import ent.runtime.util.OsType;
 import ent.runtime.ENT_Properties;
 
 public class BatterySupply {
@@ -34,6 +35,11 @@ public class BatterySupply {
   public int getTotalCapacity() { return bareMetalBattery.getTotalCapacity(); }
 
   public float percentRemaining() {
+    if (OsUtil.getOsType() == OsType.ANDROID) {
+      Float level = (Float) ENT_Properties.getProperty("ENT_BATTERY_LEVEL");
+      return level;
+    }
+
     String simBattery = System.getenv("ENT_BATTERY_LEVEL");
     if (simBattery == null) {
       return ((float) this.getRemainingCapacity()) / ((float) this.getTotalCapacity());
@@ -42,7 +48,5 @@ public class BatterySupply {
       return batteryLevel;
     }
 
-    //Float level = (Float) ENT_Properties.getProperty("ENT_BATTERY_LEVEL");
-    //return level;
   }
 }
