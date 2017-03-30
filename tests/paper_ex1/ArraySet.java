@@ -1,7 +1,7 @@
 package paper_ex1;
 
 import java.util.*;
-import java.lang.*;
+import java.lang.Iterable;
 
 public class ArraySet implements Iterable<String> {
   public List<String> urls = new ArrayList<>();

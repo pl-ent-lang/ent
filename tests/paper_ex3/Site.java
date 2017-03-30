@@ -12,6 +12,8 @@ public class Site@mode<X> {
   } 
   */
 
+  public Site(String url) { }
+
   public ArraySet crawl(List<Rule@mode<X> > rules) {
     return new ArraySet();
   } 

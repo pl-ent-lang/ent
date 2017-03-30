@@ -4,7 +4,7 @@ package waterfall_bad1;
 
 modes {low <: mid; mid <: high; };
 
-public class A@mode<(low<= X <= mid)> {
+public class A@mode<high <= X> {
   public void m1(String@mode<low> s) {
     s.charAt(0);  // Good!
   }

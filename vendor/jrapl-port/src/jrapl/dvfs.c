@@ -55,7 +55,7 @@ int check_write_gov(int cores, char govFile[cores][60], const char *target) {
 
 }
 
-write_freq_all_cores(int cores, char filename[][60], const char *cur_freq, const char *scal_freq, int freq) {
+write_freq_all_cores(int cores, char filename[cores][60], const char *cur_freq, const char *scal_freq, int freq) {
 	int i;
 	FILE *f[cores];
     int rc;
@@ -67,7 +67,7 @@ write_freq_all_cores(int cores, char filename[][60], const char *cur_freq, const
 		f[i] = fopen(filename[i], "w");
 		if (f[i] == NULL) {
 			//LOGI("Failed to open %s: %s", filename, strerror(errno));
-			printf("Failed to open %s\n", filename[i]);
+			printf("Failed to open %s", filename[i]);
 			return 1;
 		}
 
@@ -78,20 +78,20 @@ write_freq_all_cores(int cores, char filename[][60], const char *cur_freq, const
 
 		if (data_length != data_written) {
 			//LOGI("Failed to write to %s: %s", filename, strerror(errno));
-			printf("Failed to write %s\n", filename[i]);
+			printf("Failed to write %s", filename[i]);
 			return 1;
 		}
 
 		rc = fclose(f[i]);
 		if (rc != 0) {
 			//LOGI("Failed to close %s: %s", filename, strerror(rc));
-			printf("Failed to close %s\n", filename[i]);
+			printf("Failed to close %s", filename[i]);
 			return 1;
 		}
 		f[i] = fopen(cur_freq, "r");
 		if (f[i] == NULL) {
 			//LOGI("Failed to open %s: %s", filename, strerror(errno));
-			printf("Failed to open %s\n", cur_freq);
+			printf("Failed to open %s", cur_freq);
 			return 1;
 		}
 		
@@ -100,7 +100,7 @@ write_freq_all_cores(int cores, char filename[][60], const char *cur_freq, const
 		f[i] = fopen(scal_freq, "r");
 		if (f[i] == NULL) {
 			//LOGI("Failed to open %s: %s", filename, strerror(errno));
-			printf("Failed to open %s\n", scal_freq);
+			printf("Failed to open %s", scal_freq);
 			return 1;
 		}
 		fscanf(f[i], "%d", &scal_cpufreq[i]);

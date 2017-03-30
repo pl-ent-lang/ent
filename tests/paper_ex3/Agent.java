@@ -8,19 +8,12 @@ public class Agent@mode<managed> {
   public ArraySet work(String url) { 
     Site s = Database.lookupSite(url);
     if (Env.mediaSearch) {
-      //return s.mediaCrawl();   // Should error!
-      return null;
+      return s.mediaCrawl();   // Should error!
     } else {
-      List<Rule@mode<energy_saver> > rules = this.@mode<energy_saver>generateRules(s);
+      List<Rule> rules = this.@mode<energy_saver>generateRules(s);
       return s.crawl(rules); 
     }
   } 
-
-  /*
-  public @mode<Y> Rule@mode<Y>[] generateRules(Site@mode<Y> site) {
-    return new null;
-  }
-  */
 
   public @mode<Y> List<Rule@mode<Y> > generateRules(Site@mode<Y> site) {
     return new ArrayList<Rule@mode<Y> >();
