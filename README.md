@@ -50,7 +50,7 @@ ent -cp class_files HelloWorld
 Benchmarks
 ------------
 
-We have provided the link to our benchmark suite used to evaluated Ent at TODO. This suite contains all code used, data, as well as scripts that help run the benchmarks and analyze the associated data.
+We have provided the link to our [benchmark suite used to evaluated Ent](https://www.google.com/search?client=ubuntu&channel=fs&q=markdown+link&ie=utf-8&oe=utf-8). This suite contains all code used, data, as well as scripts that help run the benchmarks and analyze the associated data.
 
 We recommend consulting the companion documentation contained in /doc/artifact.pdf. It contains detailed documentation of the structure of the benchmarks, examining the data, and running the experiments.
 
